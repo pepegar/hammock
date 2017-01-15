@@ -4,7 +4,7 @@ import cats.{MonadError, ~>}
 import cats.free.Free
 import cats.data.Kleisli
 
-trait Transformer[Op[_]] {
+trait Interpreters[Op[_]] {
   type OpIO[A] = Free[Op, A]
 
   def trans[M[_] : MonadError[?[_], Throwable], A](operation: OpIO[A]): M[A] =
