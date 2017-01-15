@@ -42,25 +42,39 @@ object httprequest {
         }
       }
       case Get(url, headers, body) => Kleisli { client =>
-        ???
+        ME.catchNonFatal {
+          ???
+        }
       }
       case Head(url, headers, body) => Kleisli { client =>
-        ???
+        ME.catchNonFatal {
+          ???
+        }
       }
       case Post(url, headers, body) => Kleisli { client =>
-        ???
+        ME.catchNonFatal {
+          ???
+        }
       }
       case Put(url, headers, body) => Kleisli { client =>
-        ???
+        ME.catchNonFatal {
+          ???
+        }
       }
       case Delete(url, headers, body) => Kleisli { client =>
-        ???
+        ME.catchNonFatal {
+          ???
+        }
       }
       case Trace(url, headers, body) => Kleisli { client =>
-        ???
+        ME.catchNonFatal {
+          ???
+        }
       }
       case Connect(url, headers, body) => Kleisli { client =>
-        ???
+        ME.catchNonFatal {
+          ???
+        }
       }
     })
 
