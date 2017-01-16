@@ -34,6 +34,7 @@ object httprequest {
   }
 
   object Interp {
+    def trans[F[_]](implicit httpClient: HttpClient, ME: MonadError[F, Throwable]) = transK andThen λ[Kleisli[F, HttpClient, ?] ~> F](_.run(httpClient))
 
     def transK[F[_]](implicit ME: MonadError[F, Throwable]): HttpRequestF ~> Kleisli[F, HttpClient, ?] = λ[HttpRequestF ~> Kleisli[F, HttpClient, ?]](_ match {
       case Options(url, headers, body) => Kleisli { client =>

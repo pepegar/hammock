@@ -5,12 +5,11 @@ import cats.implicits._
 import hammock._
 
 
-
 object Main extends App {
   case class App(id: String)
   type Apps = List[App]
 
-  val request = Client.request(Method.GET, "http://api.fidesmo.com/apps", Map()) // PreparedRequest
-    .run[Future] // Future[HttpResponse]
+  val request = Client.request(Method.GET, "http://api.fidesmo.com/apps", Map())
+    .run[Future]
 
 }

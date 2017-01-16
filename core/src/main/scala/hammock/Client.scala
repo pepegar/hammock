@@ -1,9 +1,9 @@
 package hammock
 
-
 import cats._
 import cats.arrow._
 import httprequest._
+import org.apache.http.client.HttpClient
 
 trait Client {
   def request[A : Codec](method: Method, url: String, body: A, headers: Map[String, String]): HttpRequestIO[HttpResponse]
@@ -13,8 +13,9 @@ object Client {
 
   trait Request[A] {
     def freeReq: HttpRequestIO[HttpResponse]
-    def run[F[_] : MonadError[?[_], Throwable]](implicit I: FunctionK[HttpRequestF, F]): F[HttpResponse] = 
-      freeReq foldMap I
+    def run[F[_] : MonadError[?[_], Throwable]](implicit httpClient: HttpClient): F[HttpResponse] = 
+      freeReq foldMap Interp.trans
+
   }
 
   class WithBodyRequest[A](val freeReq: HttpRequestIO[HttpResponse]) extends Request[A]
