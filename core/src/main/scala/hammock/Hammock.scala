@@ -11,7 +11,6 @@ object Hammock {
     def freeReq: HttpRequestIO[HttpResponse]
     def run[F[_] : MonadError[?[_], Throwable]](implicit httpClient: HttpClient): F[HttpResponse] = 
       freeReq foldMap Interp.trans
-
   }
 
   class WithBodyRequest[A](val freeReq: HttpRequestIO[HttpResponse]) extends Request[A]

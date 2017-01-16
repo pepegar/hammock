@@ -3,12 +3,15 @@ package hammock
 import cats._
 import cats.data.Kleisli
 import cats.free.Free
+
+import java.io.{ BufferedReader, InputStream, InputStreamReader }
+
 import org.apache.http.client.HttpClient
+import org.apache.http.client.methods.{ HttpDelete, HttpGet, HttpPost, HttpPut }
+import org.apache.http.entity.StringEntity
 
 
 object httprequest {
-
-  trait HttpResponse
 
   sealed abstract class HttpRequestF[A](url: String, headers: Map[String, String], body: Option[String]) extends Product with Serializable
   case class Options(url: String, headers: Map[String, String], body: Option[String]) extends HttpRequestF[HttpResponse](url, headers, body)
@@ -44,7 +47,17 @@ object httprequest {
       }
       case Get(url, headers, body) => Kleisli { client =>
         ME.catchNonFatal {
-          ???
+          val req = new HttpGet(url)
+
+          headers.foreach {
+            case (k, v) => 
+              req.addHeader(k, v);
+          }
+
+          val resp = client.execute(req)
+          val body = responseContentToString(resp.getEntity().getContent())
+
+          HttpResponse(resp.getStatus(), resp.getHeaders(), body)
         }
       }
       case Head(url, headers, body) => Kleisli { client =>
@@ -78,6 +91,12 @@ object httprequest {
         }
       }
     })
+  }
 
+
+  def responseContentToString(content: InputStream): String = {
+    val rd = new BufferedReader(new InputStreamReader(content))
+
+    Stream.continually(rd.readLine()).takeWhile(_ != null).mkString("")
   }
 }

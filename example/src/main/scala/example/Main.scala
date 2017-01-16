@@ -9,7 +9,10 @@ object Main extends App {
   case class App(id: String)
   type Apps = List[App]
 
-  val request = Client.request(Method.GET, "http://api.fidesmo.com/apps", Map())
+  val request = Hammock
+    .request(Method.GET, "http://api.fidesmo.com/apps", Map())
     .run[Future]
+
+  println(request)
 
 }
