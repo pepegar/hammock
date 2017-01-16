@@ -5,11 +5,7 @@ import cats.arrow._
 import httprequest._
 import org.apache.http.client.HttpClient
 
-trait Client {
-  def request[A : Codec](method: Method, url: String, body: A, headers: Map[String, String]): HttpRequestIO[HttpResponse]
-}
-
-object Client {
+object Hammock {
 
   trait Request[A] {
     def freeReq: HttpRequestIO[HttpResponse]
