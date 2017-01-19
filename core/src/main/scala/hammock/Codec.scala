@@ -1,15 +1,16 @@
 package hammock
 
+class CodecException private(val message: String, underlying: Throwable) extends Throwable(message, underlying)
+
+object CodecException {
+  def withMessage(message: String) = new CodecException(message, null)
+  def withMessageAndException(message: String, ex: Throwable) = new CodecException(message, ex)
+}
+
 trait Codec[A] {
-  class CodecException(val message: String) extends Throwable
-
   def encode(a: A): String
-  def decode(a: String): Either[CodecException, A]
 
-  implicit val stringCodec = new Codec[String] {
-    def encode(a: String): String = a
-    def decode(a: String): Either[CodecException, String] = Right(a)
-  }
+  def decode(a: String): Either[CodecException, A]
 }
 
 object Codec {
