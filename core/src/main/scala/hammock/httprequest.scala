@@ -14,14 +14,14 @@ import org.apache.http.entity.StringEntity
 object httprequest {
 
   sealed abstract class HttpRequestF[A](url: String, headers: Map[String, String], body: Option[String]) extends Product with Serializable
-  case class Options(url: String, headers: Map[String, String], body: Option[String]) extends HttpRequestF[HttpResponse](url, headers, body)
-  case class Get(url: String, headers: Map[String, String], body: Option[String]) extends HttpRequestF[HttpResponse](url, headers, body)
-  case class Head(url: String, headers: Map[String, String], body: Option[String]) extends HttpRequestF[HttpResponse](url, headers, body)
-  case class Post(url: String, headers: Map[String, String], body: Option[String]) extends HttpRequestF[HttpResponse](url, headers, body)
-  case class Put(url: String, headers: Map[String, String], body: Option[String]) extends HttpRequestF[HttpResponse](url, headers, body)
-  case class Delete(url: String, headers: Map[String, String], body: Option[String]) extends HttpRequestF[HttpResponse](url, headers, body)
-  case class Trace(url: String, headers: Map[String, String], body: Option[String]) extends HttpRequestF[HttpResponse](url, headers, body)
-  case class Connect(url: String, headers: Map[String, String], body: Option[String]) extends HttpRequestF[HttpResponse](url, headers, body)
+  final case class Options(url: String, headers: Map[String, String], body: Option[String]) extends HttpRequestF[HttpResponse](url, headers, body)
+  final case class Get(url: String, headers: Map[String, String], body: Option[String]) extends HttpRequestF[HttpResponse](url, headers, body)
+  final case class Head(url: String, headers: Map[String, String], body: Option[String]) extends HttpRequestF[HttpResponse](url, headers, body)
+  final case class Post(url: String, headers: Map[String, String], body: Option[String]) extends HttpRequestF[HttpResponse](url, headers, body)
+  final case class Put(url: String, headers: Map[String, String], body: Option[String]) extends HttpRequestF[HttpResponse](url, headers, body)
+  final case class Delete(url: String, headers: Map[String, String], body: Option[String]) extends HttpRequestF[HttpResponse](url, headers, body)
+  final case class Trace(url: String, headers: Map[String, String], body: Option[String]) extends HttpRequestF[HttpResponse](url, headers, body)
+  final case class Connect(url: String, headers: Map[String, String], body: Option[String]) extends HttpRequestF[HttpResponse](url, headers, body)
 
   type HttpRequestIO[A] = Free[HttpRequestF, A]
 
@@ -55,9 +55,12 @@ object httprequest {
           }
 
           val resp = client.execute(req)
+          
           val body = responseContentToString(resp.getEntity().getContent())
+          val status = Status.Statuses.getOrElse(resp.getStatusLine.getStatusCode, throw new Exception) // todo: This is shitty
+          val responseHeaders = resp.getAllHeaders().map(h => h.getName -> h.getValue).toMap
 
-          HttpResponse(resp.getStatus(), resp.getHeaders(), body)
+          HttpResponse(status, responseHeaders, body)
         }
       }
       case Head(url, headers, body) => Kleisli { client =>
