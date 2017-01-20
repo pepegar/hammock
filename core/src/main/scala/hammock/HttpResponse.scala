@@ -5,6 +5,9 @@ trait HttpResponse {
   def status: Status
   def headers: Map[String, String]
   def content: String
+
+  override def toString: String =
+    s"""HttpResponse(status = $status, headers = $headers, content = "$content")"""
 }
 
 object HttpResponse {

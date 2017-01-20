@@ -4,6 +4,9 @@ trait Status {
   def code: Int
   def text: String
   def description: String
+
+  override def toString(): String =
+    s"""Status(code = $code, text = "$text", description = "$description")"""
 }
 
 object Status {
