@@ -49,4 +49,4 @@ lazy val `hammock-circe` = project.in(file("hammock-circe"))
 
 lazy val example = project.in(file("example"))
   .settings(scalaVersion := "2.11.8")
-  .dependsOn(core)
+  .dependsOn(core, `hammock-circe`)
