@@ -1,8 +1,17 @@
 organization in ThisBuild := "hammock"
 scalaVersion := "2.11.8"
 
-wartremoverErrors in (Compile, compile) ++= Warts.all
+scalaVersion in ThisBuild := "2.11.8"
 
+lazy val micrositeSettings = Seq(
+  micrositeName := "Hammock",
+  micrositeDescription := "Simple and reliable HTTP client",
+  micrositeBaseUrl := "hammock",
+  micrositeDocumentationUrl := "/hammock/docs.html",
+  micrositeGithubOwner := "pepegar",
+  micrositeGithubRepo := "hammock",
+  micrositeHighlightTheme := "tomorrow"
+)
 
 lazy val commonSettings = Seq(
   libraryDependencies ++= Seq(
@@ -10,9 +19,14 @@ lazy val commonSettings = Seq(
     compilerPlugin("org.scalamacros" %% "paradise" % "2.1.0" cross CrossVersion.full),
     compilerPlugin("org.spire-math" %% "kind-projector" % "0.9.3"),
     "org.scalatest" %% "scalatest" % "3.0.1" % "test"
-  ),
-  wartremoverWarnings in Compile ++= Warts.all
+  )
 )
+
+lazy val docs = project.in(file("docs"))
+  .dependsOn(core, `hammock-circe`)
+  .settings(moduleName := "hammock-docs")
+  .settings(micrositeSettings: _*)
+  .enablePlugins(MicrositesPlugin)
 
 lazy val core = project.in(file("core"))
   .settings(moduleName := "hammock-core")

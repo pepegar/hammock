@@ -1,1 +1,1 @@
-addSbtPlugin("org.wartremover" % "sbt-wartremover" % "1.2.1")
+addSbtPlugin("com.fortysevendeg"  % "sbt-microsites" % "0.4.0")
