@@ -1,5 +1,7 @@
 # Hammock
 
+[![Build Status](https://travis-ci.org/pepegar/hammock.svg?branch=master)](https://travis-ci.org/pepegar/hammock)
+
 Hammock is yet another HTTP client for Scala.  Under the hood it's a purely functional wrapper over [Apache Http Commons][httpcommons]
 
 Hammock tries to differentiate from other libraries with the following:
@@ -15,22 +17,22 @@ Hammock tries to differentiate from other libraries with the following:
 
 # How does Hammock look in action?
 
-The following is purely an elucubration... but I really hope it can look like this at some point!
-
 ```scala
-import scala.concurrent.ExecutionContext.Implicits.global
 import cats._
 import cats.implicits._
-import circe._
-import circe.auto._
+import scala.util.{ Failure, Success, Try }
+import io.circe._
+import io.circe.generic.auto._
 import hammock._
+import hammock.implicits._
+import hammock.circe.implicits._
 
 
-case class App(id: String)
-type Apps = List[App]
-
-val request = SimpleHttpClient.request(Method.GET, "http://api.fidesmo.com/apps") // HttpIO[HttpResponse]
-	.run[Future] // Future[HttpResponse]
-	.as[Apps] // Future[Apps]
+object HttpClient {
+  val response = Hammock
+    .request(Method.GET, "https://api.fidesmo.com/apps", Map()) // In the `request` method, you describe your HTTP request
+    .run[Try]
+    .as[List[String]]
+}
 ```
 
