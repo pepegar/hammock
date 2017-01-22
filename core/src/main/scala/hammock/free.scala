@@ -1,8 +1,8 @@
 package hammock
 
 import cats._
+import cats.free._
 import cats.data.Kleisli
-import cats.free.Free
 
 import java.io.{ BufferedReader, InputStream, InputStreamReader }
 
@@ -35,6 +35,20 @@ object free {
     def put(url: String, headers: Map[String, String], body: Option[String]): HttpRequestIO[HttpResponse] = Free.liftF(Put(url, headers, body))
     def delete(url: String, headers: Map[String, String], body: Option[String]): HttpRequestIO[HttpResponse] = Free.liftF(Delete(url, headers, body))
     def trace(url: String, headers: Map[String, String], body: Option[String]): HttpRequestIO[HttpResponse] = Free.liftF(Trace(url, headers, body))
+  }
+
+  class HttpRequestC[F[_]](implicit I: Inject[HttpRequestF, F]) {
+    def options(url: String, headers: Map[String, String], body: Option[String]): Free[F, HttpResponse] = Free.inject(Options(url, headers, body))
+    def get(url: String, headers: Map[String, String], body: Option[String]): Free[F, HttpResponse] = Free.inject(Get(url, headers, body))
+    def head(url: String, headers: Map[String, String], body: Option[String]): Free[F, HttpResponse] = Free.inject(Head(url, headers, body))
+    def post(url: String, headers: Map[String, String], body: Option[String]): Free[F, HttpResponse] = Free.inject(Post(url, headers, body))
+    def put(url: String, headers: Map[String, String], body: Option[String]): Free[F, HttpResponse] = Free.inject(Put(url, headers, body))
+    def delete(url: String, headers: Map[String, String], body: Option[String]): Free[F, HttpResponse] = Free.inject(Delete(url, headers, body))
+    def trace(url: String, headers: Map[String, String], body: Option[String]): Free[F, HttpResponse] = Free.inject(Trace(url, headers, body))
+  }
+
+  object HttpRequestC {
+    implicit def httpRequestC[F[_]](implicit I: Inject[HttpRequestF, F]): HttpRequestC[F] = new HttpRequestC[F]
   }
 
   object Interp {
