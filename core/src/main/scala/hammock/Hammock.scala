@@ -2,7 +2,7 @@ package hammock
 
 import cats._
 import cats.arrow._
-import httprequest._
+import free._
 import org.apache.http.client.HttpClient
 
 object Hammock {

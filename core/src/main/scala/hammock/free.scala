@@ -11,7 +11,7 @@ import org.apache.http.client.methods.{ HttpDelete, HttpGet, HttpPost, HttpPut }
 import org.apache.http.entity.StringEntity
 
 
-object httprequest {
+object free {
 
   sealed abstract class HttpRequestF[A](url: String, headers: Map[String, String], body: Option[String]) extends Product with Serializable
   final case class Options(url: String, headers: Map[String, String], body: Option[String]) extends HttpRequestF[HttpResponse](url, headers, body)
