@@ -15,7 +15,8 @@ Just add the following to your `libraryDependencies` in SBT:
 
 ## Modules
 
-There are already some companion modules implemented to make the experience of use a breeze.
+There are already some companion modules implemented to ease the
+experience of using hammock.
 
 ```
 "io.pepegar" %% "hammock-circe" % "0.1-SNAPSHOT"
@@ -31,17 +32,7 @@ you know how to use them!
 
 
 ## HTTP
-
-```tut:invisible
-val out = Console.out
-
-def println(msg: String): Unit = {
-  Console.withOut(out) {
-    Console.println(msg)
-  }
-}
-```
-
+w
 With Hammock you can do HTTP operations in a typeful and functional way.
 
 ```tut:silent
@@ -69,8 +60,12 @@ HttpClient.response
 
 ## Target Monad
 
-You can use as a target monad any type `F` that has an instance of `MonadError[F, Throwable]`.  There are already several types you can use out of the box, for example:
+You can use as a target monad any type `F` that has an instance of
+`MonadError[F, Throwable]`.  There are already several types you can
+use out of the box, for example:
 
-* `Future`: There are lots of applications out there that express their `IO` effects with `Future`, you can still use it!
+* `Future`: There are lots of applications out there that express
+  their `IO` effects with `Future`, you can still use it!
 * `Try`: You don't care of blocking current thread? go ahead, use it!
-* `monix/Task`: Great implementation of a concurrency monad.  You can learn more about it [here](https://monix.io/)
+* `monix/Task`: Great implementation of a concurrency monad.  You can
+  learn more about it [here](https://monix.io/)
