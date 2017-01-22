@@ -7,21 +7,23 @@ import cats.free.Free
 import java.io.{ BufferedReader, InputStream, InputStreamReader }
 
 import org.apache.http.client.HttpClient
-import org.apache.http.client.methods.{ HttpDelete, HttpGet, HttpPost, HttpPut }
-import org.apache.http.entity.StringEntity
+import org.apache.http.client.methods._
 
 
 object free {
 
-  sealed abstract class HttpRequestF[A](url: String, headers: Map[String, String], body: Option[String]) extends Product with Serializable
-  final case class Options(url: String, headers: Map[String, String], body: Option[String]) extends HttpRequestF[HttpResponse](url, headers, body)
-  final case class Get(url: String, headers: Map[String, String], body: Option[String]) extends HttpRequestF[HttpResponse](url, headers, body)
-  final case class Head(url: String, headers: Map[String, String], body: Option[String]) extends HttpRequestF[HttpResponse](url, headers, body)
-  final case class Post(url: String, headers: Map[String, String], body: Option[String]) extends HttpRequestF[HttpResponse](url, headers, body)
-  final case class Put(url: String, headers: Map[String, String], body: Option[String]) extends HttpRequestF[HttpResponse](url, headers, body)
-  final case class Delete(url: String, headers: Map[String, String], body: Option[String]) extends HttpRequestF[HttpResponse](url, headers, body)
-  final case class Trace(url: String, headers: Map[String, String], body: Option[String]) extends HttpRequestF[HttpResponse](url, headers, body)
-  final case class Connect(url: String, headers: Map[String, String], body: Option[String]) extends HttpRequestF[HttpResponse](url, headers, body)
+  sealed abstract class HttpRequestF[A] extends Product with Serializable {
+    def url: String
+    def headers: Map[String, String]
+    def body: Option[String]
+  }
+  final case class Options(url: String, headers: Map[String, String], body: Option[String]) extends HttpRequestF[HttpResponse]
+  final case class Get(url: String, headers: Map[String, String], body: Option[String]) extends HttpRequestF[HttpResponse]
+  final case class Head(url: String, headers: Map[String, String], body: Option[String]) extends HttpRequestF[HttpResponse]
+  final case class Post(url: String, headers: Map[String, String], body: Option[String]) extends HttpRequestF[HttpResponse]
+  final case class Put(url: String, headers: Map[String, String], body: Option[String]) extends HttpRequestF[HttpResponse]
+  final case class Delete(url: String, headers: Map[String, String], body: Option[String]) extends HttpRequestF[HttpResponse]
+  final case class Trace(url: String, headers: Map[String, String], body: Option[String]) extends HttpRequestF[HttpResponse]
 
   type HttpRequestIO[A] = Free[HttpRequestF, A]
 
@@ -33,7 +35,6 @@ object free {
     def put(url: String, headers: Map[String, String], body: Option[String]): HttpRequestIO[HttpResponse] = Free.liftF(Put(url, headers, body))
     def delete(url: String, headers: Map[String, String], body: Option[String]): HttpRequestIO[HttpResponse] = Free.liftF(Delete(url, headers, body))
     def trace(url: String, headers: Map[String, String], body: Option[String]): HttpRequestIO[HttpResponse] = Free.liftF(Trace(url, headers, body))
-    def connect(url: String, headers: Map[String, String], body: Option[String]): HttpRequestIO[HttpResponse] = Free.liftF(Connect(url, headers, body))
   }
 
   object Interp {
