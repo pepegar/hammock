@@ -55,7 +55,7 @@ object free {
         val req = getApacheRequest(reqF)
         reqF.headers.foreach {
           case (k, v) =>
-            req.addHeader(k, v);
+            req.addHeader(k, v)
         }
 
         val resp = client.execute(req)
