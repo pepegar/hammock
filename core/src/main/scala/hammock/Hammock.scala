@@ -24,7 +24,6 @@ object Hammock {
     case Method.PUT => new BodylessRequest(Ops.put(url, headers, None))
     case Method.DELETE => new BodylessRequest(Ops.delete(url, headers, None))
     case Method.TRACE => new BodylessRequest(Ops.trace(url, headers, None))
-    case Method.CONNECT => new BodylessRequest(Ops.connect(url, headers, None))
   }
 
   def request[A : Codec](method: Method, url: String, body: Option[A], headers: Map[String, String]): Request[A] = method match {
@@ -35,6 +34,5 @@ object Hammock {
     case Method.PUT => new WithBodyRequest(Ops.put(url, headers, body.map(Codec[A].encode)))
     case Method.DELETE => new WithBodyRequest(Ops.delete(url, headers, body.map(Codec[A].encode)))
     case Method.TRACE => new WithBodyRequest(Ops.trace(url, headers, body.map(Codec[A].encode)))
-    case Method.CONNECT => new WithBodyRequest(Ops.connect(url, headers, body.map(Codec[A].encode)))
   }
 }
