@@ -1,6 +1,165 @@
 <html><head><meta charset="utf-8" /><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" /><title>Hammock</title><meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="description" content="Simple and reliable HTTP client" /><meta name="author" content="hammock" /><meta name="og:image" content="/hammock/img/poster.png" /><meta name="og:title" content="Hammock" /><meta name="og:site_name" content="Hammock" /><meta name="og:url" content="" /><meta name="og:type" content="website" /><meta name="og:description" content="Simple and reliable HTTP client" /><meta name="twitter:image" content="/hammock/img/poster.png" /><meta name="twitter:card" content="summary_large_image" /><meta name="twitter:site" content="" /><link rel="icon" type="image/png" href="/hammock/img/favicon.png" /><link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" /><link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" /><link rel="stylesheet" href="/hammock/highlight/styles/tomorrow.css" /><link rel="stylesheet" href="/hammock/css/style.css" /><link rel="stylesheet" href="/hammock/css/palette.css" /></head><body class="docs"><div id="wrapper"><div id="sidebar-wrapper"><ul id="sidebar" class="sidebar-nav"><li class="sidebar-brand"><a href="/hammock/" class="brand"><div class="brand-wrapper" style="background:url('/hammock/img/sidebar_brand.png') no-repeat"><span>Hammock</span></div></a></li><li><a href="/hammock/docs.html" class=" active "></a></li><li><a href="/hammock/css/palette.css" class=" active "></a></li><li><a href="/hammock/css/style.css" class=" active "></a></li></ul></div><div id="page-content-wrapper"><div class="nav"><div class="container-fluid"><div class="row"><div class="col-lg-12"><div class="action-menu pull-left clearfix"><a href="#menu-toggle" id="menu-toggle"><i class="fa fa-bars" aria-hidden="true"></i></a></div><ul class="pull-right"><li class="hidden-xs"><a href="https://github.com/pepegar/hammock"><i class="fa fa-eye"></i><span>WATCH<span id="eyes" class="label label-default">--</span></span></a></li><li class="hidden-xs"><a href="https://github.com/pepegar/hammock"><i class="fa fa-star-o"></i><span>STARS<span id="stars" class="label label-default">--</span></span></a></li><li><a href="#" onclick="shareSiteTwitter('Hammock Simple and reliable HTTP client');"><i class="fa fa-twitter"></i></a></li><li><a href="#" onclick="shareSiteFacebook('Hammock Simple and reliable HTTP client');"><i class="fa fa-facebook"></i></a></li><li><a href="#" onclick="shareSiteGoogle();"><i class="fa fa-google-plus"></i></a></li></ul></div></div></div></div><div id="content" data-github-owner="pepegar" data-github-repo="hammock"><div class="content-wrapper"><section><h1 id="introduction">Introduction</h1>
 
-<p>todo</p>
+<h1 id="using-hammocks-free">Using Hammock’s Free</h1>
+
+<p>Imagine you were already using free monads for desiginng your application:</p>
+
+<p>As always, start with some imports</p>
+
+<h2 id="imports">imports</h2>
+
+<div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="k">import</span> <span class="nn">cats._</span>
+<span class="k">import</span> <span class="nn">cats.free._</span>
+<span class="k">import</span> <span class="nn">cats.data._</span>
+</code></pre>
+</div>
+
+<h2 id="algebras">algebras</h2>
+
+<p>Then, we need to start defining our algebras. Heres is the algebra related to logging</p>
+
+<h3 id="log">Log</h3>
+
+<div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="k">object</span> <span class="nc">Log</span> <span class="o">{</span>
+  <span class="k">sealed</span> <span class="k">trait</span> <span class="nc">LogF</span><span class="o">[</span><span class="kt">A</span><span class="o">]</span>
+  <span class="nc">case</span> <span class="k">class</span> <span class="nc">Info</span><span class="o">(</span><span class="n">msg</span><span class="k">:</span> <span class="kt">String</span><span class="o">)</span> <span class="k">extends</span> <span class="nc">LogF</span><span class="o">[</span><span class="kt">Unit</span><span class="o">]</span>
+  <span class="k">case</span> <span class="k">class</span> <span class="nc">Error</span><span class="o">(</span><span class="n">msg</span><span class="k">:</span> <span class="kt">String</span><span class="o">)</span> <span class="k">extends</span> <span class="nc">LogF</span><span class="o">[</span><span class="kt">Unit</span><span class="o">]</span>
+  
+  <span class="k">class</span> <span class="nc">LogC</span><span class="o">[</span><span class="kt">F</span><span class="o">[</span><span class="k">_</span><span class="o">]](</span><span class="k">implicit</span> <span class="n">I</span><span class="k">:</span> <span class="kt">Inject</span><span class="o">[</span><span class="kt">LogF</span>, <span class="kt">F</span><span class="o">])</span> <span class="o">{</span>
+    <span class="k">def</span> <span class="n">info</span><span class="o">(</span><span class="n">msg</span><span class="k">:</span> <span class="kt">String</span><span class="o">)</span><span class="k">:</span> <span class="kt">Free</span><span class="o">[</span><span class="kt">F</span>, <span class="kt">Unit</span><span class="o">]</span> <span class="k">=</span> <span class="nc">Free</span><span class="o">.</span><span class="n">inject</span><span class="o">(</span><span class="nc">Info</span><span class="o">(</span><span class="n">msg</span><span class="o">))</span>
+    <span class="k">def</span> <span class="n">error</span><span class="o">(</span><span class="n">msg</span><span class="k">:</span> <span class="kt">String</span><span class="o">)</span><span class="k">:</span> <span class="kt">Free</span><span class="o">[</span><span class="kt">F</span>, <span class="kt">Unit</span><span class="o">]</span> <span class="k">=</span> <span class="nc">Free</span><span class="o">.</span><span class="n">inject</span><span class="o">(</span><span class="nc">Error</span><span class="o">(</span><span class="n">msg</span><span class="o">))</span>
+  <span class="o">}</span>
+  
+  <span class="k">object</span> <span class="nc">LogC</span> <span class="o">{</span>
+    <span class="k">implicit</span> <span class="k">def</span> <span class="n">logC</span><span class="o">[</span><span class="kt">F</span><span class="o">[</span><span class="k">_</span><span class="o">]](</span><span class="k">implicit</span> <span class="n">I</span><span class="k">:</span> <span class="kt">Inject</span><span class="o">[</span><span class="kt">LogF</span>, <span class="kt">F</span><span class="o">])</span><span class="k">:</span> <span class="kt">LogC</span><span class="o">[</span><span class="kt">F</span><span class="o">]</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">LogC</span><span class="o">[</span><span class="kt">F</span><span class="o">]</span>
+  <span class="o">}</span>
+
+  <span class="k">def</span> <span class="n">interp</span><span class="o">[</span><span class="kt">F</span><span class="o">[</span><span class="k">_</span><span class="o">]](</span><span class="k">implicit</span> <span class="nc">ME</span><span class="k">:</span> <span class="kt">MonadError</span><span class="o">[</span><span class="kt">F</span>, <span class="kt">Throwable</span><span class="o">])</span><span class="k">:</span> <span class="kt">LogF</span> <span class="kt">~&gt;</span> <span class="kt">F</span> <span class="o">=</span> <span class="k">new</span> <span class="o">(</span><span class="nc">LogF</span> <span class="o">~&gt;</span> <span class="n">F</span><span class="o">)</span> <span class="o">{</span>
+    <span class="k">def</span> <span class="n">apply</span><span class="o">[</span><span class="kt">A</span><span class="o">](</span><span class="n">logF</span><span class="k">:</span> <span class="kt">LogF</span><span class="o">[</span><span class="kt">A</span><span class="o">])</span><span class="k">:</span> <span class="kt">F</span><span class="o">[</span><span class="kt">A</span><span class="o">]</span> <span class="k">=</span>  <span class="n">logF</span> <span class="k">match</span> <span class="o">{</span>
+      <span class="k">case</span> <span class="nc">Info</span><span class="o">(</span><span class="n">msg</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="nc">ME</span><span class="o">.</span><span class="n">catchNonFatal</span><span class="o">(</span><span class="n">println</span><span class="o">(</span><span class="n">s</span><span class="s">"[info]: $msg"</span><span class="o">))</span>
+      <span class="k">case</span> <span class="nc">Error</span><span class="o">(</span><span class="n">msg</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="nc">ME</span><span class="o">.</span><span class="n">catchNonFatal</span><span class="o">(</span><span class="n">println</span><span class="o">(</span><span class="n">s</span><span class="s">"[error]: $msg"</span><span class="o">))</span>
+    <span class="o">}</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</code></pre>
+</div>
+
+<h3 id="io">IO</h3>
+
+<p>And this one does IO.</p>
+
+<div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="k">object</span> <span class="nc">IO</span> <span class="o">{</span>
+  <span class="k">sealed</span> <span class="k">trait</span> <span class="nc">IOF</span><span class="o">[</span><span class="kt">A</span><span class="o">]</span>
+  <span class="nc">case</span> <span class="k">object</span> <span class="nc">Read</span> <span class="k">extends</span> <span class="nc">IOF</span><span class="o">[</span><span class="kt">String</span><span class="o">]</span>
+  <span class="k">case</span> <span class="k">class</span> <span class="nc">Write</span><span class="o">(</span><span class="n">msg</span><span class="k">:</span> <span class="kt">String</span><span class="o">)</span> <span class="k">extends</span> <span class="nc">IOF</span><span class="o">[</span><span class="kt">Unit</span><span class="o">]</span>
+  
+  <span class="k">class</span> <span class="nc">IOC</span><span class="o">[</span><span class="kt">F</span><span class="o">[</span><span class="k">_</span><span class="o">]](</span><span class="k">implicit</span> <span class="n">I</span><span class="k">:</span> <span class="kt">Inject</span><span class="o">[</span><span class="kt">IOF</span>, <span class="kt">F</span><span class="o">])</span> <span class="o">{</span>
+    <span class="k">def</span> <span class="n">read</span><span class="k">:</span> <span class="kt">Free</span><span class="o">[</span><span class="kt">F</span>, <span class="kt">String</span><span class="o">]</span> <span class="k">=</span> <span class="nc">Free</span><span class="o">.</span><span class="n">inject</span><span class="o">(</span><span class="nc">Read</span><span class="o">)</span>
+    <span class="k">def</span> <span class="n">write</span><span class="o">(</span><span class="n">str</span><span class="k">:</span> <span class="kt">String</span><span class="o">)</span><span class="k">:</span> <span class="kt">Free</span><span class="o">[</span><span class="kt">F</span>, <span class="kt">Unit</span><span class="o">]</span> <span class="k">=</span> <span class="nc">Free</span><span class="o">.</span><span class="n">inject</span><span class="o">(</span><span class="nc">Write</span><span class="o">(</span><span class="n">str</span><span class="o">))</span>
+  <span class="o">}</span>
+  
+  <span class="k">object</span> <span class="nc">IOC</span> <span class="o">{</span>
+    <span class="k">implicit</span> <span class="k">def</span> <span class="n">ioC</span><span class="o">[</span><span class="kt">F</span><span class="o">[</span><span class="k">_</span><span class="o">]](</span><span class="k">implicit</span> <span class="n">I</span><span class="k">:</span> <span class="kt">Inject</span><span class="o">[</span><span class="kt">IOF</span>, <span class="kt">F</span><span class="o">])</span><span class="k">:</span> <span class="kt">IOC</span><span class="o">[</span><span class="kt">F</span><span class="o">]</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">IOC</span><span class="o">[</span><span class="kt">F</span><span class="o">]</span>
+  <span class="o">}</span>
+  
+  <span class="k">import</span> <span class="nn">scala.io.StdIn._</span>
+  
+  <span class="k">def</span> <span class="n">interp</span><span class="o">[</span><span class="kt">F</span><span class="o">[</span><span class="k">_</span><span class="o">]](</span><span class="k">implicit</span> <span class="nc">ME</span><span class="k">:</span> <span class="kt">MonadError</span><span class="o">[</span><span class="kt">F</span>, <span class="kt">Throwable</span><span class="o">])</span><span class="k">:</span> <span class="kt">IOF</span> <span class="kt">~&gt;</span> <span class="kt">F</span> <span class="o">=</span> <span class="k">new</span> <span class="o">(</span><span class="nc">IOF</span> <span class="o">~&gt;</span> <span class="n">F</span><span class="o">)</span> <span class="o">{</span>
+    <span class="k">def</span> <span class="n">apply</span><span class="o">[</span><span class="kt">A</span><span class="o">](</span><span class="n">ioF</span><span class="k">:</span> <span class="kt">IOF</span><span class="o">[</span><span class="kt">A</span><span class="o">])</span><span class="k">:</span> <span class="kt">F</span><span class="o">[</span><span class="kt">A</span><span class="o">]</span> <span class="k">=</span> <span class="n">ioF</span> <span class="k">match</span> <span class="o">{</span>
+      <span class="k">case</span> <span class="nc">Read</span> <span class="k">=&gt;</span> <span class="nc">ME</span><span class="o">.</span><span class="n">catchNonFatal</span><span class="o">(</span><span class="n">readLine</span> <span class="k">:</span> <span class="kt">String</span><span class="o">)</span>
+      <span class="k">case</span> <span class="nc">Write</span><span class="o">(</span><span class="n">msg</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="nc">ME</span><span class="o">.</span><span class="n">catchNonFatal</span><span class="o">(</span><span class="n">println</span><span class="o">(</span><span class="n">s</span><span class="s">"$msg"</span><span class="o">))</span>
+    <span class="o">}</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</code></pre>
+</div>
+
+<h3 id="combining-our-effects">Combining our effects</h3>
+
+<p>And finally, we should need to build everything together. For that purpose, we will need a <code class="highlighter-rouge">Coproduct</code>. This datatype
+basically tells the typesystem about our effects, saying that our <code class="highlighter-rouge">Eff</code> type can be either a <code class="highlighter-rouge">Log</code> or a <code class="highlighter-rouge">IO</code> value.</p>
+
+<div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="k">object</span> <span class="nc">App</span> <span class="o">{</span>
+  <span class="k">import</span> <span class="nn">IO._</span>
+  <span class="k">import</span> <span class="nn">Log._</span>
+  
+  <span class="k">type</span> <span class="kt">Eff</span><span class="o">[</span><span class="kt">A</span><span class="o">]</span> <span class="k">=</span> <span class="nc">Coproduct</span><span class="o">[</span><span class="kt">LogF</span>, <span class="kt">IOF</span>, <span class="kt">A</span><span class="o">]</span>
+  
+  <span class="k">val</span> <span class="n">name</span> <span class="k">=</span> <span class="s">"pepegar"</span>
+  
+  <span class="k">def</span> <span class="n">program</span><span class="o">(</span><span class="k">implicit</span> <span class="nc">Log</span><span class="k">:</span> <span class="kt">LogC</span><span class="o">[</span><span class="kt">Eff</span><span class="o">],</span> <span class="nc">IO</span><span class="k">:</span> <span class="kt">IOC</span><span class="o">[</span><span class="kt">Eff</span><span class="o">])</span> <span class="k">=</span> <span class="k">for</span> <span class="o">{</span>
+    <span class="c1">// this dinamically generated documentation, we cannot ask for input, but we should do `name &lt;- IO.read`
+</span>    <span class="k">_</span> <span class="k">&lt;-</span> <span class="nc">Log</span><span class="o">.</span><span class="n">info</span><span class="o">(</span><span class="n">s</span><span class="s">"name was $name"</span><span class="o">)</span>
+    <span class="k">_</span> <span class="k">&lt;-</span> <span class="nc">IO</span><span class="o">.</span><span class="n">write</span><span class="o">(</span><span class="n">s</span><span class="s">"hello $name"</span><span class="o">)</span>
+  <span class="o">}</span> <span class="k">yield</span> <span class="n">name</span>
+  
+  <span class="k">def</span> <span class="n">interp</span><span class="o">[</span><span class="kt">F</span><span class="o">[</span><span class="k">_</span><span class="o">]](</span><span class="k">implicit</span> <span class="nc">ME</span><span class="k">:</span> <span class="kt">MonadError</span><span class="o">[</span><span class="kt">F</span>, <span class="kt">Throwable</span><span class="o">])</span><span class="k">:</span> <span class="kt">Eff</span> <span class="kt">~&gt;</span> <span class="kt">F</span> <span class="o">=</span> <span class="nc">Log</span><span class="o">.</span><span class="n">interp</span> <span class="n">or</span> <span class="nc">IO</span><span class="o">.</span><span class="n">interp</span>
+<span class="o">}</span>
+</code></pre>
+</div>
+
+<p>You could use this as follows:</p>
+
+<div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="n">scala</span><span class="o">&gt;</span> <span class="k">import</span> <span class="nn">cats.implicits._</span>
+<span class="k">import</span> <span class="nn">cats.implicits._</span>
+
+<span class="n">scala</span><span class="o">&gt;</span> <span class="k">import</span> <span class="nn">scala.util.Try</span>
+<span class="k">import</span> <span class="nn">scala.util.Try</span>
+
+<span class="n">scala</span><span class="o">&gt;</span> <span class="nc">App</span><span class="o">.</span><span class="n">program</span> <span class="n">foldMap</span> <span class="nc">App</span><span class="o">.</span><span class="n">interp</span><span class="o">[</span><span class="kt">Try</span><span class="o">]</span>
+<span class="o">[</span><span class="kt">info</span><span class="o">]</span><span class="k">:</span> <span class="kt">name</span> <span class="kt">was</span> <span class="kt">pepegar</span>
+<span class="n">hello</span> <span class="n">pepegar</span>
+<span class="n">res0</span><span class="k">:</span> <span class="kt">scala.util.Try</span><span class="o">[</span><span class="kt">String</span><span class="o">]</span> <span class="k">=</span> <span class="nc">Success</span><span class="o">(</span><span class="n">pepegar</span><span class="o">)</span>
+</code></pre>
+</div>
+
+<h3 id="interleaving-hammock-in-a-free-program">Interleaving Hammock in a Free program</h3>
+
+<p>Normally, extending this kind of programs is a bit cumbersome because you need to write all the boilerplate to 
+embed a library into a free-based architecture, and then use it yourself.  However, with Hammock, you can import
+<code class="highlighter-rouge">hammock.free._</code> and enjoy:</p>
+
+<div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="k">object</span> <span class="nc">App</span> <span class="o">{</span>
+  <span class="k">import</span> <span class="nn">IO._</span>
+  <span class="k">import</span> <span class="nn">Log._</span>
+  <span class="k">import</span> <span class="nn">cats._</span>
+  <span class="k">import</span> <span class="nn">hammock.implicits._</span>
+  <span class="k">import</span> <span class="nn">hammock.free._</span>
+  
+  <span class="k">type</span> <span class="kt">Eff1</span><span class="o">[</span><span class="kt">A</span><span class="o">]</span> <span class="k">=</span> <span class="nc">Coproduct</span><span class="o">[</span><span class="kt">LogF</span>, <span class="kt">IOF</span>, <span class="kt">A</span><span class="o">]</span>
+  <span class="k">type</span> <span class="kt">Eff</span><span class="o">[</span><span class="kt">A</span><span class="o">]</span> <span class="k">=</span> <span class="nc">Coproduct</span><span class="o">[</span><span class="kt">HttpRequestF</span>, <span class="kt">Eff1</span>, <span class="kt">A</span><span class="o">]</span>
+  
+  <span class="k">def</span> <span class="n">program</span><span class="o">(</span><span class="k">implicit</span>
+    <span class="nc">Log</span><span class="k">:</span> <span class="kt">LogC</span><span class="o">[</span><span class="kt">Eff</span><span class="o">],</span>
+    <span class="nc">IO</span><span class="k">:</span> <span class="kt">IOC</span><span class="o">[</span><span class="kt">Eff</span><span class="o">],</span>
+    <span class="nc">Hammock</span><span class="k">:</span> <span class="kt">HttpRequestC</span><span class="o">[</span><span class="kt">Eff</span><span class="o">]</span>
+  <span class="o">)</span> <span class="k">=</span> <span class="k">for</span> <span class="o">{</span>
+    <span class="k">_</span> <span class="k">&lt;-</span> <span class="nc">IO</span><span class="o">.</span><span class="n">write</span><span class="o">(</span><span class="s">"What's the ID?"</span><span class="o">)</span>
+	<span class="n">id</span> <span class="k">=</span> <span class="s">"4"</span> <span class="c1">// for the sake of docs, lets hardcode this... It should be `id &lt;- IO.read`
+</span>    <span class="k">_</span> <span class="k">&lt;-</span> <span class="nc">Log</span><span class="o">.</span><span class="n">info</span><span class="o">(</span><span class="n">s</span><span class="s">"id was $id"</span><span class="o">)</span>
+    <span class="n">response</span> <span class="k">&lt;-</span> <span class="nc">Hammock</span><span class="o">.</span><span class="n">get</span><span class="o">(</span><span class="n">s</span><span class="s">"https://jsonplaceholder.typicode.com/users?id=$id"</span><span class="o">,</span> <span class="nc">Map</span><span class="o">(),</span> <span class="nc">None</span><span class="o">)</span>
+  <span class="o">}</span> <span class="k">yield</span> <span class="n">response</span>
+ 
+  <span class="k">def</span> <span class="n">interp1</span><span class="o">[</span><span class="kt">F</span><span class="o">[</span><span class="k">_</span><span class="o">]](</span><span class="k">implicit</span> <span class="nc">ME</span><span class="k">:</span> <span class="kt">MonadError</span><span class="o">[</span><span class="kt">F</span>, <span class="kt">Throwable</span><span class="o">])</span><span class="k">:</span> <span class="kt">Eff1</span> <span class="kt">~&gt;</span> <span class="kt">F</span> <span class="o">=</span> <span class="nc">Log</span><span class="o">.</span><span class="n">interp</span><span class="o">(</span><span class="nc">ME</span><span class="o">)</span> <span class="n">or</span> <span class="nc">IO</span><span class="o">.</span><span class="n">interp</span><span class="o">(</span><span class="nc">ME</span><span class="o">)</span>
+  <span class="k">def</span> <span class="n">interp</span><span class="o">[</span><span class="kt">F</span><span class="o">[</span><span class="k">_</span><span class="o">]](</span><span class="k">implicit</span> <span class="nc">ME</span><span class="k">:</span> <span class="kt">MonadError</span><span class="o">[</span><span class="kt">F</span>, <span class="kt">Throwable</span><span class="o">])</span><span class="k">:</span> <span class="kt">Eff</span> <span class="kt">~&gt;</span> <span class="kt">F</span> <span class="o">=</span> <span class="nc">Interp</span><span class="o">.</span><span class="n">trans</span><span class="o">(</span><span class="n">client</span><span class="o">,</span> <span class="nc">ME</span><span class="o">)</span> <span class="n">or</span> <span class="n">interp1</span><span class="o">(</span><span class="nc">ME</span><span class="o">)</span> <span class="c1">// interpret Hammock's effects
+</span><span class="o">}</span>
+</code></pre>
+</div>
+
+<h3 id="result">Result</h3>
+
+<div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="n">scala</span><span class="o">&gt;</span> <span class="k">import</span> <span class="nn">scala.util.Try</span>
+<span class="k">import</span> <span class="nn">scala.util.Try</span>
+
+<span class="n">scala</span><span class="o">&gt;</span> <span class="k">import</span> <span class="nn">cats.implicits._</span>
+<span class="k">import</span> <span class="nn">cats.implicits._</span>
+
+<span class="n">scala</span><span class="o">&gt;</span> <span class="nc">App</span><span class="o">.</span><span class="n">program</span> <span class="n">foldMap</span> <span class="nc">App</span><span class="o">.</span><span class="n">interp</span><span class="o">[</span><span class="kt">Try</span><span class="o">]</span>
+<span class="nc">What</span><span class="ss">'s </span><span class="n">the</span> <span class="nc">ID</span><span class="o">?</span>
+<span class="o">[</span><span class="kt">info</span><span class="o">]</span><span class="k">:</span> <span class="kt">id</span> <span class="kt">was</span> <span class="err">4</span>
+<span class="kt">res1:</span> <span class="kt">scala.util.Try</span><span class="o">[</span><span class="kt">hammock.HttpResponse</span><span class="o">]</span> <span class="k">=</span> <span class="nc">Success</span><span class="o">(</span><span class="nc">HttpResponse</span><span class="o">(</span><span class="n">status</span> <span class="k">=</span> <span class="nc">Status</span><span class="o">(</span><span class="n">code</span> <span class="k">=</span> <span class="mi">200</span><span class="o">,</span> <span class="n">text</span> <span class="k">=</span> <span class="s">"OK"</span><span class="o">,</span> <span class="n">description</span> <span class="k">=</span> <span class="s">"OK"</span><span class="o">),</span> <span class="n">headers</span> <span class="k">=</span> <span class="nc">Map</span><span class="o">(</span><span class="nc">Vary</span> <span class="o">-&gt;</span> <span class="nc">Accept</span><span class="o">-</span><span class="nc">Encoding</span><span class="o">,</span> <span class="nc">Transfer</span><span class="o">-</span><span class="nc">Encoding</span> <span class="o">-&gt;</span> <span class="n">chunked</span><span class="o">,</span> <span class="nc">Server</span> <span class="o">-&gt;</span> <span class="n">cloudflare</span><span class="o">-</span><span class="n">nginx</span><span class="o">,</span> <span class="nc">Access</span><span class="o">-</span><span class="nc">Control</span><span class="o">-</span><span class="nc">Allow</span><span class="o">-</span><span class="nc">Credentials</span> <span class="o">-&gt;</span> <span class="kc">true</span><span class="o">,</span> <span class="nc">Etag</span> <span class="o">-&gt;</span> <span class="n">W</span><span class="o">/</span><span class="s">"23f-gSgy37ILPH7u0mkF3qpbKA"</span><span class="o">,</span> <span class="nc">Expires</span> <span class="o">-&gt;</span> <span class="nc">Sun</span><span class="o">,</span> <span class="mi">22</span> <span class="nc">Jan</span> <span class="mi">2017</span> <span class="mi">18</span><span class="k">:</span><span class="err">14</span><span class="kt">:</span><span class="err">27</span> <span class="kt">GMT</span><span class="o">,</span> <span class="nc">Connection</span> <span class="o">-&gt;</span> <span class="n">keep</span><span class="o">-</span><span class="n">alive</span><span class="o">,</span> <span class="nc">CF</span><span class="o">-</span><span class="nc">Cache</span><span class="o">-</span><span class="nc">Status</span> <span class="o">-&gt;</span> <span class="nc">HIT</span><span class="o">,</span> <span class="nc">Cache</span><span class="o">-</span><span class="nc">Control</span> <span class="o">-&gt;</span> <span class="n">public</span><span class="o">,</span> <span class="n">max</span><span class="o">-</span><span class="n">age</span><span class="k">=</span><span class="mi">14400</span><span class="o">,</span> <span class="n">X</span><span class="o">-</span><span class="nc">Content</span><span class="o">-</span><span class="nc">Type</span><span class="o">-</span><span class="nc">Options</span> <span class="o">-&gt;</span> <span class="n">nosniff</span><span class="o">,</span> <span class="nc">Via</span> <span class="o">-&gt;</span> <span class="mf">1.1</span> <span class="n">vegur</span><span class="o">,</span> <span class="nc">Content</span><span class="o">-</span><span class="nc">Type</span> <span class="o">-&gt;</span> <span class="n">application</span><span class="o">/</span><span class="n">json</span><span class="o">;</span> <span class="n">charset</span><span class="k">=</span><span class="n">utf</span><span class="o">-</span><span class="mi">8</span><span class="o">,</span> <span class="nc">Pragma</span> <span class="o">-&gt;</span> <span class="n">no</span><span class="o">-</span><span class="n">cache</span><span class="o">,</span> <span class="nc">Date</span> <span class="o">-&gt;</span> <span class="nc">Sun</span><span class="o">,</span> <span class="mi">22</span> <span class="nc">Jan</span> <span class="mi">2017</span> <span class="mi">14</span><span class="k">:</span><span class="err">14</span><span class="kt">:</span><span class="err">27</span> <span class="kt">GMT</span><span class="o">,</span> <span class="nc">CF</span><span class="o">-</span><span class="nc">RAY</span> <span class="o">-&gt;</span> <span class="mi">32539</span><span class="n">cc3ddf72f83</span><span class="o">-</span><span class="nc">MAD</span><span class="o">,</span> <span class="nc">Set</span><span class="o">-</span><span class="nc">Cookie</span> <span class="o">-&gt;</span> <span class="nc">__cfduid</span><span class="k">=</span><span class="n">ded3d41a4cdc9ea11a4ad62142b917c5b1485094467</span><span class="o">;</span> <span class="n">expires</span><span class="k">=</span><span class="nc">Mon</span><span class="o">,</span> <span class="mi">22</span><span class="o">-</span><span class="nc">Jan</span><span class="o">-</span><span class="mi">18</span> <span class="mi">14</span><span class="k">:</span><span class="err">14</span><span class="kt">:</span><span class="err">27</span> <span class="kt">GMT</span><span class="o">;</span> <span class="n">path</span><span class="o">=/;</span> <span class="n">domain</span><span class="o">=.</span><span class="n">typicode</span><span class="o">.</span><span class="n">com</span><span class="o">;</span> <span class="nc">HttpOnly</span><span class="o">,</span> <span class="n">X</span><span class="o">-</span><span class="nc">Powered</span><span class="o">-</span><span class="nc">By</span> <span class="o">-&gt;</span> <span class="nc">Expr</span><span class="o">...</span>
+</code></pre>
+</div>
 
 <h1 id="codecs">Codecs</h1>
 

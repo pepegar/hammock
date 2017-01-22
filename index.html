@@ -8,7 +8,8 @@
 
 <h2 id="modules">Modules</h2>
 
-<p>There are already some companion modules implemented to make the experience of use a breeze.</p>
+<p>There are already some companion modules implemented to ease the
+experience of using hammock.</p>
 
 <div class="highlighter-rouge"><pre class="highlight"><code>"io.pepegar" %% "hammock-circe" % "0.1-SNAPSHOT"
 </code></pre>
@@ -23,8 +24,8 @@ but fear not! Lots of types you were using before are already monads,
 you know how to use them!</p>
 
 <h2 id="http">HTTP</h2>
-
-<p>With Hammock you can do HTTP operations in a typeful and functional way.</p>
+<p>w
+With Hammock you can do HTTP operations in a typeful and functional way.</p>
 
 <div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="k">import</span> <span class="nn">cats._</span>
 <span class="k">import</span> <span class="nn">cats.implicits._</span>
@@ -52,12 +53,16 @@ you know how to use them!</p>
 
 <h2 id="target-monad">Target Monad</h2>
 
-<p>You can use as a target monad any type <code class="highlighter-rouge">F</code> that has an instance of <code class="highlighter-rouge">MonadError[F, Throwable]</code>.  There are already several types you can use out of the box, for example:</p>
+<p>You can use as a target monad any type <code class="highlighter-rouge">F</code> that has an instance of
+<code class="highlighter-rouge">MonadError[F, Throwable]</code>.  There are already several types you can
+use out of the box, for example:</p>
 
 <ul>
-  <li><code class="highlighter-rouge">Future</code>: There are lots of applications out there that express their <code class="highlighter-rouge">IO</code> effects with <code class="highlighter-rouge">Future</code>, you can still use it!</li>
+  <li><code class="highlighter-rouge">Future</code>: There are lots of applications out there that express
+their <code class="highlighter-rouge">IO</code> effects with <code class="highlighter-rouge">Future</code>, you can still use it!</li>
   <li><code class="highlighter-rouge">Try</code>: You don’t care of blocking current thread? go ahead, use it!</li>
-  <li><code class="highlighter-rouge">monix/Task</code>: Great implementation of a concurrency monad.  You can learn more about it <a href="https://monix.io/">here</a></li>
+  <li><code class="highlighter-rouge">monix/Task</code>: Great implementation of a concurrency monad.  You can
+learn more about it <a href="https://monix.io/">here</a></li>
 </ul>
 </div></div></section><section class="technologies"><div class="container"><div class="row"></div></div></section></main><footer id="site-footer"><div class="container"><div class="row"><div class="col-xs-6"><p>Hammock is designed and developed by <a href="" target="_blank">hammock</a></p></div><div class="col-xs-6"><p class="text-right"><a href="https://github.com/pepegar/hammock"><span class="fa fa-github"></span>View on Github</a></p></div></div></div></footer><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script><script src="/hammock/highlight/highlight.pack.js"></script><script>hljs.configure({
 languages:['scala','java','bash']
