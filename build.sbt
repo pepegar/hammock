@@ -2,7 +2,8 @@ organization in ThisBuild := "hammock"
 scalaVersion in ThisBuild := "2.11.8"
 licenses in ThisBuild := Seq(("MIT", url("http://opensource.org/licenses/MIT")))
 
-lazy val micrositeSettings = Seq(
+val circeVersion = "0.6.1"
+val micrositeSettings = Seq(
   micrositeName := "Hammock",
   micrositeDescription := "Simple and reliable HTTP client",
   micrositeBaseUrl := "hammock",
@@ -12,16 +13,17 @@ lazy val micrositeSettings = Seq(
   micrositeHighlightTheme := "tomorrow"
 )
 
-lazy val commonSettings = Seq(
+val commonSettings = Seq(
   libraryDependencies ++= Seq(
     "org.typelevel" %% "cats" % "0.8.1",
     compilerPlugin("org.scalamacros" %% "paradise" % "2.1.0" cross CrossVersion.full),
     compilerPlugin("org.spire-math" %% "kind-projector" % "0.9.3"),
     "org.scalatest" %% "scalatest" % "3.0.1" % "test"
-  )
+  ),
+  bintrayRepository := "hammock"
 )
 
-lazy val noPublishSettings = Seq(
+val noPublishSettings = Seq(
   publish := (),
   publishLocal := (),
   publishArtifact := false
@@ -54,7 +56,6 @@ lazy val core = project.in(file("core"))
   ))
   .settings(scalaVersion := "2.11.8")
 
-val circeVersion = "0.6.1"
 
 lazy val `hammock-circe` = project.in(file("hammock-circe"))
   .settings(scalaVersion := "2.11.8")
