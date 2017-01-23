@@ -1,7 +1,7 @@
 # Hammock
 
 [![Build Status](https://travis-ci.org/pepegar/hammock.svg?branch=master)](https://travis-ci.org/pepegar/hammock)
-[ ![Download](https://api.bintray.com/packages/pepegar/hammock/hammock-core/images/download.svg) ](https://bintray.com/pepegar/hammock/hammock-core/_latestVersion) 
+[ ![Download](https://api.bintray.com/packages/pepegar/com.pepegar/hammock-core/images/download.svg) ](https://bintray.com/pepegar/com.pepegar/hammock-core/_latestVersion) 
 
 Hammock is yet another HTTP client for Scala.  Under the hood it's a purely functional wrapper over [Apache Http Commons][httpcommons]
 
