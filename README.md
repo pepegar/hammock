@@ -13,8 +13,8 @@ Hammock tries to differentiate from other libraries with the following:
 4. It follows the _Bring Your Own Concurrency Monad_ pattern.
 5. It has good documentation.
 
-[httpcommons]: http://apache.org/httpcommons
-[cats]: http://typelevel/cats
+[httpcommons]: http://hc.apache.org/
+[cats]: http://typelevel.org/cats
 
 # How does Hammock look in action?
 
