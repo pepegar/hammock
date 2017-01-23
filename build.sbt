@@ -1,7 +1,6 @@
 organization in ThisBuild := "hammock"
-scalaVersion := "2.11.8"
-
 scalaVersion in ThisBuild := "2.11.8"
+licenses in ThisBuild := Seq(("MIT", url("http://opensource.org/licenses/MIT")))
 
 lazy val micrositeSettings = Seq(
   micrositeName := "Hammock",
@@ -22,15 +21,21 @@ lazy val commonSettings = Seq(
   )
 )
 
+lazy val noPublishSettings = Seq(
+  publish := (),
+  publishLocal := (),
+  publishArtifact := false
+)
+
 lazy val docs = project.in(file("docs"))
   .dependsOn(core, `hammock-circe`)
   .settings(moduleName := "hammock-docs")
   .settings(micrositeSettings: _*)
+  .settings(noPublishSettings: _*)
   .enablePlugins(MicrositesPlugin)
 
 lazy val core = project.in(file("core"))
   .settings(moduleName := "hammock-core")
-  .settings(version := "0.1-SNAPSHOT")
   .settings(commonSettings: _*)
   .settings(libraryDependencies += "org.apache.httpcomponents" % "httpclient" % "4.5.2")
   .settings(scalacOptions ++= Seq(
@@ -63,4 +68,5 @@ lazy val `hammock-circe` = project.in(file("hammock-circe"))
 
 lazy val example = project.in(file("example"))
   .settings(scalaVersion := "2.11.8")
+  .settings(noPublishSettings: _*)
   .dependsOn(core, `hammock-circe`)
