@@ -11,8 +11,6 @@ Imagine you were already using free monads for desiginng your application:
 
 As always, start with some imports
 
-## imports
-
 ```tut:silent
 import cats._
 import cats.free._
@@ -21,7 +19,7 @@ import cats.data._
 
 ## algebras
 
-Then, we need to start defining our algebras. Heres is the algebra related to logging
+Then, we need to start defining our algebras. Here's is the algebra related to logging
 
 ### Log
 
