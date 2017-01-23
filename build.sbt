@@ -1,4 +1,4 @@
-organization in ThisBuild := "hammock"
+organization in ThisBuild := "com.pepegar"
 scalaVersion in ThisBuild := "2.11.8"
 licenses in ThisBuild := Seq(("MIT", url("http://opensource.org/licenses/MIT")))
 
@@ -20,7 +20,7 @@ val commonSettings = Seq(
     compilerPlugin("org.spire-math" %% "kind-projector" % "0.9.3"),
     "org.scalatest" %% "scalatest" % "3.0.1" % "test"
   ),
-  bintrayRepository := "hammock"
+  bintrayRepository := "com.pepegar"
 )
 
 val noPublishSettings = Seq(

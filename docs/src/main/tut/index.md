@@ -10,7 +10,9 @@ section: "Home"
 Just add the following to your `libraryDependencies` in SBT:
 
 ```
-"io.pepegar" %% "hammock" % "0.1-SNAPSHOT"
+resolvers += Resolver.bintrayRepo("pepegar", "com.pepegar")
+
+libraryDependencies += "com.pepegar" %% "hammock" % "0.1"
 ```
 
 ## Modules
@@ -19,7 +21,7 @@ There are already some companion modules implemented to ease the
 experience of using hammock.
 
 ```
-"io.pepegar" %% "hammock-circe" % "0.1-SNAPSHOT"
+"com.pepegar" %% "hammock-circe" % "0.1"
 ```
 
 ## Functional programming

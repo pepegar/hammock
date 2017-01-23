@@ -10,9 +10,9 @@ Hammock is yet another HTTP client for Scala.  Under the hood it's a purely func
 Add the following to your `build.sbt`.
 
 ```scala
-resolvers += Resolver.bintrayRepo("pepegar", "hammock")
+resolvers += Resolver.bintrayRepo("pepegar", "com.pepegar")
 
-libraryDependencies += "hammock" %% "hammock" % "0.1"
+libraryDependencies += "com.pepegar" %% "hammock" % "0.1"
 ```
 
 
