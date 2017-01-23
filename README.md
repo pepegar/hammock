@@ -5,6 +5,17 @@
 
 Hammock is yet another HTTP client for Scala.  Under the hood it's a purely functional wrapper over [Apache Http Commons][httpcommons]
 
+## Installation
+
+Add the following to your `build.sbt`.
+
+```scala
+resolvers += Resolver.bintrayRepo("pepegar", "hammock")
+
+libraryDependencies += "hammock" %% "hammock" % "0.1"
+```
+
+
 Hammock tries to differentiate from other libraries with the following:
 
 1. It's easy to use, has a high level API
@@ -16,7 +27,7 @@ Hammock tries to differentiate from other libraries with the following:
 [httpcommons]: http://hc.apache.org/
 [cats]: http://typelevel.org/cats
 
-# How does Hammock look in action?
+## How does Hammock look in action?
 
 ```scala
 import cats._

@@ -5,7 +5,7 @@ layout: docs
 
 # Introduction
 
-# Using Hammock's Free
+# Free style hammock
 
 Imagine you were already using free monads for desiginng your application:
 
@@ -17,7 +17,7 @@ import cats.free._
 import cats.data._
 ```
 
-## algebras
+## Algebras
 
 Then, we need to start defining our algebras. Here's is the algebra related to logging
 
@@ -77,7 +77,7 @@ object IO {
 }
 ```
 
-### Combining our effects
+## Combining our effects
 
 And finally, we should need to build everything together. For that purpose, we will need a `Coproduct`. This datatype
 basically tells the typesystem about our effects, saying that our `Eff` type can be either a `Log` or a `IO` value.
@@ -109,7 +109,7 @@ import scala.util.Try
 App.program foldMap App.interp[Try]
 ```
 
-### Interleaving Hammock in a Free program
+## Interleaving Hammock in a Free program
 
 Normally, extending this kind of programs is a bit cumbersome because you need to write all the boilerplate to 
 embed a library into a free-based architecture, and then use it yourself.  However, with Hammock, you can import
@@ -132,7 +132,7 @@ object App {
     Hammock: HttpRequestC[Eff]
   ) = for {
     _ <- IO.write("What's the ID?")
-	id = "4" // for the sake of docs, lets hardcode this... It should be `id <- IO.read`
+    id = "4" // for the sake of docs, lets hardcode this... It should be `id <- IO.read`
     _ <- Log.info(s"id was $id")
     response <- Hammock.get(s"https://jsonplaceholder.typicode.com/users?id=$id", Map(), None)
   } yield response
@@ -153,4 +153,48 @@ App.program foldMap App.interp[Try]
 
 # Codecs
 
-todo
+Hammock uses a typeclass `Codec[A]` for encoding request bodies and decoding response contents.  Its signature is the following:
+
+```
+import hammock.CodecException
+
+trait Codec[A] {
+  def encode(a: A): String
+  def decode(str: String): Either[CodecException, A]
+}
+```
+
+Currently, this interface is implemented for `circe` codecs, so you can just grab `hammock-circe`:
+
+```
+libraryDependencies += "hammock" %% "hammock-circe" % "0.1"
+```
+
+And use it directly:
+
+```tut:silent
+import hammock._
+import hammock.circe._
+import hammock.circe.implicits._
+
+import io.circe._
+import io.circe.generic.auto._
+
+case class MyClass(stringField: String, intField: Int)
+
+object Codecs {
+
+  def decode(str: String)(implicit C: Codec[MyClass]): Either[CodecException, MyClass] = {
+    C.decode(str)
+  }
+
+  def encode(myClass: MyClass)(implicit C: Codec[MyClass]): String = C.encode(myClass)
+
+}
+```
+
+```tut
+Codecs.decode("""{"stringField": "This is Hammock!", "intField": 33}""")
+Codecs.decode("this is not a valid json")
+Codecs.encode(MyClass("hello dolly", 99))
+```
