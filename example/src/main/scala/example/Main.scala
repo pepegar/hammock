@@ -5,7 +5,6 @@ import scala.concurrent.Future
 import cats.implicits._
 
 import hammock._
-import hammock.implicits._
 import hammock.circe.implicits._
 
 import scala.util.{ Failure, Success }
