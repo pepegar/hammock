@@ -38,7 +38,7 @@ object Interpreter extends InterpTrans {
 
       val resp = client.execute(req)
       val body = responseContentToString(resp.getEntity().getContent())
-      val status = Status.Statuses.getOrElse(resp.getStatusLine.getStatusCode, throw new Exception) // todo: This is shitty
+      val status = Status.get(resp.getStatusLine.getStatusCode)
       val responseHeaders = resp.getAllHeaders().map(h => h.getName -> h.getValue).toMap
 
       HttpResponse(status, responseHeaders, body)

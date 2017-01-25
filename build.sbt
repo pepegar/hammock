@@ -34,7 +34,7 @@ lazy val core = crossProject.in(file("core"))
   .settings(moduleName := "hammock-core")
   .settings(commonSettings: _*)
   .jvmSettings(libraryDependencies += "org.apache.httpcomponents" % "httpclient" % "4.5.2")
-  .jsSettings(libraryDependencies += "fr.hmil" %%% "roshttp" % "2.0.0-RC1")
+  .jsSettings(libraryDependencies += "org.scala-js" %%% "scalajs-dom" % "0.9.1")
   .settings(scalacOptions ++= Seq(
     "-encoding", "UTF-8", // 2 args
     "-feature",

@@ -1,57 +1,46 @@
 package hammock
 package free
 
-import scala.util.{ Success, Failure }
-import scala.concurrent.Await
-import scala.concurrent.duration.Duration
+import org.scalajs.dom
 
 import cats._
 import cats.data._
 
-import fr.hmil.roshttp.HttpRequest
-import fr.hmil.roshttp.{Method => RosMethod}
-import fr.hmil.roshttp.body.PlainTextBody
-import fr.hmil.roshttp.response.SimpleHttpResponse
-
-import monix.execution.Scheduler
-
-class Interpreter(implicit sch: Scheduler, timeout: Duration) extends InterpTrans {
+object Interpreter extends InterpTrans {
 
   import algebra._
 
   override def trans[F[_]](implicit ME: MonadError[F, Throwable]): HttpRequestF ~> F = λ[HttpRequestF ~> F](_ match {
-    case req@Options(url, headers, body) => doReq(req, RosMethod.OPTIONS)
-    case req@Get(url, headers, body) => doReq(req, RosMethod.GET)
-    case req@Head(url, headers, body) => doReq(req, RosMethod.HEAD)
-    case req@Post(url, headers, body) => doReq(req, RosMethod.POST)
-    case req@Put(url, headers, body) => doReq(req, RosMethod.PUT)
-    case req@Delete(url, headers, body) => doReq(req, RosMethod.DELETE)
-    case req@Trace(url, headers, body) => doReq(req, RosMethod.TRACE)
+    case req@Options(url, headers, body) => doReq(req, Method.OPTIONS)
+    case req@Get(url, headers, body) => doReq(req, Method.GET)
+    case req@Head(url, headers, body) => doReq(req, Method.HEAD)
+    case req@Post(url, headers, body) => doReq(req, Method.POST)
+    case req@Put(url, headers, body) => doReq(req, Method.PUT)
+    case req@Delete(url, headers, body) => doReq(req, Method.DELETE)
+    case req@Trace(url, headers, body) => doReq(req, Method.TRACE)
   })
 
-  private def doReq[F[_]](req: HttpRequestF[HttpResponse], method: RosMethod)(implicit ME: MonadError[F, Throwable]): F[HttpResponse] = ME.catchNonFatal {
-    val req1 = HttpRequest(req.url)
-      .withMethod(method)
+  private def doReq[F[_]](req: HttpRequestF[HttpResponse], method: Method)(implicit ME: MonadError[F, Throwable]): F[HttpResponse] = ME.catchNonFatal {
+    val xhr = new dom.XMLHttpRequest()
+    val async = false // asynchronicity should be handled by the concurrency monad `F`, not the HTTP driver
 
-    val req2 = req.body match {
-      case Some(str) => req1.withBody(PlainTextBody(str))
-      case _ => req1
+    xhr.open(method.name, req.url, async)
+    req.headers foreach {
+      case (k, v) => xhr.setRequestHeader(k, v)
     }
+    xhr.send(req.body.fold("")(identity))
+    xhr.responseType = "text"
 
-    val request = req.headers.foldLeft(req2)((acc, kv) => acc.withHeader(kv._1, kv._2))
-    val responseF = request.send()
-    var response: SimpleHttpResponse = Await.result(responseF, timeout)
-
-    val status = Status.Statuses.getOrElse(response.statusCode, throw new Exception(s"unknown status ${response.statusCode}"))
-    val responseHeaders = response.headers
-    val body = response.body
+    val status = Status.get(xhr.status)
+    val responseHeaders = parseHeaders(xhr.getAllResponseHeaders)
+    val body = xhr.responseText
 
     HttpResponse(status, responseHeaders, body)
   }
-}
 
-object Interpreter {
-
-  def apply(implicit sch: Scheduler, timeout: Duration): Interpreter = new Interpreter
-
-}
+  private def parseHeaders(str: String): Map[String, String] = str.split("\n")
+    .map { line =>
+    val Array(k, v) = line.split(": ")
+    (k, v)
+    } toMap
+} 

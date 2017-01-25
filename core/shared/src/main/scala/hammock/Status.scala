@@ -144,9 +144,11 @@ object Status {
     599 -> NetworkConnectTimeout
   )
 
-  def status(c: Int, t: String, d: String) = new Status {
+  private[this] def status(c: Int, t: String, d: String) = new Status {
     def code = c
     def text = t
     def description = d
   }
+
+  def get(code: Int): Status = Statuses.getOrElse(code, status(code, "Undefined", "Undefined StatusCode"))
 }
