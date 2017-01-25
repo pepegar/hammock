@@ -2,10 +2,12 @@ organization in ThisBuild := "com.pepegar"
 scalaVersion in ThisBuild := "2.11.8"
 licenses in ThisBuild := Seq(("MIT", url("http://opensource.org/licenses/MIT")))
 
+val scalaVersions = Seq("2.11.8", "2.12.0")
+
 val circeVersion = "0.6.1"
 val micrositeSettings = Seq(
   micrositeName := "Hammock",
-  micrositeDescription := "Simple and reliable HTTP client",
+  micrositeDescription := "Purely functional HTTP client",
   micrositeBaseUrl := "hammock",
   micrositeDocumentationUrl := "/hammock/docs.html",
   micrositeGithubOwner := "pepegar",
@@ -23,23 +25,21 @@ val commonSettings = Seq(
   bintrayRepository := "com.pepegar"
 )
 
-val noPublishSettings = Seq(
-  publish := (),
-  publishLocal := (),
-  publishArtifact := false
-)
-
 lazy val docs = project.in(file("docs"))
-  .dependsOn(core, `hammock-circe`)
+  .dependsOn(coreJVM, hammockCirceJVM)
   .settings(moduleName := "hammock-docs")
   .settings(micrositeSettings: _*)
   .settings(noPublishSettings: _*)
   .enablePlugins(MicrositesPlugin)
 
-lazy val core = project.in(file("core"))
+lazy val core = crossProject.in(file("core"))
   .settings(moduleName := "hammock-core")
   .settings(commonSettings: _*)
-  .settings(libraryDependencies += "org.apache.httpcomponents" % "httpclient" % "4.5.2")
+  .jvmSettings(
+    libraryDependencies += "org.apache.httpcomponents" % "httpclient" % "4.5.2",
+    crossScalaVersions := scalaVersions
+  )
+  .jsSettings(libraryDependencies += "org.scala-js" %%% "scalajs-dom" % "0.9.1")
   .settings(scalacOptions ++= Seq(
     "-encoding", "UTF-8", // 2 args
     "-feature",
@@ -56,10 +56,14 @@ lazy val core = project.in(file("core"))
   ))
   .settings(scalaVersion := "2.11.8")
 
+lazy val coreJVM = core.jvm
+lazy val coreJS = core.js
 
-lazy val `hammock-circe` = project.in(file("hammock-circe"))
+lazy val hammockCirce = crossProject.in(file("hammock-circe"))
+  .settings(moduleName := "hammock-circe")
   .settings(scalaVersion := "2.11.8")
   .settings(commonSettings: _*)
+  .jvmSettings(crossScalaVersions := scalaVersions)
   .settings(libraryDependencies ++= Seq(
     "io.circe" %% "circe-core",
     "io.circe" %% "circe-generic",
@@ -67,7 +71,16 @@ lazy val `hammock-circe` = project.in(file("hammock-circe"))
   ).map(_ % circeVersion))
   .dependsOn(core)
 
+lazy val hammockCirceJVM = hammockCirce.jvm
+lazy val hammockCirceJS = hammockCirce.js
+
 lazy val example = project.in(file("example"))
   .settings(scalaVersion := "2.11.8")
   .settings(noPublishSettings: _*)
-  .dependsOn(core, `hammock-circe`)
+  .dependsOn(coreJVM, hammockCirceJVM)
+
+val noPublishSettings = Seq(
+  publish := (),
+  publishLocal := (),
+  publishArtifact := false
+)
