@@ -6,6 +6,7 @@ import cats.implicits._
 
 import hammock._
 import hammock.free._
+import hammock.jvm.free._
 import hammock.circe.implicits._
 
 import scala.util.{ Failure, Success }

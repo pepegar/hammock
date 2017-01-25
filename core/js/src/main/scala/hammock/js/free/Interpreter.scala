@@ -1,5 +1,8 @@
 package hammock
+package js
 package free
+
+import hammock.free._
 
 import org.scalajs.dom
 

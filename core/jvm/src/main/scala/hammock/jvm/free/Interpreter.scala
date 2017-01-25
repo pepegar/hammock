@@ -1,5 +1,8 @@
 package hammock
+package jvm
 package free
+
+import hammock.free._
 
 import cats._
 import cats.data._
@@ -14,7 +17,7 @@ object Interpreter extends InterpTrans {
 
   implicit val client = HttpClientBuilder.create().build()
 
-  import algebra._
+  import hammock.free.algebra._
 
   override def trans[F[_]](implicit ME: MonadError[F, Throwable]) = transK andThen λ[Kleisli[F, HttpClient, ?] ~> F](_.run(client))
 
