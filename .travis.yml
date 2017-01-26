@@ -18,8 +18,8 @@ install:
 - gem install jekyll -v 3.2.1
 
 script:
-- sbt ++$TRAVIS_SCALA_VERSION clean coverage test coverageReport
-- sbt ++$TRAVIS_SCALA_VERSION "docs/tut"
+- sbt ++$TRAVIS_SCALA_VERSION clean coverage coreJVM/test coverageReport
+- Sbt ++$TRAVIS_SCALA_VERSION "docs/tut"
 
 after_success:
 - if [ "$TRAVIS_BRANCH" = "master" -a "$TRAVIS_PULL_REQUEST" = "false" ]; then bash

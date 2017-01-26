@@ -120,8 +120,8 @@ object App {
   import IO._
   import Log._
   import cats._
-  import hammock.implicits._
-  import hammock.free._
+  import hammock.free.algebra._
+  import hammock.jvm.free._
   
   type Eff1[A] = Coproduct[LogF, IOF, A]
   type Eff[A] = Coproduct[HttpRequestF, Eff1, A]
@@ -138,7 +138,7 @@ object App {
   } yield response
  
   def interp1[F[_]](implicit ME: MonadError[F, Throwable]): Eff1 ~> F = Log.interp(ME) or IO.interp(ME)
-  def interp[F[_]](implicit ME: MonadError[F, Throwable]): Eff ~> F = Interp.trans(client, ME) or interp1(ME) // interpret Hammock's effects
+  def interp[F[_]](implicit ME: MonadError[F, Throwable]): Eff ~> F = Interpreter.trans(ME) or interp1(ME) // interpret Hammock's effects
 }
 ```
 

@@ -12,7 +12,8 @@ Just add the following to your `libraryDependencies` in SBT:
 ```
 resolvers += Resolver.bintrayRepo("pepegar", "com.pepegar")
 
-libraryDependencies += "com.pepegar" %% "hammock" % "0.1"
+libraryDependencies += "com.pepegar" %% "hammock" % "0.1" // for JVM
+libraryDependencies += "com.pepegar" %%% "hammock" % "0.1" // for JS
 ```
 
 ## Modules
@@ -21,7 +22,8 @@ There are already some companion modules implemented to ease the
 experience of using hammock.
 
 ```
-"com.pepegar" %% "hammock-circe" % "0.1"
+libraryDependencies += "com.pepegar" %% "hammock-circe" % "0.1" // for JVM
+libraryDependencies += "com.pepegar" %%% "hammock-circe" % "0.1" // for JS
 ```
 
 ## Functional programming
@@ -34,7 +36,7 @@ you know how to use them!
 
 
 ## HTTP
-w
+
 With Hammock you can do HTTP operations in a typeful and functional way.
 
 ```tut:silent
@@ -44,11 +46,13 @@ import scala.util.{ Failure, Success, Try }
 import io.circe._
 import io.circe.generic.auto._
 import hammock._
-import hammock.implicits._
+import hammock.jvm.free._
 import hammock.circe.implicits._
 
 
 object HttpClient {
+  implicit val interp = Interpreter
+
   val response = Hammock
     .request(Method.GET, "https://api.fidesmo.com/apps", Map()) // In the `request` method, you describe your HTTP request
     .run[Try]
