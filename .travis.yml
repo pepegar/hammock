@@ -1,6 +1,5 @@
 language: scala
 scala:
-- 2.12.0
 - 2.11.8
 
 jdk:
@@ -18,7 +17,7 @@ install:
 - gem install jekyll -v 3.2.1
 
 script:
-- sbt ++$TRAVIS_SCALA_VERSION clean coverage coreJVM/test coverageReport
+- sbt ++$TRAVIS_SCALA_VERSION clean coverage coreJVM/test hammockCirceJVM/test coverageReport
 - sbt ++$TRAVIS_SCALA_VERSION "docs/tut"
 
 after_success:
