@@ -16,7 +16,7 @@ import io.circe.generic.auto._
 
 object Main extends App {
 
-  implicit val interpTrans = Interpreter
+  implicit val interpTrans = Interpreter()
 
   val request = Hammock
     .request(Method.GET, "https://api.fidesmo.com/apps", Map())
