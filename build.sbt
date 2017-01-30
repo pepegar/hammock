@@ -36,7 +36,10 @@ lazy val core = crossProject.in(file("core"))
   .settings(moduleName := "hammock-core")
   .settings(commonSettings: _*)
   .jvmSettings(
-    libraryDependencies += "org.apache.httpcomponents" % "httpclient" % "4.5.2",
+  libraryDependencies ++= Seq(
+    "org.apache.httpcomponents" % "httpclient" % "4.5.2",
+    "org.mockito" % "mockito-all" % "1.10.18" % "test"
+  ),
     crossScalaVersions := scalaVersions
   )
   .jsSettings(libraryDependencies += "org.scala-js" %%% "scalajs-dom" % "0.9.1")
