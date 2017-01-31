@@ -49,16 +49,33 @@ class InterpreterSpec extends WordSpec with MockitoSugar with BeforeAndAfter {
 
         val k = op foldMap[Kleisli[Try, HttpClient, ?]] interp.transK[Try]
 
-        assert(Eq[HttpResponse].eqv(k.run(client).get, (op foldMap interp.trans[Try]).get))
+        val transkResult = k.run(client).get
+        val transResult = (op foldMap interp.trans[Try]).get
+
+        assert(Eq[HttpResponse].eqv(transkResult, transResult))
       }
 
+    }
+
+    "create a correct HttpResponse from Apache's HTTP response" in {
+      when(client.execute(any())).thenReturn(httpResponse)
+
+      val op = Ops.get("", Map(), None)
+
+      val k = op foldMap[Kleisli[Try, HttpClient, ?]] interp.transK[Try]
+
+      val result = (op foldMap interp.trans[Try]).get
+
+      assert(result.status == Status.OK)
+      assert(result.headers == Map())
+      assert(result.content == "content")
     }
 
   }
 
   private[this] def httpResponse: ApacheHttpResponse = {
     val resp = new BasicHttpResponse(new BasicStatusLine(new ProtocolVersion("HTTP", 1, 1), 200, null))
-    val entity = new StringEntity("")
+    val entity = new StringEntity("content")
 
     resp.setEntity(entity)
 
