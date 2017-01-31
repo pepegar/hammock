@@ -33,18 +33,19 @@ class InterpreterSpec extends WordSpec with MockitoSugar with BeforeAndAfter {
 
   "Interpreter.trans" should {
     val methods = Seq(
-      "Options",
-      "Get",
-      "Head",
-      "Post",
-      "Put",
-      "Delete",
-      "Trace"
-    ) map { method =>
+      ("Options", Ops.options _),
+      ("Get", Ops.get _),
+      ("Head", Ops.head _),
+      ("Post", Ops.post _),
+      ("Put", Ops.put _),
+      ("Delete", Ops.delete _),
+      ("Trace", Ops.trace _)
+    ) map {
+      case (method, operation)=>
       s"have the same result as transK.run(client) with $method requests" in {
         when(client.execute(any())).thenReturn(httpResponse)
 
-        val op = Ops.get("", Map(), None)
+        val op = operation("", Map(), None)
 
         val k = op foldMap[Kleisli[Try, HttpClient, ?]] interp.transK[Try]
 
