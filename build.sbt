@@ -20,7 +20,9 @@ val commonSettings = Seq(
     "org.typelevel" %% "cats" % "0.8.1",
     compilerPlugin("org.scalamacros" %% "paradise" % "2.1.0" cross CrossVersion.full),
     compilerPlugin("org.spire-math" %% "kind-projector" % "0.9.3"),
-    "org.scalatest" %% "scalatest" % "3.0.1" % "test"
+    "org.scalatest" %% "scalatest" % "3.0.1" % "test",
+    "org.scalacheck" %% "scalacheck" % "1.13.4" % "test",
+    "org.typelevel" %% "discipline" % "0.7.3" % "test"
   ),
   bintrayRepository := "com.pepegar"
 )
