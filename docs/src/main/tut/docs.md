@@ -23,7 +23,7 @@ Then, we need to start defining our algebras. Here's is the algebra related to l
 
 ### Log
 
-```tut:silent
+```tut:book
 object Log {
   sealed trait LogF[A]
   case class Info(msg: String) extends LogF[Unit]
@@ -138,7 +138,7 @@ object App {
   } yield response
  
   def interp1[F[_]](implicit ME: MonadError[F, Throwable]): Eff1 ~> F = Log.interp(ME) or IO.interp(ME)
-  def interp[F[_]](implicit ME: MonadError[F, Throwable]): Eff ~> F = Interpreter.trans(ME) or interp1(ME) // interpret Hammock's effects
+  def interp[F[_]](implicit ME: MonadError[F, Throwable]): Eff ~> F = Interpreter().trans(ME) or interp1(ME) // interpret Hammock's effects
 }
 ```
 

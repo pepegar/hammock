@@ -13,9 +13,7 @@ import org.apache.http.client.HttpClient
 import org.apache.http.client.methods._
 import org.apache.http.impl.client.HttpClientBuilder
 
-object Interpreter extends InterpTrans {
-
-  implicit val client = HttpClientBuilder.create().build()
+class Interpreter(client: HttpClient) extends InterpTrans {
 
   import hammock.free.algebra._
 
@@ -65,3 +63,8 @@ object Interpreter extends InterpTrans {
   }
 }
 
+object Interpreter {
+  implicit val client = HttpClientBuilder.create().build()
+
+  def apply(): Interpreter = new Interpreter(client)
+}

@@ -51,7 +51,7 @@ import hammock.circe.implicits._
 
 
 object HttpClient {
-  implicit val interp = Interpreter
+  implicit val interp = Interpreter()
 
   val response = Hammock
     .request(Method.GET, "https://api.fidesmo.com/apps", Map()) // In the `request` method, you describe your HTTP request
