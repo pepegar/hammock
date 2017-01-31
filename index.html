@@ -1,10 +1,11 @@
-<html><head><meta charset="utf-8" /><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" /><title>Hammock</title><meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="description" content="Simple and reliable HTTP client" /><meta name="author" content="com.pepegar" /><meta name="og:image" content="/hammock/img/poster.png" /><meta name="og:title" content="Hammock" /><meta name="og:site_name" content="Hammock" /><meta name="og:url" content="" /><meta name="og:type" content="website" /><meta name="og:description" content="Simple and reliable HTTP client" /><meta name="twitter:image" content="/hammock/img/poster.png" /><meta name="twitter:card" content="summary_large_image" /><meta name="twitter:site" content="" /><link rel="icon" type="image/png" href="/hammock/img/favicon.png" /><link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" /><link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" /><link rel="stylesheet" href="/hammock/highlight/styles/tomorrow.css" /><link rel="stylesheet" href="/hammock/css/style.css" /><link rel="stylesheet" href="/hammock/css/palette.css" /></head><body><header id="site-header"><div class="navbar-wrapper"><div class="container"><div class="row"><div class="col-xs-6"><a href="/hammock/" class="brand"><div class="icon-wrapper"><span>Hammock</span></div></a></div><div class="col-xs-6"><nav class="text-right"><ul class=""><li><a href="https://github.com/pepegar/hammock"><i class="fa fa-github"></i><span class="hidden-xs">GitHub</span></a></li><li><a href="/hammock/docs.html"><i class="fa fa-file-text"></i><span class="hidden-xs">Documentation</span></a></li></ul></nav></div></div></div></div><div class="jumbotron"><div class="container"><h1 class="text-center">Simple and reliable HTTP client</h1><h2></h2><p class="text-center"><a href="https://github.com/pepegar/hammock" class="btn btn-outline-inverse">View on GitHub</a></p></div></div><div><ul class="horizontalNav">        </ul></div></header><main id="site-main"><section class="use"><div class="container"><div id="content"><h2 id="installation">Installation</h2>
+<html><head><meta charset="utf-8" /><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" /><title>Hammock</title><meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="description" content="Purely functional HTTP client" /><meta name="author" content="com.pepegar" /><meta name="og:image" content="/hammock/img/poster.png" /><meta name="og:title" content="Hammock" /><meta name="og:site_name" content="Hammock" /><meta name="og:url" content="" /><meta name="og:type" content="website" /><meta name="og:description" content="Purely functional HTTP client" /><meta name="twitter:image" content="/hammock/img/poster.png" /><meta name="twitter:card" content="summary_large_image" /><meta name="twitter:site" content="" /><link rel="icon" type="image/png" href="/hammock/img/favicon.png" /><link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" /><link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" /><link rel="stylesheet" href="/hammock/highlight/styles/tomorrow.css" /><link rel="stylesheet" href="/hammock/css/style.css" /><link rel="stylesheet" href="/hammock/css/palette.css" /></head><body><header id="site-header"><div class="navbar-wrapper"><div class="container"><div class="row"><div class="col-xs-6"><a href="/hammock/" class="brand"><div class="icon-wrapper"><span>Hammock</span></div></a></div><div class="col-xs-6"><nav class="text-right"><ul class=""><li><a href="https://github.com/pepegar/hammock"><i class="fa fa-github"></i><span class="hidden-xs">GitHub</span></a></li><li><a href="/hammock/docs.html"><i class="fa fa-file-text"></i><span class="hidden-xs">Documentation</span></a></li></ul></nav></div></div></div></div><div class="jumbotron"><div class="container"><h1 class="text-center">Purely functional HTTP client</h1><h2></h2><p class="text-center"><a href="https://github.com/pepegar/hammock" class="btn btn-outline-inverse">View on GitHub</a></p></div></div><div><ul class="horizontalNav">        </ul></div></header><main id="site-main"><section class="use"><div class="container"><div id="content"><h2 id="installation">Installation</h2>
 
 <p>Just add the following to your <code class="highlighter-rouge">libraryDependencies</code> in SBT:</p>
 
 <div class="highlighter-rouge"><pre class="highlight"><code>resolvers += Resolver.bintrayRepo("pepegar", "com.pepegar")
 
-libraryDependencies += "com.pepegar" %% "hammock" % "0.1"
+libraryDependencies += "com.pepegar" %% "hammock" % "0.1" // for JVM
+libraryDependencies += "com.pepegar" %%% "hammock" % "0.1" // for JS
 </code></pre>
 </div>
 
@@ -13,7 +14,8 @@ libraryDependencies += "com.pepegar" %% "hammock" % "0.1"
 <p>There are already some companion modules implemented to ease the
 experience of using hammock.</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>"com.pepegar" %% "hammock-circe" % "0.1"
+<div class="highlighter-rouge"><pre class="highlight"><code>libraryDependencies += "com.pepegar" %% "hammock-circe" % "0.1" // for JVM
+libraryDependencies += "com.pepegar" %%% "hammock-circe" % "0.1" // for JS
 </code></pre>
 </div>
 
@@ -26,8 +28,8 @@ but fear not! Lots of types you were using before are already monads,
 you know how to use them!</p>
 
 <h2 id="http">HTTP</h2>
-<p>w
-With Hammock you can do HTTP operations in a typeful and functional way.</p>
+
+<p>With Hammock you can do HTTP operations in a typeful and functional way.</p>
 
 <div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="k">import</span> <span class="nn">cats._</span>
 <span class="k">import</span> <span class="nn">cats.implicits._</span>
@@ -35,11 +37,13 @@ With Hammock you can do HTTP operations in a typeful and functional way.</p>
 <span class="k">import</span> <span class="nn">io.circe._</span>
 <span class="k">import</span> <span class="nn">io.circe.generic.auto._</span>
 <span class="k">import</span> <span class="nn">hammock._</span>
-<span class="k">import</span> <span class="nn">hammock.implicits._</span>
+<span class="k">import</span> <span class="nn">hammock.jvm.free._</span>
 <span class="k">import</span> <span class="nn">hammock.circe.implicits._</span>
 
 
 <span class="k">object</span> <span class="nc">HttpClient</span> <span class="o">{</span>
+  <span class="k">implicit</span> <span class="k">val</span> <span class="n">interp</span> <span class="k">=</span> <span class="nc">Interpreter</span><span class="o">()</span>
+
   <span class="k">val</span> <span class="n">response</span> <span class="k">=</span> <span class="nc">Hammock</span>
     <span class="o">.</span><span class="n">request</span><span class="o">(</span><span class="nc">Method</span><span class="o">.</span><span class="nc">GET</span><span class="o">,</span> <span class="s">"https://api.fidesmo.com/apps"</span><span class="o">,</span> <span class="nc">Map</span><span class="o">())</span> <span class="c1">// In the `request` method, you describe your HTTP request
 </span>    <span class="o">.</span><span class="n">run</span><span class="o">[</span><span class="kt">Try</span><span class="o">]</span>
