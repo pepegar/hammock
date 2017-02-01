@@ -5,6 +5,7 @@ import cats.instances.option._
 import cats.instances.int._
 import cats.laws._
 import cats.laws.discipline._
+import cats.syntax.either._
 
 import org.scalacheck.{ Arbitrary, Prop }
 import org.scalatest._
@@ -48,10 +49,8 @@ class CodecSpec extends FunSuite with Discipline {
 
   implicit val intCodec = new Codec[Int] {
     def encode(t: Int) = t.toString
-    def decode(s: String): Either[CodecException, Int] = Try(s.toInt) match {
-      case Success(n) => Right(n)
-      case Failure(ex) => Left(CodecException.withMessage(""))
-    }
+    def decode(s: String): Either[CodecException, Int] =
+      Either.catchOnly[NumberFormatException](s.toInt).left.map(ex => CodecException.withMessageAndException(ex.getMessage, ex))
   }
 
   checkAll("Codec[Int]", CodecTests[Int].codec)
