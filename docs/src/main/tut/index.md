@@ -55,7 +55,7 @@ object HttpClient {
 
   val response = Hammock
     .request(Method.GET, "https://api.fidesmo.com/apps", Map()) // In the `request` method, you describe your HTTP request
-    .run[Try]
+    .exec[Try]
     .as[List[String]]
 }
 ```
