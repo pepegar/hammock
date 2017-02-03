@@ -20,7 +20,7 @@ object Main extends App {
 
   val request = Hammock
     .request(Method.GET, "https://api.fidesmo.com/apps", Map())
-    .run[Future]
+    .exec[Future]
     .as[List[String]]
 
   request.onComplete {
