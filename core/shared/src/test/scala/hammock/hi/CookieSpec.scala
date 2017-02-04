@@ -20,6 +20,12 @@ class CookieSpec extends WordSpec with Matchers {
 
       Show[Cookie].show(cookie) shouldEqual "name=value; Expires=Sat, 03 Jan 1970 17:03:54 +0000; MaxAge=123; Domain=pepegar.com; Path=/blog; Secure=false; HttpOnly=true; SameSite=Strict"
     }
+
+    "render a cookie with custom values in the correct format" in {
+      val cookie = Cookie("hello", "dolly", custom = Some(Map("potatoes" -> "22")))
+
+      Show[Cookie].show(cookie) shouldEqual "hello=dolly; potatoes=22"
+    }
   }
 
 }

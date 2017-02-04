@@ -25,21 +25,17 @@ object SameSite {
 @Lenses case class Cookie(
   name: String,
   value: String,
-  expires: Option[Date],
-  maxAge: Option[Int],
-  domain: Option[String],
-  path: Option[String],
-  secure: Option[Boolean],
-  httpOnly: Option[Boolean],
-  sameSite: Option[SameSite]
+  expires: Option[Date] = None,
+  maxAge: Option[Int] = None,
+  domain: Option[String] = None,
+  path: Option[String] = None,
+  secure: Option[Boolean] = None,
+  httpOnly: Option[Boolean] = None,
+  sameSite: Option[SameSite] = None,
+  custom: Option[Map[String, String]] = None
 )
 
 object Cookie {
-
-  /**
-    * simple constructor for cookies with just name and value
-    */
-  def apply(name: String, value: String): Cookie = Cookie(name, value, None, None, None, None, None, None, None)
 
   implicit val showCookie = new Show[Cookie] {
     def show(cookie: Cookie): String = render(cookie)
@@ -62,7 +58,12 @@ object Cookie {
     val maybes = List(expires, maxAge, domain, path, secure, httpOnly, sameSite)
       .filter(_.nonEmpty).map(_.get)
 
-    (s"${renderPair(cookie.name)(cookie.value)}" :: maybes).mkString("; ")
+    val custom: List[String] = cookie.custom match {
+      case None => Nil
+      case Some(elems) => elems.map { case (k, v) => renderPair(k)(v) } toList
+    }
+
+    (s"${renderPair(cookie.name)(cookie.value)}" :: maybes ::: custom).mkString("; ")
   }
 
   private val fmt = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss Z")
