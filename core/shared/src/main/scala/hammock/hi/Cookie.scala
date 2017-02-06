@@ -7,7 +7,6 @@ import monocle.macros.Lenses
 
 import cats._
 import cats.implicits._
-import cats.syntax.flatMap._
 
 sealed trait SameSite
 object SameSite {

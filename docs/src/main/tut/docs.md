@@ -205,11 +205,28 @@ combinator of `Function1`.  Also, Hammock provides a helper combinator
 
 Here's an example of how can you use the high level DSL:
 
-```tut:silent
-auth(Auth.BasicAuth("pepegar", "p4ssw0rd")) &> cookie(Cookie("track", "A lot")) &> header("user" -> "") &> param("page" -> "33")
+
+```tut:book
+val req = {
+  auth(Auth.BasicAuth("pepegar", "p4ssw0rd")) &>
+    cookie(Cookie("track", "A lot")) &>
+    header("user" -> "") &>
+    param("page" -> "33")
+}
 ```
 
 #### Authentication
+
+There are a number of authentication headers already implemented in
+Hammock:
+
+* **Basic auth** (`Auth.BasicAuth(user: String, pass: String)`): Authenticate with user and password.
+* **OAuth2 Bearer token** (`Auth.OAuth2Bearer(token: String)`): Authenticate with an OAuth2 Bearer
+  token. This is treated by many services like a user/password pair
+* **OAuth2 token** (`Auth.OAuth2Token(token: String)`): This is a _not really standard_ bearer token.
+  Will be treated by services as user/password.
+
+You can manipulate Authentication headers with:
 
 `auth(a: Auth): Opts => Opts`
 
@@ -217,6 +234,37 @@ Sets the `auth` field of the given opts to `a`.
 
 
 #### Cookies
+
+Cookies in Hammock are represented by the `Cookie` type:
+
+```scala
+@Lenses case class Cookie(
+  name: String,
+  value: String,
+  expires: Option[Date] = None,
+  maxAge: Option[Int] = None,
+  domain: Option[String] = None,
+  path: Option[String] = None,
+  secure: Option[Boolean] = None,
+  httpOnly: Option[Boolean] = None,
+  sameSite: Option[SameSite] = None,
+  custom: Option[Map[String, String]] = None)
+```
+
+The `@Lenses` annotation (from Monocle) provides lenses for all the
+fields in a case class.
+
+As you can see most of the behaviour of the cookie can be handled by
+the type itself.  For example, adding a `MaxAge` setting to a cookie
+is just matter of doing:
+
+```tut:book
+val cookie = Cookie("_ga", "werwer")
+
+Cookie.maxAge.set(Some(234))(cookie)
+```
+
+The combinators that hammock provides for handling cookies are:
 
 `cookies_!(cookies: List[Cookie]): Opts => Opts`
 
@@ -249,6 +297,8 @@ map.
 
 
 #### Params (query params)
+
+Hammock provides helper functions for handling query params in URLs:
 
 `params_!(params: Map[String, String]): Opts => Opts`
 
