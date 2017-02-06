@@ -37,7 +37,8 @@ you know how to use them!</p>
 <span class="k">import</span> <span class="nn">io.circe._</span>
 <span class="k">import</span> <span class="nn">io.circe.generic.auto._</span>
 <span class="k">import</span> <span class="nn">hammock._</span>
-<span class="k">import</span> <span class="nn">hammock.jvm.free._</span>
+<span class="k">import</span> <span class="nn">hammock.hi._</span>
+<span class="k">import</span> <span class="nn">hammock.jvm.free.Interpreter</span>
 <span class="k">import</span> <span class="nn">hammock.circe.implicits._</span>
 
 
@@ -45,8 +46,8 @@ you know how to use them!</p>
   <span class="k">implicit</span> <span class="k">val</span> <span class="n">interp</span> <span class="k">=</span> <span class="nc">Interpreter</span><span class="o">()</span>
 
   <span class="k">val</span> <span class="n">response</span> <span class="k">=</span> <span class="nc">Hammock</span>
-    <span class="o">.</span><span class="n">request</span><span class="o">(</span><span class="nc">Method</span><span class="o">.</span><span class="nc">GET</span><span class="o">,</span> <span class="s">"https://api.fidesmo.com/apps"</span><span class="o">,</span> <span class="nc">Map</span><span class="o">())</span> <span class="c1">// In the `request` method, you describe your HTTP request
-</span>    <span class="o">.</span><span class="n">run</span><span class="o">[</span><span class="kt">Try</span><span class="o">]</span>
+    <span class="o">.</span><span class="n">getWithOpts</span><span class="o">(</span><span class="s">"https://api.fidesmo.com/apps"</span><span class="o">,</span> <span class="nc">Opts</span><span class="o">.</span><span class="n">default</span><span class="o">)</span>
+    <span class="o">.</span><span class="n">exec</span><span class="o">[</span><span class="kt">Try</span><span class="o">]</span>
     <span class="o">.</span><span class="n">as</span><span class="o">[</span><span class="kt">List</span><span class="o">[</span><span class="kt">String</span><span class="o">]]</span>
 <span class="o">}</span>
 </code></pre>
