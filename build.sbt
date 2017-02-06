@@ -14,10 +14,14 @@ val micrositeSettings = Seq(
   micrositeGithubRepo := "hammock",
   micrositeHighlightTheme := "tomorrow"
 )
+val monocleVersion = "1.4.0"
 
 val commonSettings = Seq(
   libraryDependencies ++= Seq(
     "org.typelevel" %% "cats" % "0.8.1",
+    "com.github.julien-truffaut" %%  "monocle-core"  % monocleVersion,
+    "com.github.julien-truffaut" %%  "monocle-macro" % monocleVersion,
+
     compilerPlugin("org.scalamacros" %% "paradise" % "2.1.0" cross CrossVersion.full),
     compilerPlugin("org.spire-math" %% "kind-projector" % "0.9.3"),
     "org.scalatest" %% "scalatest" % "3.0.1" % "test",
