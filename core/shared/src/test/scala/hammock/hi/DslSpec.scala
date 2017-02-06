@@ -11,10 +11,10 @@ class DslSpec extends WordSpec with Matchers {
 
   "hi.dsl" should {
     "allow concatenation of operations" in {
-      val req = Opts.default &~> (
-        auth(Auth.BasicAuth("pepegar", "h4rdp4ssw0rd")) andThen
-        param("page" -> "43") andThen
-        header("X-Forwarded-Proto" -> "https"))
+      val req = (
+        auth(Auth.BasicAuth("pepegar", "h4rdp4ssw0rd")) &>
+        param("page" -> "43") &>
+        header("X-Forwarded-Proto" -> "https"))(Opts.default)
 
       req shouldEqual Opts(Some(Auth.BasicAuth("pepegar", "h4rdp4ssw0rd")),Map("X-Forwarded-Proto" -> "https"), Map("page" -> "43"),None)
     }
