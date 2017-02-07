@@ -8,10 +8,13 @@ import cats._
 import cats.data._
 
 import java.io.{ BufferedReader, InputStream, InputStreamReader }
+import org.apache.http.Header
 
 import org.apache.http.client.HttpClient
 import org.apache.http.client.methods._
+import org.apache.http.entity.StringEntity
 import org.apache.http.impl.client.HttpClientBuilder
+import org.apache.http.message.BasicHeader
 
 class Interpreter(client: HttpClient) extends InterpTrans {
 
@@ -47,14 +50,39 @@ class Interpreter(client: HttpClient) extends InterpTrans {
   }
 
   private def getApacheRequest(f: HttpRequestF[HttpResponse]): HttpUriRequest = f match {
-    case Get(url, headers, body) => new HttpGet(url)
-    case Options(url, headers, body) => new HttpOptions(url)
+    case Get(url, headers, body) =>
+      val req = new HttpGet(url)
+      req.setHeaders(prepareHeaders(headers))
+      req
+    case Options(url, headers, body) =>
+      val req = new HttpOptions(url)
+      req.setHeaders(prepareHeaders(headers))
+      req
     case Head(url, headers, body) => new HttpHead(url)
-    case Post(url, headers, body) => new HttpPost(url)
-    case Put(url, headers, body) => new HttpPut(url)
-    case Delete(url, headers, body) => new HttpDelete(url)
-    case Trace(url, headers, body) => new HttpTrace(url)
+    case Post(url, headers, body) =>
+      val req = new HttpPost(url)
+      req.setHeaders(prepareHeaders(headers))
+      body foreach (b => req.setEntity(new StringEntity(b)))
+      req
+    case Put(url, headers, body) =>
+      val req = new HttpPut(url)
+      req.setHeaders(prepareHeaders(headers))
+      body foreach (b => req.setEntity(new StringEntity(b)))
+      req
+    case Delete(url, headers, body) =>
+      val req = new HttpDelete(url)
+      req.setHeaders(prepareHeaders(headers))
+      req
+    case Trace(url, headers, body) =>
+      val req = new HttpTrace(url)
+      req.setHeaders(prepareHeaders(headers))
+      req
   }
+
+  private def prepareHeaders(headers: Map[String, String]): Array[Header] = headers map {
+    case (k, v) => new BasicHeader(k, v)
+  } toArray
+
 
   private def responseContentToString(content: InputStream): String = {
     val rd = new BufferedReader(new InputStreamReader(content))
