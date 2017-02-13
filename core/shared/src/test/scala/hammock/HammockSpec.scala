@@ -42,11 +42,11 @@ class HammockSpec extends WordSpec with Matchers {
       }
 
       s"create a valid $method request with a body" in {
-        val body = Some("body!!")
+        val body = None
         Hammock.request(method, "http://pepegar.com", Map(), body) foldMap test { r =>
           r.url shouldEqual "http://pepegar.com"
           r.headers shouldEqual Map()
-          r.body shouldEqual Some("body!!")
+          r.body shouldEqual None
         }
       }
     }
