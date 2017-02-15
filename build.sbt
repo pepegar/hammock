@@ -88,6 +88,21 @@ lazy val example = project.in(file("example"))
   .settings(noPublishSettings: _*)
   .dependsOn(coreJVM, hammockCirceJVM)
 
+lazy val exampleJS = project.in(file("example-js"))
+  .enablePlugins(ScalaJSPlugin)
+  .settings(scalaVersion := "2.11.8")
+  .settings(noPublishSettings: _*)
+  .settings(libraryDependencies ++= Seq(
+    "org.typelevel" %%% "cats" % "0.8.1",
+    "io.circe" %%% "circe-core" % circeVersion,
+    "io.circe" %%% "circe-generic" % circeVersion,
+    "io.circe" %%% "circe-parser" % circeVersion,
+    "org.scala-js" %%% "scalajs-dom" % "0.9.1",
+    "be.doeraene" %%% "scalajs-jquery" % "0.9.1"
+  ))
+  .settings(jsDependencies += "org.webjars" % "jquery" % "2.1.3" / "2.1.3/jquery.js")
+  .dependsOn(coreJS, hammockCirceJS)
+
 val noPublishSettings = Seq(
   publish := (),
   publishLocal := (),

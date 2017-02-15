@@ -1,6 +1,3 @@
-import org.apache.http.impl.client.HttpClientBuilder
-import org.apache.http.client.HttpClient
-
 import cats._
 import cats.free._
 import cats.implicits._

@@ -32,7 +32,6 @@ object Interpreter extends InterpTrans {
       case (k, v) => xhr.setRequestHeader(k, v)
     }
     xhr.send(req.body.fold("")(identity))
-    xhr.responseType = "text"
 
     val status = Status.get(xhr.status)
     val responseHeaders = parseHeaders(xhr.getAllResponseHeaders)
