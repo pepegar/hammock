@@ -38,6 +38,26 @@ lazy val docs = project.in(file("docs"))
   .settings(noPublishSettings: _*)
   .enablePlugins(MicrositesPlugin)
 
+lazy val readmeSettings = tutSettings ++ Seq(
+    tutSourceDirectory := baseDirectory.value,
+    tutTargetDirectory := baseDirectory.value.getParentFile,
+    tutScalacOptions ~= (_.filterNot(Set("-Ywarn-unused-import", "-Ywarn-dead-code"))),
+    tutScalacOptions ++= (scalaBinaryVersion.value match {
+      case "2.10" => Seq("-Xdivergence211")
+      case _      => Nil
+    }),
+    tutNameFilter := """README.md""".r
+  )
+
+lazy val readme = (project in file("tut"))
+  .settings(
+    moduleName := "hammock-readme"
+  )
+  .dependsOn(coreJVM, hammockCirceJVM)
+  .settings(readmeSettings: _*)
+  .settings(noPublishSettings)
+
+
 lazy val core = crossProject.in(file("core"))
   .settings(moduleName := "hammock-core")
   .settings(commonSettings: _*)

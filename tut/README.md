@@ -35,7 +35,7 @@ Hammock tries to differentiate from other libraries with the following:
 
 ## How does Hammock look in action?
 
-```scala
+```tut:silent
 import cats._
 import cats.implicits._
 import scala.util.{ Failure, Success, Try }

@@ -10,7 +10,7 @@ section: "Home"
 Just add the following to your `libraryDependencies` in SBT:
 
 ```
-resolvers += Resolver.bintrayRepo("pepegar", "com.pepegar")
+resolvers += Resolver.jcenterRepo
 
 libraryDependencies += "com.pepegar" %% "hammock" % "0.1" // for JVM
 libraryDependencies += "com.pepegar" %%% "hammock" % "0.1" // for JS
