@@ -15,4 +15,12 @@ trait Codec[A] {
 
 object Codec {
   def apply[A](implicit c: Codec[A]): Codec[A] = c
+
+  implicit class EncodeOpOnA[A](a: A)(implicit C: Codec[A]) {
+    def encode: String = C.encode(a)
+  }
+
+  implicit class DecodeOpOnString(str: String) {
+    def decode[A: Codec]: Either[CodecException, A] = Codec[A].decode(str)
+  }
 }

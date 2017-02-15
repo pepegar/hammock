@@ -45,7 +45,8 @@ object CodecTests {
 }
 
 
-class CodecSpec extends FunSuite with Discipline {
+class CodecSpec extends FunSuite with Discipline with Matchers {
+  import Codec._
 
   implicit val intCodec = new Codec[Int] {
     def encode(t: Int) = t.toString
@@ -54,4 +55,10 @@ class CodecSpec extends FunSuite with Discipline {
   }
 
   checkAll("Codec[Int]", CodecTests[Int].codec)
+
+  test("syntax should exist for types for which a Codec exist") {
+    1.encode shouldEqual "1"
+    "1".decode[Int] shouldEqual Right(1)
+    "potato".decode[Int].left.get.getMessage shouldEqual "For input string: \"potato\""
+  }
 }
