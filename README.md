@@ -56,3 +56,6 @@ object HttpClient {
 }
 ```
 
+## Code of conduct
+
+People are expected to follow the [Typelevel Code of Conduct](http://typelevel.org/conduct.html) when discussing Hammock on the Github page, Gitter channel, or other venues.
