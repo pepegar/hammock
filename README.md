@@ -1,5 +1,7 @@
 # Hammock
 
+[![Join the chat at https://gitter.im/pepegar/hammock](https://badges.gitter.im/pepegar/hammock.svg)](https://gitter.im/pepegar/hammock?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 [![Build Status](https://travis-ci.org/pepegar/hammock.svg?branch=master)](https://travis-ci.org/pepegar/hammock)
 [![codecov](https://codecov.io/gh/pepegar/hammock/branch/master/graph/badge.svg)](https://codecov.io/gh/pepegar/hammock)
 [![Download](https://api.bintray.com/packages/pepegar/com.pepegar/hammock-core/images/download.svg)](https://bintray.com/pepegar/com.pepegar/hammock-core/_latestVersion)
@@ -56,3 +58,6 @@ object HttpClient {
 }
 ```
 
+## Code of conduct
+
+People are expected to follow the [Typelevel Code of Conduct](http://typelevel.org/conduct.html) when discussing Hammock on the Github page, Gitter channel, or other venues.
