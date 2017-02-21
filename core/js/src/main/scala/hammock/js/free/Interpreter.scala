@@ -14,13 +14,13 @@ object Interpreter extends InterpTrans {
   import algebra._
 
   override def trans[F[_]](implicit ME: MonadError[F, Throwable]): HttpRequestF ~> F = λ[HttpRequestF ~> F](_ match {
-    case req@Options(url, headers, body) => doReq(req, Method.OPTIONS)
-    case req@Get(url, headers, body) => doReq(req, Method.GET)
-    case req@Head(url, headers, body) => doReq(req, Method.HEAD)
+    case req@Options(url, headers) => doReq(req, Method.OPTIONS)
+    case req@Get(url, headers) => doReq(req, Method.GET)
+    case req@Head(url, headers) => doReq(req, Method.HEAD)
     case req@Post(url, headers, body) => doReq(req, Method.POST)
     case req@Put(url, headers, body) => doReq(req, Method.PUT)
-    case req@Delete(url, headers, body) => doReq(req, Method.DELETE)
-    case req@Trace(url, headers, body) => doReq(req, Method.TRACE)
+    case req@Delete(url, headers) => doReq(req, Method.DELETE)
+    case req@Trace(url, headers) => doReq(req, Method.TRACE)
   })
 
   private def doReq[F[_]](req: HttpRequestF[HttpResponse], method: Method)(implicit ME: MonadError[F, Throwable]): F[HttpResponse] = ME.catchNonFatal {
