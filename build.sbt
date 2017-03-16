@@ -15,12 +15,15 @@ val micrositeSettings = Seq(
   micrositeHighlightTheme := "tomorrow"
 )
 val monocleVersion = "1.4.0"
+val attoVersion = "0.5.1"
 
 val commonSettings = Seq(
   libraryDependencies ++= Seq(
     "org.typelevel" %% "cats" % "0.8.1",
     "com.github.julien-truffaut" %%  "monocle-core"  % monocleVersion,
     "com.github.julien-truffaut" %%  "monocle-macro" % monocleVersion,
+    "org.tpolecat" %% "atto-core" % attoVersion,
+    "org.tpolecat" %% "atto-compat-cats" % attoVersion,
 
     compilerPlugin("org.scalamacros" %% "paradise" % "2.1.0" cross CrossVersion.full),
     compilerPlugin("org.spire-math" %% "kind-projector" % "0.9.3"),
@@ -65,6 +68,7 @@ lazy val core = crossProject.in(file("core"))
   libraryDependencies ++= Seq(
     "org.apache.httpcomponents" % "httpclient" % "4.5.2",
     "org.mockito" % "mockito-all" % "1.10.18" % "test"
+
   ),
     crossScalaVersions := scalaVersions
   )
