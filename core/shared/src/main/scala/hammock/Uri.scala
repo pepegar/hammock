@@ -19,21 +19,20 @@ case class Uri(
 )
 
 object Uri {
-  type Error = String
   type Authority = String
   type Scheme = String
   type Fragment = String
 
-  implicit val semigroup = new Semigroup[Uri] {
-    def combine(x: Uri,y: Uri): Uri = ???
-  }
-
   implicit val show = new Show[Uri] {
-    override def show(u: Uri): String = u.scheme.fold("")(_ ++ "://") ++
-      u.authority.fold("")(_ ++ "@") ++
-      u.path ++ "?" ++
-      u.query.map(kv => s"${kv._1}=${kv._2}").mkString("&") ++
-      u.fragment.fold("")("#" ++ _)
+    override def show(u: Uri): String = {
+      val queryString = if (u.query.isEmpty) {
+        ""
+      } else {
+        u.query.map(kv => s"${kv._1}=${kv._2}").mkString("?", "&", "")
+      }
+
+      u.scheme.fold("")(_ ++ "://") ++ u.authority.fold("")(_ ++ "@") ++ u.path ++ queryString ++ u.fragment.fold("")("#" ++ _)
+    }
   }
 
   def queryParam: Parser[(String, String)] = (stringOf(notChar('=')) <~ char('=')) ~ takeWhile(x => x != '&' && x != '#')
@@ -52,5 +51,5 @@ object Uri {
     fragment <- opt(char('#') ~> stringOf(anyChar))
   } yield Uri(scheme, authority, path, queryParams.getOrElse(Map()), fragment)
 
-  def fromString(str: String): Either[Error, Uri] = (parser parseOnly str).either
+  def fromString(str: String): Either[String, Uri] = (parser parseOnly str).either
 }

@@ -43,10 +43,45 @@ class UriSpec extends WordSpec with Matchers {
         authority = Option("user:pass"),
         path = "pepegar.com",
         query = Map("test" -> "3", "anotherTest" -> "asdlfkj8"),
+
         fragment = Some("122")
       ))
     }
+  }
 
+  "Uri.toString" should {
+    "create valid URI when only the path is present" in {
+      Uri(path = "/asdf").show shouldEqual "/asdf"
+    }
 
+    "create valid URI when there is a scheme" in {
+      Uri(
+        scheme = "http".some,
+        path = "potato.com").show shouldEqual "http://potato.com"
+    }
+
+    "create valid URI when there is an authority" in {
+      Uri(
+        authority = "user:pass".some,
+        scheme = "ftp".some,
+        path = "patata.com").show shouldEqual "ftp://user:pass@patata.com"
+    }
+
+    "create valid URI when therer are query params" in {
+      Uri(
+        authority = "user:pass".some,
+        scheme = "ftp".some,
+        path = "patata.com",
+        query = Map("page" -> "33", "sauce" -> "bbq")).show shouldEqual "ftp://user:pass@patata.com?page=33&sauce=bbq"
+    }
+
+    "create valid URI when there is a fragment" in {
+      Uri(
+        authority = "user:pass".some,
+        scheme = "ftp".some,
+        path = "patata.com",
+        query = Map("page" -> "33", "sauce" -> "bbq"),
+        fragment = "index".some).show shouldEqual "ftp://user:pass@patata.com?page=33&sauce=bbq#index"
+    }
   }
 }
