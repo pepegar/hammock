@@ -13,10 +13,6 @@ object dsl {
   def headers(headers: Map[String, String]): Opts => Opts = Opts.optics.headers.modify(headers ++ _)
   def header(header: (String, String)): Opts => Opts = Opts.optics.headers.modify(_ + header)
 
-  def params_!(params: Map[String, String]): Opts => Opts = Opts.optics.params.set(params)
-  def params(params: Map[String, String]): Opts => Opts = Opts.optics.params.modify(params ++ _)
-  def param(param: (String, String)): Opts => Opts = Opts.optics.params.modify(_ + param)
-
   implicit class opts2OptsSyntax(a: Opts => Opts) {
     def &>(b: Opts => Opts): Opts => Opts = a compose b
   }
