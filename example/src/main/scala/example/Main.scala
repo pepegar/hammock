@@ -14,15 +14,21 @@ import io.circe._
 import io.circe.generic.auto._
 
 object Main extends App{
+  import Codec._
+
   implicit val interpTrans = Interpreter()
 
   case class Resp(data: String)
   case class Data(name: String, number: Int)
 
-  val request = Hammock
-    .request(Method.POST, "http://httpbin.org/post", Map(), Some(Codec[Data].encode(Data("name", 4))))
-    .exec[Try]
-    .as[Resp]
+  val uriFromString: Try[Uri] = Uri.fromString("http://httpbin.org/post").leftMap(new Exception(_)).toTry
+
+  val request: Try[Resp] = uriFromString >>= { uri =>
+    Hammock
+      .request(Method.POST, uri, Map(), Some(Data("name", 4).encode))
+      .exec[Try]
+      .as[Resp]
+  }
 
   request match {
     case Success(x) => println(s"$x")
