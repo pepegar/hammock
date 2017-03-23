@@ -15,10 +15,10 @@ Add the following to your `build.sbt`.
 resolvers += Resolver.jcenterRepo
 
 // For Scala 2.11 or 2.12
-libraryDependencies += "com.pepegar" %% "hammock" % "0.1"
+libraryDependencies += "com.pepegar" %% "hammock-core" % "0.2"
 
 // For ScalaJS
-libraryDependencies += "com.pepegar" %%% "hammock" % "0.1"
+libraryDependencies += "com.pepegar" %%% "hammock-core" % "0.2"
 ```
 
 
