@@ -7,58 +7,47 @@ import cats.syntax.show._
 import free._
 import free.algebra.{ HttpRequestIO, Ops }
 import hi.Opts
+import Codec._
 
 object Hammock {
 
-  def request(method: Method, url: String, headers: Map[String, String]): HttpRequestIO[HttpResponse] = method match {
-    case Method.OPTIONS => Ops.options(url, headers)
-    case Method.GET => Ops.get(url, headers)
-    case Method.HEAD => Ops.head(url, headers)
-    case Method.POST => Ops.post(url, headers, None)
-    case Method.PUT => Ops.put(url, headers, None)
-    case Method.DELETE => Ops.delete(url, headers)
-    case Method.TRACE => Ops.trace(url, headers)
+  def request(method: Method, uri: Uri, headers: Map[String, String]): HttpRequestIO[HttpResponse] = method match {
+    case Method.OPTIONS => Ops.options(uri, headers)
+    case Method.GET => Ops.get(uri, headers)
+    case Method.HEAD => Ops.head(uri, headers)
+    case Method.POST => Ops.post(uri, headers, None)
+    case Method.PUT => Ops.put(uri, headers, None)
+    case Method.DELETE => Ops.delete(uri, headers)
+    case Method.TRACE => Ops.trace(uri, headers)
   }
 
-  def request[A : Codec](method: Method, url: String, headers: Map[String, String], body: Option[A]): HttpRequestIO[HttpResponse] = method match {
-    case Method.OPTIONS => Ops.options(url, headers)
-    case Method.GET => Ops.get(url, headers)
-    case Method.HEAD => Ops.head(url, headers)
-    case Method.POST => Ops.post(url, headers, body.map(Codec[A].encode))
-    case Method.PUT => Ops.put(url, headers, body.map(Codec[A].encode))
-    case Method.DELETE => Ops.delete(url, headers)
-    case Method.TRACE => Ops.trace(url, headers)
+  def request[A : Codec](method: Method, uri: Uri, headers: Map[String, String], body: Option[A]): HttpRequestIO[HttpResponse] = method match {
+    case Method.OPTIONS => Ops.options(uri, headers)
+    case Method.GET => Ops.get(uri, headers)
+    case Method.HEAD => Ops.head(uri, headers)
+    case Method.POST => Ops.post(uri, headers, body.map(x => x.encode))
+    case Method.PUT => Ops.put(uri, headers, body.map(x => x.encode))
+    case Method.DELETE => Ops.delete(uri, headers)
+    case Method.TRACE => Ops.trace(uri, headers)
   }
 
-  def withOpts(method: Method, url: String, opts: Opts): HttpRequestIO[HttpResponse] = {
-    request(method, constructUrl(url, opts.params), constructHeaders(opts))
+  def withOpts(method: Method, uri: Uri, opts: Opts): HttpRequestIO[HttpResponse] = {
+    request(method, uri, constructHeaders(opts))
   }
 
-  def withOpts[A : Codec](method: Method, url: String, opts: Opts, body: Option[A]): HttpRequestIO[HttpResponse] =
-    request(method, constructUrl(url, opts.params), constructHeaders(opts), body)
+  def withOpts[A : Codec](method: Method, uri: Uri, opts: Opts, body: Option[A]): HttpRequestIO[HttpResponse] =
+    request(method, uri, constructHeaders(opts), body)
 
-  def optionsWithOpts(url: String, opts: Opts): HttpRequestIO[HttpResponse] = withOpts(Method.OPTIONS, url, opts)
-  def getWithOpts(url: String, opts: Opts): HttpRequestIO[HttpResponse] = withOpts(Method.GET, url, opts)
-  def headWithOpts(url: String, opts: Opts): HttpRequestIO[HttpResponse] = withOpts(Method.HEAD, url, opts)
-  def postWithOpts(url: String, opts: Opts): HttpRequestIO[HttpResponse] = withOpts(Method.POST, url, opts)
-  def putWithOpts(url: String, opts: Opts): HttpRequestIO[HttpResponse] = withOpts(Method.PUT, url, opts)
-  def deleteWithOpts(url: String, opts: Opts): HttpRequestIO[HttpResponse] = withOpts(Method.DELETE, url, opts)
-  def traceWithOpts(url: String, opts: Opts): HttpRequestIO[HttpResponse] = withOpts(Method.TRACE, url, opts)
+  def optionsWithOpts(uri: Uri, opts: Opts): HttpRequestIO[HttpResponse] = withOpts(Method.OPTIONS, uri, opts)
+  def getWithOpts(uri: Uri, opts: Opts): HttpRequestIO[HttpResponse] = withOpts(Method.GET, uri, opts)
+  def headWithOpts(uri: Uri, opts: Opts): HttpRequestIO[HttpResponse] = withOpts(Method.HEAD, uri, opts)
+  def postWithOpts(uri: Uri, opts: Opts): HttpRequestIO[HttpResponse] = withOpts(Method.POST, uri, opts)
+  def putWithOpts(uri: Uri, opts: Opts): HttpRequestIO[HttpResponse] = withOpts(Method.PUT, uri, opts)
+  def deleteWithOpts(uri: Uri, opts: Opts): HttpRequestIO[HttpResponse] = withOpts(Method.DELETE, uri, opts)
+  def traceWithOpts(uri: Uri, opts: Opts): HttpRequestIO[HttpResponse] = withOpts(Method.TRACE, uri, opts)
 
   private def constructHeaders(opts: Opts) =
     opts.headers ++
       opts.cookies.map(_.map(cookie => "Set-Cookie" -> cookie.show)).getOrElse(Map()) ++
       opts.auth.map(auth => Map("Authentication" -> auth.show)).getOrElse(Map())
-
-  private def constructUrl(url: String, params: Map[String, String]): String = {
-    val queryString = params map {
-      case (k, v) => s"$k=$v"
-    } mkString("&")
-
-    if (queryString != "") {
-      url + "?" + queryString
-    } else {
-      url
-    }
-  }
 }
