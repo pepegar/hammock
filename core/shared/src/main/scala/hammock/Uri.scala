@@ -70,7 +70,9 @@ object Uri {
   }
 
   /**
-    * String context allowing compile-time uri parsing.
+    * Unsafe string interpolator allowing uri parsing.  It's unsafe
+    * because in case of any error happen (a Left is returned by the
+    * `fromString` method), throw an exception.
     *
     * {{{
     * scala> uri"http://user:pass@pepegar.com/path?page=4#index"
