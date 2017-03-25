@@ -1,12 +1,13 @@
 package hammock
 
-
 import atto._
 import atto.compat.cats._
 import Atto._
 
 import cats._
 import cats.implicits._
+
+import contextual._
 
 import Uri._
 
@@ -52,4 +53,31 @@ object Uri {
   } yield Uri(scheme, authority, path, queryParams.getOrElse(Map()), fragment)
 
   def fromString(str: String): Either[String, Uri] = (parser parseOnly str).either
+
+  def isValid(str: String): Boolean = fromString(str).isRight
+
+  object UriInterpolator extends Interpolator {
+    def contextualize(interpolation: StaticInterpolation) = {
+      val lit@Literal(_, uriString) = interpolation.parts.head
+      if(!isValid(uriString))
+        interpolation.abort(lit, 0, "not a valid URL")
+
+      Nil
+    }
+
+    def evaluate(interpolation: RuntimeInterpolation): Uri =
+      Uri.fromString(interpolation.literals.head).right.get
+  }
+
+  /**
+    * String context allowing compile-time uri parsing.
+    *
+    * {{{
+    * scala> uri"http://user:pass@pepegar.com/path?page=4#index"
+    * res1: hammock.Uri = Uri(Some(http),Some(user:pass),pepegar.com/path,Map(page -> 4),Some(index))
+    * }}}
+    */
+  implicit class UriStringContext(sc: StringContext) {
+    val uri = Prefix(UriInterpolator, sc)
+  }
 }
