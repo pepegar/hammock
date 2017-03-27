@@ -2,6 +2,8 @@ organization in ThisBuild := "com.pepegar"
 scalaVersion in ThisBuild := "2.11.8"
 licenses in ThisBuild := Seq(("MIT", url("http://opensource.org/licenses/MIT")))
 
+resolvers in ThisBuild += "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots"
+
 val scalaVersions = Seq("2.11.8", "2.12.0")
 
 val circeVersion = "0.6.1"
@@ -15,7 +17,7 @@ val micrositeSettings = Seq(
   micrositeHighlightTheme := "tomorrow"
 )
 val monocleVersion = "1.4.0"
-val attoVersion = "0.5.1"
+val attoVersion = "0.5.2-SNAPSHOT"
 
 val commonSettings = Seq(
   libraryDependencies ++= Seq(
