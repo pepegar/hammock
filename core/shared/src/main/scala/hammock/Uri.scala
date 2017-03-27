@@ -56,9 +56,14 @@ object Uri {
 
   def isValid(str: String): Boolean = fromString(str).isRight
 
+  object UriContext extends Context
+
   object UriInterpolator extends Interpolator {
+    type Context = UriContext.type
+    type Input = String
     def contextualize(interpolation: StaticInterpolation) = {
       val lit@Literal(_, uriString) = interpolation.parts.head
+
       if(!isValid(uriString))
         interpolation.abort(lit, 0, "not a valid URL")
 
@@ -69,10 +74,12 @@ object Uri {
       Uri.fromString(interpolation.literals.head).right.get
   }
 
+  implicit val embedString = UriInterpolator.embed[String](Case(UriContext, UriContext){x => x})
+
   /**
     * Unsafe string interpolator allowing uri parsing.  It's unsafe
     * because in case of any error happen (a Left is returned by the
-    * `fromString` method), throw an exception.
+    * `fromString` method), it will throw an exception.
     *
     * {{{
     * scala> uri"http://user:pass@pepegar.com/path?page=4#index"
