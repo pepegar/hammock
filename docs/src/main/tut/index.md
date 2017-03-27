@@ -46,6 +46,7 @@ import scala.util.{ Failure, Success, Try }
 import io.circe._
 import io.circe.generic.auto._
 import hammock._
+import hammock.Uri._
 import hammock.hi._
 import hammock.jvm.free.Interpreter
 import hammock.circe.implicits._
@@ -55,7 +56,7 @@ object HttpClient {
   implicit val interp = Interpreter()
 
   val response = Hammock
-    .getWithOpts("https://api.fidesmo.com/apps", Opts.default)
+    .getWithOpts(uri"https://api.fidesmo.com/apps", Opts.default)
     .exec[Try]
     .as[List[String]]
 }
