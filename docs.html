@@ -123,6 +123,7 @@ free-based architecture, and then use it yourself.  However, with
 Hammock, you can import <code class="highlighter-rouge">hammock.free._</code> and enjoy:</p>
 
 <div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="k">object</span> <span class="nc">App</span> <span class="o">{</span>
+  <span class="k">import</span> <span class="nn">hammock.Uri._</span>
   <span class="k">import</span> <span class="nn">IO._</span>
   <span class="k">import</span> <span class="nn">Log._</span>
   <span class="k">import</span> <span class="nn">cats._</span>
@@ -140,7 +141,7 @@ Hammock, you can import <code class="highlighter-rouge">hammock.free._</code> an
     <span class="k">_</span> <span class="k">&lt;-</span> <span class="nc">IO</span><span class="o">.</span><span class="n">write</span><span class="o">(</span><span class="s">"What's the ID?"</span><span class="o">)</span>
     <span class="n">id</span> <span class="k">=</span> <span class="s">"4"</span> <span class="c1">// for the sake of docs, lets hardcode this... It should be `id &lt;- IO.read`
 </span>    <span class="k">_</span> <span class="k">&lt;-</span> <span class="nc">Log</span><span class="o">.</span><span class="n">info</span><span class="o">(</span><span class="n">s</span><span class="s">"id was $id"</span><span class="o">)</span>
-    <span class="n">response</span> <span class="k">&lt;-</span> <span class="nc">Hammock</span><span class="o">.</span><span class="n">get</span><span class="o">(</span><span class="n">s</span><span class="s">"https://jsonplaceholder.typicode.com/users?id=$id"</span><span class="o">,</span> <span class="nc">Map</span><span class="o">())</span>
+    <span class="n">response</span> <span class="k">&lt;-</span> <span class="nc">Hammock</span><span class="o">.</span><span class="n">get</span><span class="o">(</span><span class="n">uri</span><span class="s">"https://jsonplaceholder.typicode.com/users?id=${id.toString}"</span><span class="o">,</span> <span class="nc">Map</span><span class="o">())</span>
   <span class="o">}</span> <span class="k">yield</span> <span class="n">response</span>
 
   <span class="k">def</span> <span class="n">interp1</span><span class="o">[</span><span class="kt">F</span><span class="o">[</span><span class="k">_</span><span class="o">]](</span><span class="k">implicit</span> <span class="nc">ME</span><span class="k">:</span> <span class="kt">MonadError</span><span class="o">[</span><span class="kt">F</span>, <span class="kt">Throwable</span><span class="o">])</span><span class="k">:</span> <span class="kt">Eff1</span> <span class="kt">~&gt;</span> <span class="kt">F</span> <span class="o">=</span> <span class="nc">Log</span><span class="o">.</span><span class="n">interp</span><span class="o">(</span><span class="nc">ME</span><span class="o">)</span> <span class="n">or</span> <span class="nc">IO</span><span class="o">.</span><span class="n">interp</span><span class="o">(</span><span class="nc">ME</span><span class="o">)</span>
@@ -160,7 +161,7 @@ Hammock, you can import <code class="highlighter-rouge">hammock.free._</code> an
 <span class="n">scala</span><span class="o">&gt;</span> <span class="nc">App</span><span class="o">.</span><span class="n">program</span> <span class="n">foldMap</span> <span class="nc">App</span><span class="o">.</span><span class="n">interp</span><span class="o">[</span><span class="kt">Try</span><span class="o">]</span>
 <span class="nc">What</span><span class="ss">'s </span><span class="n">the</span> <span class="nc">ID</span><span class="o">?</span>
 <span class="o">[</span><span class="kt">info</span><span class="o">]</span><span class="k">:</span> <span class="kt">id</span> <span class="kt">was</span> <span class="err">4</span>
-<span class="kt">res1:</span> <span class="kt">scala.util.Try</span><span class="o">[</span><span class="kt">hammock.HttpResponse</span><span class="o">]</span> <span class="k">=</span> <span class="nc">Success</span><span class="o">(</span><span class="nc">HttpResponse</span><span class="o">(</span><span class="nc">Status</span><span class="o">(</span><span class="mi">200</span><span class="o">,</span><span class="nc">OK</span><span class="o">,</span><span class="nc">OK</span><span class="o">),</span><span class="nc">Map</span><span class="o">(</span><span class="nc">Vary</span> <span class="o">-&gt;</span> <span class="nc">Accept</span><span class="o">-</span><span class="nc">Encoding</span><span class="o">,</span> <span class="nc">Transfer</span><span class="o">-</span><span class="nc">Encoding</span> <span class="o">-&gt;</span> <span class="n">chunked</span><span class="o">,</span> <span class="nc">Server</span> <span class="o">-&gt;</span> <span class="n">cloudflare</span><span class="o">-</span><span class="n">nginx</span><span class="o">,</span> <span class="nc">Access</span><span class="o">-</span><span class="nc">Control</span><span class="o">-</span><span class="nc">Allow</span><span class="o">-</span><span class="nc">Credentials</span> <span class="o">-&gt;</span> <span class="kc">true</span><span class="o">,</span> <span class="nc">Etag</span> <span class="o">-&gt;</span> <span class="n">W</span><span class="o">/</span><span class="s">"23f-gSgy37ILPH7u0mkF3qpbKA"</span><span class="o">,</span> <span class="nc">Expires</span> <span class="o">-&gt;</span> <span class="nc">Thu</span><span class="o">,</span> <span class="mi">16</span> <span class="nc">Feb</span> <span class="mi">2017</span> <span class="mi">22</span><span class="k">:</span><span class="err">09</span><span class="kt">:</span><span class="err">12</span> <span class="kt">GMT</span><span class="o">,</span> <span class="nc">Connection</span> <span class="o">-&gt;</span> <span class="n">keep</span><span class="o">-</span><span class="n">alive</span><span class="o">,</span> <span class="nc">CF</span><span class="o">-</span><span class="nc">Cache</span><span class="o">-</span><span class="nc">Status</span> <span class="o">-&gt;</span> <span class="nc">REVALIDATED</span><span class="o">,</span> <span class="nc">Cache</span><span class="o">-</span><span class="nc">Control</span> <span class="o">-&gt;</span> <span class="n">public</span><span class="o">,</span> <span class="n">max</span><span class="o">-</span><span class="n">age</span><span class="k">=</span><span class="mi">14400</span><span class="o">,</span> <span class="n">X</span><span class="o">-</span><span class="nc">Content</span><span class="o">-</span><span class="nc">Type</span><span class="o">-</span><span class="nc">Options</span> <span class="o">-&gt;</span> <span class="n">nosniff</span><span class="o">,</span> <span class="nc">Via</span> <span class="o">-&gt;</span> <span class="mf">1.1</span> <span class="n">vegur</span><span class="o">,</span> <span class="nc">Content</span><span class="o">-</span><span class="nc">Type</span> <span class="o">-&gt;</span> <span class="n">application</span><span class="o">/</span><span class="n">json</span><span class="o">;</span> <span class="n">charset</span><span class="k">=</span><span class="n">utf</span><span class="o">-</span><span class="mi">8</span><span class="o">,</span> <span class="nc">Pragma</span> <span class="o">-&gt;</span> <span class="n">no</span><span class="o">-</span><span class="n">cache</span><span class="o">,</span> <span class="nc">Date</span> <span class="o">-&gt;</span> <span class="nc">Thu</span><span class="o">,</span> <span class="mi">16</span> <span class="nc">Feb</span> <span class="mi">2017</span> <span class="mi">18</span><span class="k">:</span><span class="err">09</span><span class="kt">:</span><span class="err">12</span> <span class="kt">GMT</span><span class="o">,</span> <span class="nc">CF</span><span class="o">-</span><span class="nc">RAY</span> <span class="o">-&gt;</span> <span class="mf">3322f3021d</span><span class="mi">645450</span><span class="o">-</span><span class="nc">MAD</span><span class="o">,</span> <span class="nc">Set</span><span class="o">-</span><span class="nc">Cookie</span> <span class="o">-&gt;</span> <span class="nc">__cfduid</span><span class="k">=</span><span class="n">dd25837e7609651d4c52dbb424932928f1487268552</span><span class="o">;</span> <span class="n">expires</span><span class="k">=</span><span class="nc">Fri</span><span class="o">,</span> <span class="mi">16</span><span class="o">-</span><span class="nc">Feb</span><span class="o">-</span><span class="mi">18</span> <span class="mi">18</span><span class="k">:</span><span class="err">09</span><span class="kt">:</span><span class="err">12</span> <span class="kt">GMT</span><span class="o">;</span> <span class="n">path</span><span class="o">=/;</span> <span class="n">domain</span><span class="o">=.</span><span class="n">typicode</span><span class="o">.</span><span class="n">com</span><span class="o">;</span> <span class="nc">HttpOnly</span><span class="o">,</span> <span class="n">X</span><span class="o">-</span><span class="nc">Powered</span><span class="o">-</span><span class="nc">By</span> <span class="o">-&gt;</span> <span class="nc">Express</span><span class="o">),[</span>  <span class="o">{</span>    <span class="err">"</span><span class="kt">id</span><span class="err">"</span><span class="kt">:</span> <span class="err">4</span>,    <span class="err">"</span><span class="kt">name</span><span class="err">"</span><span class="kt">:</span> <span class="err">"</span><span class="kt">Patricia</span> <span class="kt">Leb...</span>
+<span class="kt">res1:</span> <span class="kt">scala.util.Try</span><span class="o">[</span><span class="kt">hammock.HttpResponse</span><span class="o">]</span> <span class="k">=</span> <span class="nc">Success</span><span class="o">(</span><span class="nc">HttpResponse</span><span class="o">(</span><span class="nc">Status</span><span class="o">(</span><span class="mi">200</span><span class="o">,</span><span class="nc">OK</span><span class="o">,</span><span class="nc">OK</span><span class="o">),</span><span class="nc">Map</span><span class="o">(</span><span class="nc">Vary</span> <span class="o">-&gt;</span> <span class="nc">Accept</span><span class="o">-</span><span class="nc">Encoding</span><span class="o">,</span> <span class="nc">Server</span> <span class="o">-&gt;</span> <span class="n">cloudflare</span><span class="o">-</span><span class="n">nginx</span><span class="o">,</span> <span class="nc">Access</span><span class="o">-</span><span class="nc">Control</span><span class="o">-</span><span class="nc">Allow</span><span class="o">-</span><span class="nc">Credentials</span> <span class="o">-&gt;</span> <span class="kc">true</span><span class="o">,</span> <span class="nc">Etag</span> <span class="o">-&gt;</span> <span class="n">W</span><span class="o">/</span><span class="s">"2-l9Fw4VUO7kr8CvBlt4zaMCqXZ0w"</span><span class="o">,</span> <span class="nc">Expires</span> <span class="o">-&gt;</span> <span class="nc">Tue</span><span class="o">,</span> <span class="mi">28</span> <span class="nc">Mar</span> <span class="mi">2017</span> <span class="mi">12</span><span class="k">:</span><span class="err">17</span><span class="kt">:</span><span class="err">40</span> <span class="kt">GMT</span><span class="o">,</span> <span class="nc">Connection</span> <span class="o">-&gt;</span> <span class="n">keep</span><span class="o">-</span><span class="n">alive</span><span class="o">,</span> <span class="nc">CF</span><span class="o">-</span><span class="nc">Cache</span><span class="o">-</span><span class="nc">Status</span> <span class="o">-&gt;</span> <span class="nc">HIT</span><span class="o">,</span> <span class="nc">Content</span><span class="o">-</span><span class="nc">Length</span> <span class="o">-&gt;</span> <span class="mi">2</span><span class="o">,</span> <span class="nc">Cache</span><span class="o">-</span><span class="nc">Control</span> <span class="o">-&gt;</span> <span class="n">public</span><span class="o">,</span> <span class="n">max</span><span class="o">-</span><span class="n">age</span><span class="k">=</span><span class="mi">14400</span><span class="o">,</span> <span class="n">X</span><span class="o">-</span><span class="nc">Content</span><span class="o">-</span><span class="nc">Type</span><span class="o">-</span><span class="nc">Options</span> <span class="o">-&gt;</span> <span class="n">nosniff</span><span class="o">,</span> <span class="nc">Via</span> <span class="o">-&gt;</span> <span class="mf">1.1</span> <span class="n">vegur</span><span class="o">,</span> <span class="nc">Content</span><span class="o">-</span><span class="nc">Type</span> <span class="o">-&gt;</span> <span class="n">application</span><span class="o">/</span><span class="n">json</span><span class="o">;</span> <span class="n">charset</span><span class="k">=</span><span class="n">utf</span><span class="o">-</span><span class="mi">8</span><span class="o">,</span> <span class="nc">Pragma</span> <span class="o">-&gt;</span> <span class="n">no</span><span class="o">-</span><span class="n">cache</span><span class="o">,</span> <span class="nc">Date</span> <span class="o">-&gt;</span> <span class="nc">Tue</span><span class="o">,</span> <span class="mi">28</span> <span class="nc">Mar</span> <span class="mi">2017</span> <span class="mi">08</span><span class="k">:</span><span class="err">17</span><span class="kt">:</span><span class="err">40</span> <span class="kt">GMT</span><span class="o">,</span> <span class="nc">CF</span><span class="o">-</span><span class="nc">RAY</span> <span class="o">-&gt;</span> <span class="mi">34692785</span><span class="n">cd6b5450</span><span class="o">-</span><span class="nc">MAD</span><span class="o">,</span> <span class="nc">Set</span><span class="o">-</span><span class="nc">Cookie</span> <span class="o">-&gt;</span> <span class="nc">__cfduid</span><span class="k">=</span><span class="n">d620fcdc182b378a931324e45d574114c1490689060</span><span class="o">;</span> <span class="n">expires</span><span class="k">=</span><span class="nc">Wed</span><span class="o">,</span> <span class="mi">28</span><span class="o">-</span><span class="nc">Mar</span><span class="o">-</span><span class="mi">18</span> <span class="mi">08</span><span class="k">:</span><span class="err">17</span><span class="kt">:</span><span class="err">40</span> <span class="kt">GMT</span><span class="o">;</span> <span class="n">path</span><span class="o">=/;</span> <span class="n">domain</span><span class="o">=.</span><span class="n">typicode</span><span class="o">.</span><span class="n">com</span><span class="o">;</span> <span class="nc">HttpOnly</span><span class="o">,</span> <span class="n">X</span><span class="o">-</span><span class="nc">Powered</span><span class="o">-</span><span class="nc">By</span> <span class="o">-&gt;</span> <span class="nc">Express</span><span class="o">),[]))</span>
 </code></pre>
 </div>
 
@@ -176,6 +177,9 @@ your requests.</p>
 
 <div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="k">import</span> <span class="nn">hammock._</span>
 <span class="c1">// import hammock._
+</span>
+<span class="k">import</span> <span class="nn">hammock.Uri._</span>
+<span class="c1">// import hammock.Uri._
 </span>
 <span class="k">import</span> <span class="nn">hammock.jvm.free.Interpreter</span>
 <span class="c1">// import hammock.jvm.free.Interpreter
@@ -193,13 +197,13 @@ your requests.</p>
 <span class="c1">// import cats.implicits._
 </span>
 <span class="k">implicit</span> <span class="k">val</span> <span class="n">interp</span> <span class="k">=</span> <span class="nc">Interpreter</span><span class="o">()</span>
-<span class="c1">// interp: hammock.jvm.free.Interpreter = hammock.jvm.free.Interpreter@12c1de80
+<span class="c1">// interp: hammock.jvm.free.Interpreter = hammock.jvm.free.Interpreter@c84019
 </span>
-<span class="k">val</span> <span class="n">opts</span> <span class="k">=</span> <span class="o">(</span><span class="n">header</span><span class="o">(</span><span class="s">"user"</span> <span class="o">-&gt;</span> <span class="s">"pepegar"</span><span class="o">)</span> <span class="o">&amp;&gt;</span> <span class="n">param</span><span class="o">(</span><span class="s">"pageId"</span> <span class="o">-&gt;</span> <span class="s">"3"</span><span class="o">))(</span><span class="nc">Opts</span><span class="o">.</span><span class="n">default</span><span class="o">)</span>
-<span class="c1">// opts: hammock.hi.Opts = Opts(None,Map(user -&gt; pepegar),Map(pageId -&gt; 3),None)
+<span class="k">val</span> <span class="n">opts</span> <span class="k">=</span> <span class="o">(</span><span class="n">header</span><span class="o">(</span><span class="s">"user"</span> <span class="o">-&gt;</span> <span class="s">"pepegar"</span><span class="o">)</span> <span class="o">&amp;&gt;</span> <span class="n">cookie</span><span class="o">(</span><span class="nc">Cookie</span><span class="o">(</span><span class="s">"track"</span><span class="o">,</span> <span class="s">"a lot"</span><span class="o">)))(</span><span class="nc">Opts</span><span class="o">.</span><span class="n">default</span><span class="o">)</span>
+<span class="c1">// opts: hammock.hi.Opts = Opts(None,Map(user -&gt; pepegar),None)
 </span>
-<span class="k">val</span> <span class="n">response</span> <span class="k">=</span> <span class="nc">Hammock</span><span class="o">.</span><span class="n">getWithOpts</span><span class="o">(</span><span class="s">"http://httpbin.org/get"</span><span class="o">,</span> <span class="n">opts</span><span class="o">).</span><span class="n">exec</span><span class="o">[</span><span class="kt">Try</span><span class="o">]</span>
-<span class="c1">// response: scala.util.Try[hammock.HttpResponse] = Success(HttpResponse(Status(200,OK,OK),Map(Access-Control-Allow-Origin -&gt; *, Server -&gt; nginx, Access-Control-Allow-Credentials -&gt; true, Connection -&gt; keep-alive, Content-Length -&gt; 293, Content-Type -&gt; application/json, Date -&gt; Thu, 16 Feb 2017 18:09:14 GMT),{  "args": {    "pageId": "3"  },   "headers": {    "Accept-Encoding": "gzip,deflate",     "Host": "httpbin.org",     "User": "pepegar,pepegar",     "User-Agent": "Apache-HttpClient/4.5.2 (Java/1.8.0_77)"  },   "origin": "83.36.98.112",   "url": "http://httpbin.org/get?pageId=3"}))
+<span class="k">val</span> <span class="n">response</span> <span class="k">=</span> <span class="nc">Hammock</span><span class="o">.</span><span class="n">getWithOpts</span><span class="o">(</span><span class="n">uri</span><span class="s">"http://httpbin.org/get"</span><span class="o">,</span> <span class="n">opts</span><span class="o">).</span><span class="n">exec</span><span class="o">[</span><span class="kt">Try</span><span class="o">]</span>
+<span class="c1">// response: scala.util.Try[hammock.HttpResponse] = Success(HttpResponse(Status(200,OK,OK),Map(Access-Control-Allow-Origin -&gt; *, Server -&gt; gunicorn/19.7.1, Access-Control-Allow-Credentials -&gt; true, Connection -&gt; keep-alive, Content-Length -&gt; 293, Via -&gt; 1.1 vegur, Content-Type -&gt; application/json, Date -&gt; Tue, 28 Mar 2017 08:17:44 GMT),{  "args": {},   "headers": {    "Accept-Encoding": "gzip,deflate",     "Connection": "close",     "Host": "httpbin.org",     "User": "pepegar,pepegar",     "User-Agent": "Apache-HttpClient/4.5.2 (Java/1.8.0_77)"  },   "origin": "79.153.126.148",   "url": "http://httpbin.org/get"}))
 </span></code></pre>
 </div>
 
@@ -212,7 +216,6 @@ This <code class="highlighter-rouge">Opts</code> type is later compiled by the <
 <div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="k">case</span> <span class="k">class</span> <span class="nc">Opts</span><span class="o">(</span>
   <span class="n">auth</span><span class="k">:</span> <span class="kt">Option</span><span class="o">[</span><span class="kt">Auth</span><span class="o">],</span>
   <span class="n">headers</span><span class="k">:</span> <span class="kt">Map</span><span class="o">[</span><span class="kt">String</span>, <span class="kt">String</span><span class="o">],</span>
-  <span class="n">params</span><span class="k">:</span> <span class="kt">Map</span><span class="o">[</span><span class="kt">String</span>, <span class="kt">String</span><span class="o">],</span>
   <span class="n">cookies</span><span class="k">:</span> <span class="kt">Option</span><span class="o">[</span><span class="kt">List</span><span class="o">[</span><span class="kt">Cookie</span><span class="o">]])</span>
 </code></pre>
 </div>
@@ -224,13 +227,51 @@ combinator of <code class="highlighter-rouge">Function1</code>.  Also, Hammock p
 
 <h3 id="combinators-that-operate-on-opts">Combinators that operate on <code class="highlighter-rouge">Opts</code></h3>
 
+<table>
+  <thead>
+    <tr>
+      <th>signature</th>
+      <th>description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="highlighter-rouge">auth(a: Auth): Opts =&gt; Opts</code></td>
+      <td>Sets the <code class="highlighter-rouge">auth</code> field in opts</td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge">cookies_!(cookies: List[Cookie]): Opts =&gt; Opts</code></td>
+      <td>Substitutes the current value of <code class="highlighter-rouge">cookies</code> in the given <code class="highlighter-rouge">Opts</code> by its param.</td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge">cookies(cookies: List[Cookie]): Opts =&gt; Opts</code></td>
+      <td>Appends the given cookies to the current value of <code class="highlighter-rouge">cookies</code>.</td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge">cookie(cookie: Cookie): Opts =&gt; Opts</code></td>
+      <td>Adds the given <code class="highlighter-rouge">Cookie</code> to the <code class="highlighter-rouge">Opts</code> value.</td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge">headers_!(headers: Map[String, String]): Opts =&gt; Opts</code></td>
+      <td>Sets the <code class="highlighter-rouge">headers</code>.</td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge">headers(headers: Map[String, String]): Opts =&gt; Opts</code></td>
+      <td>Appends the given <code class="highlighter-rouge">headers</code> to the former ones.</td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge">header(header: (String, String)): Opts =&gt; Opts</code></td>
+      <td>Appends current <code class="highlighter-rouge">header</code> (a <code class="highlighter-rouge">(String, String)</code> value) to the headers map.</td>
+    </tr>
+  </tbody>
+</table>
+
 <p>Here’s an example of how can you use the high level DSL:</p>
 
 <div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="k">val</span> <span class="n">req</span> <span class="k">=</span> <span class="o">{</span>
   <span class="n">auth</span><span class="o">(</span><span class="nc">Auth</span><span class="o">.</span><span class="nc">BasicAuth</span><span class="o">(</span><span class="s">"pepegar"</span><span class="o">,</span> <span class="s">"p4ssw0rd"</span><span class="o">))</span> <span class="o">&amp;&gt;</span>
     <span class="n">cookie</span><span class="o">(</span><span class="nc">Cookie</span><span class="o">(</span><span class="s">"track"</span><span class="o">,</span> <span class="s">"A lot"</span><span class="o">))</span> <span class="o">&amp;&gt;</span>
-    <span class="n">header</span><span class="o">(</span><span class="s">"user"</span> <span class="o">-&gt;</span> <span class="s">""</span><span class="o">)</span> <span class="o">&amp;&gt;</span>
-    <span class="n">param</span><span class="o">(</span><span class="s">"page"</span> <span class="o">-&gt;</span> <span class="s">"33"</span><span class="o">)</span>
+    <span class="n">header</span><span class="o">(</span><span class="s">"user"</span> <span class="o">-&gt;</span> <span class="s">"potatoman"</span><span class="o">)</span>
 <span class="o">}</span>
 <span class="c1">// req: hammock.hi.Opts =&gt; hammock.hi.Opts = &lt;function1&gt;
 </span></code></pre>
@@ -248,12 +289,6 @@ token. This is treated by many services like a user/password pair</li>
   <li><strong>OAuth2 token</strong> (<code class="highlighter-rouge">Auth.OAuth2Token(token: String)</code>): This is a <em>not really standard</em> bearer token.
 Will be treated by services as user/password.</li>
 </ul>
-
-<p>You can manipulate Authentication headers with:</p>
-
-<p><code class="highlighter-rouge">auth(a: Auth): Opts =&gt; Opts</code></p>
-
-<p>Sets the <code class="highlighter-rouge">auth</code> field of the given opts to <code class="highlighter-rouge">a</code>.</p>
 
 <h4 id="cookies">Cookies</h4>
 
@@ -288,51 +323,11 @@ is just matter of doing:</p>
 </span></code></pre>
 </div>
 
-<p>The combinators that hammock provides for handling cookies are:</p>
-
-<p><code class="highlighter-rouge">cookies_!(cookies: List[Cookie]): Opts =&gt; Opts</code></p>
-
-<p>Substitutes the current value of <code class="highlighter-rouge">cookies</code> in the given <code class="highlighter-rouge">Opts</code> by its
-param.</p>
-
-<p><code class="highlighter-rouge">cookies(cookies: List[Cookie]): Opts =&gt; Opts</code></p>
-
-<p>Appends the given cookies to the current value of <code class="highlighter-rouge">cookies</code>.</p>
-
-<p><code class="highlighter-rouge">cookie(cookie: Cookie): Opts =&gt; Opts</code></p>
-
-<p>Adds the given <code class="highlighter-rouge">Cookie</code> to the <code class="highlighter-rouge">Opts</code> value.</p>
-
 <h4 id="headers">Headers</h4>
 
-<p><code class="highlighter-rouge">headers_!(headers: Map[String, String]): Opts =&gt; Opts</code></p>
-
-<p>Sets the <code class="highlighter-rouge">headers</code>.</p>
-
-<p><code class="highlighter-rouge">headers(headers: Map[String, String]): Opts =&gt; Opts</code></p>
-
-<p>Appends the given <code class="highlighter-rouge">headers</code> to the former ones.</p>
-
-<p><code class="highlighter-rouge">header(header: (String, String)): Opts =&gt; Opts</code></p>
-
-<p>Appends current <code class="highlighter-rouge">header</code> (a <code class="highlighter-rouge">(String, String)</code> value) to the headers
-map.</p>
-
-<h4 id="params-query-params">Params (query params)</h4>
-
-<p>Hammock provides helper functions for handling query params in URLs:</p>
-
-<p><code class="highlighter-rouge">params_!(params: Map[String, String]): Opts =&gt; Opts</code></p>
-
-<p>Sets the query string part of the url to the given params.</p>
-
-<p><code class="highlighter-rouge">params(params: Map[String, String]): Opts =&gt; Opts</code></p>
-
-<p>Appends params to the query string.</p>
-
-<p><code class="highlighter-rouge">param(param: (String, String)): Opts =&gt; Opts</code></p>
-
-<p>Adds the given param to the query string.</p>
+<p>Headers in the <code class="highlighter-rouge">Opts</code> type are represented by a <code class="highlighter-rouge">Map[String, String]</code>.
+In this field, you normally want to put all the headers that are not
+strictly cookies or authentication header.</p>
 
 <h1 id="codecs">Codecs</h1>
 
