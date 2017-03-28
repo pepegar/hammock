@@ -204,6 +204,16 @@ combinator of `Function1`.  Also, Hammock provides a helper combinator
 
 ### Combinators that operate on `Opts`
 
+| signature                                               | description                                                                  |
+|---------------------------------------------------------+------------------------------------------------------------------------------|
+| `auth(a: Auth): Opts => Opts`                           | Sets the `auth` field in opts                                                |
+| `cookies_!(cookies: List[Cookie]): Opts => Opts`        | Substitutes the current value of `cookies` in the given `Opts` by its param. |
+| `cookies(cookies: List[Cookie]): Opts => Opts`          | Appends the given cookies to the current value of `cookies`.                 |
+| `cookie(cookie: Cookie): Opts => Opts`                  | Adds the given `Cookie` to the `Opts` value.                                 |
+| `headers_!(headers: Map[String, String]): Opts => Opts` | Sets the `headers`.                                                          |
+| `headers(headers: Map[String, String]): Opts => Opts`   | Appends the given `headers` to the former ones.                              |
+| `header(header: (String, String)): Opts => Opts`        | Appends current `header` (a `(String, String)` value) to the headers map.    |
+
 Here's an example of how can you use the high level DSL:
 
 
@@ -225,13 +235,6 @@ Hammock:
   token. This is treated by many services like a user/password pair
 * **OAuth2 token** (`Auth.OAuth2Token(token: String)`): This is a _not really standard_ bearer token.
   Will be treated by services as user/password.
-
-You can manipulate Authentication headers with:
-
-`auth(a: Auth): Opts => Opts`
-
-Sets the `auth` field of the given opts to `a`.
-
 
 #### Cookies
 
@@ -264,39 +267,11 @@ val cookie = Cookie("_ga", "werwer")
 Cookie.maxAge.set(Some(234))(cookie)
 ```
 
-The combinators that hammock provides for handling cookies are:
-
-`cookies_!(cookies: List[Cookie]): Opts => Opts`
-
-Substitutes the current value of `cookies` in the given `Opts` by its
-param.
-
-`cookies(cookies: List[Cookie]): Opts => Opts`
-
-Appends the given cookies to the current value of `cookies`.
-
-`cookie(cookie: Cookie): Opts => Opts`
-
-Adds the given `Cookie` to the `Opts` value.
-
-
 #### Headers
 
-`headers_!(headers: Map[String, String]): Opts => Opts`
-
-Sets the `headers`.
-
-`headers(headers: Map[String, String]): Opts => Opts`
-
-Appends the given `headers` to the former ones.
-
-`header(header: (String, String)): Opts => Opts`
-
-Appends current `header` (a `(String, String)` value) to the headers
-map.
-
-
-
+Headers in the `Opts` type are represented by a `Map[String, String]`.
+In this field, you normally want to put all the headers that are not
+strictly cookies or authentication header.
 
 # Codecs
 
