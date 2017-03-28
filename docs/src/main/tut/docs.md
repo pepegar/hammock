@@ -194,7 +194,6 @@ This `Opts` type is later compiled by the `withOpts` methods to the
 case class Opts(
   auth: Option[Auth],
   headers: Map[String, String],
-  params: Map[String, String],
   cookies: Option[List[Cookie]])
 ```
 
@@ -297,21 +296,6 @@ Appends current `header` (a `(String, String)` value) to the headers
 map.
 
 
-#### Params (query params)
-
-Hammock provides helper functions for handling query params in URLs:
-
-`params_!(params: Map[String, String]): Opts => Opts`
-
-Sets the query string part of the url to the given params.
-
-`params(params: Map[String, String]): Opts => Opts`
-
-Appends params to the query string.
-
-`param(param: (String, String)): Opts => Opts`
-
-Adds the given param to the query string.
 
 
 # Codecs
