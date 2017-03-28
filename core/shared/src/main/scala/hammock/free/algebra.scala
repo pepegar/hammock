@@ -8,34 +8,34 @@ object algebra {
 
   sealed trait HttpRequestF[A] extends Product with Serializable {
     def method: Method
-    def url: String
+    def uri: Uri
     def headers: Map[String, String]
     def body: Option[String]
   }
 
-  final case class Options(url: String, headers: Map[String, String]) extends HttpRequestF[HttpResponse] {
+  final case class Options(uri: Uri, headers: Map[String, String]) extends HttpRequestF[HttpResponse] {
     def body = None
     def method = Method.OPTIONS
   }
-  final case class Get(url: String, headers: Map[String, String]) extends HttpRequestF[HttpResponse] {
+  final case class Get(uri: Uri, headers: Map[String, String]) extends HttpRequestF[HttpResponse] {
     def body = None
     def method = Method.GET
   }
-  final case class Head(url: String, headers: Map[String, String]) extends HttpRequestF[HttpResponse] {
+  final case class Head(uri: Uri, headers: Map[String, String]) extends HttpRequestF[HttpResponse] {
     def body = None
     def method = Method.HEAD
   }
-  final case class Post(url: String, headers: Map[String, String], body: Option[String]) extends HttpRequestF[HttpResponse] {
+  final case class Post(uri: Uri, headers: Map[String, String], body: Option[String]) extends HttpRequestF[HttpResponse] {
     def method = Method.POST
   }
-  final case class Put(url: String, headers: Map[String, String], body: Option[String]) extends HttpRequestF[HttpResponse] {
+  final case class Put(uri: Uri, headers: Map[String, String], body: Option[String]) extends HttpRequestF[HttpResponse] {
     def method = Method.PUT
   }
-  final case class Delete(url: String, headers: Map[String, String]) extends HttpRequestF[HttpResponse] {
+  final case class Delete(uri: Uri, headers: Map[String, String]) extends HttpRequestF[HttpResponse] {
     def body = None
     def method = Method.DELETE
   }
-  final case class Trace(url: String, headers: Map[String, String]) extends HttpRequestF[HttpResponse] {
+  final case class Trace(uri: Uri, headers: Map[String, String]) extends HttpRequestF[HttpResponse] {
     def body = None
     def method = Method.TRACE
   }
@@ -43,23 +43,23 @@ object algebra {
   type HttpRequestIO[A] = Free[HttpRequestF, A]
 
   object Ops {
-    def options(url: String, headers: Map[String, String]): HttpRequestIO[HttpResponse] = Free.liftF(Options(url, headers))
-    def get(url: String, headers: Map[String, String]): HttpRequestIO[HttpResponse] = Free.liftF(Get(url, headers))
-    def head(url: String, headers: Map[String, String]): HttpRequestIO[HttpResponse] = Free.liftF(Head(url, headers))
-    def post(url: String, headers: Map[String, String], body: Option[String]): HttpRequestIO[HttpResponse] = Free.liftF(Post(url, headers, body))
-    def put(url: String, headers: Map[String, String], body: Option[String]): HttpRequestIO[HttpResponse] = Free.liftF(Put(url, headers, body))
-    def delete(url: String, headers: Map[String, String]): HttpRequestIO[HttpResponse] = Free.liftF(Delete(url, headers))
-    def trace(url: String, headers: Map[String, String]): HttpRequestIO[HttpResponse] = Free.liftF(Trace(url, headers))
+    def options(uri: Uri, headers: Map[String, String]): HttpRequestIO[HttpResponse] = Free.liftF(Options(uri, headers))
+    def get(uri: Uri, headers: Map[String, String]): HttpRequestIO[HttpResponse] = Free.liftF(Get(uri, headers))
+    def head(uri: Uri, headers: Map[String, String]): HttpRequestIO[HttpResponse] = Free.liftF(Head(uri, headers))
+    def post(uri: Uri, headers: Map[String, String], body: Option[String]): HttpRequestIO[HttpResponse] = Free.liftF(Post(uri, headers, body))
+    def put(uri: Uri, headers: Map[String, String], body: Option[String]): HttpRequestIO[HttpResponse] = Free.liftF(Put(uri, headers, body))
+    def delete(uri: Uri, headers: Map[String, String]): HttpRequestIO[HttpResponse] = Free.liftF(Delete(uri, headers))
+    def trace(uri: Uri, headers: Map[String, String]): HttpRequestIO[HttpResponse] = Free.liftF(Trace(uri, headers))
   }
 
   class HttpRequestC[F[_]](implicit I: Inject[HttpRequestF, F]) {
-    def options(url: String, headers: Map[String, String]): Free[F, HttpResponse] = Free.inject(Options(url, headers))
-    def get(url: String, headers: Map[String, String]): Free[F, HttpResponse] = Free.inject(Get(url, headers))
-    def head(url: String, headers: Map[String, String]): Free[F, HttpResponse] = Free.inject(Head(url, headers))
-    def post(url: String, headers: Map[String, String], body: Option[String]): Free[F, HttpResponse] = Free.inject(Post(url, headers, body))
-    def put(url: String, headers: Map[String, String], body: Option[String]): Free[F, HttpResponse] = Free.inject(Put(url, headers, body))
-    def delete(url: String, headers: Map[String, String]): Free[F, HttpResponse] = Free.inject(Delete(url, headers))
-    def trace(url: String, headers: Map[String, String]): Free[F, HttpResponse] = Free.inject(Trace(url, headers))
+    def options(uri: Uri, headers: Map[String, String]): Free[F, HttpResponse] = Free.inject(Options(uri, headers))
+    def get(uri: Uri, headers: Map[String, String]): Free[F, HttpResponse] = Free.inject(Get(uri, headers))
+    def head(uri: Uri, headers: Map[String, String]): Free[F, HttpResponse] = Free.inject(Head(uri, headers))
+    def post(uri: Uri, headers: Map[String, String], body: Option[String]): Free[F, HttpResponse] = Free.inject(Post(uri, headers, body))
+    def put(uri: Uri, headers: Map[String, String], body: Option[String]): Free[F, HttpResponse] = Free.inject(Put(uri, headers, body))
+    def delete(uri: Uri, headers: Map[String, String]): Free[F, HttpResponse] = Free.inject(Delete(uri, headers))
+    def trace(uri: Uri, headers: Map[String, String]): Free[F, HttpResponse] = Free.inject(Trace(uri, headers))
   }
 
   object HttpRequestC {

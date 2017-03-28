@@ -6,6 +6,7 @@ import hammock.free._
 
 import cats._
 import cats.data._
+import cats.syntax.show._
 
 import java.io.{ BufferedReader, InputStream, InputStreamReader }
 import org.apache.http.Header
@@ -19,17 +20,18 @@ import org.apache.http.message.BasicHeader
 class Interpreter(client: HttpClient) extends InterpTrans {
 
   import hammock.free.algebra._
+  import Uri._
 
   override def trans[F[_]](implicit ME: MonadError[F, Throwable]) = transK andThen λ[Kleisli[F, HttpClient, ?] ~> F](_.run(client))
 
   def transK[F[_]](implicit ME: MonadError[F, Throwable]): HttpRequestF ~> Kleisli[F, HttpClient, ?] = λ[HttpRequestF ~> Kleisli[F, HttpClient, ?]](_ match {
-    case req@Options(url, headers) => doReq(req)
-    case req@Get(url, headers) => doReq(req)
-    case req@Head(url, headers) => doReq(req)
-    case req@Post(url, headers, body) => doReq(req)
-    case req@Put(url, headers, body) => doReq(req)
-    case req@Delete(url, headers) => doReq(req)
-    case req@Trace(url, headers) => doReq(req)
+    case req@Options(uri, headers) => doReq(req)
+    case req@Get(uri, headers) => doReq(req)
+    case req@Head(uri, headers) => doReq(req)
+    case req@Post(uri, headers, body) => doReq(req)
+    case req@Put(uri, headers, body) => doReq(req)
+    case req@Delete(uri, headers) => doReq(req)
+    case req@Trace(uri, headers) => doReq(req)
   })
 
   private def doReq[F[_]](reqF: HttpRequestF[HttpResponse])(implicit ME: MonadError[F, Throwable]): Kleisli[F, HttpClient, HttpResponse] = Kleisli { client =>
@@ -50,34 +52,34 @@ class Interpreter(client: HttpClient) extends InterpTrans {
   }
 
   private def getApacheRequest(f: HttpRequestF[HttpResponse]): HttpUriRequest = f match {
-    case Get(url, headers) =>
-      val req = new HttpGet(url)
+    case Get(uri, headers) =>
+      val req = new HttpGet(uri.show)
       req.setHeaders(prepareHeaders(headers))
       req
-    case Options(url, headers) =>
-      val req = new HttpOptions(url)
+    case Options(uri, headers) =>
+      val req = new HttpOptions(uri.show)
       req.setHeaders(prepareHeaders(headers))
       req
-    case Head(url, headers) =>
-      val req = new HttpHead(url)
+    case Head(uri, headers) =>
+      val req = new HttpHead(uri.show)
       req.setHeaders(prepareHeaders(headers))
       req
-    case Post(url, headers, body) =>
-      val req = new HttpPost(url)
-      req.setHeaders(prepareHeaders(headers))
-      body foreach (b => req.setEntity(new StringEntity(b)))
-      req
-    case Put(url, headers, body) =>
-      val req = new HttpPut(url)
+    case Post(uri, headers, body) =>
+      val req = new HttpPost(uri.show)
       req.setHeaders(prepareHeaders(headers))
       body foreach (b => req.setEntity(new StringEntity(b)))
       req
-    case Delete(url, headers) =>
-      val req = new HttpDelete(url)
+    case Put(uri, headers, body) =>
+      val req = new HttpPut(uri.show)
+      req.setHeaders(prepareHeaders(headers))
+      body foreach (b => req.setEntity(new StringEntity(b)))
+      req
+    case Delete(uri, headers) =>
+      val req = new HttpDelete(uri.show)
       req.setHeaders(prepareHeaders(headers))
       req
-    case Trace(url, headers) =>
-      val req = new HttpTrace(url)
+    case Trace(uri, headers) =>
+      val req = new HttpTrace(uri.show)
       req.setHeaders(prepareHeaders(headers))
       req
   }

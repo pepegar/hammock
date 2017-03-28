@@ -2,6 +2,8 @@ organization in ThisBuild := "com.pepegar"
 scalaVersion in ThisBuild := "2.11.8"
 licenses in ThisBuild := Seq(("MIT", url("http://opensource.org/licenses/MIT")))
 
+resolvers in ThisBuild += "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots"
+
 val scalaVersions = Seq("2.11.8", "2.12.0")
 
 val circeVersion = "0.6.1"
@@ -15,13 +17,16 @@ val micrositeSettings = Seq(
   micrositeHighlightTheme := "tomorrow"
 )
 val monocleVersion = "1.4.0"
+val attoVersion = "0.5.2-SNAPSHOT"
 
 val commonSettings = Seq(
   libraryDependencies ++= Seq(
     "org.typelevel" %% "cats" % "0.8.1",
     "com.github.julien-truffaut" %%  "monocle-core"  % monocleVersion,
     "com.github.julien-truffaut" %%  "monocle-macro" % monocleVersion,
-
+    "org.tpolecat" %% "atto-core" % attoVersion,
+    "org.tpolecat" %% "atto-compat-cats" % attoVersion,
+    "com.propensive" %% "contextual" % "1.0.0",
     compilerPlugin("org.scalamacros" %% "paradise" % "2.1.0" cross CrossVersion.full),
     compilerPlugin("org.spire-math" %% "kind-projector" % "0.9.3"),
     "org.scalatest" %% "scalatest" % "3.0.1" % "test",

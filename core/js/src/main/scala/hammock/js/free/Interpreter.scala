@@ -8,9 +8,11 @@ import org.scalajs.dom
 
 import cats._
 import cats.data._
+import cats.syntax.show._
 
 object Interpreter extends InterpTrans {
 
+  import Uri._
   import algebra._
 
   override def trans[F[_]](implicit ME: MonadError[F, Throwable]): HttpRequestF ~> F = λ[HttpRequestF ~> F](_ match {
@@ -27,7 +29,7 @@ object Interpreter extends InterpTrans {
     val xhr = new dom.XMLHttpRequest()
     val async = false // asynchronicity should be handled by the concurrency monad `F`, not the HTTP driver
 
-    xhr.open(method.name, req.url, async)
+    xhr.open(method.name, req.uri.show, async)
     req.headers foreach {
       case (k, v) => xhr.setRequestHeader(k, v)
     }

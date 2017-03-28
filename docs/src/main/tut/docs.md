@@ -120,6 +120,7 @@ Hammock, you can import `hammock.free._` and enjoy:
 
 ```tut:silent
 object App {
+  import hammock.Uri._
   import IO._
   import Log._
   import cats._
@@ -137,7 +138,7 @@ object App {
     _ <- IO.write("What's the ID?")
     id = "4" // for the sake of docs, lets hardcode this... It should be `id <- IO.read`
     _ <- Log.info(s"id was $id")
-    response <- Hammock.get(s"https://jsonplaceholder.typicode.com/users?id=$id", Map())
+    response <- Hammock.get(uri"https://jsonplaceholder.typicode.com/users?id=${id.toString}", Map())
   } yield response
 
   def interp1[F[_]](implicit ME: MonadError[F, Throwable]): Eff1 ~> F = Log.interp(ME) or IO.interp(ME)
@@ -168,6 +169,7 @@ your requests.
 
 ```tut:book
 import hammock._
+import hammock.Uri._
 import hammock.jvm.free.Interpreter
 import hammock.hi._
 import hammock.hi.dsl._
@@ -177,9 +179,9 @@ import cats.implicits._
 
 implicit val interp = Interpreter()
 
-val opts = (header("user" -> "pepegar") &> param("pageId" -> "3"))(Opts.default)
+val opts = (header("user" -> "pepegar") &> cookie(Cookie("track", "a lot")))(Opts.default)
 
-val response = Hammock.getWithOpts("http://httpbin.org/get", opts).exec[Try]
+val response = Hammock.getWithOpts(uri"http://httpbin.org/get", opts).exec[Try]
 ```
 
 ## Opts
@@ -192,7 +194,6 @@ This `Opts` type is later compiled by the `withOpts` methods to the
 case class Opts(
   auth: Option[Auth],
   headers: Map[String, String],
-  params: Map[String, String],
   cookies: Option[List[Cookie]])
 ```
 
@@ -203,6 +204,16 @@ combinator of `Function1`.  Also, Hammock provides a helper combinator
 
 ### Combinators that operate on `Opts`
 
+| signature                                               | description                                                                  |
+|---------------------------------------------------------+------------------------------------------------------------------------------|
+| `auth(a: Auth): Opts => Opts`                           | Sets the `auth` field in opts                                                |
+| `cookies_!(cookies: List[Cookie]): Opts => Opts`        | Substitutes the current value of `cookies` in the given `Opts` by its param. |
+| `cookies(cookies: List[Cookie]): Opts => Opts`          | Appends the given cookies to the current value of `cookies`.                 |
+| `cookie(cookie: Cookie): Opts => Opts`                  | Adds the given `Cookie` to the `Opts` value.                                 |
+| `headers_!(headers: Map[String, String]): Opts => Opts` | Sets the `headers`.                                                          |
+| `headers(headers: Map[String, String]): Opts => Opts`   | Appends the given `headers` to the former ones.                              |
+| `header(header: (String, String)): Opts => Opts`        | Appends current `header` (a `(String, String)` value) to the headers map.    |
+
 Here's an example of how can you use the high level DSL:
 
 
@@ -210,8 +221,7 @@ Here's an example of how can you use the high level DSL:
 val req = {
   auth(Auth.BasicAuth("pepegar", "p4ssw0rd")) &>
     cookie(Cookie("track", "A lot")) &>
-    header("user" -> "") &>
-    param("page" -> "33")
+    header("user" -> "potatoman")
 }
 ```
 
@@ -225,13 +235,6 @@ Hammock:
   token. This is treated by many services like a user/password pair
 * **OAuth2 token** (`Auth.OAuth2Token(token: String)`): This is a _not really standard_ bearer token.
   Will be treated by services as user/password.
-
-You can manipulate Authentication headers with:
-
-`auth(a: Auth): Opts => Opts`
-
-Sets the `auth` field of the given opts to `a`.
-
 
 #### Cookies
 
@@ -264,54 +267,11 @@ val cookie = Cookie("_ga", "werwer")
 Cookie.maxAge.set(Some(234))(cookie)
 ```
 
-The combinators that hammock provides for handling cookies are:
-
-`cookies_!(cookies: List[Cookie]): Opts => Opts`
-
-Substitutes the current value of `cookies` in the given `Opts` by its
-param.
-
-`cookies(cookies: List[Cookie]): Opts => Opts`
-
-Appends the given cookies to the current value of `cookies`.
-
-`cookie(cookie: Cookie): Opts => Opts`
-
-Adds the given `Cookie` to the `Opts` value.
-
-
 #### Headers
 
-`headers_!(headers: Map[String, String]): Opts => Opts`
-
-Sets the `headers`.
-
-`headers(headers: Map[String, String]): Opts => Opts`
-
-Appends the given `headers` to the former ones.
-
-`header(header: (String, String)): Opts => Opts`
-
-Appends current `header` (a `(String, String)` value) to the headers
-map.
-
-
-#### Params (query params)
-
-Hammock provides helper functions for handling query params in URLs:
-
-`params_!(params: Map[String, String]): Opts => Opts`
-
-Sets the query string part of the url to the given params.
-
-`params(params: Map[String, String]): Opts => Opts`
-
-Appends params to the query string.
-
-`param(param: (String, String)): Opts => Opts`
-
-Adds the given param to the query string.
-
+Headers in the `Opts` type are represented by a `Map[String, String]`.
+In this field, you normally want to put all the headers that are not
+strictly cookies or authentication header.
 
 # Codecs
 
