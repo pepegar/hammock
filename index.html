@@ -47,7 +47,7 @@ you know how to use them!</p>
   <span class="k">implicit</span> <span class="k">val</span> <span class="n">interp</span> <span class="k">=</span> <span class="nc">Interpreter</span><span class="o">()</span>
 
   <span class="k">val</span> <span class="n">response</span> <span class="k">=</span> <span class="nc">Hammock</span>
-    <span class="o">.</span><span class="n">getWithOpts</span><span class="o">(</span><span class="n">uri</span><span class="s">"https://api.fidesmo.com/apps"</span><span class="o">,</span> <span class="nc">Opts</span><span class="o">.</span><span class="n">default</span><span class="o">)</span>
+    <span class="o">.</span><span class="n">getWithOpts</span><span class="o">(</span><span class="nc">Uri</span><span class="o">.</span><span class="n">unsafeParse</span><span class="o">(</span><span class="s">"https://api.fidesmo.com/apps"</span><span class="o">),</span> <span class="nc">Opts</span><span class="o">.</span><span class="n">default</span><span class="o">)</span>
     <span class="o">.</span><span class="n">exec</span><span class="o">[</span><span class="kt">Try</span><span class="o">]</span>
     <span class="o">.</span><span class="n">as</span><span class="o">[</span><span class="kt">List</span><span class="o">[</span><span class="kt">String</span><span class="o">]]</span>
 <span class="o">}</span>
