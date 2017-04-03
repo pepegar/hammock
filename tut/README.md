@@ -51,7 +51,7 @@ object HttpClient {
   implicit val interpreter = Interpreter()
 
   val response = Hammock
-    .request(Method.GET, "https://api.fidesmo.com/apps", Map()) // In the `request` method, you describe your HTTP request
+    .request(Method.GET, Uri.unsafeParse("https://api.fidesmo.com/apps"), Map()) // In the `request` method, you describe your HTTP request
     .exec[Try]
     .as[List[String]]
 }

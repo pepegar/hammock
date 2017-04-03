@@ -51,5 +51,7 @@ object Uri {
 
   def fromString(str: String): Either[String, Uri] = (parser parseOnly str).either
 
+  def unsafeParse(str: String): Uri = fromString(str).right.get
+
   def isValid(str: String): Boolean = fromString(str).isRight
 }
