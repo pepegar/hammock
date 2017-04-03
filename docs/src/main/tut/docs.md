@@ -296,7 +296,7 @@ libraryDependencies += "hammock" %% "hammock-circe" % "0.1"
 
 And use it directly:
 
-```tut:silent
+```tut:book
 import hammock._
 import hammock.circe._
 import hammock.circe.implicits._
@@ -306,19 +306,15 @@ import io.circe.generic.auto._
 
 case class MyClass(stringField: String, intField: Int)
 
-object Codecs {
+Codec[MyClass].decode("""{"stringField": "This is Hammock!", "intField": 33}""")
+Codec[MyClass].decode("this is not a valid json")
+Codec[MyClass].encode(MyClass("hello dolly", 99))
 
-  def decode(str: String)(implicit C: Codec[MyClass]): Either[CodecException, MyClass] = {
-    C.decode(str)
-  }
+// Also, you can use Codec's syntax as follows:
 
-  def encode(myClass: MyClass)(implicit C: Codec[MyClass]): String = C.encode(myClass)
+import Codec._
 
-}
-```
-
-```tut
-Codecs.decode("""{"stringField": "This is Hammock!", "intField": 33}""")
-Codecs.decode("this is not a valid json")
-Codecs.encode(MyClass("hello dolly", 99))
+"""{"stringField": "This is Hammock!", "intField": 33}""".decode[MyClass]
+"this is not a valid json".decode[MyClass]
+MyClass("hello dolly", 99).encode
 ```
