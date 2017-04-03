@@ -4,7 +4,7 @@ licenses in ThisBuild := Seq(("MIT", url("http://opensource.org/licenses/MIT")))
 
 val scalaVersions = Seq("2.11.8", "2.12.0")
 
-val circeVersion = "0.6.1"
+val circeVersion = "0.7.0"
 val micrositeSettings = Seq(
   micrositeName := "Hammock",
   micrositeDescription := "Purely functional HTTP client",
@@ -19,12 +19,11 @@ val attoVersion = "0.5.2"
 
 val commonSettings = Seq(
   libraryDependencies ++= Seq(
-    "org.typelevel" %% "cats" % "0.8.1",
+    "org.typelevel" %% "cats" % "0.9.0",
     "com.github.julien-truffaut" %%  "monocle-core"  % monocleVersion,
     "com.github.julien-truffaut" %%  "monocle-macro" % monocleVersion,
     "org.tpolecat" %% "atto-core" % attoVersion,
     "org.tpolecat" %% "atto-compat-cats" % attoVersion,
-    "com.propensive" %% "contextual" % "1.0.0",
     compilerPlugin("org.scalamacros" %% "paradise" % "2.1.0" cross CrossVersion.full),
     compilerPlugin("org.spire-math" %% "kind-projector" % "0.9.3"),
     "org.scalatest" %% "scalatest" % "3.0.1" % "test",
@@ -120,6 +119,8 @@ lazy val exampleJS = project.in(file("example-js"))
     "io.circe" %%% "circe-core" % circeVersion,
     "io.circe" %%% "circe-generic" % circeVersion,
     "io.circe" %%% "circe-parser" % circeVersion,
+    "org.tpolecat" %%% "atto-core" % attoVersion,
+    "org.tpolecat" %%% "atto-compat-cats" % attoVersion,
     "org.scala-js" %%% "scalajs-dom" % "0.9.1",
     "be.doeraene" %%% "scalajs-jquery" % "0.9.1"
   ))

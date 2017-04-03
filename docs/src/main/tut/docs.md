@@ -120,7 +120,7 @@ Hammock, you can import `hammock.free._` and enjoy:
 
 ```tut:silent
 object App {
-  import hammock.Uri._
+  import hammock.Uri
   import IO._
   import Log._
   import cats._
@@ -138,7 +138,7 @@ object App {
     _ <- IO.write("What's the ID?")
     id = "4" // for the sake of docs, lets hardcode this... It should be `id <- IO.read`
     _ <- Log.info(s"id was $id")
-    response <- Hammock.get(uri"https://jsonplaceholder.typicode.com/users?id=${id.toString}", Map())
+    response <- Hammock.get(Uri.unsafeParse("https://jsonplaceholder.typicode.com/users?id=${id.toString}"), Map())
   } yield response
 
   def interp1[F[_]](implicit ME: MonadError[F, Throwable]): Eff1 ~> F = Log.interp(ME) or IO.interp(ME)
@@ -169,7 +169,6 @@ your requests.
 
 ```tut:book
 import hammock._
-import hammock.Uri._
 import hammock.jvm.free.Interpreter
 import hammock.hi._
 import hammock.hi.dsl._
@@ -181,7 +180,7 @@ implicit val interp = Interpreter()
 
 val opts = (header("user" -> "pepegar") &> cookie(Cookie("track", "a lot")))(Opts.default)
 
-val response = Hammock.getWithOpts(uri"http://httpbin.org/get", opts).exec[Try]
+val response = Hammock.getWithOpts(Uri.unsafeParse("http://httpbin.org/get"), opts).exec[Try]
 ```
 
 ## Opts
