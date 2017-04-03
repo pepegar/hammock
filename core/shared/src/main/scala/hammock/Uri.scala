@@ -5,9 +5,6 @@ import atto.compat.cats._
 import Atto._
 
 import cats._
-import cats.implicits._
-
-import contextual._
 
 import Uri._
 
@@ -54,39 +51,7 @@ object Uri {
 
   def fromString(str: String): Either[String, Uri] = (parser parseOnly str).either
 
+  def unsafeParse(str: String): Uri = fromString(str).right.get
+
   def isValid(str: String): Boolean = fromString(str).isRight
-
-  object UriContext extends Context
-
-  object UriInterpolator extends Interpolator {
-    type Context = UriContext.type
-    type Input = String
-    def contextualize(interpolation: StaticInterpolation) = {
-      val lit@Literal(_, uriString) = interpolation.parts.head
-
-      if(!isValid(uriString))
-        interpolation.abort(lit, 0, "not a valid URL")
-
-      Nil
-    }
-
-    def evaluate(interpolation: RuntimeInterpolation): Uri =
-      Uri.fromString(interpolation.literals.head).right.get
-  }
-
-  implicit val embedString = UriInterpolator.embed[String](Case(UriContext, UriContext){x => x})
-
-  /**
-    * Unsafe string interpolator allowing uri parsing.  It's unsafe
-    * because in case of any error happen (a Left is returned by the
-    * `fromString` method), it will throw an exception.
-    *
-    * {{{
-    * scala> uri"http://user:pass@pepegar.com/path?page=4#index"
-    * res1: hammock.Uri = Uri(Some(http),Some(user:pass),pepegar.com/path,Map(page -> 4),Some(index))
-    * }}}
-    */
-  implicit class UriStringContext(sc: StringContext) {
-    val uri = Prefix(UriInterpolator, sc)
-  }
 }
