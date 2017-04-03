@@ -18,7 +18,8 @@ install:
 
 script:
 - sbt ++$TRAVIS_SCALA_VERSION clean coverage coreJVM/test hammockCirceJVM/test coverageReport
-- sbt ++$TRAVIS_SCALA_VERSION "docs/tut"
+- sbt ++$TRAVIS_SCALA_VERSION clean coreJS/test hammockCirceJS/test exampleJS/compile
+- sbt ++$TRAVIS_SCALA_VERSION "docs/tut" "readme/tut"
 
 after_success:
 - bash <(curl -s https://codecov.io/bash)
