@@ -27,7 +27,7 @@ Hammock tries to differentiate from other libraries with the following:
 1. It's easy to use, has a high level API
 2. ~~It's library agnostic~~ Will be library agnostic, current implementation is [cats][cats]-based.
 3. It's typeful, tries to represent effects at type level.
-4. It follows the _Bring Your Own Concurrency Monad_ pattern.
+4. It does not force a specific target context. You can run your computations in `monix.Task`, `Future`, `Try`...
 5. It has good documentation.
 
 [httpcommons]: http://hc.apache.org/
@@ -43,6 +43,7 @@ import scala.util.{ Failure, Success, Try }
 import io.circe._
 import io.circe.generic.auto._
 import hammock._
+import hammock.Uri._
 import hammock.jvm.free.Interpreter
 import hammock.circe.implicits._
 
@@ -51,7 +52,7 @@ object HttpClient {
   implicit val interpreter = Interpreter()
 
   val response = Hammock
-    .request(Method.GET, "https://api.fidesmo.com/apps", Map()) // In the `request` method, you describe your HTTP request
+    .request(Method.GET, uri"https://api.fidesmo.com/apps", Map()) // In the `request` method, you describe your HTTP request
     .exec[Try]
     .as[List[String]]
 }
