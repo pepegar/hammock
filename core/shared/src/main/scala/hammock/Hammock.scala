@@ -41,8 +41,8 @@ object Hammock {
   def optionsWithOpts(uri: Uri, opts: Opts): HttpRequestIO[HttpResponse] = withOpts(Method.OPTIONS, uri, opts)
   def getWithOpts(uri: Uri, opts: Opts): HttpRequestIO[HttpResponse] = withOpts(Method.GET, uri, opts)
   def headWithOpts(uri: Uri, opts: Opts): HttpRequestIO[HttpResponse] = withOpts(Method.HEAD, uri, opts)
-  def postWithOpts(uri: Uri, opts: Opts): HttpRequestIO[HttpResponse] = withOpts(Method.POST, uri, opts)
-  def putWithOpts(uri: Uri, opts: Opts): HttpRequestIO[HttpResponse] = withOpts(Method.PUT, uri, opts)
+  def postWithOpts[A : Codec](uri: Uri, opts: Opts, body: Option[A] = None): HttpRequestIO[HttpResponse] = withOpts(Method.POST, uri, opts, body)
+  def putWithOpts[A : Codec](uri: Uri, opts: Opts, body: Option[A] = None): HttpRequestIO[HttpResponse] = withOpts(Method.PUT, uri, opts, body)
   def deleteWithOpts(uri: Uri, opts: Opts): HttpRequestIO[HttpResponse] = withOpts(Method.DELETE, uri, opts)
   def traceWithOpts(uri: Uri, opts: Opts): HttpRequestIO[HttpResponse] = withOpts(Method.TRACE, uri, opts)
 
