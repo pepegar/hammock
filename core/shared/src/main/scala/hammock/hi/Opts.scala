@@ -23,10 +23,6 @@ object Opts {
     val headers = GenLens[Opts](_.headers)
 
     val cookiesOpt = GenLens[Opts](_.cookies)
-    val cookies = Optional[Opts, List[Cookie]] {
-      case Opts(_, _, None) => None
-      case Opts(_, _, s@Some(_)) => s
-    } (cookies => (s => cookiesOpt.set(Some(cookies))(s)))
 
   }
 
