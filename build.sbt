@@ -4,7 +4,18 @@ licenses in ThisBuild := Seq(("MIT", url("http://opensource.org/licenses/MIT")))
 
 val scalaVersions = Seq("2.11.8", "2.12.0")
 
-val circeVersion = "0.7.0"
+val versions = Map(
+  "circe" -> "0.7.0",
+  "monocle" -> "1.4.0",
+  "atto" -> "0.5.2",
+  "cats" -> "0.9.0",
+  "scalatest" -> "3.0.1",
+  "scalacheck" -> "1.13.4",
+  "discipline" -> "0.7.3",
+  "macro-paradise" -> "2.1.0",
+  "kind-projector" -> "0.9.4"
+)
+
 val micrositeSettings = Seq(
   micrositeName := "Hammock",
   micrositeDescription := "Purely functional HTTP client",
@@ -14,21 +25,19 @@ val micrositeSettings = Seq(
   micrositeGithubRepo := "hammock",
   micrositeHighlightTheme := "tomorrow"
 )
-val monocleVersion = "1.4.0"
-val attoVersion = "0.5.2"
 
 val commonSettings = Seq(
   libraryDependencies ++= Seq(
-    "org.typelevel" %% "cats" % "0.9.0",
-    "com.github.julien-truffaut" %%  "monocle-core"  % monocleVersion,
-    "com.github.julien-truffaut" %%  "monocle-macro" % monocleVersion,
-    "org.tpolecat" %% "atto-core" % attoVersion,
-    "org.tpolecat" %% "atto-compat-cats" % attoVersion,
-    compilerPlugin("org.scalamacros" %% "paradise" % "2.1.0" cross CrossVersion.full),
-    compilerPlugin("org.spire-math" %% "kind-projector" % "0.9.3"),
-    "org.scalatest" %% "scalatest" % "3.0.1" % "test",
-    "org.scalacheck" %% "scalacheck" % "1.13.4" % "test",
-    "org.typelevel" %% "discipline" % "0.7.3" % "test"
+    "org.typelevel" %% "cats" % versions("cats"),
+    "com.github.julien-truffaut" %%  "monocle-core"  % versions("monocle"),
+    "com.github.julien-truffaut" %%  "monocle-macro" % versions("monocle"),
+    "org.tpolecat" %% "atto-core" % versions("atto"),
+    "org.tpolecat" %% "atto-compat-cats" % versions("atto"),
+    compilerPlugin("org.scalamacros" %% "paradise" % versions("macro-paradise") cross CrossVersion.full),
+    compilerPlugin("org.spire-math" %% "kind-projector" % versions("kind-projector")),
+    "org.scalatest" %% "scalatest" % versions("scalatest") % "test",
+    "org.scalacheck" %% "scalacheck" % versions("scalacheck") % "test",
+    "org.typelevel" %% "discipline" % versions("discipline") % "test"
   ),
   bintrayRepository := "com.pepegar"
 )
@@ -63,12 +72,12 @@ lazy val readme = (project in file("tut"))
 lazy val core = crossProject.in(file("core"))
   .settings(moduleName := "hammock-core")
   .settings(commonSettings: _*)
+  .settings(crossScalaVersions := scalaVersions)
   .jvmSettings(
-  libraryDependencies ++= Seq(
-    "org.apache.httpcomponents" % "httpclient" % "4.5.2",
-    "org.mockito" % "mockito-all" % "1.10.18" % "test"
-  ),
-    crossScalaVersions := scalaVersions
+    libraryDependencies ++= Seq(
+      "org.apache.httpcomponents" % "httpclient" % "4.5.2",
+      "org.mockito" % "mockito-all" % "1.10.18" % "test"
+    )
   )
   .jsSettings(libraryDependencies += "org.scala-js" %%% "scalajs-dom" % "0.9.1")
   .settings(scalacOptions ++= Seq(
@@ -94,12 +103,12 @@ lazy val hammockCirce = crossProject.in(file("hammock-circe"))
   .settings(moduleName := "hammock-circe")
   .settings(scalaVersion := "2.11.8")
   .settings(commonSettings: _*)
-  .jvmSettings(crossScalaVersions := scalaVersions)
+  .settings(crossScalaVersions := scalaVersions)
   .settings(libraryDependencies ++= Seq(
     "io.circe" %% "circe-core",
     "io.circe" %% "circe-generic",
     "io.circe" %% "circe-parser"
-  ).map(_ % circeVersion))
+  ).map(_ % versions("circe")))
   .dependsOn(core)
 
 lazy val hammockCirceJVM = hammockCirce.jvm
@@ -115,12 +124,12 @@ lazy val exampleJS = project.in(file("example-js"))
   .settings(scalaVersion := "2.11.8")
   .settings(noPublishSettings: _*)
   .settings(libraryDependencies ++= Seq(
-    "org.typelevel" %%% "cats" % "0.8.1",
-    "io.circe" %%% "circe-core" % circeVersion,
-    "io.circe" %%% "circe-generic" % circeVersion,
-    "io.circe" %%% "circe-parser" % circeVersion,
-    "org.tpolecat" %%% "atto-core" % attoVersion,
-    "org.tpolecat" %%% "atto-compat-cats" % attoVersion,
+    "org.typelevel" %%% "cats" % versions("cats"),
+    "io.circe" %%% "circe-core" % versions("circe"),
+    "io.circe" %%% "circe-generic" % versions("circe"),
+    "io.circe" %%% "circe-parser" % versions("circe"),
+    "org.tpolecat" %%% "atto-core" % versions("atto"),
+    "org.tpolecat" %%% "atto-compat-cats" % versions("atto"),
     "org.scala-js" %%% "scalajs-dom" % "0.9.1",
     "be.doeraene" %%% "scalajs-jquery" % "0.9.1"
   ))
