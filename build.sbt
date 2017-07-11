@@ -1,77 +1,29 @@
-organization in ThisBuild := "com.pepegar"
-scalaVersion in ThisBuild := "2.11.8"
-licenses in ThisBuild := Seq(("MIT", url("http://opensource.org/licenses/MIT")))
-
-val scalaVersions = Seq("2.11.8", "2.12.0")
-
-val circeVersion = "0.7.0"
-val micrositeSettings = Seq(
-  micrositeName := "Hammock",
-  micrositeDescription := "Purely functional HTTP client",
-  micrositeBaseUrl := "hammock",
-  micrositeDocumentationUrl := "/hammock/docs.html",
-  micrositeGithubOwner := "pepegar",
-  micrositeGithubRepo := "hammock",
-  micrositeHighlightTheme := "tomorrow"
-)
-val monocleVersion = "1.4.0"
-val attoVersion = "0.5.2"
-
-val commonSettings = Seq(
-  libraryDependencies ++= Seq(
-    "org.typelevel" %% "cats" % "0.9.0",
-    "com.github.julien-truffaut" %%  "monocle-core"  % monocleVersion,
-    "com.github.julien-truffaut" %%  "monocle-macro" % monocleVersion,
-    "org.tpolecat" %% "atto-core" % attoVersion,
-    "org.tpolecat" %% "atto-compat-cats" % attoVersion,
-    compilerPlugin("org.scalamacros" %% "paradise" % "2.1.0" cross CrossVersion.full),
-    compilerPlugin("org.spire-math" %% "kind-projector" % "0.9.3"),
-    "org.scalatest" %% "scalatest" % "3.0.1" % "test",
-    "org.scalacheck" %% "scalacheck" % "1.13.4" % "test",
-    "org.typelevel" %% "discipline" % "0.7.3" % "test"
-  ),
-  bintrayRepository := "com.pepegar"
+val Versions = Map(
+  "circe" -> "0.7.0",
+  "monocle" -> "1.4.0",
+  "atto" -> "0.5.2",
+  "cats" -> "0.9.0",
+  "scalatest" -> "3.0.1",
+  "scalacheck" -> "1.13.4",
+  "discipline" -> "0.7.3",
+  "macro-paradise" -> "2.1.0",
+  "kind-projector" -> "0.9.4"
 )
 
-lazy val docs = project.in(file("docs"))
-  .dependsOn(coreJVM, hammockCirceJVM)
-  .settings(moduleName := "hammock-docs")
-  .settings(micrositeSettings: _*)
-  .settings(noPublishSettings: _*)
-  .enablePlugins(MicrositesPlugin)
 
-lazy val readmeSettings = tutSettings ++ Seq(
-    tutSourceDirectory := baseDirectory.value,
-    tutTargetDirectory := baseDirectory.value.getParentFile,
-    tutScalacOptions ~= (_.filterNot(Set("-Ywarn-unused-import", "-Ywarn-dead-code"))),
-    tutScalacOptions ++= (scalaBinaryVersion.value match {
-      case "2.10" => Seq("-Xdivergence211")
-      case _      => Nil
-    }),
-    tutNameFilter := """README.md""".r
-  )
+val noPublishSettings = Seq(
+  publish := (),
+  publishLocal := (),
+  publishArtifact := false
+)
 
-lazy val readme = (project in file("tut"))
-  .settings(
-    moduleName := "hammock-readme"
-  )
-  .dependsOn(coreJVM, hammockCirceJVM)
-  .settings(readmeSettings: _*)
-  .settings(noPublishSettings)
-
-
-lazy val core = crossProject.in(file("core"))
-  .settings(moduleName := "hammock-core")
-  .settings(commonSettings: _*)
-  .jvmSettings(
-  libraryDependencies ++= Seq(
-    "org.apache.httpcomponents" % "httpclient" % "4.5.2",
-    "org.mockito" % "mockito-all" % "1.10.18" % "test"
-  ),
-    crossScalaVersions := scalaVersions
-  )
-  .jsSettings(libraryDependencies += "org.scala-js" %%% "scalajs-dom" % "0.9.1")
-  .settings(scalacOptions ++= Seq(
+val buildSettings = Seq(
+  organization  := "com.pepegar",
+  scalaVersion  := "2.12.1",
+  licenses  := Seq(("MIT", url("http://opensource.org/licenses/MIT"))),
+  crossScalaVersions := Seq("2.11.8", "2.12.1"),
+  bintrayRepository := "com.pepegar",
+  scalacOptions ++= Seq(
     "-encoding", "UTF-8", // 2 args
     "-feature",
     "-language:existentials",
@@ -84,51 +36,112 @@ lazy val core = crossProject.in(file("core"))
     "-Yno-adapted-args",
     "-Ywarn-dead-code",
     "-Ywarn-value-discard"
-  ))
-  .settings(scalaVersion := "2.11.8")
+  )
+)
+
+val commonDependencies = Seq(
+  libraryDependencies ++= Seq(
+    "org.typelevel" %% "cats" % Versions("cats"),
+    "com.github.julien-truffaut" %%  "monocle-core"  % Versions("monocle"),
+    "com.github.julien-truffaut" %%  "monocle-macro" % Versions("monocle"),
+    "org.tpolecat" %% "atto-core" % Versions("atto"),
+    "org.tpolecat" %% "atto-compat-cats" % Versions("atto"),
+    "org.scalatest" %% "scalatest" % Versions("scalatest") % "test",
+    "org.scalacheck" %% "scalacheck" % Versions("scalacheck") % "test",
+    "org.typelevel" %% "discipline" % Versions("discipline") % "test",
+    compilerPlugin("org.scalamacros" %% "paradise" % Versions("macro-paradise") cross CrossVersion.full),
+    compilerPlugin("org.spire-math" %% "kind-projector" % Versions("kind-projector"))
+  )
+)
+
+lazy val hammock = project.in(file("."))
+  .settings(buildSettings)
+  .settings(noPublishSettings)
+  .dependsOn(coreJVM, coreJS, circeJVM, circeJS)
+  .aggregate(coreJVM, coreJS, circeJVM, circeJS)
+  .enablePlugins(ScalaUnidocPlugin)
+
+
+lazy val core = crossProject.in(file("core"))
+  .settings(moduleName := "hammock-core")
+  .settings(buildSettings: _*)
+  .settings(commonDependencies: _*)
+  .jvmSettings(
+    libraryDependencies ++= Seq(
+      "org.apache.httpcomponents" % "httpclient" % "4.5.2",
+      "org.mockito" % "mockito-all" % "1.10.18" % "test"
+    )
+  )
+  .jsSettings(libraryDependencies += "org.scala-js" %%% "scalajs-dom" % "0.9.1")
 
 lazy val coreJVM = core.jvm
 lazy val coreJS = core.js
 
-lazy val hammockCirce = crossProject.in(file("hammock-circe"))
+lazy val circe = crossProject.in(file("hammock-circe"))
   .settings(moduleName := "hammock-circe")
-  .settings(scalaVersion := "2.11.8")
-  .settings(commonSettings: _*)
-  .jvmSettings(crossScalaVersions := scalaVersions)
+  .settings(buildSettings: _*)
+  .settings(commonDependencies: _*)
   .settings(libraryDependencies ++= Seq(
     "io.circe" %% "circe-core",
     "io.circe" %% "circe-generic",
     "io.circe" %% "circe-parser"
-  ).map(_ % circeVersion))
+  ).map(_ % Versions("circe")))
   .dependsOn(core)
 
-lazy val hammockCirceJVM = hammockCirce.jvm
-lazy val hammockCirceJS = hammockCirce.js
+lazy val circeJVM = circe.jvm
+lazy val circeJS = circe.js
+
+lazy val docs = project.in(file("docs"))
+  .dependsOn(coreJVM, circeJVM)
+  .settings(moduleName := "hammock-docs")
+  .settings(buildSettings: _*)
+  .settings(noPublishSettings: _*)
+  .settings(
+    micrositeName := "Hammock",
+    micrositeDescription := "Purely functional HTTP client",
+    micrositeBaseUrl := "hammock",
+    micrositeDocumentationUrl := "/hammock/docs.html",
+    micrositeGithubOwner := "pepegar",
+    micrositeGithubRepo := "hammock",
+    micrositeHighlightTheme := "tomorrow"
+  )
+  .enablePlugins(MicrositesPlugin)
+
+lazy val readme = (project in file("tut"))
+  .settings(moduleName := "hammock-readme")
+  .dependsOn(coreJVM, circeJVM)
+  .settings(tutSettings: _*)
+  .settings(buildSettings: _*)
+  .settings(noPublishSettings: _*)
+  .settings(
+    tutSourceDirectory := baseDirectory.value,
+    tutTargetDirectory := baseDirectory.value.getParentFile,
+    tutScalacOptions ~= (_.filterNot(Set("-Ywarn-unused-import", "-Ywarn-dead-code"))),
+    tutScalacOptions ++= (scalaBinaryVersion.value match {
+      case "2.10" => Seq("-Xdivergence211")
+      case _      => Nil
+    }),
+    tutNameFilter := """README.md""".r
+  )
 
 lazy val example = project.in(file("example"))
-  .settings(scalaVersion := "2.11.8")
+  .settings(buildSettings: _*)
   .settings(noPublishSettings: _*)
-  .dependsOn(coreJVM, hammockCirceJVM)
+  .dependsOn(coreJVM, circeJVM)
 
 lazy val exampleJS = project.in(file("example-js"))
   .enablePlugins(ScalaJSPlugin)
-  .settings(scalaVersion := "2.11.8")
+  .settings(buildSettings: _*)
   .settings(noPublishSettings: _*)
   .settings(libraryDependencies ++= Seq(
-    "org.typelevel" %%% "cats" % "0.8.1",
-    "io.circe" %%% "circe-core" % circeVersion,
-    "io.circe" %%% "circe-generic" % circeVersion,
-    "io.circe" %%% "circe-parser" % circeVersion,
-    "org.tpolecat" %%% "atto-core" % attoVersion,
-    "org.tpolecat" %%% "atto-compat-cats" % attoVersion,
+    "org.typelevel" %%% "cats" % Versions("cats"),
+    "io.circe" %%% "circe-core" % Versions("circe"),
+    "io.circe" %%% "circe-generic" % Versions("circe"),
+    "io.circe" %%% "circe-parser" % Versions("circe"),
+    "org.tpolecat" %%% "atto-core" % Versions("atto"),
+    "org.tpolecat" %%% "atto-compat-cats" % Versions("atto"),
     "org.scala-js" %%% "scalajs-dom" % "0.9.1",
     "be.doeraene" %%% "scalajs-jquery" % "0.9.1"
   ))
   .settings(jsDependencies += "org.webjars" % "jquery" % "2.1.3" / "2.1.3/jquery.js")
-  .dependsOn(coreJS, hammockCirceJS)
-
-val noPublishSettings = Seq(
-  publish := (),
-  publishLocal := (),
-  publishArtifact := false
-)
+  .dependsOn(coreJS, circeJS)
