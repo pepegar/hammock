@@ -1,3 +1,5 @@
+import ReleaseTransformations._
+
 val Versions = Map(
   "circe" -> "0.7.0",
   "monocle" -> "1.4.0",
@@ -17,12 +19,54 @@ val noPublishSettings = Seq(
   publishArtifact := false
 )
 
+val publishSettings = Seq(
+  publishMavenStyle := true,
+    publishTo := {
+    val nexus = "https://oss.sonatype.org/"
+    if (isSnapshot.value)
+      Some("snapshots" at nexus + "content/repositories/snapshots")
+    else
+      Some("releases"  at nexus + "service/local/staging/deploy/maven2")
+  },
+  publishArtifact in Test := false,
+  homepage := Some(url("https://github.com/pepegar/hammock")),
+  pomIncludeRepository := Function.const(false),
+  pomExtra := (
+    <scm>
+      <url>git@github.com:pepegar/hammock.git</url>
+      <connection>scm:git:git@github.com:pepegar/hammock.git</connection>
+    </scm>
+    <developers>
+      <developer>
+        <id>pepegar</id>
+        <name>Pepe García</name>
+        <url>http://pepegar.com</url>
+      </developer>
+    </developers>
+  ),
+  releaseCrossBuild := true,
+  releasePublishArtifactsAction := PgpKeys.publishSigned.value,
+  releaseProcess := Seq[ReleaseStep](
+    checkSnapshotDependencies,
+    inquireVersions,
+    runClean,
+    runTest,
+    setReleaseVersion,
+    commitReleaseVersion,
+    tagRelease,
+    ReleaseStep(action = Command.process("publishSigned", _)),
+    setNextVersion,
+    commitNextVersion,
+    ReleaseStep(action = Command.process("sonatypeReleaseAll", _)),
+    pushChanges
+  )
+)
+
 val buildSettings = Seq(
   organization  := "com.pepegar",
   scalaVersion  := "2.12.1",
   licenses  := Seq(("MIT", url("http://opensource.org/licenses/MIT"))),
   crossScalaVersions := Seq("2.11.8", "2.12.1"),
-  bintrayRepository := "com.pepegar",
   scalacOptions ++= Seq(
     "-encoding", "UTF-8", // 2 args
     "-feature",
@@ -66,6 +110,7 @@ lazy val core = crossProject.in(file("core"))
   .settings(moduleName := "hammock-core")
   .settings(buildSettings: _*)
   .settings(commonDependencies: _*)
+  .settings(publishSettings: _*)
   .jvmSettings(
     libraryDependencies ++= Seq(
       "org.apache.httpcomponents" % "httpclient" % "4.5.2",
@@ -81,6 +126,7 @@ lazy val circe = crossProject.in(file("hammock-circe"))
   .settings(moduleName := "hammock-circe")
   .settings(buildSettings: _*)
   .settings(commonDependencies: _*)
+  .settings(publishSettings: _*)
   .settings(libraryDependencies ++= Seq(
     "io.circe" %% "circe-core",
     "io.circe" %% "circe-generic",
