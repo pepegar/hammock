@@ -29,6 +29,7 @@ val publishSettings = Seq(
       Some("releases"  at nexus + "service/local/staging/deploy/maven2")
   },
   publishArtifact in Test := false,
+  useGpg := true,
   homepage := Some(url("https://github.com/pepegar/hammock")),
   pomIncludeRepository := Function.const(false),
   pomExtra := (
