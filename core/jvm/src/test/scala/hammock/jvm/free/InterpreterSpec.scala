@@ -47,7 +47,7 @@ class InterpreterSpec extends WordSpec with MockitoSugar with BeforeAndAfter {
 
         val op = operation(Uri(path=""), Map())
 
-        val k = op foldMap[Kleisli[Try, HttpClient, ?]] interp.transK[Try]
+        val k = op.foldMap[Kleisli[Try, HttpClient, ?]](interp.transK[Try])
 
         val transkResult = k.run(client).get
         val transResult = (op foldMap interp.trans[Try]).get
@@ -62,7 +62,7 @@ class InterpreterSpec extends WordSpec with MockitoSugar with BeforeAndAfter {
 
       val op = Ops.get(Uri(path=""), Map())
 
-      val k = op foldMap[Kleisli[Try, HttpClient, ?]] interp.transK[Try]
+      val k = op.foldMap[Kleisli[Try, HttpClient, ?]](interp.transK[Try])
 
       val result = (op foldMap interp.trans[Try]).get
 
