@@ -13,13 +13,11 @@ Hammock is yet another HTTP client for Scala.  Under the hood it's a purely func
 Add the following to your `build.sbt`.
 
 ```scala
-resolvers += Resolver.jcenterRepo
-
-// For Scala 2.11 or 2.12
-libraryDependencies += "com.pepegar" %% "hammock-core" % "0.2"
+// For Scala 2.10, 2.11, or 2.12
+libraryDependencies += "com.pepegar" %% "hammock-core" % "0.6.3"
 
 // For ScalaJS
-libraryDependencies += "com.pepegar" %%% "hammock-core" % "0.2"
+libraryDependencies += "com.pepegar" %%% "hammock-core" % "0.6.3"
 ```
 
 

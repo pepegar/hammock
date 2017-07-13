@@ -10,10 +10,8 @@ section: "Home"
 Just add the following to your `libraryDependencies` in SBT:
 
 ```
-resolvers += Resolver.jcenterRepo
-
-libraryDependencies += "com.pepegar" %% "hammock" % "0.1" // for JVM
-libraryDependencies += "com.pepegar" %%% "hammock" % "0.1" // for JS
+libraryDependencies += "com.pepegar" %% "hammock" % "0.6.3" // for JVM
+libraryDependencies += "com.pepegar" %%% "hammock" % "0.6.3" // for JS
 ```
 
 ## Modules
@@ -22,8 +20,8 @@ There are already some companion modules implemented to ease the
 experience of using hammock.
 
 ```
-libraryDependencies += "com.pepegar" %% "hammock-circe" % "0.1" // for JVM
-libraryDependencies += "com.pepegar" %%% "hammock-circe" % "0.1" // for JS
+libraryDependencies += "com.pepegar" %% "hammock-circe" % "0.6.3" // for JVM
+libraryDependencies += "com.pepegar" %%% "hammock-circe" % "0.6.3" // for JS
 ```
 
 ## Functional programming
