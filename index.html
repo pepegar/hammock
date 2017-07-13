@@ -2,10 +2,8 @@
 
 <p>Just add the following to your <code class="highlighter-rouge">libraryDependencies</code> in SBT:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>resolvers += Resolver.jcenterRepo
-
-libraryDependencies += "com.pepegar" %% "hammock" % "0.1" // for JVM
-libraryDependencies += "com.pepegar" %%% "hammock" % "0.1" // for JS
+<div class="highlighter-rouge"><pre class="highlight"><code>libraryDependencies += "com.pepegar" %% "hammock" % "0.6.3" // for JVM
+libraryDependencies += "com.pepegar" %%% "hammock" % "0.6.3" // for JS
 </code></pre>
 </div>
 
@@ -14,8 +12,8 @@ libraryDependencies += "com.pepegar" %%% "hammock" % "0.1" // for JS
 <p>There are already some companion modules implemented to ease the
 experience of using hammock.</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>libraryDependencies += "com.pepegar" %% "hammock-circe" % "0.1" // for JVM
-libraryDependencies += "com.pepegar" %%% "hammock-circe" % "0.1" // for JS
+<div class="highlighter-rouge"><pre class="highlight"><code>libraryDependencies += "com.pepegar" %% "hammock-circe" % "0.6.3" // for JVM
+libraryDependencies += "com.pepegar" %%% "hammock-circe" % "0.6.3" // for JS
 </code></pre>
 </div>
 
@@ -55,7 +53,7 @@ you know how to use them!</p>
 </div>
 
 <div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="n">scala</span><span class="o">&gt;</span> <span class="nc">HttpClient</span><span class="o">.</span><span class="n">response</span>
-<span class="n">res2</span><span class="k">:</span> <span class="kt">scala.util.Try</span><span class="o">[</span><span class="kt">List</span><span class="o">[</span><span class="kt">String</span><span class="o">]]</span> <span class="k">=</span> <span class="nc">Success</span><span class="o">(</span><span class="nc">List</span><span class="o">(</span><span class="mi">0</span><span class="n">cdc651e</span><span class="o">,</span> <span class="mf">42286d</span><span class="mi">75</span><span class="o">,</span> <span class="mf">4f</span><span class="mi">97</span><span class="n">a2e9</span><span class="o">,</span> <span class="mi">54</span><span class="n">bf6aa9</span><span class="o">,</span> <span class="mf">61f</span><span class="n">c54d5</span><span class="o">,</span> <span class="mi">94</span><span class="n">c3cd60</span><span class="o">,</span> <span class="n">dd69cf53</span><span class="o">,</span> <span class="n">fc6de645</span><span class="o">))</span>
+<span class="n">res2</span><span class="k">:</span> <span class="kt">scala.util.Try</span><span class="o">[</span><span class="kt">List</span><span class="o">[</span><span class="kt">String</span><span class="o">]]</span> <span class="k">=</span> <span class="nc">Success</span><span class="o">(</span><span class="nc">List</span><span class="o">(</span><span class="mi">0</span><span class="n">cdc651e</span><span class="o">,</span> <span class="mf">42286d</span><span class="mi">75</span><span class="o">,</span> <span class="mf">4f</span><span class="mi">97</span><span class="n">a2e9</span><span class="o">,</span> <span class="mi">54</span><span class="n">bf6aa9</span><span class="o">,</span> <span class="mi">61</span><span class="n">b4b03d</span><span class="o">,</span> <span class="mf">61f</span><span class="n">c54d5</span><span class="o">,</span> <span class="mi">94</span><span class="n">c3cd60</span><span class="o">,</span> <span class="n">dd69cf53</span><span class="o">,</span> <span class="n">fc6de645</span><span class="o">))</span>
 </code></pre>
 </div>
 

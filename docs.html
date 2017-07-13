@@ -39,8 +39,7 @@ related to logging</p>
     <span class="o">}</span>
   <span class="o">}</span>
 <span class="o">}</span>
-<span class="c1">// warning: there were three feature warnings; re-run with -feature for details
-// defined object Log
+<span class="c1">// defined object Log
 </span></code></pre>
 </div>
 
@@ -194,13 +193,13 @@ your requests.</p>
 <span class="c1">// import cats.implicits._
 </span>
 <span class="k">implicit</span> <span class="k">val</span> <span class="n">interp</span> <span class="k">=</span> <span class="nc">Interpreter</span><span class="o">()</span>
-<span class="c1">// interp: hammock.jvm.free.Interpreter = hammock.jvm.free.Interpreter@497f9a54
+<span class="c1">// interp: hammock.jvm.free.Interpreter = hammock.jvm.free.Interpreter@71a22094
 </span>
 <span class="k">val</span> <span class="n">opts</span> <span class="k">=</span> <span class="o">(</span><span class="n">header</span><span class="o">(</span><span class="s">"user"</span> <span class="o">-&gt;</span> <span class="s">"pepegar"</span><span class="o">)</span> <span class="o">&amp;&gt;</span> <span class="n">cookie</span><span class="o">(</span><span class="nc">Cookie</span><span class="o">(</span><span class="s">"track"</span><span class="o">,</span> <span class="s">"a lot"</span><span class="o">)))(</span><span class="nc">Opts</span><span class="o">.</span><span class="n">default</span><span class="o">)</span>
-<span class="c1">// opts: hammock.hi.Opts = Opts(None,Map(user -&gt; pepegar),None)
+<span class="c1">// opts: hammock.hi.Opts = Opts(None,Map(user -&gt; pepegar),Some(List(Cookie(track,a lot,None,None,None,None,None,None,None,None))))
 </span>
 <span class="k">val</span> <span class="n">response</span> <span class="k">=</span> <span class="nc">Hammock</span><span class="o">.</span><span class="n">getWithOpts</span><span class="o">(</span><span class="nc">Uri</span><span class="o">.</span><span class="n">unsafeParse</span><span class="o">(</span><span class="s">"http://httpbin.org/get"</span><span class="o">),</span> <span class="n">opts</span><span class="o">).</span><span class="n">exec</span><span class="o">[</span><span class="kt">Try</span><span class="o">]</span>
-<span class="c1">// response: scala.util.Try[hammock.HttpResponse] = Success(HttpResponse(Status(200,OK,OK),Map(Access-Control-Allow-Origin -&gt; *, Server -&gt; gunicorn/19.7.1, Access-Control-Allow-Credentials -&gt; true, Connection -&gt; keep-alive, Content-Length -&gt; 293, Via -&gt; 1.1 vegur, Content-Type -&gt; application/json, Date -&gt; Mon, 03 Apr 2017 16:16:45 GMT),{  "args": {},   "headers": {    "Accept-Encoding": "gzip,deflate",     "Connection": "close",     "Host": "httpbin.org",     "User": "pepegar,pepegar",     "User-Agent": "Apache-HttpClient/4.5.2 (Java/1.8.0_77)"  },   "origin": "79.153.126.148",   "url": "http://httpbin.org/get"}))
+<span class="c1">// response: scala.util.Try[hammock.HttpResponse] = Success(HttpResponse(Status(200,OK,OK),Map(Access-Control-Allow-Origin -&gt; *, Server -&gt; meinheld/0.6.1, Access-Control-Allow-Credentials -&gt; true, X-Processed-Time -&gt; 0.00125598907471, Connection -&gt; keep-alive, Content-Length -&gt; 318, Via -&gt; 1.1 vegur, Content-Type -&gt; application/json, Date -&gt; Thu, 13 Jul 2017 07:57:04 GMT, X-Powered-By -&gt; Flask),{  "args": {},   "headers": {    "Accept-Encoding": "gzip,deflate",     "Connection": "close",     "Host": "httpbin.org",     "Set-Cookie": "track=a lot",     "User": "pepegar",     "User-Agent": "Apache-HttpClient/4.5.2 (Java/1.8.0_131)"  },   "origin": "83.36.143.84",   "url": "http://httpbin.org/get"}))
 </span></code></pre>
 </div>
 
@@ -270,7 +269,7 @@ combinator of <code class="highlighter-rouge">Function1</code>.  Also, Hammock p
     <span class="n">cookie</span><span class="o">(</span><span class="nc">Cookie</span><span class="o">(</span><span class="s">"track"</span><span class="o">,</span> <span class="s">"A lot"</span><span class="o">))</span> <span class="o">&amp;&gt;</span>
     <span class="n">header</span><span class="o">(</span><span class="s">"user"</span> <span class="o">-&gt;</span> <span class="s">"potatoman"</span><span class="o">)</span>
 <span class="o">}</span>
-<span class="c1">// req: hammock.hi.Opts =&gt; hammock.hi.Opts = &lt;function1&gt;
+<span class="c1">// req: hammock.hi.Opts =&gt; hammock.hi.Opts = scala.Function1$$Lambda$1800/779173018@32fe24c1
 </span></code></pre>
 </div>
 
