@@ -123,7 +123,8 @@ lazy val core = crossProject.in(file("core"))
 lazy val coreJVM = core.jvm
 lazy val coreJS = core.js
 
-lazy val circe = crossProject.in(file("hammock-circe"))
+lazy val circe = crossProject.crossType(CrossType.Pure)
+  .in(file("hammock-circe"))
   .settings(moduleName := "hammock-circe")
   .settings(buildSettings: _*)
   .settings(commonDependencies: _*)
