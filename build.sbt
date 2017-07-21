@@ -1,5 +1,7 @@
 import ReleaseTransformations._
 
+import sbtcrossproject.{crossProject, CrossType}
+
 val Versions = Map(
   "circe" -> "0.7.0",
   "monocle" -> "1.4.0",
@@ -84,7 +86,20 @@ val buildSettings = Seq(
   )
 )
 
-val commonDependencies = Seq(
+val scalaJSDependencies = Seq(
+  libraryDependencies ++= Seq(
+    "org.typelevel" %%% "cats" % Versions("cats"),
+    "com.github.julien-truffaut" %%%  "monocle-core"  % Versions("monocle"),
+    "com.github.julien-truffaut" %%%  "monocle-macro" % Versions("monocle"),
+    "org.tpolecat" %%% "atto-core" % Versions("atto"),
+    "org.tpolecat" %%% "atto-compat-cats" % Versions("atto"),
+    "org.scalatest" %%% "scalatest" % Versions("scalatest") % "test",
+    "org.scalacheck" %%% "scalacheck" % Versions("scalacheck") % "test",
+    "org.typelevel" %%% "discipline" % Versions("discipline") % "test"
+  )
+)
+
+val jvmDependencies = Seq(
   libraryDependencies ++= Seq(
     "org.typelevel" %% "cats" % Versions("cats"),
     "com.github.julien-truffaut" %%  "monocle-core"  % Versions("monocle"),
@@ -93,7 +108,12 @@ val commonDependencies = Seq(
     "org.tpolecat" %% "atto-compat-cats" % Versions("atto"),
     "org.scalatest" %% "scalatest" % Versions("scalatest") % "test",
     "org.scalacheck" %% "scalacheck" % Versions("scalacheck") % "test",
-    "org.typelevel" %% "discipline" % Versions("discipline") % "test",
+    "org.typelevel" %% "discipline" % Versions("discipline") % "test"
+  )
+)
+
+val compilerPlugins = Seq(
+  libraryDependencies ++= Seq(
     compilerPlugin("org.scalamacros" %% "paradise" % Versions("macro-paradise") cross CrossVersion.full),
     compilerPlugin("org.spire-math" %% "kind-projector" % Versions("kind-projector"))
   )
@@ -107,33 +127,42 @@ lazy val hammock = project.in(file("."))
   .enablePlugins(ScalaUnidocPlugin)
 
 
-lazy val core = crossProject.in(file("core"))
+lazy val core = crossProject(JSPlatform, JVMPlatform)
+  .crossType(CrossType.Full)
+  .in(file("core"))
   .settings(moduleName := "hammock-core")
   .settings(buildSettings: _*)
-  .settings(commonDependencies: _*)
+  .settings(jvmDependencies: _*)
+  .settings(compilerPlugins: _*)
   .settings(publishSettings: _*)
+  .jsSettings(scalaJSDependencies: _*)
+  .jsSettings(
+    libraryDependencies += "org.scala-js" %%% "scalajs-dom" % "0.9.1"
+  )
   .jvmSettings(
     libraryDependencies ++= Seq(
       "org.apache.httpcomponents" % "httpclient" % "4.5.2",
       "org.mockito" % "mockito-all" % "1.10.18" % "test"
     )
   )
-  .jsSettings(libraryDependencies += "org.scala-js" %%% "scalajs-dom" % "0.9.1")
 
 lazy val coreJVM = core.jvm
 lazy val coreJS = core.js
 
-lazy val circe = crossProject.crossType(CrossType.Pure)
+lazy val circe = crossProject(JSPlatform, JVMPlatform)
+  .crossType(CrossType.Pure)
   .in(file("hammock-circe"))
   .settings(moduleName := "hammock-circe")
   .settings(buildSettings: _*)
-  .settings(commonDependencies: _*)
+  .settings(jvmDependencies: _*)
+  .settings(compilerPlugins: _*)
   .settings(publishSettings: _*)
   .settings(libraryDependencies ++= Seq(
     "io.circe" %% "circe-core",
     "io.circe" %% "circe-generic",
     "io.circe" %% "circe-parser"
   ).map(_ % Versions("circe")))
+  .jsSettings(scalaJSDependencies: _*)
   .dependsOn(core)
 
 lazy val circeJVM = circe.jvm
@@ -181,15 +210,6 @@ lazy val exampleJS = project.in(file("example-js"))
   .enablePlugins(ScalaJSPlugin)
   .settings(buildSettings: _*)
   .settings(noPublishSettings: _*)
-  .settings(libraryDependencies ++= Seq(
-    "org.typelevel" %%% "cats" % Versions("cats"),
-    "io.circe" %%% "circe-core" % Versions("circe"),
-    "io.circe" %%% "circe-generic" % Versions("circe"),
-    "io.circe" %%% "circe-parser" % Versions("circe"),
-    "org.tpolecat" %%% "atto-core" % Versions("atto"),
-    "org.tpolecat" %%% "atto-compat-cats" % Versions("atto"),
-    "org.scala-js" %%% "scalajs-dom" % "0.9.1",
-    "be.doeraene" %%% "scalajs-jquery" % "0.9.1"
-  ))
+  .settings(libraryDependencies += "be.doeraene" %%% "scalajs-jquery" % "0.9.2")
   .settings(jsDependencies += "org.webjars" % "jquery" % "2.1.3" / "2.1.3/jquery.js")
   .dependsOn(coreJS, circeJS)
