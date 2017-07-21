@@ -86,7 +86,7 @@ val buildSettings = Seq(
   )
 )
 
-val scalaJSDependencies = Seq(
+val commonDependencies = Seq(
   libraryDependencies ++= Seq(
     "org.typelevel" %%% "cats" % Versions("cats"),
     "com.github.julien-truffaut" %%%  "monocle-core"  % Versions("monocle"),
@@ -96,19 +96,6 @@ val scalaJSDependencies = Seq(
     "org.scalatest" %%% "scalatest" % Versions("scalatest") % "test",
     "org.scalacheck" %%% "scalacheck" % Versions("scalacheck") % "test",
     "org.typelevel" %%% "discipline" % Versions("discipline") % "test"
-  )
-)
-
-val jvmDependencies = Seq(
-  libraryDependencies ++= Seq(
-    "org.typelevel" %% "cats" % Versions("cats"),
-    "com.github.julien-truffaut" %%  "monocle-core"  % Versions("monocle"),
-    "com.github.julien-truffaut" %%  "monocle-macro" % Versions("monocle"),
-    "org.tpolecat" %% "atto-core" % Versions("atto"),
-    "org.tpolecat" %% "atto-compat-cats" % Versions("atto"),
-    "org.scalatest" %% "scalatest" % Versions("scalatest") % "test",
-    "org.scalacheck" %% "scalacheck" % Versions("scalacheck") % "test",
-    "org.typelevel" %% "discipline" % Versions("discipline") % "test"
   )
 )
 
@@ -132,10 +119,9 @@ lazy val core = crossProject(JSPlatform, JVMPlatform)
   .in(file("core"))
   .settings(moduleName := "hammock-core")
   .settings(buildSettings: _*)
-  .settings(jvmDependencies: _*)
+  .settings(commonDependencies: _*)
   .settings(compilerPlugins: _*)
   .settings(publishSettings: _*)
-  .jsSettings(scalaJSDependencies: _*)
   .jsSettings(
     libraryDependencies += "org.scala-js" %%% "scalajs-dom" % "0.9.1"
   )
@@ -154,7 +140,7 @@ lazy val circe = crossProject(JSPlatform, JVMPlatform)
   .in(file("hammock-circe"))
   .settings(moduleName := "hammock-circe")
   .settings(buildSettings: _*)
-  .settings(jvmDependencies: _*)
+  .settings(commonDependencies: _*)
   .settings(compilerPlugins: _*)
   .settings(publishSettings: _*)
   .settings(libraryDependencies ++= Seq(
@@ -162,7 +148,6 @@ lazy val circe = crossProject(JSPlatform, JVMPlatform)
     "io.circe" %% "circe-generic",
     "io.circe" %% "circe-parser"
   ).map(_ % Versions("circe")))
-  .jsSettings(scalaJSDependencies: _*)
   .dependsOn(core)
 
 lazy val circeJVM = circe.jvm
