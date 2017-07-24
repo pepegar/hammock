@@ -140,14 +140,14 @@ lazy val circe = crossProject(JSPlatform, JVMPlatform)
   .in(file("hammock-circe"))
   .settings(moduleName := "hammock-circe")
   .settings(buildSettings: _*)
+  .settings(publishSettings: _*)
   .settings(commonDependencies: _*)
   .settings(compilerPlugins: _*)
-  .settings(publishSettings: _*)
   .settings(libraryDependencies ++= Seq(
-    "io.circe" %% "circe-core",
-    "io.circe" %% "circe-generic",
-    "io.circe" %% "circe-parser"
-  ).map(_ % Versions("circe")))
+    "io.circe" %%% "circe-core" % Versions("circe"),
+    "io.circe" %%% "circe-generic" % Versions("circe"),
+    "io.circe" %%% "circe-parser" % Versions("circe"))
+  )
   .dependsOn(core)
 
 lazy val circeJVM = circe.jvm
