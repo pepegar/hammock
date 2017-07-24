@@ -25,10 +25,7 @@ class CirceCodecSpec extends WordSpec with Matchers {
     }
 
     "fail to parse an invalid value" in {
-      Codec[Dummy].decode("this is of course not valid") match {
-        case Left(ex) => ex.getMessage shouldEqual "expected true got t (line 1, column 1)"
-        case _ => fail("should never reach this point")
-      }
+      Codec[Dummy].decode("this is of course not valid") shouldBe a[Left[String, Dummy]]
     }
   }
   

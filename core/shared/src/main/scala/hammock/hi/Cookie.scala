@@ -1,7 +1,6 @@
 package hammock
 package hi
 
-import java.text.SimpleDateFormat
 import java.util.Date
 import monocle.macros.Lenses
 
@@ -43,7 +42,7 @@ object Cookie {
   /**
     * renders a cookie in the Set-Cookie header format
     */
-  def render(cookie: Cookie): String = {
+  def render(cookie: Cookie)(implicit fmt: DateFormatter): String = {
     def renderPair[S : Show](k: String)(v: S) = k ++ "=" ++ Show[S].show(v)
     def maybeShowDate(date: Option[Date]): Option[String] = date map (date => fmt.format(date))
     def expires = maybeShowDate(cookie.expires) map renderPair("Expires")
@@ -64,6 +63,4 @@ object Cookie {
 
     (s"${renderPair(cookie.name)(cookie.value)}" :: maybes ::: custom).mkString("; ")
   }
-
-  private val fmt = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss Z")
 }
