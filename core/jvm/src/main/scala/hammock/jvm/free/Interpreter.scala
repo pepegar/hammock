@@ -8,14 +8,15 @@ import cats._
 import cats.data._
 import cats.syntax.show._
 
-import java.io.{ BufferedReader, InputStream, InputStreamReader }
-import org.apache.http.Header
+import java.io.{BufferedReader, InputStream, InputStreamReader}
 
+import org.apache.http.Header
 import org.apache.http.client.HttpClient
 import org.apache.http.client.methods._
 import org.apache.http.entity.StringEntity
 import org.apache.http.impl.client.HttpClientBuilder
 import org.apache.http.message.BasicHeader
+import org.apache.http.util.EntityUtils
 
 class Interpreter(client: HttpClient) extends InterpTrans {
 
@@ -43,9 +44,11 @@ class Interpreter(client: HttpClient) extends InterpTrans {
       }
 
       val resp = client.execute(req)
-      val body = responseContentToString(resp.getEntity().getContent())
+      val entity = resp.getEntity
+      val body = responseContentToString(entity.getContent())
       val status = Status.get(resp.getStatusLine.getStatusCode)
       val responseHeaders = resp.getAllHeaders().map(h => h.getName -> h.getValue).toMap
+      EntityUtils.consume(entity)
 
       HttpResponse(status, responseHeaders, body)
     }
