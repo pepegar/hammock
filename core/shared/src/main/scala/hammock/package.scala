@@ -21,4 +21,13 @@ package object hammock {
       }
     }
   }
+
+  implicit class HttpResponseToDecodeIOSyntax[T : Codec](fa: Free[HttpRequestF, HttpResponseToDecode[T]]) {
+    def exec[F[_]](implicit interp: InterpTrans, ME: MonadError[F, Throwable]): F[T] =
+      fa.foldMap(interp.trans(ME)).map(_.response).as[T]
+  }
+
+  implicit class HttpResponseAs[A](fa: Free[HttpRequestF, HttpResponse]) {
+    def as[T : Codec]: Free[HttpRequestF, HttpResponseToDecode[T]] = fa.map(HttpResponseToDecode.apply[T])
+  }
 }
