@@ -5,8 +5,8 @@ import cats.~>
 import cats.effect.Sync
 import algebra.HttpRequestF
 
-trait InterpTrans {
+trait InterpTrans[F[_]] {
 
-  def trans[F[_]: Sync]: HttpRequestF ~> F
+  def trans(implicit S: Sync[F]): HttpRequestF ~> F
 
 }

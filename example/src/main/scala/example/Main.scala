@@ -3,6 +3,7 @@ package example
 import cats.Eval
 import cats.data.EitherT
 import cats.implicits._
+import cats.effect._
 
 import hammock._
 import hammock.free._
@@ -10,6 +11,7 @@ import hammock.jvm.free._
 import hammock.circe.implicits._
 
 import scala.util.{ Failure, Success }
+import scala.concurrent.ExecutionContext.Implicits.global
 
 import io.circe._
 import io.circe.generic.auto._
@@ -17,25 +19,23 @@ import io.circe.generic.auto._
 object Main extends App {
   import Codec._
 
-  implicit val interpTrans = Interpreter()
-  type Target[A] = EitherT[Eval, Throwable, A]
-  def Target = EitherT
+  implicit val interpTrans = Interpreter[IO]
 
   case class Resp(data: String)
   case class Data(name: String, number: Int)
 
-  val uriFromString: Target[Uri] = Target.fromEither[Eval](Uri.fromString("http://httpbin.org/post").leftMap(new Exception(_)))
+  val uriFromString: IO[Uri] = Sync[IO].delay(Uri.unsafeParse("http://httpbin.org/post"))
 
-  val request: Target[Resp] = uriFromString >>= { uri =>
+  val request: IO[Resp] = uriFromString >>= { uri =>
     Hammock
       .request(Method.POST, uri, Map(), Some(Data("name", 4).encode))
-      .exec[Target]
+      .exec[IO]
       .as[Resp]
 
   }
 
-  request.value.value match {
-    case Right(x) => println(s"$x")
-    case Left(ex) => ex.printStackTrace
-  }
+  request.unsafeToFuture.onComplete(_ match {
+    case Success(x) => println(s"$x")
+    case Failure(ex) => ex.printStackTrace
+  })
 }

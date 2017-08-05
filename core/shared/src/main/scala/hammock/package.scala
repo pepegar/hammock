@@ -8,7 +8,7 @@ package object hammock {
   import hammock.free.InterpTrans
 
   implicit class HttpRequestIOSyntax[A](fa: Free[HttpRequestF, A]) {
-    def exec[F[_]: Sync](implicit interp: InterpTrans) =
+    def exec[F[_]: Sync](implicit interp: InterpTrans[F]) =
       fa foldMap interp.trans
   }
 

@@ -19,14 +19,14 @@ import org.apache.http.impl.client.HttpClientBuilder
 import org.apache.http.message.BasicHeader
 import org.apache.http.util.EntityUtils
 
-class Interpreter(client: HttpClient) extends InterpTrans {
+class Interpreter[F[_]](client: HttpClient) extends InterpTrans[F] {
 
   import hammock.free.algebra._
   import Uri._
 
-  override def trans[F[_]: Sync] = transK andThen λ[Kleisli[F, HttpClient, ?] ~> F](_.run(client))
+  override def trans(implicit S: Sync[F]) = transK andThen λ[Kleisli[F, HttpClient, ?] ~> F](_.run(client))
 
-  def transK[F[_]: Sync]: HttpRequestF ~> Kleisli[F, HttpClient, ?] = λ[HttpRequestF ~> Kleisli[F, HttpClient, ?]](_ match {
+  def transK(implicit S: Sync[F]): HttpRequestF ~> Kleisli[F, HttpClient, ?] = λ[HttpRequestF ~> Kleisli[F, HttpClient, ?]](_ match {
     case req@Options(uri, headers) => doReq(req)
     case req@Get(uri, headers) => doReq(req)
     case req@Head(uri, headers) => doReq(req)
@@ -36,7 +36,7 @@ class Interpreter(client: HttpClient) extends InterpTrans {
     case req@Trace(uri, headers) => doReq(req)
   })
 
-  private def doReq[F[_]: Sync](reqF: HttpRequestF[HttpResponse]): Kleisli[F, HttpClient, HttpResponse] = Kleisli { client =>
+  private def doReq(reqF: HttpRequestF[HttpResponse])(implicit S: Sync[F]): Kleisli[F, HttpClient, HttpResponse] = Kleisli { client =>
     Sync[F].delay {
       val req = getApacheRequest(reqF)
       reqF.headers.foreach {
@@ -103,5 +103,5 @@ class Interpreter(client: HttpClient) extends InterpTrans {
 object Interpreter {
   implicit val client = HttpClientBuilder.create().build()
 
-  def apply(): Interpreter = new Interpreter(client)
+  def apply[F[_]]: Interpreter[F] = new Interpreter[F](client)
 }

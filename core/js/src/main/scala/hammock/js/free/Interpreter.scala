@@ -11,12 +11,12 @@ import cats.data._
 import cats.syntax.show._
 import cats.effect.Sync
 
-object Interpreter extends InterpTrans {
+class Interpreter[F[_]] extends InterpTrans[F] {
 
   import Uri._
   import algebra._
 
-  override def trans[F[_]: Sync]: HttpRequestF ~> F = λ[HttpRequestF ~> F](_ match {
+  override def trans(implicit S: Sync[F]): HttpRequestF ~> F = λ[HttpRequestF ~> F](_ match {
     case req@Options(url, headers) => doReq(req, Method.OPTIONS)
     case req@Get(url, headers) => doReq(req, Method.GET)
     case req@Head(url, headers) => doReq(req, Method.HEAD)
@@ -26,7 +26,7 @@ object Interpreter extends InterpTrans {
     case req@Trace(url, headers) => doReq(req, Method.TRACE)
   })
 
-  private def doReq[F[_]: Sync](req: HttpRequestF[HttpResponse], method: Method): F[HttpResponse] = Sync[F].delay {
+  private def doReq(req: HttpRequestF[HttpResponse], method: Method)(implicit S: Sync[F]): F[HttpResponse] = S.delay {
     val xhr = new dom.XMLHttpRequest()
     val async = false // asynchronicity should be handled by the concurrency monad `F`, not the HTTP driver
 
@@ -48,4 +48,8 @@ object Interpreter extends InterpTrans {
     val Array(k, v) = line.split(": ")
     (k, v)
     } toMap
-} 
+}
+
+object Interpreter {
+  def apply[F[_]]: Interpreter[F] = new Interpreter[F]
+}
