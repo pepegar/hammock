@@ -7,6 +7,7 @@ import hammock.free._
 import cats._
 import cats.data._
 import cats.syntax.show._
+import cats.effect.Sync
 
 import java.io.{BufferedReader, InputStream, InputStreamReader}
 
@@ -23,9 +24,9 @@ class Interpreter(client: HttpClient) extends InterpTrans {
   import hammock.free.algebra._
   import Uri._
 
-  override def trans[F[_]](implicit ME: MonadError[F, Throwable]) = transK andThen λ[Kleisli[F, HttpClient, ?] ~> F](_.run(client))
+  override def trans[F[_]: Sync] = transK andThen λ[Kleisli[F, HttpClient, ?] ~> F](_.run(client))
 
-  def transK[F[_]](implicit ME: MonadError[F, Throwable]): HttpRequestF ~> Kleisli[F, HttpClient, ?] = λ[HttpRequestF ~> Kleisli[F, HttpClient, ?]](_ match {
+  def transK[F[_]: Sync]: HttpRequestF ~> Kleisli[F, HttpClient, ?] = λ[HttpRequestF ~> Kleisli[F, HttpClient, ?]](_ match {
     case req@Options(uri, headers) => doReq(req)
     case req@Get(uri, headers) => doReq(req)
     case req@Head(uri, headers) => doReq(req)
@@ -35,8 +36,8 @@ class Interpreter(client: HttpClient) extends InterpTrans {
     case req@Trace(uri, headers) => doReq(req)
   })
 
-  private def doReq[F[_]](reqF: HttpRequestF[HttpResponse])(implicit ME: MonadError[F, Throwable]): Kleisli[F, HttpClient, HttpResponse] = Kleisli { client =>
-    ME.catchNonFatal {
+  private def doReq[F[_]: Sync](reqF: HttpRequestF[HttpResponse]): Kleisli[F, HttpClient, HttpResponse] = Kleisli { client =>
+    Sync[F].delay {
       val req = getApacheRequest(reqF)
       reqF.headers.foreach {
         case (k, v) =>
