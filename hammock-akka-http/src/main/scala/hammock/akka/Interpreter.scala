@@ -11,16 +11,16 @@ import _root_.akka.http.scaladsl.client.RequestBuilding.RequestBuilder
 import _root_.akka.util.ByteString
 import scala.concurrent.{ Await, ExecutionContext, Future }
 
-import cats.{~>, MonadError}
+import cats.{~>, Eval}
 import cats.syntax.show._
+import cats.effect.{Sync, Async, IO}
 
 import hammock.free._
 import hammock.free.algebra._
-import scala.concurrent.duration.Duration
 
-class AkkaInterpreter(implicit system: ActorSystem, materializer: ActorMaterializer, timeout: Duration, executionContext: ExecutionContext) extends InterpTrans {
+class AkkaInterpreter[F[_]: Async](implicit system: ActorSystem, materializer: ActorMaterializer, executionContext: ExecutionContext) extends InterpTrans[F] {
 
-  def trans[F[_]](implicit ME: MonadError[F,Throwable]): HttpRequestF ~> F = new (HttpRequestF ~> F) {
+  def trans(implicit S: Sync[F]): HttpRequestF ~> F = new (HttpRequestF ~> F) {
     def apply[A](req: HttpRequestF[A]): F[A] = req match {
       case req@Options(url, headers) => doReq(req)
       case req@Get(url, headers) => doReq(req)
@@ -32,8 +32,7 @@ class AkkaInterpreter(implicit system: ActorSystem, materializer: ActorMateriali
     }
   }
 
-  def doReq[F[_]](req: HttpRequestF[HttpResponse])(implicit ME: MonadError[F, Throwable]): F[HttpResponse] = {
-    // 1. construct the request
+  def doReq(req: HttpRequestF[HttpResponse]): F[HttpResponse] = {
     val method = req.method match {
       case Method.OPTIONS => HttpMethods.OPTIONS
       case Method.GET => HttpMethods.GET
@@ -50,13 +49,11 @@ class AkkaInterpreter(implicit system: ActorSystem, materializer: ActorMateriali
       case None => new RequestBuilder(method)(Uri(req.uri.show))
     }
 
-    // 2. execute it
     val responseFuture = Http()
       .singleRequest(HttpRequest(uri = "http://akka.io"))
       .flatMap(transformResponse)
 
-
-    ME.catchNonFatal(Await.result(responseFuture, timeout))
+    IO.fromFuture(Eval.later(responseFuture)).to[F]
   }
 
   def transformResponse(akkaResp: AkkaResponse): Future[HttpResponse] = {
