@@ -7,6 +7,7 @@ import org.scalajs.jquery.jQuery
 import cats._
 import cats.free._
 import cats.implicits._
+import cats.data.EitherT
 
 import hammock._
 import hammock.free._
@@ -25,23 +26,28 @@ object Main extends JSApp {
     case class Resp(json: String)
     case class Data(name: String, number: Int)
 
-    val uriFromString: Try[Uri] = Uri.fromString("http://httpbin.org/post").leftMap(new Exception(_)).toTry
 
-    val request: Try[Resp] = uriFromString >>= { uri =>
+    type Target[A] = EitherT[Eval, Throwable, A]
+    def Target = EitherT
+
+
+    val uriFromString: Target[Uri] = Target.fromEither(Uri.fromString("http://httpbin.org/post").leftMap(new Exception(_)))
+
+    val request: Target[Resp] = uriFromString >>= { uri =>
       Hammock
         .request(Method.POST, uri, Map(), Some(Data("name", 4).encode))
-        .exec[Try]
+        .exec[Target]
         .as[Resp]
     }
 
-    request match {
-      case Success(resp) =>
+    request.value.value match {
+      case Right(resp) =>
         val dec = Codec[Data].decode(resp.json)
         jQuery("#result").append(s"""
 <h3>Data you sent to the server:</h3>
 <pre>$dec</pre>
 """)
-      case Failure(ex) => ex.printStackTrace
+      case Left(ex) => ex.printStackTrace
     }
   }
 }

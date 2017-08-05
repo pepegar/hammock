@@ -28,7 +28,6 @@ class InterpreterSpec extends WordSpec with MockitoSugar with BeforeAndAfter {
 
   type Target[A] = EitherT[Eval, Throwable, A]
   def Target = EitherT
-  implicit val targetM = implicitly[Monad[Target]]
 
   after {
     reset(client)
