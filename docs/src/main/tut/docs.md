@@ -29,13 +29,13 @@ object Log {
   case class Info(msg: String) extends LogF[Unit]
   case class Error(msg: String) extends LogF[Unit]
 
-  class LogC[F[_]](implicit I: Inject[LogF, F]) {
+  class LogC[F[_]](implicit I: InjectK[LogF, F]) {
     def info(msg: String): Free[F, Unit] = Free.inject(Info(msg))
     def error(msg: String): Free[F, Unit] = Free.inject(Error(msg))
   }
 
   object LogC {
-    implicit def logC[F[_]](implicit I: Inject[LogF, F]): LogC[F] = new LogC[F]
+    implicit def logC[F[_]](implicit I: InjectK[LogF, F]): LogC[F] = new LogC[F]
   }
 
   def interp[F[_]](implicit ME: MonadError[F, Throwable]): LogF ~> F = new (LogF ~> F) {
@@ -57,13 +57,13 @@ object IO {
   case object Read extends IOF[String]
   case class Write(msg: String) extends IOF[Unit]
 
-  class IOC[F[_]](implicit I: Inject[IOF, F]) {
+  class IOC[F[_]](implicit I: InjectK[IOF, F]) {
     def read: Free[F, String] = Free.inject(Read)
     def write(str: String): Free[F, Unit] = Free.inject(Write(str))
   }
 
   object IOC {
-    implicit def ioC[F[_]](implicit I: Inject[IOF, F]): IOC[F] = new IOC[F]
+    implicit def ioC[F[_]](implicit I: InjectK[IOF, F]): IOC[F] = new IOC[F]
   }
 
   import scala.io.StdIn._
@@ -80,7 +80,7 @@ object IO {
 ## Combining our effects
 
 And finally, we should need to build everything together. For that
-purpose, we will need a `Coproduct`. This datatype basically tells the
+purpose, we will need a `EitherK`. This datatype basically tells the
 typesystem about our effects, saying that our `Eff` type can be either
 a `Log` or a `IO` value.
 
@@ -89,7 +89,7 @@ object App {
   import IO._
   import Log._
 
-  type Eff[A] = Coproduct[LogF, IOF, A]
+  type Eff[A] = EitherK[LogF, IOF, A]
 
   val name = "pepegar"
 
@@ -127,8 +127,8 @@ object App {
   import hammock.free.algebra._
   import hammock.jvm.free._
 
-  type Eff1[A] = Coproduct[LogF, IOF, A]
-  type Eff[A] = Coproduct[HttpRequestF, Eff1, A]
+  type Eff1[A] = EitherK[LogF, IOF, A]
+  type Eff[A] = EitherK[HttpRequestF, Eff1, A]
 
   def program(implicit
     Log: LogC[Eff],

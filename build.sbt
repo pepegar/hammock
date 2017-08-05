@@ -6,7 +6,7 @@ val Versions = Map(
   "circe" -> "0.7.0",
   "monocle" -> "1.4.0",
   "atto" -> "0.5.2",
-  "cats" -> "0.9.0",
+  "cats" -> "1.0.0-MF",
   "scalatest" -> "3.0.1",
   "scalacheck" -> "1.13.4",
   "discipline" -> "0.7.3",
@@ -88,7 +88,10 @@ val buildSettings = Seq(
 
 val commonDependencies = Seq(
   libraryDependencies ++= Seq(
-    "org.typelevel" %%% "cats" % Versions("cats"),
+    "org.typelevel" %%% "cats-core" % Versions("cats"),
+    "org.typelevel" %%% "cats-free" % Versions("cats"),
+    "org.typelevel" %%% "cats-laws" % Versions("cats"),
+    "com.github.mpilquist" %%% "simulacrum" % "0.10.0",
     "com.github.julien-truffaut" %%%  "monocle-core"  % Versions("monocle"),
     "com.github.julien-truffaut" %%%  "monocle-macro" % Versions("monocle"),
     "org.tpolecat" %%% "atto-core" % Versions("atto"),
