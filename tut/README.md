@@ -38,7 +38,7 @@ Hammock tries to differentiate from other libraries with the following:
 ```tut:silent
 import cats._
 import cats.implicits._
-import scala.util.{ Failure, Success, Try }
+import cats.data.EitherT
 import io.circe._
 import io.circe.generic.auto._
 import hammock._
@@ -50,9 +50,11 @@ import hammock.circe.implicits._
 object HttpClient {
   implicit val interpreter = Interpreter()
 
+  type Target[A] = EitherT[Eval, Throwable, A]
+
   val response = Hammock
     .request(Method.GET, Uri.unsafeParse("https://api.fidesmo.com/apps"), Map()) // In the `request` method, you describe your HTTP request
-    .exec[Try]
+    .exec[Target]
     .as[List[String]]
 }
 ```

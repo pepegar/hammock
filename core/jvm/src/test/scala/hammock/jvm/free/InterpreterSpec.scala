@@ -2,8 +2,6 @@ package hammock
 package jvm
 package free
 
-import cats.data.Kleisli
-
 import hammock.free._
 import org.apache.http.ProtocolVersion
 import org.apache.http.client.HttpClient
@@ -14,9 +12,10 @@ import org.scalatest._
 import org.scalatest.mockito._
 import org.mockito.{Matchers => MM, _}
 import org.mockito.Mockito._
-import scala.util.Try
 import cats._
 import cats.implicits._
+import cats.data.{Kleisli, EitherT}
+
 
 class InterpreterSpec extends WordSpec with MockitoSugar with BeforeAndAfter {
   import HttpResponse._
@@ -26,6 +25,9 @@ class InterpreterSpec extends WordSpec with MockitoSugar with BeforeAndAfter {
 
   val client = mock[HttpClient]
   val interp = new Interpreter(client)
+
+  type Target[A] = EitherT[Eval, Throwable, A]
+  def Target = EitherT
 
   after {
     reset(client)
@@ -47,10 +49,12 @@ class InterpreterSpec extends WordSpec with MockitoSugar with BeforeAndAfter {
 
         val op = operation(Uri(path=""), Map())
 
-        val k = op.foldMap[Kleisli[Try, HttpClient, ?]](interp.transK[Try])
+        implicit def monadKleisli[A] = Kleisli.catsDataMonadForKleisli[Target, A]
 
-        val transkResult = k.run(client).get
-        val transResult = (op foldMap interp.trans[Try]).get
+        val k = op.foldMap[Kleisli[Target, HttpClient, ?]](interp.transK[Target])
+
+        val transkResult = k.run(client).value.value.right.get
+        val transResult = (op foldMap interp.trans[Target]).value.value.right.get
 
         assert(Eq[HttpResponse].eqv(transkResult, transResult))
       }
@@ -62,9 +66,11 @@ class InterpreterSpec extends WordSpec with MockitoSugar with BeforeAndAfter {
 
       val op = Ops.get(Uri(path=""), Map())
 
-      val k = op.foldMap[Kleisli[Try, HttpClient, ?]](interp.transK[Try])
+      implicit def monadKleisli[A] = Kleisli.catsDataMonadForKleisli[Target, A]
 
-      val result = (op foldMap interp.trans[Try]).get
+      val k = op.foldMap[Kleisli[Target, HttpClient, ?]](interp.transK[Target])
+
+      val result = (op foldMap interp.trans[Target]).value.value.right.get
 
       assert(result.status == Status.OK)
       assert(result.headers == Map())

@@ -40,7 +40,7 @@ With Hammock you can do HTTP operations in a typeful and functional way.
 ```tut:silent
 import cats._
 import cats.implicits._
-import scala.util.{ Failure, Success, Try }
+import cats.data.EitherT
 import io.circe._
 import io.circe.generic.auto._
 import hammock._
@@ -52,22 +52,27 @@ import hammock.circe.implicits._
 
 object HttpClient {
   implicit val interp = Interpreter()
+  
+  type Target[A] = EitherT[Eval, Throwable, A]
 
   val response = Hammock
     .getWithOpts(Uri.unsafeParse("https://api.fidesmo.com/apps"), Opts.default)
-    .exec[Try]
+    .exec[Target]
     .as[List[String]]
 }
 ```
 
 ```tut
-HttpClient.response
+HttpClient.response.value.value
 ```
 
 ## Target Monad
 
+Hammock uses cats-effect's `Sync` under the hood to provide a safe way
+of capturing effects when interpreting your programs.
+
 You can use as a target monad any type `F` that has an instance of
-`MonadError[F, Throwable]`.  There are already several types you can
+`Sync`.  There are already several types you can
 use out of the box, for example:
 
 * `Future`: There are lots of applications out there that express
