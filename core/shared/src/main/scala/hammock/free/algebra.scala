@@ -52,7 +52,7 @@ object algebra {
     def trace(uri: Uri, headers: Map[String, String]): HttpRequestIO[HttpResponse] = Free.liftF(Trace(uri, headers))
   }
 
-  class HttpRequestC[F[_]](implicit I: Inject[HttpRequestF, F]) {
+  class HttpRequestC[F[_]](implicit I: InjectK[HttpRequestF, F]) {
     def options(uri: Uri, headers: Map[String, String]): Free[F, HttpResponse] = Free.inject(Options(uri, headers))
     def get(uri: Uri, headers: Map[String, String]): Free[F, HttpResponse] = Free.inject(Get(uri, headers))
     def head(uri: Uri, headers: Map[String, String]): Free[F, HttpResponse] = Free.inject(Head(uri, headers))
@@ -63,7 +63,7 @@ object algebra {
   }
 
   object HttpRequestC {
-    implicit def httpRequestC[F[_]](implicit I: Inject[HttpRequestF, F]): HttpRequestC[F] = new HttpRequestC[F]
+    implicit def httpRequestC[F[_]](implicit I: InjectK[HttpRequestF, F]): HttpRequestC[F] = new HttpRequestC[F]
   }
 
 }
