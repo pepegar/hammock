@@ -14,6 +14,7 @@ As always, start with some imports
 import cats._
 import cats.free._
 import cats.data._
+import cats.effect.Sync
 ```
 
 ## Algebras
@@ -38,10 +39,10 @@ object Log {
     implicit def logC[F[_]](implicit I: InjectK[LogF, F]): LogC[F] = new LogC[F]
   }
 
-  def interp[F[_]](implicit ME: MonadError[F, Throwable]): LogF ~> F = new (LogF ~> F) {
+  def interp[F[_]: Sync]: LogF ~> F = new (LogF ~> F) {
     def apply[A](logF: LogF[A]): F[A] =  logF match {
-      case Info(msg) => ME.catchNonFatal(println(s"[info]: $msg"))
-      case Error(msg) => ME.catchNonFatal(println(s"[error]: $msg"))
+      case Info(msg) => Sync[F].delay(println(s"[info]: $msg"))
+      case Error(msg) => Sync[F].delay(println(s"[error]: $msg"))
     }
   }
 }
@@ -68,10 +69,10 @@ object IO {
 
   import scala.io.StdIn._
 
-  def interp[F[_]](implicit ME: MonadError[F, Throwable]): IOF ~> F = new (IOF ~> F) {
+  def interp[F[_]: Sync]: IOF ~> F = new (IOF ~> F) {
     def apply[A](ioF: IOF[A]): F[A] = ioF match {
-      case Read => ME.catchNonFatal(readLine : String)
-      case Write(msg) => ME.catchNonFatal(println(s"$msg"))
+      case Read => Sync[F].delay(readLine : String)
+      case Write(msg) => Sync[F].delay(println(s"$msg"))
     }
   }
 }
@@ -99,7 +100,7 @@ object App {
     _ <- IO.write(s"hello $name")
   } yield name
 
-  def interp[F[_]](implicit ME: MonadError[F, Throwable]): Eff ~> F = Log.interp or IO.interp
+  def interp[F[_]: Sync]: Eff ~> F = Log.interp or IO.interp
 }
 ```
 
@@ -107,8 +108,10 @@ You could use this as follows:
 
 ```tut
 import cats.implicits._
-import scala.util.Try
-App.program foldMap App.interp[Try]
+
+type Target[A] = EitherT[Eval, Throwable, A]
+
+App.program foldMap App.interp[Target]
 ```
 
 ## Interleaving Hammock in a Free program
@@ -141,18 +144,21 @@ object App {
     response <- Hammock.get(Uri.unsafeParse(s"https://jsonplaceholder.typicode.com/users?id=${id.toString}"), Map())
   } yield response
 
-  def interp1[F[_]](implicit ME: MonadError[F, Throwable]): Eff1 ~> F = Log.interp(ME) or IO.interp(ME)
-  def interp[F[_]](implicit ME: MonadError[F, Throwable]): Eff ~> F = Interpreter().trans(ME) or interp1(ME) // interpret Hammock's effects
+  def interp1[F[_]: Sync]: Eff1 ~> F = Log.interp or IO.interp
+  def interp[F[_]: Sync]: Eff ~> F = Interpreter().trans or interp1 // interpret Hammock's effects
 }
 ```
 
 ### Result
 
 ```tut
-import scala.util.Try
 import cats.implicits._
 
-App.program foldMap App.interp[Try]
+type Target[A] = EitherT[Eval, Throwable, A]
+
+val result = App.program foldMap App.interp[Target]
+
+result.value.value
 ```
 
 
@@ -178,9 +184,11 @@ import cats.implicits._
 
 implicit val interp = Interpreter()
 
+type Target[A] = EitherT[Eval, Throwable, A]
+
 val opts = (header("user" -> "pepegar") &> cookie(Cookie("track", "a lot")))(Opts.default)
 
-val response = Hammock.getWithOpts(Uri.unsafeParse("http://httpbin.org/get"), opts).exec[Try]
+val response = Hammock.getWithOpts(Uri.unsafeParse("http://httpbin.org/get"), opts).exec[Target]
 ```
 
 ## Opts
@@ -290,7 +298,7 @@ Currently, this interface is implemented for `circe` codecs, so you
 can just grab `hammock-circe`:
 
 ```
-libraryDependencies += "hammock" %% "hammock-circe" % "0.1"
+libraryDependencies += "hammock" %% "hammock-circe" % "0.6.4"
 ```
 
 And use it directly:
