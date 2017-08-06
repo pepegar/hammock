@@ -9,7 +9,7 @@ import _root_.akka.stream.ActorMaterializer
 import _root_.akka.http.scaladsl.model.HttpMethods
 import _root_.akka.http.scaladsl.client.RequestBuilding.RequestBuilder
 import _root_.akka.util.ByteString
-import scala.concurrent.{ Await, ExecutionContext, Future }
+import scala.concurrent.{ ExecutionContext, Future }
 
 import cats.{~>, Eval}
 import cats.syntax.show._
@@ -50,7 +50,7 @@ class AkkaInterpreter[F[_]: Async](implicit system: ActorSystem, materializer: A
     }
 
     val responseFuture = Http()
-      .singleRequest(HttpRequest(uri = "http://akka.io"))
+      .singleRequest(request)
       .flatMap(transformResponse)
 
     IO.fromFuture(Eval.later(responseFuture)).to[F]
