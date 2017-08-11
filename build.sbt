@@ -164,9 +164,11 @@ lazy val akka = project.in(file("hammock-akka-http"))
   .settings(moduleName := "hammock-akka-http")
   .settings(buildSettings: _*)
   .settings(commonDependencies: _*)
+  .settings(compilerPlugins: _*)
   .settings(publishSettings: _*)
   .settings(libraryDependencies ++= Seq(
-    "com.typesafe.akka" %% "akka-http" % Versions("akka-http")
+    "com.typesafe.akka" %% "akka-http" % Versions("akka-http"),
+    "org.mockito" % "mockito-all" % "1.10.18" % "test"
   ))
   .dependsOn(coreJVM)
 

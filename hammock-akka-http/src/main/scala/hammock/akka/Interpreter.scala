@@ -3,8 +3,8 @@ package akka
 
 import _root_.akka.http
 import _root_.akka.actor.ActorSystem
-import _root_.akka.http.scaladsl.Http
-import _root_.akka.http.scaladsl.model.{HttpResponse => AkkaResponse, StatusCode => AkkaStatus, _}
+import _root_.akka.http.scaladsl.{Http, HttpExt}
+import _root_.akka.http.scaladsl.model.{HttpResponse => AkkaResponse, HttpRequest => AkkaRequest, StatusCode => AkkaStatus, _}
 import _root_.akka.stream.ActorMaterializer
 import _root_.akka.http.scaladsl.model.HttpMethods
 import _root_.akka.http.scaladsl.client.RequestBuilding.RequestBuilder
@@ -13,26 +13,37 @@ import scala.concurrent.{ ExecutionContext, Future }
 
 import cats.{~>, Eval}
 import cats.syntax.show._
+import cats.data.Kleisli
 import cats.effect.{Sync, Async, IO}
 
 import hammock.free._
 import hammock.free.algebra._
 
-class AkkaInterpreter[F[_]: Async](implicit system: ActorSystem, materializer: ActorMaterializer, executionContext: ExecutionContext) extends InterpTrans[F] {
+class AkkaInterpreter[F[_]: Async](client: HttpExt)(implicit system: ActorSystem, materializer: ActorMaterializer, executionContext: ExecutionContext) extends InterpTrans[F] {
 
-  def trans(implicit S: Sync[F]): HttpRequestF ~> F = new (HttpRequestF ~> F) {
-    def apply[A](req: HttpRequestF[A]): F[A] = req match {
-      case req@Options(url, headers) => doReq(req)
-      case req@Get(url, headers) => doReq(req)
-      case req@Head(url, headers) => doReq(req)
-      case req@Post(url, headers, body) => doReq(req)
-      case req@Put(url, headers, body) => doReq(req)
-      case req@Delete(url, headers) => doReq(req)
-      case req@Trace(url, headers) => doReq(req)
-    }
+  def trans(implicit S: Sync[F]): HttpRequestF ~> F = transK andThen λ[Kleisli[F, HttpExt, ?] ~> F](_.run(client))
+
+  def transK(implicit S: Sync[F]): HttpRequestF ~> Kleisli[F, HttpExt, ?] = λ[HttpRequestF ~> Kleisli[F, HttpExt, ?]]({
+    case req@Options(uri, headers) => doReq(req)
+    case req@Get(uri, headers) => doReq(req)
+    case req@Head(uri, headers) => doReq(req)
+    case req@Post(uri, headers, body) => doReq(req)
+    case req@Put(uri, headers, body) => doReq(req)
+    case req@Delete(uri, headers) => doReq(req)
+    case req@Trace(uri, headers) => doReq(req)
+  })
+
+  def doReq(req: HttpRequestF[HttpResponse]): Kleisli[F, HttpExt, HttpResponse] = Kleisli { http =>
+    val akkaRequest = transformRequest(req)
+
+    val responseFuture = http
+      .singleRequest(akkaRequest)
+      .flatMap(transformResponse)
+
+    IO.fromFuture(Eval.later(responseFuture)).to[F]
   }
 
-  def doReq(req: HttpRequestF[HttpResponse]): F[HttpResponse] = {
+  def transformRequest(req: HttpRequestF[HttpResponse]): AkkaRequest = {
     val method = req.method match {
       case Method.OPTIONS => HttpMethods.OPTIONS
       case Method.GET => HttpMethods.GET
@@ -44,16 +55,10 @@ class AkkaInterpreter[F[_]: Async](implicit system: ActorSystem, materializer: A
       case Method.CONNECT => HttpMethods.CONNECT
     }
 
-    val request = req.body match {
+    req.body match {
       case Some(body) => new RequestBuilder(method)(Uri(req.uri.show), HttpEntity.Strict(ContentTypes.`application/json`, ByteString.fromString(body)))
       case None => new RequestBuilder(method)(Uri(req.uri.show))
     }
-
-    val responseFuture = Http()
-      .singleRequest(request)
-      .flatMap(transformResponse)
-
-    IO.fromFuture(Eval.later(responseFuture)).to[F]
   }
 
   def transformResponse(akkaResp: AkkaResponse): Future[HttpResponse] = {
