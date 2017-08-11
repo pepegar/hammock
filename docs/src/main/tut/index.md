@@ -40,7 +40,7 @@ With Hammock you can do HTTP operations in a typeful and functional way.
 ```tut:silent
 import cats._
 import cats.implicits._
-import cats.data.EitherT
+import cats.effect.IO
 import io.circe._
 import io.circe.generic.auto._
 import hammock._
@@ -51,19 +51,17 @@ import hammock.circe.implicits._
 
 
 object HttpClient {
-  implicit val interp = Interpreter()
+  implicit val interp = Interpreter[IO]
   
-  type Target[A] = EitherT[Eval, Throwable, A]
-
   val response = Hammock
     .getWithOpts(Uri.unsafeParse("https://api.fidesmo.com/apps"), Opts.default)
-    .exec[Target]
+    .exec[IO]
     .as[List[String]]
 }
 ```
 
 ```tut
-HttpClient.response.value.value
+HttpClient.response.unsafeRunSync
 ```
 
 ## Target Monad

@@ -53,7 +53,7 @@ object Log {
 And this one does IO.
 
 ```tut:silent
-object IO {
+object IOEff {
   sealed trait IOF[A]
   case object Read extends IOF[String]
   case class Write(msg: String) extends IOF[Unit]
@@ -87,7 +87,7 @@ a `Log` or a `IO` value.
 
 ```tut:silent
 object App {
-  import IO._
+  import IOEff._
   import Log._
 
   type Eff[A] = EitherK[LogF, IOF, A]
@@ -100,7 +100,7 @@ object App {
     _ <- IO.write(s"hello $name")
   } yield name
 
-  def interp[F[_]: Sync]: Eff ~> F = Log.interp or IO.interp
+  def interp[F[_]: Sync]: Eff ~> F = Log.interp or IOEff.interp
 }
 ```
 
@@ -108,10 +108,9 @@ You could use this as follows:
 
 ```tut
 import cats.implicits._
+import cats.effect.IO
 
-type Target[A] = EitherT[Eval, Throwable, A]
-
-App.program foldMap App.interp[Target]
+App.program foldMap App.interp[IO]
 ```
 
 ## Interleaving Hammock in a Free program
@@ -124,12 +123,13 @@ Hammock, you can import `hammock.free._` and enjoy:
 ```tut:silent
 object App {
   import hammock.Uri
-  import IO._
+  import IOEff._
   import Log._
   import cats._
+  import cats.effect.IO
   import hammock.free.algebra._
   import hammock.jvm.free._
-
+  
   type Eff1[A] = EitherK[LogF, IOF, A]
   type Eff[A] = EitherK[HttpRequestF, Eff1, A]
 
@@ -144,8 +144,8 @@ object App {
     response <- Hammock.get(Uri.unsafeParse(s"https://jsonplaceholder.typicode.com/users?id=${id.toString}"), Map())
   } yield response
 
-  def interp1[F[_]: Sync]: Eff1 ~> F = Log.interp or IO.interp
-  def interp[F[_]: Sync]: Eff ~> F = Interpreter().trans or interp1 // interpret Hammock's effects
+  def interp1[F[_]: Sync]: Eff1 ~> F = Log.interp or IOEff.interp
+  def interp[F[_]: Sync]: Eff ~> F = Interpreter[F].trans or interp1 // interpret Hammock's effects
 }
 ```
 
@@ -153,12 +153,11 @@ object App {
 
 ```tut
 import cats.implicits._
+import cats.effect.IO
 
-type Target[A] = EitherT[Eval, Throwable, A]
+val result = App.program foldMap App.interp[IO]
 
-val result = App.program foldMap App.interp[Target]
-
-result.value.value
+result.unsafeRunSync
 ```
 
 
@@ -181,14 +180,13 @@ import hammock.hi.dsl._
 
 import cats._
 import cats.implicits._
+import cats.effect.IO
 
-implicit val interp = Interpreter()
-
-type Target[A] = EitherT[Eval, Throwable, A]
+implicit val interp = Interpreter[IO]
 
 val opts = (header("user" -> "pepegar") &> cookie(Cookie("track", "a lot")))(Opts.default)
 
-val response = Hammock.getWithOpts(Uri.unsafeParse("http://httpbin.org/get"), opts).exec[Target]
+val response = Hammock.getWithOpts(Uri.unsafeParse("http://httpbin.org/get"), opts).exec[IO]
 ```
 
 ## Opts

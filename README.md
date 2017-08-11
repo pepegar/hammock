@@ -38,7 +38,7 @@ Hammock tries to differentiate from other libraries with the following:
 ```scala
 import cats._
 import cats.implicits._
-import cats.data.EitherT
+import cats.effect.IO
 import io.circe._
 import io.circe.generic.auto._
 import hammock._
@@ -48,13 +48,11 @@ import hammock.circe.implicits._
 
 
 object HttpClient {
-  implicit val interpreter = Interpreter()
-
-  type Target[A] = EitherT[Eval, Throwable, A]
+  implicit val interpreter = Interpreter[IO]
 
   val response = Hammock
     .request(Method.GET, Uri.unsafeParse("https://api.fidesmo.com/apps"), Map()) // In the `request` method, you describe your HTTP request
-    .exec[Target]
+    .exec[IO]
     .as[List[String]]
 }
 ```
