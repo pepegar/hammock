@@ -70,9 +70,9 @@ val publishSettings = Seq(
 
 val buildSettings = Seq(
   organization  := "com.pepegar",
-  scalaVersion  := "2.12.1",
+  scalaVersion  := "2.12.3",
   licenses  := Seq(("MIT", url("http://opensource.org/licenses/MIT"))),
-  crossScalaVersions := Seq("2.10.6", "2.11.8", "2.12.1"),
+  crossScalaVersions := Seq("2.10.6", "2.11.11", "2.12.3"),
   scalacOptions ++= Seq(
     "-encoding", "UTF-8", // 2 args
     "-feature",
@@ -166,10 +166,17 @@ lazy val akka = project.in(file("hammock-akka-http"))
   .settings(commonDependencies: _*)
   .settings(compilerPlugins: _*)
   .settings(publishSettings: _*)
-  .settings(libraryDependencies ++= Seq(
-    "com.typesafe.akka" %% "akka-http" % Versions("akka-http"),
-    "org.mockito" % "mockito-all" % "1.10.18" % "test"
-  ))
+  .settings(
+    libraryDependencies += {
+      CrossVersion.partialVersion(scalaVersion.value) match {
+        case Some((2, scalaMajor)) if scalaMajor >= 11 =>
+          "com.typesafe.akka" %% "akka-http" % Versions("akka-http")
+        case Some((2, scalaMajor)) if scalaMajor == 10 =>
+          "com.typesafe.akka" %% "akka-http-experimental" % "2.0.5"
+      }
+    }
+  )
+  .settings(libraryDependencies += "org.mockito" % "mockito-all" % "1.10.18" % "test")
   .dependsOn(coreJVM)
 
 
