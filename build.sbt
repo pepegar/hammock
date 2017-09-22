@@ -184,6 +184,7 @@ lazy val docs = project.in(file("docs"))
   .dependsOn(coreJVM, circeJVM)
   .settings(moduleName := "hammock-docs")
   .settings(buildSettings: _*)
+  .settings(compilerPlugins: _*)
   .settings(noPublishSettings: _*)
   .settings(
     micrositeName := "Hammock",

@@ -54,7 +54,8 @@ And this one does IO.
 
 ```tut:silent
 object IOEff {
-  sealed trait IOF[A]
+
+sealed trait IOF[A]
   case object Read extends IOF[String]
   case class Write(msg: String) extends IOF[Unit]
 
@@ -67,11 +68,12 @@ object IOEff {
     implicit def ioC[F[_]](implicit I: InjectK[IOF, F]): IOC[F] = new IOC[F]
   }
 
-  import scala.io.StdIn._
-
   def interp[F[_]: Sync]: IOF ~> F = new (IOF ~> F) {
+	// this could be implemented using scala.io.StdIn, for example
+	def readline: String = "line read!"
+
     def apply[A](ioF: IOF[A]): F[A] = ioF match {
-      case Read => Sync[F].delay(readLine : String)
+      case Read => Sync[F].delay(readline)
       case Write(msg) => Sync[F].delay(println(s"$msg"))
     }
   }
@@ -129,7 +131,7 @@ object App {
   import cats.effect.IO
   import hammock.free.algebra._
   import hammock.jvm.free._
-  
+
   type Eff1[A] = EitherK[LogF, IOF, A]
   type Eff[A] = EitherK[HttpRequestF, Eff1, A]
 
