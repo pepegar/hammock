@@ -13,7 +13,8 @@ val Versions = Map(
   "scalacheck" -> "1.13.4",
   "discipline" -> "0.7.3",
   "macro-paradise" -> "2.1.0",
-  "kind-projector" -> "0.9.4"
+  "kind-projector" -> "0.9.4",
+  "akka-http" -> "10.0.9"
 )
 
 
@@ -69,9 +70,9 @@ val publishSettings = Seq(
 
 val buildSettings = Seq(
   organization  := "com.pepegar",
-  scalaVersion  := "2.12.1",
+  scalaVersion  := "2.12.3",
   licenses  := Seq(("MIT", url("http://opensource.org/licenses/MIT"))),
-  crossScalaVersions := Seq("2.10.6", "2.11.8", "2.12.1"),
+  crossScalaVersions := Seq("2.10.6", "2.11.11", "2.12.3"),
   scalacOptions ++= Seq(
     "-encoding", "UTF-8", // 2 args
     "-feature",
@@ -115,8 +116,8 @@ val compilerPlugins = Seq(
 lazy val hammock = project.in(file("."))
   .settings(buildSettings)
   .settings(noPublishSettings)
-  .dependsOn(coreJVM, coreJS, circeJVM, circeJS)
-  .aggregate(coreJVM, coreJS, circeJVM, circeJS)
+  .dependsOn(coreJVM, coreJS, circeJVM, circeJS, akka)
+  .aggregate(coreJVM, coreJS, circeJVM, circeJS, akka)
   .enablePlugins(ScalaUnidocPlugin)
 
 
@@ -159,10 +160,31 @@ lazy val circe = crossProject(JSPlatform, JVMPlatform)
 lazy val circeJVM = circe.jvm
 lazy val circeJS = circe.js
 
+lazy val akka = project.in(file("hammock-akka-http"))
+  .settings(moduleName := "hammock-akka-http")
+  .settings(buildSettings: _*)
+  .settings(commonDependencies: _*)
+  .settings(compilerPlugins: _*)
+  .settings(publishSettings: _*)
+  .settings(
+    libraryDependencies += {
+      CrossVersion.partialVersion(scalaVersion.value) match {
+        case Some((2, scalaMajor)) if scalaMajor >= 11 =>
+          "com.typesafe.akka" %% "akka-http" % Versions("akka-http")
+        case Some((2, scalaMajor)) if scalaMajor == 10 =>
+          "com.typesafe.akka" %% "akka-http-experimental" % "2.0.5"
+      }
+    }
+  )
+  .settings(libraryDependencies += "org.mockito" % "mockito-all" % "1.10.18" % "test")
+  .dependsOn(coreJVM)
+
+
 lazy val docs = project.in(file("docs"))
   .dependsOn(coreJVM, circeJVM)
   .settings(moduleName := "hammock-docs")
   .settings(buildSettings: _*)
+  .settings(compilerPlugins: _*)
   .settings(noPublishSettings: _*)
   .settings(
     micrositeName := "Hammock",
@@ -195,12 +217,14 @@ lazy val readme = (project in file("tut"))
 lazy val example = project.in(file("example"))
   .settings(buildSettings: _*)
   .settings(noPublishSettings: _*)
+  .settings(compilerPlugins: _*)
   .dependsOn(coreJVM, circeJVM)
 
 lazy val exampleJS = project.in(file("example-js"))
   .enablePlugins(ScalaJSPlugin)
   .settings(buildSettings: _*)
   .settings(noPublishSettings: _*)
+  .settings(compilerPlugins: _*)
   .settings(libraryDependencies += "be.doeraene" %%% "scalajs-jquery" % "0.9.2")
   .settings(jsDependencies += "org.webjars" % "jquery" % "2.1.3" / "2.1.3/jquery.js")
   .dependsOn(coreJS, circeJS)

@@ -2,12 +2,13 @@ package examplejs
 
 import scala.scalajs.js.JSApp
 import scala.util._
+import scala.concurrent.ExecutionContext.Implicits.global
 import org.scalajs.jquery.jQuery
 
 import cats._
 import cats.free._
 import cats.implicits._
-import cats.data.EitherT
+import cats.effect._
 
 import hammock._
 import hammock.free._
@@ -21,33 +22,28 @@ object Main extends JSApp {
   def main(): Unit = {
 
     import Codec._
-    implicit val interpTrans = Interpreter
+    implicit val interpTrans = Interpreter[IO]
 
     case class Resp(json: String)
     case class Data(name: String, number: Int)
 
+    val uriFromString: IO[Uri] = Sync[IO].delay(Uri.unsafeParse("http://httpbin.org/post"))
 
-    type Target[A] = EitherT[Eval, Throwable, A]
-    def Target = EitherT
-
-
-    val uriFromString: Target[Uri] = Target.fromEither(Uri.fromString("http://httpbin.org/post").leftMap(new Exception(_)))
-
-    val request: Target[Resp] = uriFromString >>= { uri =>
+    val request: IO[Resp] = uriFromString >>= { uri =>
       Hammock
         .request(Method.POST, uri, Map(), Some(Data("name", 4).encode))
-        .exec[Target]
+        .exec[IO]
         .as[Resp]
     }
 
-    request.value.value match {
-      case Right(resp) =>
+    request.unsafeToFuture.onComplete(_ match {
+      case Success(resp) =>
         val dec = Codec[Data].decode(resp.json)
         jQuery("#result").append(s"""
 <h3>Data you sent to the server:</h3>
 <pre>$dec</pre>
 """)
-      case Left(ex) => ex.printStackTrace
-    }
+      case Failure(ex) => ex.printStackTrace
+    })
   }
 }
