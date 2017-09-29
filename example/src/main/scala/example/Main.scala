@@ -10,7 +10,7 @@ import hammock.free._
 import hammock.jvm.free._
 import hammock.circe.implicits._
 
-import scala.util.{ Failure, Success }
+import scala.util.{Failure, Success}
 import scala.concurrent.ExecutionContext.Implicits.global
 
 import io.circe._
@@ -35,7 +35,7 @@ object Main extends App {
   }
 
   request.unsafeToFuture.onComplete(_ match {
-    case Success(x) => println(s"$x")
+    case Success(x)  => println(s"$x")
     case Failure(ex) => ex.printStackTrace
   })
 }

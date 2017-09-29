@@ -26,34 +26,36 @@ class Interpreter[F[_]](client: HttpClient) extends InterpTrans[F] {
 
   override def trans(implicit S: Sync[F]) = transK andThen λ[Kleisli[F, HttpClient, ?] ~> F](_.run(client))
 
-  def transK(implicit S: Sync[F]): HttpRequestF ~> Kleisli[F, HttpClient, ?] = λ[HttpRequestF ~> Kleisli[F, HttpClient, ?]](_ match {
-    case req@Options(uri, headers) => doReq(req)
-    case req@Get(uri, headers) => doReq(req)
-    case req@Head(uri, headers) => doReq(req)
-    case req@Post(uri, headers, body) => doReq(req)
-    case req@Put(uri, headers, body) => doReq(req)
-    case req@Delete(uri, headers) => doReq(req)
-    case req@Trace(uri, headers) => doReq(req)
-  })
+  def transK(implicit S: Sync[F]): HttpRequestF ~> Kleisli[F, HttpClient, ?] =
+    λ[HttpRequestF ~> Kleisli[F, HttpClient, ?]](_ match {
+      case req @ Options(uri, headers)    => doReq(req)
+      case req @ Get(uri, headers)        => doReq(req)
+      case req @ Head(uri, headers)       => doReq(req)
+      case req @ Post(uri, headers, body) => doReq(req)
+      case req @ Put(uri, headers, body)  => doReq(req)
+      case req @ Delete(uri, headers)     => doReq(req)
+      case req @ Trace(uri, headers)      => doReq(req)
+    })
 
-  private def doReq(reqF: HttpRequestF[HttpResponse])(implicit S: Sync[F]): Kleisli[F, HttpClient, HttpResponse] = Kleisli { client =>
-    Sync[F].delay {
-      val req = getApacheRequest(reqF)
-      reqF.headers.foreach {
-        case (k, v) =>
-          req.addHeader(k, v)
+  private def doReq(reqF: HttpRequestF[HttpResponse])(implicit S: Sync[F]): Kleisli[F, HttpClient, HttpResponse] =
+    Kleisli { client =>
+      Sync[F].delay {
+        val req = getApacheRequest(reqF)
+        reqF.headers.foreach {
+          case (k, v) =>
+            req.addHeader(k, v)
+        }
+
+        val resp            = client.execute(req)
+        val entity          = resp.getEntity
+        val body            = responseContentToString(entity.getContent())
+        val status          = Status.get(resp.getStatusLine.getStatusCode)
+        val responseHeaders = resp.getAllHeaders().map(h => h.getName -> h.getValue).toMap
+        EntityUtils.consume(entity)
+
+        HttpResponse(status, responseHeaders, body)
       }
-
-      val resp = client.execute(req)
-      val entity = resp.getEntity
-      val body = responseContentToString(entity.getContent())
-      val status = Status.get(resp.getStatusLine.getStatusCode)
-      val responseHeaders = resp.getAllHeaders().map(h => h.getName -> h.getValue).toMap
-      EntityUtils.consume(entity)
-
-      HttpResponse(status, responseHeaders, body)
     }
-  }
 
   private def getApacheRequest(f: HttpRequestF[HttpResponse]): HttpUriRequest = f match {
     case Get(uri, headers) =>
@@ -88,10 +90,10 @@ class Interpreter[F[_]](client: HttpClient) extends InterpTrans[F] {
       req
   }
 
-  private def prepareHeaders(headers: Map[String, String]): Array[Header] = headers map {
-    case (k, v) => new BasicHeader(k, v)
-  } toArray
-
+  private def prepareHeaders(headers: Map[String, String]): Array[Header] =
+    headers map {
+      case (k, v) => new BasicHeader(k, v)
+    } toArray
 
   private def responseContentToString(content: InputStream): String = {
     val rd = new BufferedReader(new InputStreamReader(content))

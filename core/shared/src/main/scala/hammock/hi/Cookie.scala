@@ -12,25 +12,25 @@ object SameSite {
   implicit val show = new Show[SameSite] {
     def show(s: SameSite): String = s match {
       case Strict => "Strict"
-      case Lax => "Lax"
+      case Lax    => "Lax"
     }
   }
 
   case object Strict extends SameSite
-  case object Lax extends SameSite
+  case object Lax    extends SameSite
 }
 
 @Lenses case class Cookie(
-  name: String,
-  value: String,
-  expires: Option[Date] = None,
-  maxAge: Option[Int] = None,
-  domain: Option[String] = None,
-  path: Option[String] = None,
-  secure: Option[Boolean] = None,
-  httpOnly: Option[Boolean] = None,
-  sameSite: Option[SameSite] = None,
-  custom: Option[Map[String, String]] = None
+    name: String,
+    value: String,
+    expires: Option[Date] = None,
+    maxAge: Option[Int] = None,
+    domain: Option[String] = None,
+    path: Option[String] = None,
+    secure: Option[Boolean] = None,
+    httpOnly: Option[Boolean] = None,
+    sameSite: Option[SameSite] = None,
+    custom: Option[Map[String, String]] = None
 )
 
 object Cookie {
@@ -40,24 +40,25 @@ object Cookie {
   }
 
   /**
-    * renders a cookie in the Set-Cookie header format
-    */
+   * renders a cookie in the Set-Cookie header format
+   */
   def render(cookie: Cookie)(implicit fmt: DateFormatter): String = {
-    def renderPair[S : Show](k: String)(v: S) = k ++ "=" ++ Show[S].show(v)
+    def renderPair[S: Show](k: String)(v: S)              = k ++ "=" ++ Show[S].show(v)
     def maybeShowDate(date: Option[Date]): Option[String] = date map (date => fmt.format(date))
-    def expires = maybeShowDate(cookie.expires) map renderPair("Expires")
-    def maxAge = cookie.maxAge map renderPair("MaxAge")
-    def domain = cookie.domain map renderPair("Domain")
-    def path = cookie.path map renderPair("Path")
-    def secure = cookie.secure map renderPair("Secure")
-    def httpOnly = cookie.httpOnly map renderPair("HttpOnly")
-    def sameSite = cookie.sameSite map renderPair("SameSite")
+    def expires                                           = maybeShowDate(cookie.expires) map renderPair("Expires")
+    def maxAge                                            = cookie.maxAge map renderPair("MaxAge")
+    def domain                                            = cookie.domain map renderPair("Domain")
+    def path                                              = cookie.path map renderPair("Path")
+    def secure                                            = cookie.secure map renderPair("Secure")
+    def httpOnly                                          = cookie.httpOnly map renderPair("HttpOnly")
+    def sameSite                                          = cookie.sameSite map renderPair("SameSite")
 
     val maybes = List(expires, maxAge, domain, path, secure, httpOnly, sameSite)
-      .filter(_.nonEmpty).map(_.get)
+      .filter(_.nonEmpty)
+      .map(_.get)
 
     val custom: List[String] = cookie.custom match {
-      case None => Nil
+      case None        => Nil
       case Some(elems) => elems.map { case (k, v) => renderPair(k)(v) } toList
     }
 

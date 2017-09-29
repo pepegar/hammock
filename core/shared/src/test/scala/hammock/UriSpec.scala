@@ -21,31 +21,33 @@ class UriSpec extends WordSpec with Matchers {
     }
 
     "parse uris with an authority" in {
-      Uri.fromString("http://user:pass@pepegar.com") shouldEqual Right(Uri(
-        scheme = Option("http"),
-        authority = Option("user:pass"),
-        path = "pepegar.com"
-      ))
+      Uri.fromString("http://user:pass@pepegar.com") shouldEqual Right(
+        Uri(
+          scheme = Option("http"),
+          authority = Option("user:pass"),
+          path = "pepegar.com"
+        ))
     }
 
     "parse uris with query params" in {
-      Uri.fromString("http://user:pass@pepegar.com?test=3&anotherTest=asdlfkj8") shouldEqual Right(Uri(
-        scheme = Option("http"),
-        authority = Option("user:pass"),
-        path = "pepegar.com",
-        query = Map("test" -> "3", "anotherTest" -> "asdlfkj8")
-      ))
+      Uri.fromString("http://user:pass@pepegar.com?test=3&anotherTest=asdlfkj8") shouldEqual Right(
+        Uri(
+          scheme = Option("http"),
+          authority = Option("user:pass"),
+          path = "pepegar.com",
+          query = Map("test" -> "3", "anotherTest" -> "asdlfkj8")
+        ))
     }
 
     "parse uris with fragment" in {
-      Uri.fromString("http://user:pass@pepegar.com?test=3&anotherTest=asdlfkj8#122") shouldEqual Right(Uri(
-        scheme = Option("http"),
-        authority = Option("user:pass"),
-        path = "pepegar.com",
-        query = Map("test" -> "3", "anotherTest" -> "asdlfkj8"),
-
-        fragment = Some("122")
-      ))
+      Uri.fromString("http://user:pass@pepegar.com?test=3&anotherTest=asdlfkj8#122") shouldEqual Right(
+        Uri(
+          scheme = Option("http"),
+          authority = Option("user:pass"),
+          path = "pepegar.com",
+          query = Map("test" -> "3", "anotherTest" -> "asdlfkj8"),
+          fragment = Some("122")
+        ))
     }
   }
 
@@ -55,16 +57,11 @@ class UriSpec extends WordSpec with Matchers {
     }
 
     "create valid URI when there is a scheme" in {
-      Uri(
-        scheme = "http".some,
-        path = "potato.com").show shouldEqual "http://potato.com"
+      Uri(scheme = "http".some, path = "potato.com").show shouldEqual "http://potato.com"
     }
 
     "create valid URI when there is an authority" in {
-      Uri(
-        authority = "user:pass".some,
-        scheme = "ftp".some,
-        path = "patata.com").show shouldEqual "ftp://user:pass@patata.com"
+      Uri(authority = "user:pass".some, scheme = "ftp".some, path = "patata.com").show shouldEqual "ftp://user:pass@patata.com"
     }
 
     "create valid URI when therer are query params" in {

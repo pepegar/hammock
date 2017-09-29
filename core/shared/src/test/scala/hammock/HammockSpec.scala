@@ -4,18 +4,10 @@ import free.algebra._
 import org.scalatest._
 import cats._
 import cats.syntax.show._
-import hi.{Opts, Cookie}
+import hi.{Cookie, Opts}
 
 class HammockSpec extends WordSpec with Matchers {
-  val methods = Seq(
-     Method.OPTIONS,
-     Method.GET,
-     Method.HEAD,
-     Method.POST,
-     Method.PUT,
-     Method.DELETE,
-     Method.TRACE)
-
+  val methods = Seq(Method.OPTIONS, Method.GET, Method.HEAD, Method.POST, Method.PUT, Method.DELETE, Method.TRACE)
 
   implicit val stringCodec = new Codec[String] {
     def encode(s: String) = s
@@ -23,8 +15,8 @@ class HammockSpec extends WordSpec with Matchers {
   }
 
   /**
-    * This is really dirty... but I cannot come up with a better solution right now...
-    */
+   * This is really dirty... but I cannot come up with a better solution right now...
+   */
   def test(assertions: HttpRequestF[_] => Any) = new (HttpRequestF ~> Id) {
     def apply[A](h: HttpRequestF[A]): A = {
       assertions(h)
