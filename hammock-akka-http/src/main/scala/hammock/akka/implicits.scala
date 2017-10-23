@@ -7,7 +7,7 @@ import _root_.akka.http.scaladsl.model.HttpEntity
 
 trait Implicits {
 
-  implicit def codecToEntityMarshaller[A : Codec]: ToEntityMarshaller[A] = Marshaller.strict { a =>
+  implicit def codecToEntityMarshaller[A: Codec]: ToEntityMarshaller[A] = Marshaller.strict { a =>
     Marshalling.Opaque(() => HttpEntity(Codec[A].encode(a)))
   }
 

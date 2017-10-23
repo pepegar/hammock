@@ -1,9 +1,9 @@
 package hammock
 
-class CodecException private(val message: String, underlying: Throwable) extends Throwable(message, underlying)
+class CodecException private (val message: String, underlying: Throwable) extends Throwable(message, underlying)
 
 object CodecException {
-  def withMessage(message: String) = new CodecException(message, null)
+  def withMessage(message: String)                            = new CodecException(message, null)
   def withMessageAndException(message: String, ex: Throwable) = new CodecException(message, ex)
 }
 

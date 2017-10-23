@@ -8,5 +8,5 @@ import io.circe.syntax._
 
 object implicits {
 
-  implicit def circeCodecAuto[A : Encoder : Decoder]: Codec[A] = new CirceCodec[A]
+  implicit def circeCodecAuto[A: Encoder: Decoder]: Codec[A] = new CirceCodec[A]
 }

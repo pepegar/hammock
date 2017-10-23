@@ -4,10 +4,7 @@ package hi
 import monocle.Optional
 import monocle.macros.GenLens
 
-case class Opts(
-  auth: Option[Auth],
-  headers: Map[String, String],
-  cookies: Option[List[Cookie]])
+case class Opts(auth: Option[Auth], headers: Map[String, String], cookies: Option[List[Cookie]])
 
 object Opts {
 
@@ -16,9 +13,9 @@ object Opts {
     val authOpt = GenLens[Opts](_.auth)
 
     val auth = Optional[Opts, Auth] {
-      case Opts(None, _, _) => None
-      case Opts(s@Some(x), _, _) => s
-    } (auth => (s => authOpt.set(Some(auth))(s)))
+      case Opts(None, _, _)        => None
+      case Opts(s @ Some(x), _, _) => s
+    }(auth => (s => authOpt.set(Some(auth))(s)))
 
     val headers = GenLens[Opts](_.headers)
 

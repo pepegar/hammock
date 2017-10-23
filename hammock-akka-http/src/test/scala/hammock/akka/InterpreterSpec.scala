@@ -14,11 +14,10 @@ import org.scalatest.mockito.MockitoSugar
 import scala.concurrent.{ExecutionContext, Future}
 import hammock.free.algebra._
 
-
 class InterpreterSpec extends WordSpec with MockitoSugar with Matchers with BeforeAndAfter {
-  implicit val system: ActorSystem = ActorSystem("test")
+  implicit val system: ActorSystem    = ActorSystem("test")
   implicit val mat: ActorMaterializer = ActorMaterializer()
-  implicit val ec: ExecutionContext = ExecutionContext.Implicits.global
+  implicit val ec: ExecutionContext   = ExecutionContext.Implicits.global
 
   val client = mock[HttpExt]
   val interp = new AkkaInterpreter[IO](client)
@@ -30,8 +29,8 @@ class InterpreterSpec extends WordSpec with MockitoSugar with Matchers with Befo
   "akka http interpreter" should {
 
     "create a correct AkkaResponse from akka's Http response" in {
-      val hammockReq = Get(Uri(path="http://localhost:8080"), Map())
-      val akkaReq = interp.transformRequest(hammockReq)
+      val hammockReq = Get(Uri(path = "http://localhost:8080"), Map())
+      val akkaReq    = interp.transformRequest(hammockReq)
       when(client.singleRequest(akkaReq)).thenReturn(Future.successful(httpResponse))
       val result = (Free.liftF(hammockReq) foldMap interp.trans).unsafeRunSync
 
