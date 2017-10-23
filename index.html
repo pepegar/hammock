@@ -31,7 +31,7 @@ you know how to use them!</p>
 
 <div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="k">import</span> <span class="nn">cats._</span>
 <span class="k">import</span> <span class="nn">cats.implicits._</span>
-<span class="k">import</span> <span class="nn">scala.util.</span><span class="o">{</span> <span class="nc">Failure</span><span class="o">,</span> <span class="nc">Success</span><span class="o">,</span> <span class="nc">Try</span> <span class="o">}</span>
+<span class="k">import</span> <span class="nn">cats.effect.IO</span>
 <span class="k">import</span> <span class="nn">io.circe._</span>
 <span class="k">import</span> <span class="nn">io.circe.generic.auto._</span>
 <span class="k">import</span> <span class="nn">hammock._</span>
@@ -42,25 +42,58 @@ you know how to use them!</p>
 
 
 <span class="k">object</span> <span class="nc">HttpClient</span> <span class="o">{</span>
-  <span class="k">implicit</span> <span class="k">val</span> <span class="n">interp</span> <span class="k">=</span> <span class="nc">Interpreter</span><span class="o">()</span>
-
+  <span class="k">implicit</span> <span class="k">val</span> <span class="n">interp</span> <span class="k">=</span> <span class="nc">Interpreter</span><span class="o">[</span><span class="kt">IO</span><span class="o">]</span>
+  
   <span class="k">val</span> <span class="n">response</span> <span class="k">=</span> <span class="nc">Hammock</span>
     <span class="o">.</span><span class="n">getWithOpts</span><span class="o">(</span><span class="nc">Uri</span><span class="o">.</span><span class="n">unsafeParse</span><span class="o">(</span><span class="s">"https://api.fidesmo.com/apps"</span><span class="o">),</span> <span class="nc">Opts</span><span class="o">.</span><span class="n">default</span><span class="o">)</span>
-    <span class="o">.</span><span class="n">exec</span><span class="o">[</span><span class="kt">Try</span><span class="o">]</span>
+    <span class="o">.</span><span class="n">exec</span><span class="o">[</span><span class="kt">IO</span><span class="o">]</span>
     <span class="o">.</span><span class="n">as</span><span class="o">[</span><span class="kt">List</span><span class="o">[</span><span class="kt">String</span><span class="o">]]</span>
 <span class="o">}</span>
 </code></pre>
 </div>
 
-<div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="n">scala</span><span class="o">&gt;</span> <span class="nc">HttpClient</span><span class="o">.</span><span class="n">response</span>
-<span class="n">res2</span><span class="k">:</span> <span class="kt">scala.util.Try</span><span class="o">[</span><span class="kt">List</span><span class="o">[</span><span class="kt">String</span><span class="o">]]</span> <span class="k">=</span> <span class="nc">Success</span><span class="o">(</span><span class="nc">List</span><span class="o">(</span><span class="mi">0</span><span class="n">cdc651e</span><span class="o">,</span> <span class="mf">42286d</span><span class="mi">75</span><span class="o">,</span> <span class="mf">4f</span><span class="mi">97</span><span class="n">a2e9</span><span class="o">,</span> <span class="mi">54</span><span class="n">bf6aa9</span><span class="o">,</span> <span class="mi">61</span><span class="n">b4b03d</span><span class="o">,</span> <span class="mf">61f</span><span class="n">c54d5</span><span class="o">,</span> <span class="mi">94</span><span class="n">c3cd60</span><span class="o">,</span> <span class="n">dd69cf53</span><span class="o">,</span> <span class="n">fc6de645</span><span class="o">))</span>
+<div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="n">scala</span><span class="o">&gt;</span> <span class="nc">HttpClient</span><span class="o">.</span><span class="n">response</span><span class="o">.</span><span class="n">unsafeRunSync</span>
+<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">10</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
+       <span class="k">import</span> <span class="nn">cats._</span>
+                   <span class="o">^</span>
+<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">13</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
+       <span class="k">import</span> <span class="nn">cats.implicits._</span>
+                             <span class="o">^</span>
+<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">15</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
+       <span class="k">import</span> <span class="nn">cats.effect.IO</span>
+                          <span class="o">^</span>
+<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">17</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
+       <span class="k">import</span> <span class="nn">io.circe._</span>
+                       <span class="o">^</span>
+<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">20</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
+       <span class="k">import</span> <span class="nn">io.circe.generic.auto._</span>
+                                    <span class="o">^</span>
+<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">23</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
+       <span class="k">import</span> <span class="nn">hammock._</span>
+                      <span class="o">^</span>
+<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">26</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
+       <span class="k">import</span> <span class="nn">hammock.Uri._</span>
+                          <span class="o">^</span>
+<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">29</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
+       <span class="k">import</span> <span class="nn">hammock.hi._</span>
+                         <span class="o">^</span>
+<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">31</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
+       <span class="k">import</span> <span class="nn">hammock.jvm.free.Interpreter</span>
+                               <span class="o">^</span>
+<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">33</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
+       <span class="k">import</span> <span class="nn">hammock.circe.implicits._</span>
+                                      <span class="o">^</span>
+<span class="n">res2</span><span class="k">:</span> <span class="kt">List</span><span class="o">[</span><span class="kt">String</span><span class="o">]</span> <span class="k">=</span> <span class="nc">List</span><span class="o">(</span><span class="mi">0</span><span class="n">cdc651e</span><span class="o">,</span> <span class="mf">42286d</span><span class="mi">75</span><span class="o">,</span> <span class="mf">4f</span><span class="mi">97</span><span class="n">a2e9</span><span class="o">,</span> <span class="mi">54</span><span class="n">bf6aa9</span><span class="o">,</span> <span class="mi">61</span><span class="n">b4b03d</span><span class="o">,</span> <span class="mf">61f</span><span class="n">c54d5</span><span class="o">,</span> <span class="mi">94</span><span class="n">c3cd60</span><span class="o">,</span> <span class="n">dd69cf53</span><span class="o">,</span> <span class="n">fc6de645</span><span class="o">)</span>
 </code></pre>
 </div>
 
 <h2 id="target-monad">Target Monad</h2>
 
+<p>Hammock uses cats-effect’s <code class="highlighter-rouge">Sync</code> under the hood to provide a safe way
+of capturing effects when interpreting your programs.</p>
+
 <p>You can use as a target monad any type <code class="highlighter-rouge">F</code> that has an instance of
-<code class="highlighter-rouge">MonadError[F, Throwable]</code>.  There are already several types you can
+<code class="highlighter-rouge">Sync</code>.  There are already several types you can
 use out of the box, for example:</p>
 
 <ul>

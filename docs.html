@@ -8,6 +8,7 @@ application:</p>
 <div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="k">import</span> <span class="nn">cats._</span>
 <span class="k">import</span> <span class="nn">cats.free._</span>
 <span class="k">import</span> <span class="nn">cats.data._</span>
+<span class="k">import</span> <span class="nn">cats.effect.Sync</span>
 </code></pre>
 </div>
 
@@ -23,23 +24,26 @@ related to logging</p>
   <span class="nc">case</span> <span class="k">class</span> <span class="nc">Info</span><span class="o">(</span><span class="n">msg</span><span class="k">:</span> <span class="kt">String</span><span class="o">)</span> <span class="k">extends</span> <span class="nc">LogF</span><span class="o">[</span><span class="kt">Unit</span><span class="o">]</span>
   <span class="k">case</span> <span class="k">class</span> <span class="nc">Error</span><span class="o">(</span><span class="n">msg</span><span class="k">:</span> <span class="kt">String</span><span class="o">)</span> <span class="k">extends</span> <span class="nc">LogF</span><span class="o">[</span><span class="kt">Unit</span><span class="o">]</span>
 
-  <span class="k">class</span> <span class="nc">LogC</span><span class="o">[</span><span class="kt">F</span><span class="o">[</span><span class="k">_</span><span class="o">]](</span><span class="k">implicit</span> <span class="n">I</span><span class="k">:</span> <span class="kt">Inject</span><span class="o">[</span><span class="kt">LogF</span>, <span class="kt">F</span><span class="o">])</span> <span class="o">{</span>
+  <span class="k">class</span> <span class="nc">LogC</span><span class="o">[</span><span class="kt">F</span><span class="o">[</span><span class="k">_</span><span class="o">]](</span><span class="k">implicit</span> <span class="n">I</span><span class="k">:</span> <span class="kt">InjectK</span><span class="o">[</span><span class="kt">LogF</span>, <span class="kt">F</span><span class="o">])</span> <span class="o">{</span>
     <span class="k">def</span> <span class="n">info</span><span class="o">(</span><span class="n">msg</span><span class="k">:</span> <span class="kt">String</span><span class="o">)</span><span class="k">:</span> <span class="kt">Free</span><span class="o">[</span><span class="kt">F</span>, <span class="kt">Unit</span><span class="o">]</span> <span class="k">=</span> <span class="nc">Free</span><span class="o">.</span><span class="n">inject</span><span class="o">(</span><span class="nc">Info</span><span class="o">(</span><span class="n">msg</span><span class="o">))</span>
     <span class="k">def</span> <span class="n">error</span><span class="o">(</span><span class="n">msg</span><span class="k">:</span> <span class="kt">String</span><span class="o">)</span><span class="k">:</span> <span class="kt">Free</span><span class="o">[</span><span class="kt">F</span>, <span class="kt">Unit</span><span class="o">]</span> <span class="k">=</span> <span class="nc">Free</span><span class="o">.</span><span class="n">inject</span><span class="o">(</span><span class="nc">Error</span><span class="o">(</span><span class="n">msg</span><span class="o">))</span>
   <span class="o">}</span>
 
   <span class="k">object</span> <span class="nc">LogC</span> <span class="o">{</span>
-    <span class="k">implicit</span> <span class="k">def</span> <span class="n">logC</span><span class="o">[</span><span class="kt">F</span><span class="o">[</span><span class="k">_</span><span class="o">]](</span><span class="k">implicit</span> <span class="n">I</span><span class="k">:</span> <span class="kt">Inject</span><span class="o">[</span><span class="kt">LogF</span>, <span class="kt">F</span><span class="o">])</span><span class="k">:</span> <span class="kt">LogC</span><span class="o">[</span><span class="kt">F</span><span class="o">]</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">LogC</span><span class="o">[</span><span class="kt">F</span><span class="o">]</span>
+    <span class="k">implicit</span> <span class="k">def</span> <span class="n">logC</span><span class="o">[</span><span class="kt">F</span><span class="o">[</span><span class="k">_</span><span class="o">]](</span><span class="k">implicit</span> <span class="n">I</span><span class="k">:</span> <span class="kt">InjectK</span><span class="o">[</span><span class="kt">LogF</span>, <span class="kt">F</span><span class="o">])</span><span class="k">:</span> <span class="kt">LogC</span><span class="o">[</span><span class="kt">F</span><span class="o">]</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">LogC</span><span class="o">[</span><span class="kt">F</span><span class="o">]</span>
   <span class="o">}</span>
 
-  <span class="k">def</span> <span class="n">interp</span><span class="o">[</span><span class="kt">F</span><span class="o">[</span><span class="k">_</span><span class="o">]](</span><span class="k">implicit</span> <span class="nc">ME</span><span class="k">:</span> <span class="kt">MonadError</span><span class="o">[</span><span class="kt">F</span>, <span class="kt">Throwable</span><span class="o">])</span><span class="k">:</span> <span class="kt">LogF</span> <span class="kt">~&gt;</span> <span class="kt">F</span> <span class="o">=</span> <span class="k">new</span> <span class="o">(</span><span class="nc">LogF</span> <span class="o">~&gt;</span> <span class="n">F</span><span class="o">)</span> <span class="o">{</span>
+  <span class="k">def</span> <span class="n">interp</span><span class="o">[</span><span class="kt">F</span><span class="o">[</span><span class="k">_</span><span class="o">]</span><span class="kt">:</span> <span class="kt">Sync</span><span class="o">]</span><span class="k">:</span> <span class="kt">LogF</span> <span class="kt">~&gt;</span> <span class="kt">F</span> <span class="o">=</span> <span class="k">new</span> <span class="o">(</span><span class="nc">LogF</span> <span class="o">~&gt;</span> <span class="n">F</span><span class="o">)</span> <span class="o">{</span>
     <span class="k">def</span> <span class="n">apply</span><span class="o">[</span><span class="kt">A</span><span class="o">](</span><span class="n">logF</span><span class="k">:</span> <span class="kt">LogF</span><span class="o">[</span><span class="kt">A</span><span class="o">])</span><span class="k">:</span> <span class="kt">F</span><span class="o">[</span><span class="kt">A</span><span class="o">]</span> <span class="k">=</span>  <span class="n">logF</span> <span class="k">match</span> <span class="o">{</span>
-      <span class="k">case</span> <span class="nc">Info</span><span class="o">(</span><span class="n">msg</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="nc">ME</span><span class="o">.</span><span class="n">catchNonFatal</span><span class="o">(</span><span class="n">println</span><span class="o">(</span><span class="n">s</span><span class="s">"[info]: $msg"</span><span class="o">))</span>
-      <span class="k">case</span> <span class="nc">Error</span><span class="o">(</span><span class="n">msg</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="nc">ME</span><span class="o">.</span><span class="n">catchNonFatal</span><span class="o">(</span><span class="n">println</span><span class="o">(</span><span class="n">s</span><span class="s">"[error]: $msg"</span><span class="o">))</span>
+      <span class="k">case</span> <span class="nc">Info</span><span class="o">(</span><span class="n">msg</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="nc">Sync</span><span class="o">[</span><span class="kt">F</span><span class="o">].</span><span class="n">delay</span><span class="o">(</span><span class="n">println</span><span class="o">(</span><span class="n">s</span><span class="s">"[info]: $msg"</span><span class="o">))</span>
+      <span class="k">case</span> <span class="nc">Error</span><span class="o">(</span><span class="n">msg</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="nc">Sync</span><span class="o">[</span><span class="kt">F</span><span class="o">].</span><span class="n">delay</span><span class="o">(</span><span class="n">println</span><span class="o">(</span><span class="n">s</span><span class="s">"[error]: $msg"</span><span class="o">))</span>
     <span class="o">}</span>
   <span class="o">}</span>
 <span class="o">}</span>
-<span class="c1">// defined object Log
+<span class="c1">// &lt;console&gt;:16: warning: Unused import
+//        import cats.data._
+//                         ^
+// defined object Log
 </span></code></pre>
 </div>
 
@@ -47,26 +51,28 @@ related to logging</p>
 
 <p>And this one does IO.</p>
 
-<div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="k">object</span> <span class="nc">IO</span> <span class="o">{</span>
-  <span class="k">sealed</span> <span class="k">trait</span> <span class="nc">IOF</span><span class="o">[</span><span class="kt">A</span><span class="o">]</span>
+<div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="k">object</span> <span class="nc">IOEff</span> <span class="o">{</span>
+
+<span class="k">sealed</span> <span class="k">trait</span> <span class="nc">IOF</span><span class="o">[</span><span class="kt">A</span><span class="o">]</span>
   <span class="nc">case</span> <span class="k">object</span> <span class="nc">Read</span> <span class="k">extends</span> <span class="nc">IOF</span><span class="o">[</span><span class="kt">String</span><span class="o">]</span>
   <span class="k">case</span> <span class="k">class</span> <span class="nc">Write</span><span class="o">(</span><span class="n">msg</span><span class="k">:</span> <span class="kt">String</span><span class="o">)</span> <span class="k">extends</span> <span class="nc">IOF</span><span class="o">[</span><span class="kt">Unit</span><span class="o">]</span>
 
-  <span class="k">class</span> <span class="nc">IOC</span><span class="o">[</span><span class="kt">F</span><span class="o">[</span><span class="k">_</span><span class="o">]](</span><span class="k">implicit</span> <span class="n">I</span><span class="k">:</span> <span class="kt">Inject</span><span class="o">[</span><span class="kt">IOF</span>, <span class="kt">F</span><span class="o">])</span> <span class="o">{</span>
+  <span class="k">class</span> <span class="nc">IOC</span><span class="o">[</span><span class="kt">F</span><span class="o">[</span><span class="k">_</span><span class="o">]](</span><span class="k">implicit</span> <span class="n">I</span><span class="k">:</span> <span class="kt">InjectK</span><span class="o">[</span><span class="kt">IOF</span>, <span class="kt">F</span><span class="o">])</span> <span class="o">{</span>
     <span class="k">def</span> <span class="n">read</span><span class="k">:</span> <span class="kt">Free</span><span class="o">[</span><span class="kt">F</span>, <span class="kt">String</span><span class="o">]</span> <span class="k">=</span> <span class="nc">Free</span><span class="o">.</span><span class="n">inject</span><span class="o">(</span><span class="nc">Read</span><span class="o">)</span>
     <span class="k">def</span> <span class="n">write</span><span class="o">(</span><span class="n">str</span><span class="k">:</span> <span class="kt">String</span><span class="o">)</span><span class="k">:</span> <span class="kt">Free</span><span class="o">[</span><span class="kt">F</span>, <span class="kt">Unit</span><span class="o">]</span> <span class="k">=</span> <span class="nc">Free</span><span class="o">.</span><span class="n">inject</span><span class="o">(</span><span class="nc">Write</span><span class="o">(</span><span class="n">str</span><span class="o">))</span>
   <span class="o">}</span>
 
   <span class="k">object</span> <span class="nc">IOC</span> <span class="o">{</span>
-    <span class="k">implicit</span> <span class="k">def</span> <span class="n">ioC</span><span class="o">[</span><span class="kt">F</span><span class="o">[</span><span class="k">_</span><span class="o">]](</span><span class="k">implicit</span> <span class="n">I</span><span class="k">:</span> <span class="kt">Inject</span><span class="o">[</span><span class="kt">IOF</span>, <span class="kt">F</span><span class="o">])</span><span class="k">:</span> <span class="kt">IOC</span><span class="o">[</span><span class="kt">F</span><span class="o">]</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">IOC</span><span class="o">[</span><span class="kt">F</span><span class="o">]</span>
+    <span class="k">implicit</span> <span class="k">def</span> <span class="n">ioC</span><span class="o">[</span><span class="kt">F</span><span class="o">[</span><span class="k">_</span><span class="o">]](</span><span class="k">implicit</span> <span class="n">I</span><span class="k">:</span> <span class="kt">InjectK</span><span class="o">[</span><span class="kt">IOF</span>, <span class="kt">F</span><span class="o">])</span><span class="k">:</span> <span class="kt">IOC</span><span class="o">[</span><span class="kt">F</span><span class="o">]</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">IOC</span><span class="o">[</span><span class="kt">F</span><span class="o">]</span>
   <span class="o">}</span>
 
-  <span class="k">import</span> <span class="nn">scala.io.StdIn._</span>
+  <span class="k">def</span> <span class="n">interp</span><span class="o">[</span><span class="kt">F</span><span class="o">[</span><span class="k">_</span><span class="o">]</span><span class="kt">:</span> <span class="kt">Sync</span><span class="o">]</span><span class="k">:</span> <span class="kt">IOF</span> <span class="kt">~&gt;</span> <span class="kt">F</span> <span class="o">=</span> <span class="k">new</span> <span class="o">(</span><span class="nc">IOF</span> <span class="o">~&gt;</span> <span class="n">F</span><span class="o">)</span> <span class="o">{</span>
+	<span class="c1">// this could be implemented using scala.io.StdIn, for example
+</span>	<span class="k">def</span> <span class="n">readline</span><span class="k">:</span> <span class="kt">String</span> <span class="o">=</span> <span class="s">"line read!"</span>
 
-  <span class="k">def</span> <span class="n">interp</span><span class="o">[</span><span class="kt">F</span><span class="o">[</span><span class="k">_</span><span class="o">]](</span><span class="k">implicit</span> <span class="nc">ME</span><span class="k">:</span> <span class="kt">MonadError</span><span class="o">[</span><span class="kt">F</span>, <span class="kt">Throwable</span><span class="o">])</span><span class="k">:</span> <span class="kt">IOF</span> <span class="kt">~&gt;</span> <span class="kt">F</span> <span class="o">=</span> <span class="k">new</span> <span class="o">(</span><span class="nc">IOF</span> <span class="o">~&gt;</span> <span class="n">F</span><span class="o">)</span> <span class="o">{</span>
     <span class="k">def</span> <span class="n">apply</span><span class="o">[</span><span class="kt">A</span><span class="o">](</span><span class="n">ioF</span><span class="k">:</span> <span class="kt">IOF</span><span class="o">[</span><span class="kt">A</span><span class="o">])</span><span class="k">:</span> <span class="kt">F</span><span class="o">[</span><span class="kt">A</span><span class="o">]</span> <span class="k">=</span> <span class="n">ioF</span> <span class="k">match</span> <span class="o">{</span>
-      <span class="k">case</span> <span class="nc">Read</span> <span class="k">=&gt;</span> <span class="nc">ME</span><span class="o">.</span><span class="n">catchNonFatal</span><span class="o">(</span><span class="n">readLine</span> <span class="k">:</span> <span class="kt">String</span><span class="o">)</span>
-      <span class="k">case</span> <span class="nc">Write</span><span class="o">(</span><span class="n">msg</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="nc">ME</span><span class="o">.</span><span class="n">catchNonFatal</span><span class="o">(</span><span class="n">println</span><span class="o">(</span><span class="n">s</span><span class="s">"$msg"</span><span class="o">))</span>
+      <span class="k">case</span> <span class="nc">Read</span> <span class="k">=&gt;</span> <span class="nc">Sync</span><span class="o">[</span><span class="kt">F</span><span class="o">].</span><span class="n">delay</span><span class="o">(</span><span class="n">readline</span><span class="o">)</span>
+      <span class="k">case</span> <span class="nc">Write</span><span class="o">(</span><span class="n">msg</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="nc">Sync</span><span class="o">[</span><span class="kt">F</span><span class="o">].</span><span class="n">delay</span><span class="o">(</span><span class="n">println</span><span class="o">(</span><span class="n">s</span><span class="s">"$msg"</span><span class="o">))</span>
     <span class="o">}</span>
   <span class="o">}</span>
 <span class="o">}</span>
@@ -76,15 +82,15 @@ related to logging</p>
 <h2 id="combining-our-effects">Combining our effects</h2>
 
 <p>And finally, we should need to build everything together. For that
-purpose, we will need a <code class="highlighter-rouge">Coproduct</code>. This datatype basically tells the
+purpose, we will need a <code class="highlighter-rouge">EitherK</code>. This datatype basically tells the
 typesystem about our effects, saying that our <code class="highlighter-rouge">Eff</code> type can be either
 a <code class="highlighter-rouge">Log</code> or a <code class="highlighter-rouge">IO</code> value.</p>
 
 <div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="k">object</span> <span class="nc">App</span> <span class="o">{</span>
-  <span class="k">import</span> <span class="nn">IO._</span>
+  <span class="k">import</span> <span class="nn">IOEff._</span>
   <span class="k">import</span> <span class="nn">Log._</span>
 
-  <span class="k">type</span> <span class="kt">Eff</span><span class="o">[</span><span class="kt">A</span><span class="o">]</span> <span class="k">=</span> <span class="nc">Coproduct</span><span class="o">[</span><span class="kt">LogF</span>, <span class="kt">IOF</span>, <span class="kt">A</span><span class="o">]</span>
+  <span class="k">type</span> <span class="kt">Eff</span><span class="o">[</span><span class="kt">A</span><span class="o">]</span> <span class="k">=</span> <span class="nc">EitherK</span><span class="o">[</span><span class="kt">LogF</span>, <span class="kt">IOF</span>, <span class="kt">A</span><span class="o">]</span>
 
   <span class="k">val</span> <span class="n">name</span> <span class="k">=</span> <span class="s">"pepegar"</span>
 
@@ -94,7 +100,7 @@ a <code class="highlighter-rouge">Log</code> or a <code class="highlighter-rouge
     <span class="k">_</span> <span class="k">&lt;-</span> <span class="nc">IO</span><span class="o">.</span><span class="n">write</span><span class="o">(</span><span class="n">s</span><span class="s">"hello $name"</span><span class="o">)</span>
   <span class="o">}</span> <span class="k">yield</span> <span class="n">name</span>
 
-  <span class="k">def</span> <span class="n">interp</span><span class="o">[</span><span class="kt">F</span><span class="o">[</span><span class="k">_</span><span class="o">]](</span><span class="k">implicit</span> <span class="nc">ME</span><span class="k">:</span> <span class="kt">MonadError</span><span class="o">[</span><span class="kt">F</span>, <span class="kt">Throwable</span><span class="o">])</span><span class="k">:</span> <span class="kt">Eff</span> <span class="kt">~&gt;</span> <span class="kt">F</span> <span class="o">=</span> <span class="nc">Log</span><span class="o">.</span><span class="n">interp</span> <span class="n">or</span> <span class="nc">IO</span><span class="o">.</span><span class="n">interp</span>
+  <span class="k">def</span> <span class="n">interp</span><span class="o">[</span><span class="kt">F</span><span class="o">[</span><span class="k">_</span><span class="o">]</span><span class="kt">:</span> <span class="kt">Sync</span><span class="o">]</span><span class="k">:</span> <span class="kt">Eff</span> <span class="kt">~&gt;</span> <span class="kt">F</span> <span class="o">=</span> <span class="nc">Log</span><span class="o">.</span><span class="n">interp</span> <span class="n">or</span> <span class="nc">IOEff</span><span class="o">.</span><span class="n">interp</span>
 <span class="o">}</span>
 </code></pre>
 </div>
@@ -102,15 +108,61 @@ a <code class="highlighter-rouge">Log</code> or a <code class="highlighter-rouge
 <p>You could use this as follows:</p>
 
 <div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="n">scala</span><span class="o">&gt;</span> <span class="k">import</span> <span class="nn">cats.implicits._</span>
+<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">10</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
+       <span class="k">import</span> <span class="nn">cats._</span>
+                   <span class="o">^</span>
+<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">13</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
+       <span class="k">import</span> <span class="nn">cats.free._</span>
+                        <span class="o">^</span>
+<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">16</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
+       <span class="k">import</span> <span class="nn">cats.data._</span>
+                        <span class="o">^</span>
+<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">18</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
+       <span class="k">import</span> <span class="nn">cats.effect.Sync</span>
+                          <span class="o">^</span>
+<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">22</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
+       <span class="k">import</span> <span class="nn">cats.implicits._</span>
+                             <span class="o">^</span>
 <span class="k">import</span> <span class="nn">cats.implicits._</span>
 
-<span class="n">scala</span><span class="o">&gt;</span> <span class="k">import</span> <span class="nn">scala.util.Try</span>
-<span class="k">import</span> <span class="nn">scala.util.Try</span>
+<span class="n">scala</span><span class="o">&gt;</span> <span class="k">import</span> <span class="nn">cats.effect.IO</span>
+<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">10</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
+       <span class="k">import</span> <span class="nn">cats._</span>
+                   <span class="o">^</span>
+<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">13</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
+       <span class="k">import</span> <span class="nn">cats.free._</span>
+                        <span class="o">^</span>
+<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">16</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
+       <span class="k">import</span> <span class="nn">cats.data._</span>
+                        <span class="o">^</span>
+<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">18</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
+       <span class="k">import</span> <span class="nn">cats.effect.Sync</span>
+                          <span class="o">^</span>
+<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">20</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
+       <span class="k">import</span> <span class="nn">cats.implicits._</span>
+                             <span class="o">^</span>
+<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">25</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
+       <span class="k">import</span> <span class="nn">cats.effect.IO</span>
+                          <span class="o">^</span>
+<span class="k">import</span> <span class="nn">cats.effect.IO</span>
 
-<span class="n">scala</span><span class="o">&gt;</span> <span class="nc">App</span><span class="o">.</span><span class="n">program</span> <span class="n">foldMap</span> <span class="nc">App</span><span class="o">.</span><span class="n">interp</span><span class="o">[</span><span class="kt">Try</span><span class="o">]</span>
-<span class="o">[</span><span class="kt">info</span><span class="o">]</span><span class="k">:</span> <span class="kt">name</span> <span class="kt">was</span> <span class="kt">pepegar</span>
-<span class="n">hello</span> <span class="n">pepegar</span>
-<span class="n">res0</span><span class="k">:</span> <span class="kt">scala.util.Try</span><span class="o">[</span><span class="kt">String</span><span class="o">]</span> <span class="k">=</span> <span class="nc">Success</span><span class="o">(</span><span class="n">pepegar</span><span class="o">)</span>
+<span class="n">scala</span><span class="o">&gt;</span> <span class="nc">App</span><span class="o">.</span><span class="n">program</span> <span class="n">foldMap</span> <span class="nc">App</span><span class="o">.</span><span class="n">interp</span><span class="o">[</span><span class="kt">IO</span><span class="o">]</span>
+<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">10</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
+       <span class="k">import</span> <span class="nn">cats._</span>
+                   <span class="o">^</span>
+<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">13</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
+       <span class="k">import</span> <span class="nn">cats.free._</span>
+                        <span class="o">^</span>
+<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">16</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
+       <span class="k">import</span> <span class="nn">cats.data._</span>
+                        <span class="o">^</span>
+<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">18</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
+       <span class="k">import</span> <span class="nn">cats.effect.Sync</span>
+                          <span class="o">^</span>
+<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">21</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
+       <span class="k">import</span> <span class="nn">cats.implicits._</span>
+                             <span class="o">^</span>
+<span class="n">res0</span><span class="k">:</span> <span class="kt">cats.effect.IO</span><span class="o">[</span><span class="kt">String</span><span class="o">]</span> <span class="k">=</span> <span class="nc">IO$1072043593</span>
 </code></pre>
 </div>
 
@@ -123,14 +175,15 @@ Hammock, you can import <code class="highlighter-rouge">hammock.free._</code> an
 
 <div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="k">object</span> <span class="nc">App</span> <span class="o">{</span>
   <span class="k">import</span> <span class="nn">hammock.Uri</span>
-  <span class="k">import</span> <span class="nn">IO._</span>
+  <span class="k">import</span> <span class="nn">IOEff._</span>
   <span class="k">import</span> <span class="nn">Log._</span>
   <span class="k">import</span> <span class="nn">cats._</span>
+  <span class="k">import</span> <span class="nn">cats.effect.IO</span>
   <span class="k">import</span> <span class="nn">hammock.free.algebra._</span>
   <span class="k">import</span> <span class="nn">hammock.jvm.free._</span>
 
-  <span class="k">type</span> <span class="kt">Eff1</span><span class="o">[</span><span class="kt">A</span><span class="o">]</span> <span class="k">=</span> <span class="nc">Coproduct</span><span class="o">[</span><span class="kt">LogF</span>, <span class="kt">IOF</span>, <span class="kt">A</span><span class="o">]</span>
-  <span class="k">type</span> <span class="kt">Eff</span><span class="o">[</span><span class="kt">A</span><span class="o">]</span> <span class="k">=</span> <span class="nc">Coproduct</span><span class="o">[</span><span class="kt">HttpRequestF</span>, <span class="kt">Eff1</span>, <span class="kt">A</span><span class="o">]</span>
+  <span class="k">type</span> <span class="kt">Eff1</span><span class="o">[</span><span class="kt">A</span><span class="o">]</span> <span class="k">=</span> <span class="nc">EitherK</span><span class="o">[</span><span class="kt">LogF</span>, <span class="kt">IOF</span>, <span class="kt">A</span><span class="o">]</span>
+  <span class="k">type</span> <span class="kt">Eff</span><span class="o">[</span><span class="kt">A</span><span class="o">]</span> <span class="k">=</span> <span class="nc">EitherK</span><span class="o">[</span><span class="kt">HttpRequestF</span>, <span class="kt">Eff1</span>, <span class="kt">A</span><span class="o">]</span>
 
   <span class="k">def</span> <span class="n">program</span><span class="o">(</span><span class="k">implicit</span>
     <span class="nc">Log</span><span class="k">:</span> <span class="kt">LogC</span><span class="o">[</span><span class="kt">Eff</span><span class="o">],</span>
@@ -143,24 +196,117 @@ Hammock, you can import <code class="highlighter-rouge">hammock.free._</code> an
     <span class="n">response</span> <span class="k">&lt;-</span> <span class="nc">Hammock</span><span class="o">.</span><span class="n">get</span><span class="o">(</span><span class="nc">Uri</span><span class="o">.</span><span class="n">unsafeParse</span><span class="o">(</span><span class="n">s</span><span class="s">"https://jsonplaceholder.typicode.com/users?id=${id.toString}"</span><span class="o">),</span> <span class="nc">Map</span><span class="o">())</span>
   <span class="o">}</span> <span class="k">yield</span> <span class="n">response</span>
 
-  <span class="k">def</span> <span class="n">interp1</span><span class="o">[</span><span class="kt">F</span><span class="o">[</span><span class="k">_</span><span class="o">]](</span><span class="k">implicit</span> <span class="nc">ME</span><span class="k">:</span> <span class="kt">MonadError</span><span class="o">[</span><span class="kt">F</span>, <span class="kt">Throwable</span><span class="o">])</span><span class="k">:</span> <span class="kt">Eff1</span> <span class="kt">~&gt;</span> <span class="kt">F</span> <span class="o">=</span> <span class="nc">Log</span><span class="o">.</span><span class="n">interp</span><span class="o">(</span><span class="nc">ME</span><span class="o">)</span> <span class="n">or</span> <span class="nc">IO</span><span class="o">.</span><span class="n">interp</span><span class="o">(</span><span class="nc">ME</span><span class="o">)</span>
-  <span class="k">def</span> <span class="n">interp</span><span class="o">[</span><span class="kt">F</span><span class="o">[</span><span class="k">_</span><span class="o">]](</span><span class="k">implicit</span> <span class="nc">ME</span><span class="k">:</span> <span class="kt">MonadError</span><span class="o">[</span><span class="kt">F</span>, <span class="kt">Throwable</span><span class="o">])</span><span class="k">:</span> <span class="kt">Eff</span> <span class="kt">~&gt;</span> <span class="kt">F</span> <span class="o">=</span> <span class="nc">Interpreter</span><span class="o">().</span><span class="n">trans</span><span class="o">(</span><span class="nc">ME</span><span class="o">)</span> <span class="n">or</span> <span class="n">interp1</span><span class="o">(</span><span class="nc">ME</span><span class="o">)</span> <span class="c1">// interpret Hammock's effects
+  <span class="k">def</span> <span class="n">interp1</span><span class="o">[</span><span class="kt">F</span><span class="o">[</span><span class="k">_</span><span class="o">]</span><span class="kt">:</span> <span class="kt">Sync</span><span class="o">]</span><span class="k">:</span> <span class="kt">Eff1</span> <span class="kt">~&gt;</span> <span class="kt">F</span> <span class="o">=</span> <span class="nc">Log</span><span class="o">.</span><span class="n">interp</span> <span class="n">or</span> <span class="nc">IOEff</span><span class="o">.</span><span class="n">interp</span>
+  <span class="k">def</span> <span class="n">interp</span><span class="o">[</span><span class="kt">F</span><span class="o">[</span><span class="k">_</span><span class="o">]</span><span class="kt">:</span> <span class="kt">Sync</span><span class="o">]</span><span class="k">:</span> <span class="kt">Eff</span> <span class="kt">~&gt;</span> <span class="kt">F</span> <span class="o">=</span> <span class="nc">Interpreter</span><span class="o">[</span><span class="kt">F</span><span class="o">].</span><span class="n">trans</span> <span class="n">or</span> <span class="n">interp1</span> <span class="c1">// interpret Hammock's effects
 </span><span class="o">}</span>
 </code></pre>
 </div>
 
 <h3 id="result">Result</h3>
 
-<div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="n">scala</span><span class="o">&gt;</span> <span class="k">import</span> <span class="nn">scala.util.Try</span>
-<span class="k">import</span> <span class="nn">scala.util.Try</span>
-
-<span class="n">scala</span><span class="o">&gt;</span> <span class="k">import</span> <span class="nn">cats.implicits._</span>
+<div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="n">scala</span><span class="o">&gt;</span> <span class="k">import</span> <span class="nn">cats.implicits._</span>
+<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">10</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
+       <span class="k">import</span> <span class="nn">cats._</span>
+                   <span class="o">^</span>
+<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">13</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
+       <span class="k">import</span> <span class="nn">cats.free._</span>
+                        <span class="o">^</span>
+<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">16</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
+       <span class="k">import</span> <span class="nn">cats.data._</span>
+                        <span class="o">^</span>
+<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">18</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
+       <span class="k">import</span> <span class="nn">cats.effect.Sync</span>
+                          <span class="o">^</span>
+<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">20</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
+       <span class="k">import</span> <span class="nn">cats.implicits._</span>
+                             <span class="o">^</span>
+<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">22</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
+       <span class="k">import</span> <span class="nn">cats.effect.IO</span>
+                          <span class="o">^</span>
+<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">26</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
+       <span class="k">import</span> <span class="nn">cats.implicits._</span>
+                             <span class="o">^</span>
 <span class="k">import</span> <span class="nn">cats.implicits._</span>
 
-<span class="n">scala</span><span class="o">&gt;</span> <span class="nc">App</span><span class="o">.</span><span class="n">program</span> <span class="n">foldMap</span> <span class="nc">App</span><span class="o">.</span><span class="n">interp</span><span class="o">[</span><span class="kt">Try</span><span class="o">]</span>
+<span class="n">scala</span><span class="o">&gt;</span> <span class="k">import</span> <span class="nn">cats.effect.IO</span>
+<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">10</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
+       <span class="k">import</span> <span class="nn">cats._</span>
+                   <span class="o">^</span>
+<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">13</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
+       <span class="k">import</span> <span class="nn">cats.free._</span>
+                        <span class="o">^</span>
+<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">16</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
+       <span class="k">import</span> <span class="nn">cats.data._</span>
+                        <span class="o">^</span>
+<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">18</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
+       <span class="k">import</span> <span class="nn">cats.effect.Sync</span>
+                          <span class="o">^</span>
+<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">20</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
+       <span class="k">import</span> <span class="nn">cats.implicits._</span>
+                             <span class="o">^</span>
+<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">22</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
+       <span class="k">import</span> <span class="nn">cats.effect.IO</span>
+                          <span class="o">^</span>
+<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">24</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
+       <span class="k">import</span> <span class="nn">cats.implicits._</span>
+                             <span class="o">^</span>
+<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">29</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
+       <span class="k">import</span> <span class="nn">cats.effect.IO</span>
+                          <span class="o">^</span>
+<span class="k">import</span> <span class="nn">cats.effect.IO</span>
+
+<span class="n">scala</span><span class="o">&gt;</span> <span class="k">val</span> <span class="n">result</span> <span class="k">=</span> <span class="nc">App</span><span class="o">.</span><span class="n">program</span> <span class="n">foldMap</span> <span class="nc">App</span><span class="o">.</span><span class="n">interp</span><span class="o">[</span><span class="kt">IO</span><span class="o">]</span>
+<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">10</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
+       <span class="k">import</span> <span class="nn">cats._</span>
+                   <span class="o">^</span>
+<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">13</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
+       <span class="k">import</span> <span class="nn">cats.free._</span>
+                        <span class="o">^</span>
+<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">16</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
+       <span class="k">import</span> <span class="nn">cats.data._</span>
+                        <span class="o">^</span>
+<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">18</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
+       <span class="k">import</span> <span class="nn">cats.effect.Sync</span>
+                          <span class="o">^</span>
+<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">20</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
+       <span class="k">import</span> <span class="nn">cats.implicits._</span>
+                             <span class="o">^</span>
+<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">22</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
+       <span class="k">import</span> <span class="nn">cats.effect.IO</span>
+                          <span class="o">^</span>
+<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">25</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
+       <span class="k">import</span> <span class="nn">cats.implicits._</span>
+                             <span class="o">^</span>
+<span class="n">result</span><span class="k">:</span> <span class="kt">cats.effect.IO</span><span class="o">[</span><span class="kt">hammock.HttpResponse</span><span class="o">]</span> <span class="k">=</span> <span class="nc">IO$819717441</span>
+
+<span class="n">scala</span><span class="o">&gt;</span> <span class="n">result</span><span class="o">.</span><span class="n">unsafeRunSync</span>
+<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">10</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
+       <span class="k">import</span> <span class="nn">cats._</span>
+                   <span class="o">^</span>
+<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">13</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
+       <span class="k">import</span> <span class="nn">cats.free._</span>
+                        <span class="o">^</span>
+<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">16</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
+       <span class="k">import</span> <span class="nn">cats.data._</span>
+                        <span class="o">^</span>
+<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">18</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
+       <span class="k">import</span> <span class="nn">cats.effect.Sync</span>
+                          <span class="o">^</span>
+<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">20</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
+       <span class="k">import</span> <span class="nn">cats.implicits._</span>
+                             <span class="o">^</span>
+<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">22</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
+       <span class="k">import</span> <span class="nn">cats.effect.IO</span>
+                          <span class="o">^</span>
+<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">24</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
+       <span class="k">import</span> <span class="nn">cats.implicits._</span>
+                             <span class="o">^</span>
+<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">26</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
+       <span class="k">import</span> <span class="nn">cats.effect.IO</span>
+                          <span class="o">^</span>
 <span class="nc">What</span><span class="ss">'s </span><span class="n">the</span> <span class="nc">ID</span><span class="o">?</span>
 <span class="o">[</span><span class="kt">info</span><span class="o">]</span><span class="k">:</span> <span class="kt">id</span> <span class="kt">was</span> <span class="err">4</span>
-<span class="kt">res1:</span> <span class="kt">scala.util.Try</span><span class="o">[</span><span class="kt">hammock.HttpResponse</span><span class="o">]</span> <span class="k">=</span> <span class="nc">Success</span><span class="o">(</span><span class="nc">HttpResponse</span><span class="o">(</span><span class="nc">Status</span><span class="o">(</span><span class="mi">200</span><span class="o">,</span><span class="nc">OK</span><span class="o">,</span><span class="nc">OK</span><span class="o">),</span><span class="nc">Map</span><span class="o">(</span><span class="nc">Vary</span> <span class="o">-&gt;</span> <span class="nc">Accept</span><span class="o">-</span><span class="nc">Encoding</span><span class="o">,</span> <span class="nc">Transfer</span><span class="o">-</span><span class="nc">Encoding</span> <span class="o">-&gt;</span> <span class="n">chunked</span><span class="o">,</span> <span class="nc">Server</span> <span class="o">-&gt;</span> <span class="n">cloudflare</span><span class="o">-</span><span class="n">nginx</span><span class="o">,</span> <span class="nc">Access</span><span class="o">-</span><span class="nc">Control</span><span class="o">-</span><span class="nc">Allow</span><span class="o">-</span><span class="nc">Credentials</span> <span class="o">-&gt;</span> <span class="kc">true</span><span class="o">,</span> <span class="nc">Etag</span> <span class="o">-&gt;</span> <span class="n">W</span><span class="o">/</span><span class="s">"23f-dNckueF2Qy9kPGGjhoIfeuBW8rg"</span><span class="o">,</span> <span class="nc">Expires</span> <span class="o">-&gt;</span> <span class="nc">Thu</span><span class="o">,</span> <span class="mi">13</span> <span class="nc">Jul</span> <span class="mi">2017</span> <span class="mi">12</span><span class="k">:</span><span class="err">09</span><span class="kt">:</span><span class="err">26</span> <span class="kt">GMT</span><span class="o">,</span> <span class="nc">Connection</span> <span class="o">-&gt;</span> <span class="n">keep</span><span class="o">-</span><span class="n">alive</span><span class="o">,</span> <span class="nc">CF</span><span class="o">-</span><span class="nc">Cache</span><span class="o">-</span><span class="nc">Status</span> <span class="o">-&gt;</span> <span class="nc">HIT</span><span class="o">,</span> <span class="nc">Cache</span><span class="o">-</span><span class="nc">Control</span> <span class="o">-&gt;</span> <span class="n">public</span><span class="o">,</span> <span class="n">max</span><span class="o">-</span><span class="n">age</span><span class="k">=</span><span class="mi">14400</span><span class="o">,</span> <span class="n">X</span><span class="o">-</span><span class="nc">Content</span><span class="o">-</span><span class="nc">Type</span><span class="o">-</span><span class="nc">Options</span> <span class="o">-&gt;</span> <span class="n">nosniff</span><span class="o">,</span> <span class="nc">Via</span> <span class="o">-&gt;</span> <span class="mf">1.1</span> <span class="n">vegur</span><span class="o">,</span> <span class="nc">Content</span><span class="o">-</span><span class="nc">Type</span> <span class="o">-&gt;</span> <span class="n">application</span><span class="o">/</span><span class="n">json</span><span class="o">;</span> <span class="n">charset</span><span class="k">=</span><span class="n">utf</span><span class="o">-</span><span class="mi">8</span><span class="o">,</span> <span class="nc">Pragma</span> <span class="o">-&gt;</span> <span class="n">no</span><span class="o">-</span><span class="n">cache</span><span class="o">,</span> <span class="nc">Date</span> <span class="o">-&gt;</span> <span class="nc">Thu</span><span class="o">,</span> <span class="mi">13</span> <span class="nc">Jul</span> <span class="mi">2017</span> <span class="mi">08</span><span class="k">:</span><span class="err">09</span><span class="kt">:</span><span class="err">26</span> <span class="kt">GMT</span><span class="o">,</span> <span class="nc">CF</span><span class="o">-</span><span class="nc">RAY</span> <span class="o">-&gt;</span> <span class="mf">37d</span><span class="n">ac2921ec12f41</span><span class="o">-</span><span class="nc">MAD</span><span class="o">,</span> <span class="nc">Set</span><span class="o">-</span><span class="nc">Cookie</span> <span class="o">-&gt;</span> <span class="nc">__cfduid</span><span class="k">=</span><span class="n">dca5ec9ae0fa77193b6cc77d72cd004ef1499933366</span><span class="o">;</span> <span class="n">expires</span><span class="k">=</span><span class="nc">Fri</span><span class="o">,</span> <span class="mi">13</span><span class="o">-</span><span class="nc">Jul</span><span class="o">-</span><span class="mi">18</span> <span class="mi">08</span><span class="k">:</span><span class="err">09</span><span class="kt">:</span><span class="err">26</span> <span class="kt">GMT</span><span class="o">;</span> <span class="n">path</span><span class="o">=/;</span> <span class="n">domain</span><span class="o">=.</span><span class="n">typicode</span><span class="o">.</span><span class="n">com</span><span class="o">;</span> <span class="nc">HttpOnly</span><span class="o">,</span> <span class="n">X</span><span class="o">-</span><span class="nc">Powered</span><span class="o">-</span><span class="nc">By</span> <span class="o">-&gt;</span> <span class="nc">Express</span><span class="o">),[</span>  <span class="o">{</span>    <span class="err">"</span><span class="kt">id</span><span class="err">"</span><span class="kt">:</span> <span class="err">4</span>,    <span class="err">"</span><span class="kt">name</span><span class="err">"</span><span class="kt">:</span> <span class="err">"</span><span class="kt">Patricia</span> <span class="kt">Lebsac...</span>
+<span class="kt">res1:</span> <span class="kt">hammock.HttpResponse</span> <span class="o">=</span> <span class="nc">HttpResponse</span><span class="o">(</span><span class="nc">Status</span><span class="o">(</span><span class="mi">200</span><span class="o">,</span><span class="nc">OK</span><span class="o">,</span><span class="nc">OK</span><span class="o">),</span><span class="nc">Map</span><span class="o">(</span><span class="nc">Vary</span> <span class="o">-&gt;</span> <span class="nc">Accept</span><span class="o">-</span><span class="nc">Encoding</span><span class="o">,</span> <span class="nc">Transfer</span><span class="o">-</span><span class="nc">Encoding</span> <span class="o">-&gt;</span> <span class="n">chunked</span><span class="o">,</span> <span class="nc">Server</span> <span class="o">-&gt;</span> <span class="n">cloudflare</span><span class="o">-</span><span class="n">nginx</span><span class="o">,</span> <span class="nc">Access</span><span class="o">-</span><span class="nc">Control</span><span class="o">-</span><span class="nc">Allow</span><span class="o">-</span><span class="nc">Credentials</span> <span class="o">-&gt;</span> <span class="kc">true</span><span class="o">,</span> <span class="nc">Etag</span> <span class="o">-&gt;</span> <span class="n">W</span><span class="o">/</span><span class="s">"23f-dNckueF2Qy9kPGGjhoIfeuBW8rg"</span><span class="o">,</span> <span class="nc">Expires</span> <span class="o">-&gt;</span> <span class="nc">Mon</span><span class="o">,</span> <span class="mi">23</span> <span class="nc">Oct</span> <span class="mi">2017</span> <span class="mi">20</span><span class="k">:</span><span class="err">35</span><span class="kt">:</span><span class="err">39</span> <span class="kt">GMT</span><span class="o">,</span> <span class="nc">Connection</span> <span class="o">-&gt;</span> <span class="n">keep</span><span class="o">-</span><span class="n">alive</span><span class="o">,</span> <span class="nc">CF</span><span class="o">-</span><span class="nc">Cache</span><span class="o">-</span><span class="nc">Status</span> <span class="o">-&gt;</span> <span class="nc">HIT</span><span class="o">,</span> <span class="nc">Cache</span><span class="o">-</span><span class="nc">Control</span> <span class="o">-&gt;</span> <span class="n">public</span><span class="o">,</span> <span class="n">max</span><span class="o">-</span><span class="n">age</span><span class="k">=</span><span class="mi">14400</span><span class="o">,</span> <span class="n">X</span><span class="o">-</span><span class="nc">Content</span><span class="o">-</span><span class="nc">Type</span><span class="o">-</span><span class="nc">Options</span> <span class="o">-&gt;</span> <span class="n">nosniff</span><span class="o">,</span> <span class="nc">Via</span> <span class="o">-&gt;</span> <span class="mf">1.1</span> <span class="n">vegur</span><span class="o">,</span> <span class="nc">Content</span><span class="o">-</span><span class="nc">Type</span> <span class="o">-&gt;</span> <span class="n">application</span><span class="o">/</span><span class="n">json</span><span class="o">;</span> <span class="n">charset</span><span class="k">=</span><span class="n">utf</span><span class="o">-</span><span class="mi">8</span><span class="o">,</span> <span class="nc">Pragma</span> <span class="o">-&gt;</span> <span class="n">no</span><span class="o">-</span><span class="n">cache</span><span class="o">,</span> <span class="nc">Date</span> <span class="o">-&gt;</span> <span class="nc">Mon</span><span class="o">,</span> <span class="mi">23</span> <span class="nc">Oct</span> <span class="mi">2017</span> <span class="mi">16</span><span class="k">:</span><span class="err">35</span><span class="kt">:</span><span class="err">39</span> <span class="kt">GMT</span><span class="o">,</span> <span class="nc">CF</span><span class="o">-</span><span class="nc">RAY</span> <span class="o">-&gt;</span> <span class="mi">3</span><span class="n">b261c5a5afa0dcf</span><span class="o">-</span><span class="nc">MAD</span><span class="o">,</span> <span class="nc">Set</span><span class="o">-</span><span class="nc">Cookie</span> <span class="o">-&gt;</span> <span class="nc">__cfduid</span><span class="k">=</span><span class="n">dfc1f40e5276057d2ebdb8223471e6cb21508776539</span><span class="o">;</span> <span class="n">expires</span><span class="k">=</span><span class="nc">Tue</span><span class="o">,</span> <span class="mi">23</span><span class="o">-</span><span class="nc">Oct</span><span class="o">-</span><span class="mi">18</span> <span class="mi">16</span><span class="k">:</span><span class="err">35</span><span class="kt">:</span><span class="err">39</span> <span class="kt">GMT</span><span class="o">;</span> <span class="n">path</span><span class="o">=/;</span> <span class="n">domain</span><span class="o">=.</span><span class="n">typicode</span><span class="o">.</span><span class="n">com</span><span class="o">;</span> <span class="nc">HttpOnly</span><span class="o">,</span> <span class="n">X</span><span class="o">-</span><span class="nc">Powered</span><span class="o">-</span><span class="nc">By</span> <span class="o">-&gt;</span> <span class="nc">Express</span><span class="o">),[</span>  <span class="o">{</span>    <span class="err">"</span><span class="kt">id</span><span class="err">"</span><span class="kt">:</span> <span class="err">4</span>,    <span class="err">"</span><span class="kt">name</span><span class="err">"</span><span class="kt">:</span> <span class="err">"</span><span class="kt">Patricia</span> <span class="kt">Lebs...</span>
 </code></pre>
 </div>
 
@@ -175,31 +321,406 @@ your requests.</p>
 <h2 id="example-of-use">Example of use</h2>
 
 <div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="k">import</span> <span class="nn">hammock._</span>
-<span class="c1">// import hammock._
+<span class="c1">// &lt;console&gt;:10: warning: Unused import
+//        import cats._
+//                    ^
+// &lt;console&gt;:13: warning: Unused import
+//        import cats.free._
+//                         ^
+// &lt;console&gt;:16: warning: Unused import
+//        import cats.data._
+//                         ^
+// &lt;console&gt;:18: warning: Unused import
+//        import cats.effect.Sync
+//                           ^
+// &lt;console&gt;:20: warning: Unused import
+//        import cats.implicits._
+//                              ^
+// &lt;console&gt;:22: warning: Unused import
+//        import cats.effect.IO
+//                           ^
+// &lt;console&gt;:24: warning: Unused import
+//        import cats.implicits._
+//                              ^
+// &lt;console&gt;:26: warning: Unused import
+//        import cats.effect.IO
+//                           ^
+// &lt;console&gt;:30: warning: Unused import
+//        import hammock._
+//                       ^
+// import hammock._
 </span>
 <span class="k">import</span> <span class="nn">hammock.jvm.free.Interpreter</span>
-<span class="c1">// import hammock.jvm.free.Interpreter
+<span class="c1">// &lt;console&gt;:10: warning: Unused import
+//        import cats._
+//                    ^
+// &lt;console&gt;:13: warning: Unused import
+//        import cats.free._
+//                         ^
+// &lt;console&gt;:16: warning: Unused import
+//        import cats.data._
+//                         ^
+// &lt;console&gt;:18: warning: Unused import
+//        import cats.effect.Sync
+//                           ^
+// &lt;console&gt;:20: warning: Unused import
+//        import cats.implicits._
+//                              ^
+// &lt;console&gt;:22: warning: Unused import
+//        import cats.effect.IO
+//                           ^
+// &lt;console&gt;:24: warning: Unused import
+//        import cats.implicits._
+//                              ^
+// &lt;console&gt;:26: warning: Unused import
+//        import cats.effect.IO
+//                           ^
+// &lt;console&gt;:28: warning: Unused import
+//        import hammock._
+//                       ^
+// &lt;console&gt;:33: warning: Unused import
+//        import hammock.jvm.free.Interpreter
+//                                ^
+// import hammock.jvm.free.Interpreter
 </span>
 <span class="k">import</span> <span class="nn">hammock.hi._</span>
-<span class="c1">// import hammock.hi._
+<span class="c1">// &lt;console&gt;:10: warning: Unused import
+//        import cats._
+//                    ^
+// &lt;console&gt;:13: warning: Unused import
+//        import cats.free._
+//                         ^
+// &lt;console&gt;:16: warning: Unused import
+//        import cats.data._
+//                         ^
+// &lt;console&gt;:18: warning: Unused import
+//        import cats.effect.Sync
+//                           ^
+// &lt;console&gt;:20: warning: Unused import
+//        import cats.implicits._
+//                              ^
+// &lt;console&gt;:22: warning: Unused import
+//        import cats.effect.IO
+//                           ^
+// &lt;console&gt;:24: warning: Unused import
+//        import cats.implicits._
+//                              ^
+// &lt;console&gt;:26: warning: Unused import
+//        import cats.effect.IO
+//                           ^
+// &lt;console&gt;:28: warning: Unused import
+//        import hammock._
+//                       ^
+// &lt;console&gt;:30: warning: Unused import
+//        import hammock.jvm.free.Interpreter
+//                                ^
+// &lt;console&gt;:34: warning: Unused import
+//        import hammock.hi._
+//                          ^
+// import hammock.hi._
 </span>
 <span class="k">import</span> <span class="nn">hammock.hi.dsl._</span>
-<span class="c1">// import hammock.hi.dsl._
+<span class="c1">// &lt;console&gt;:10: warning: Unused import
+//        import cats._
+//                    ^
+// &lt;console&gt;:13: warning: Unused import
+//        import cats.free._
+//                         ^
+// &lt;console&gt;:16: warning: Unused import
+//        import cats.data._
+//                         ^
+// &lt;console&gt;:18: warning: Unused import
+//        import cats.effect.Sync
+//                           ^
+// &lt;console&gt;:20: warning: Unused import
+//        import cats.implicits._
+//                              ^
+// &lt;console&gt;:22: warning: Unused import
+//        import cats.effect.IO
+//                           ^
+// &lt;console&gt;:24: warning: Unused import
+//        import cats.implicits._
+//                              ^
+// &lt;console&gt;:26: warning: Unused import
+//        import cats.effect.IO
+//                           ^
+// &lt;console&gt;:28: warning: Unused import
+//        import hammock._
+//                       ^
+// &lt;console&gt;:30: warning: Unused import
+//        import hammock.jvm.free.Interpreter
+//                                ^
+// &lt;console&gt;:32: warning: Unused import
+//        import hammock.hi._
+//                          ^
+// &lt;console&gt;:37: warning: Unused import
+//        import hammock.hi.dsl._
+//                              ^
+// import hammock.hi.dsl._
 </span>
 <span class="k">import</span> <span class="nn">cats._</span>
-<span class="c1">// import cats._
+<span class="c1">// &lt;console&gt;:10: warning: Unused import
+//        import cats._
+//                    ^
+// &lt;console&gt;:13: warning: Unused import
+//        import cats.free._
+//                         ^
+// &lt;console&gt;:16: warning: Unused import
+//        import cats.data._
+//                         ^
+// &lt;console&gt;:18: warning: Unused import
+//        import cats.effect.Sync
+//                           ^
+// &lt;console&gt;:20: warning: Unused import
+//        import cats.implicits._
+//                              ^
+// &lt;console&gt;:22: warning: Unused import
+//        import cats.effect.IO
+//                           ^
+// &lt;console&gt;:24: warning: Unused import
+//        import cats.implicits._
+//                              ^
+// &lt;console&gt;:26: warning: Unused import
+//        import cats.effect.IO
+//                           ^
+// &lt;console&gt;:28: warning: Unused import
+//        import hammock._
+//                       ^
+// &lt;console&gt;:30: warning: Unused import
+//        import hammock.jvm.free.Interpreter
+//                                ^
+// &lt;console&gt;:32: warning: Unused import
+//        import hammock.hi._
+//                          ^
+// &lt;console&gt;:35: warning: Unused import
+//        import hammock.hi.dsl._
+//                              ^
+// &lt;console&gt;:40: warning: Unused import
+//        import cats._
+//                    ^
+// import cats._
 </span>
 <span class="k">import</span> <span class="nn">cats.implicits._</span>
-<span class="c1">// import cats.implicits._
+<span class="c1">// &lt;console&gt;:10: warning: Unused import
+//        import cats._
+//                    ^
+// &lt;console&gt;:13: warning: Unused import
+//        import cats.free._
+//                         ^
+// &lt;console&gt;:16: warning: Unused import
+//        import cats.data._
+//                         ^
+// &lt;console&gt;:18: warning: Unused import
+//        import cats.effect.Sync
+//                           ^
+// &lt;console&gt;:20: warning: Unused import
+//        import cats.implicits._
+//                              ^
+// &lt;console&gt;:22: warning: Unused import
+//        import cats.effect.IO
+//                           ^
+// &lt;console&gt;:24: warning: Unused import
+//        import cats.implicits._
+//                              ^
+// &lt;console&gt;:26: warning: Unused import
+//        import cats.effect.IO
+//                           ^
+// &lt;console&gt;:28: warning: Unused import
+//        import hammock._
+//                       ^
+// &lt;console&gt;:30: warning: Unused import
+//        import hammock.jvm.free.Interpreter
+//                                ^
+// &lt;console&gt;:32: warning: Unused import
+//        import hammock.hi._
+//                          ^
+// &lt;console&gt;:35: warning: Unused import
+//        import hammock.hi.dsl._
+//                              ^
+// &lt;console&gt;:38: warning: Unused import
+//        import cats._
+//                    ^
+// &lt;console&gt;:43: warning: Unused import
+//        import cats.implicits._
+//                              ^
+// import cats.implicits._
 </span>
-<span class="k">implicit</span> <span class="k">val</span> <span class="n">interp</span> <span class="k">=</span> <span class="nc">Interpreter</span><span class="o">()</span>
-<span class="c1">// interp: hammock.jvm.free.Interpreter = hammock.jvm.free.Interpreter@571e1fbb
+<span class="k">import</span> <span class="nn">cats.effect.IO</span>
+<span class="c1">// &lt;console&gt;:10: warning: Unused import
+//        import cats._
+//                    ^
+// &lt;console&gt;:13: warning: Unused import
+//        import cats.free._
+//                         ^
+// &lt;console&gt;:16: warning: Unused import
+//        import cats.data._
+//                         ^
+// &lt;console&gt;:18: warning: Unused import
+//        import cats.effect.Sync
+//                           ^
+// &lt;console&gt;:20: warning: Unused import
+//        import cats.implicits._
+//                              ^
+// &lt;console&gt;:22: warning: Unused import
+//        import cats.effect.IO
+//                           ^
+// &lt;console&gt;:24: warning: Unused import
+//        import cats.implicits._
+//                              ^
+// &lt;console&gt;:26: warning: Unused import
+//        import cats.effect.IO
+//                           ^
+// &lt;console&gt;:28: warning: Unused import
+//        import hammock._
+//                       ^
+// &lt;console&gt;:30: warning: Unused import
+//        import hammock.jvm.free.Interpreter
+//                                ^
+// &lt;console&gt;:32: warning: Unused import
+//        import hammock.hi._
+//                          ^
+// &lt;console&gt;:35: warning: Unused import
+//        import hammock.hi.dsl._
+//                              ^
+// &lt;console&gt;:38: warning: Unused import
+//        import cats._
+//                    ^
+// &lt;console&gt;:41: warning: Unused import
+//        import cats.implicits._
+//                              ^
+// &lt;console&gt;:46: warning: Unused import
+//        import cats.effect.IO
+//                           ^
+// import cats.effect.IO
+</span>
+<span class="k">implicit</span> <span class="k">val</span> <span class="n">interp</span> <span class="k">=</span> <span class="nc">Interpreter</span><span class="o">[</span><span class="kt">IO</span><span class="o">]</span>
+<span class="c1">// &lt;console&gt;:10: warning: Unused import
+//        import cats._
+//                    ^
+// &lt;console&gt;:13: warning: Unused import
+//        import cats.free._
+//                         ^
+// &lt;console&gt;:16: warning: Unused import
+//        import cats.data._
+//                         ^
+// &lt;console&gt;:18: warning: Unused import
+//        import cats.effect.Sync
+//                           ^
+// &lt;console&gt;:20: warning: Unused import
+//        import cats.implicits._
+//                              ^
+// &lt;console&gt;:22: warning: Unused import
+//        import cats.effect.IO
+//                           ^
+// &lt;console&gt;:24: warning: Unused import
+//        import cats.implicits._
+//                              ^
+// &lt;console&gt;:26: warning: Unused import
+//        import cats.effect.IO
+//                           ^
+// &lt;console&gt;:28: warning: Unused import
+//        import hammock._
+//                       ^
+// &lt;console&gt;:32: warning: Unused import
+//        import hammock.hi._
+//                          ^
+// &lt;console&gt;:35: warning: Unused import
+//        import hammock.hi.dsl._
+//                              ^
+// &lt;console&gt;:38: warning: Unused import
+//        import cats._
+//                    ^
+// &lt;console&gt;:41: warning: Unused import
+//        import cats.implicits._
+//                              ^
+// interp: hammock.jvm.free.Interpreter[cats.effect.IO] = hammock.jvm.free.Interpreter@6283ec17
 </span>
 <span class="k">val</span> <span class="n">opts</span> <span class="k">=</span> <span class="o">(</span><span class="n">header</span><span class="o">(</span><span class="s">"user"</span> <span class="o">-&gt;</span> <span class="s">"pepegar"</span><span class="o">)</span> <span class="o">&amp;&gt;</span> <span class="n">cookie</span><span class="o">(</span><span class="nc">Cookie</span><span class="o">(</span><span class="s">"track"</span><span class="o">,</span> <span class="s">"a lot"</span><span class="o">)))(</span><span class="nc">Opts</span><span class="o">.</span><span class="n">default</span><span class="o">)</span>
-<span class="c1">// opts: hammock.hi.Opts = Opts(None,Map(user -&gt; pepegar),Some(List(Cookie(track,a lot,None,None,None,None,None,None,None,None))))
+<span class="c1">// &lt;console&gt;:10: warning: Unused import
+//        import cats._
+//                    ^
+// &lt;console&gt;:13: warning: Unused import
+//        import cats.free._
+//                         ^
+// &lt;console&gt;:16: warning: Unused import
+//        import cats.data._
+//                         ^
+// &lt;console&gt;:18: warning: Unused import
+//        import cats.effect.Sync
+//                           ^
+// &lt;console&gt;:20: warning: Unused import
+//        import cats.implicits._
+//                              ^
+// &lt;console&gt;:22: warning: Unused import
+//        import cats.effect.IO
+//                           ^
+// &lt;console&gt;:24: warning: Unused import
+//        import cats.implicits._
+//                              ^
+// &lt;console&gt;:26: warning: Unused import
+//        import cats.effect.IO
+//                           ^
+// &lt;console&gt;:28: warning: Unused import
+//        import hammock._
+//                       ^
+// &lt;console&gt;:30: warning: Unused import
+//        import hammock.jvm.free.Interpreter
+//                                ^
+// &lt;console&gt;:38: warning: Unused import
+//        import cats._
+//                    ^
+// &lt;console&gt;:41: warning: Unused import
+//        import cats.implicits._
+//                              ^
+// &lt;console&gt;:43: warning: Unused import
+//        import cats.effect.IO
+//                           ^
+// &lt;console&gt;:44: warning: Unused import
+//        import interp
+//                                                                                                                     ^
+// opts: hammock.hi.Opts = Opts(None,Map(user -&gt; pepegar),Some(List(Cookie(track,a lot,None,None,None,None,None,None,None,None))))
 </span>
-<span class="k">val</span> <span class="n">response</span> <span class="k">=</span> <span class="nc">Hammock</span><span class="o">.</span><span class="n">getWithOpts</span><span class="o">(</span><span class="nc">Uri</span><span class="o">.</span><span class="n">unsafeParse</span><span class="o">(</span><span class="s">"http://httpbin.org/get"</span><span class="o">),</span> <span class="n">opts</span><span class="o">).</span><span class="n">exec</span><span class="o">[</span><span class="kt">Try</span><span class="o">]</span>
-<span class="c1">// response: scala.util.Try[hammock.HttpResponse] = Success(HttpResponse(Status(200,OK,OK),Map(Access-Control-Allow-Origin -&gt; *, Server -&gt; meinheld/0.6.1, Access-Control-Allow-Credentials -&gt; true, X-Processed-Time -&gt; 0.000675916671753, Connection -&gt; keep-alive, Content-Length -&gt; 318, Via -&gt; 1.1 vegur, Content-Type -&gt; application/json, Date -&gt; Thu, 13 Jul 2017 08:09:28 GMT, X-Powered-By -&gt; Flask),{  "args": {},   "headers": {    "Accept-Encoding": "gzip,deflate",     "Connection": "close",     "Host": "httpbin.org",     "Set-Cookie": "track=a lot",     "User": "pepegar",     "User-Agent": "Apache-HttpClient/4.5.2 (Java/1.8.0_131)"  },   "origin": "83.36.143.84",   "url": "http://httpbin.org/get"}))
+<span class="k">val</span> <span class="n">response</span> <span class="k">=</span> <span class="nc">Hammock</span><span class="o">.</span><span class="n">getWithOpts</span><span class="o">(</span><span class="nc">Uri</span><span class="o">.</span><span class="n">unsafeParse</span><span class="o">(</span><span class="s">"http://httpbin.org/get"</span><span class="o">),</span> <span class="n">opts</span><span class="o">).</span><span class="n">exec</span><span class="o">[</span><span class="kt">IO</span><span class="o">]</span>
+<span class="c1">// &lt;console&gt;:10: warning: Unused import
+//        import cats._
+//                    ^
+// &lt;console&gt;:13: warning: Unused import
+//        import cats.free._
+//                         ^
+// &lt;console&gt;:16: warning: Unused import
+//        import cats.data._
+//                         ^
+// &lt;console&gt;:18: warning: Unused import
+//        import cats.effect.Sync
+//                           ^
+// &lt;console&gt;:20: warning: Unused import
+//        import cats.implicits._
+//                              ^
+// &lt;console&gt;:22: warning: Unused import
+//        import cats.effect.IO
+//                           ^
+// &lt;console&gt;:24: warning: Unused import
+//        import cats.implicits._
+//                              ^
+// &lt;console&gt;:26: warning: Unused import
+//        import cats.effect.IO
+//                           ^
+// &lt;console&gt;:30: warning: Unused import
+//        import hammock.jvm.free.Interpreter
+//                                ^
+// &lt;console&gt;:32: warning: Unused import
+//        import hammock.hi._
+//                          ^
+// &lt;console&gt;:35: warning: Unused import
+//        import hammock.hi.dsl._
+//                              ^
+// &lt;console&gt;:38: warning: Unused import
+//        import cats._
+//                    ^
+// &lt;console&gt;:41: warning: Unused import
+//        import cats.implicits._
+//                              ^
+// response: cats.effect.IO[hammock.HttpResponse] = IO$418428704
 </span></code></pre>
 </div>
 
@@ -269,7 +790,49 @@ combinator of <code class="highlighter-rouge">Function1</code>.  Also, Hammock p
     <span class="n">cookie</span><span class="o">(</span><span class="nc">Cookie</span><span class="o">(</span><span class="s">"track"</span><span class="o">,</span> <span class="s">"A lot"</span><span class="o">))</span> <span class="o">&amp;&gt;</span>
     <span class="n">header</span><span class="o">(</span><span class="s">"user"</span> <span class="o">-&gt;</span> <span class="s">"potatoman"</span><span class="o">)</span>
 <span class="o">}</span>
-<span class="c1">// req: hammock.hi.Opts =&gt; hammock.hi.Opts = scala.Function1$$Lambda$1803/259811929@63e78f53
+<span class="c1">// &lt;console&gt;:10: warning: Unused import
+//        import cats._
+//                    ^
+// &lt;console&gt;:13: warning: Unused import
+//        import cats.free._
+//                         ^
+// &lt;console&gt;:16: warning: Unused import
+//        import cats.data._
+//                         ^
+// &lt;console&gt;:18: warning: Unused import
+//        import cats.effect.Sync
+//                           ^
+// &lt;console&gt;:20: warning: Unused import
+//        import cats.implicits._
+//                              ^
+// &lt;console&gt;:22: warning: Unused import
+//        import cats.effect.IO
+//                           ^
+// &lt;console&gt;:24: warning: Unused import
+//        import cats.implicits._
+//                              ^
+// &lt;console&gt;:26: warning: Unused import
+//        import cats.effect.IO
+//                           ^
+// &lt;console&gt;:28: warning: Unused import
+//        import hammock._
+//                       ^
+// &lt;console&gt;:30: warning: Unused import
+//        import hammock.jvm.free.Interpreter
+//                                ^
+// &lt;console&gt;:38: warning: Unused import
+//        import cats._
+//                    ^
+// &lt;console&gt;:41: warning: Unused import
+//        import cats.implicits._
+//                              ^
+// &lt;console&gt;:43: warning: Unused import
+//        import cats.effect.IO
+//                           ^
+// &lt;console&gt;:44: warning: Unused import
+//        import interp
+//                                                                                                                     ^
+// req: hammock.hi.Opts =&gt; hammock.hi.Opts = scala.Function1$$Lambda$1898/371757542@5b617598
 </span></code></pre>
 </div>
 
@@ -312,10 +875,100 @@ the type itself.  For example, adding a <code class="highlighter-rouge">MaxAge</
 is just matter of doing:</p>
 
 <div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="k">val</span> <span class="n">cookie</span> <span class="k">=</span> <span class="nc">Cookie</span><span class="o">(</span><span class="s">"_ga"</span><span class="o">,</span> <span class="s">"werwer"</span><span class="o">)</span>
-<span class="c1">// cookie: hammock.hi.Cookie = Cookie(_ga,werwer,None,None,None,None,None,None,None,None)
+<span class="c1">// &lt;console&gt;:10: warning: Unused import
+//        import cats._
+//                    ^
+// &lt;console&gt;:13: warning: Unused import
+//        import cats.free._
+//                         ^
+// &lt;console&gt;:16: warning: Unused import
+//        import cats.data._
+//                         ^
+// &lt;console&gt;:18: warning: Unused import
+//        import cats.effect.Sync
+//                           ^
+// &lt;console&gt;:20: warning: Unused import
+//        import cats.implicits._
+//                              ^
+// &lt;console&gt;:22: warning: Unused import
+//        import cats.effect.IO
+//                           ^
+// &lt;console&gt;:24: warning: Unused import
+//        import cats.implicits._
+//                              ^
+// &lt;console&gt;:26: warning: Unused import
+//        import cats.effect.IO
+//                           ^
+// &lt;console&gt;:28: warning: Unused import
+//        import hammock._
+//                       ^
+// &lt;console&gt;:30: warning: Unused import
+//        import hammock.jvm.free.Interpreter
+//                                ^
+// &lt;console&gt;:35: warning: Unused import
+//        import hammock.hi.dsl._
+//                              ^
+// &lt;console&gt;:38: warning: Unused import
+//        import cats._
+//                    ^
+// &lt;console&gt;:41: warning: Unused import
+//        import cats.implicits._
+//                              ^
+// &lt;console&gt;:43: warning: Unused import
+//        import cats.effect.IO
+//                           ^
+// &lt;console&gt;:44: warning: Unused import
+//        import interp
+//                                                                                                                     ^
+// cookie: hammock.hi.Cookie = Cookie(_ga,werwer,None,None,None,None,None,None,None,None)
 </span>
 <span class="nc">Cookie</span><span class="o">.</span><span class="n">maxAge</span><span class="o">.</span><span class="n">set</span><span class="o">(</span><span class="nc">Some</span><span class="o">(</span><span class="mi">234</span><span class="o">))(</span><span class="n">cookie</span><span class="o">)</span>
-<span class="c1">// res2: hammock.hi.Cookie = Cookie(_ga,werwer,None,Some(234),None,None,None,None,None,None)
+<span class="c1">// &lt;console&gt;:10: warning: Unused import
+//        import cats._
+//                    ^
+// &lt;console&gt;:13: warning: Unused import
+//        import cats.free._
+//                         ^
+// &lt;console&gt;:16: warning: Unused import
+//        import cats.data._
+//                         ^
+// &lt;console&gt;:18: warning: Unused import
+//        import cats.effect.Sync
+//                           ^
+// &lt;console&gt;:20: warning: Unused import
+//        import cats.implicits._
+//                              ^
+// &lt;console&gt;:22: warning: Unused import
+//        import cats.effect.IO
+//                           ^
+// &lt;console&gt;:24: warning: Unused import
+//        import cats.implicits._
+//                              ^
+// &lt;console&gt;:26: warning: Unused import
+//        import cats.effect.IO
+//                           ^
+// &lt;console&gt;:28: warning: Unused import
+//        import hammock._
+//                       ^
+// &lt;console&gt;:30: warning: Unused import
+//        import hammock.jvm.free.Interpreter
+//                                ^
+// &lt;console&gt;:35: warning: Unused import
+//        import hammock.hi.dsl._
+//                              ^
+// &lt;console&gt;:38: warning: Unused import
+//        import cats._
+//                    ^
+// &lt;console&gt;:41: warning: Unused import
+//        import cats.implicits._
+//                              ^
+// &lt;console&gt;:43: warning: Unused import
+//        import cats.effect.IO
+//                           ^
+// &lt;console&gt;:44: warning: Unused import
+//        import interp
+//                                                                                                                     ^
+// res2: hammock.hi.Cookie = Cookie(_ga,werwer,None,Some(234),None,None,None,None,None,None)
 </span></code></pre>
 </div>
 
@@ -342,52 +995,787 @@ trait Codec[A] {
 <p>Currently, this interface is implemented for <code class="highlighter-rouge">circe</code> codecs, so you
 can just grab <code class="highlighter-rouge">hammock-circe</code>:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>libraryDependencies += "hammock" %% "hammock-circe" % "0.1"
+<div class="highlighter-rouge"><pre class="highlight"><code>libraryDependencies += "hammock" %% "hammock-circe" % "0.6.4"
 </code></pre>
 </div>
 
 <p>And use it directly:</p>
 
 <div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="k">import</span> <span class="nn">hammock._</span>
-<span class="c1">// import hammock._
+<span class="c1">// &lt;console&gt;:10: warning: Unused import
+//        import cats._
+//                    ^
+// &lt;console&gt;:13: warning: Unused import
+//        import cats.free._
+//                         ^
+// &lt;console&gt;:16: warning: Unused import
+//        import cats.data._
+//                         ^
+// &lt;console&gt;:18: warning: Unused import
+//        import cats.effect.Sync
+//                           ^
+// &lt;console&gt;:20: warning: Unused import
+//        import cats.implicits._
+//                              ^
+// &lt;console&gt;:22: warning: Unused import
+//        import cats.effect.IO
+//                           ^
+// &lt;console&gt;:24: warning: Unused import
+//        import cats.implicits._
+//                              ^
+// &lt;console&gt;:26: warning: Unused import
+//        import cats.effect.IO
+//                           ^
+// &lt;console&gt;:28: warning: Unused import
+//        import hammock._
+//                       ^
+// &lt;console&gt;:30: warning: Unused import
+//        import hammock.jvm.free.Interpreter
+//                                ^
+// &lt;console&gt;:32: warning: Unused import
+//        import hammock.hi._
+//                          ^
+// &lt;console&gt;:35: warning: Unused import
+//        import hammock.hi.dsl._
+//                              ^
+// &lt;console&gt;:38: warning: Unused import
+//        import cats._
+//                    ^
+// &lt;console&gt;:41: warning: Unused import
+//        import cats.implicits._
+//                              ^
+// &lt;console&gt;:43: warning: Unused import
+//        import cats.effect.IO
+//                           ^
+// &lt;console&gt;:44: warning: Unused import
+//        import interp
+//                                                                                                                     ^
+// &lt;console&gt;:48: warning: Unused import
+//        import hammock._
+//                       ^
+// import hammock._
 </span>
 <span class="k">import</span> <span class="nn">hammock.circe._</span>
-<span class="c1">// import hammock.circe._
+<span class="c1">// &lt;console&gt;:10: warning: Unused import
+//        import cats._
+//                    ^
+// &lt;console&gt;:13: warning: Unused import
+//        import cats.free._
+//                         ^
+// &lt;console&gt;:16: warning: Unused import
+//        import cats.data._
+//                         ^
+// &lt;console&gt;:18: warning: Unused import
+//        import cats.effect.Sync
+//                           ^
+// &lt;console&gt;:20: warning: Unused import
+//        import cats.implicits._
+//                              ^
+// &lt;console&gt;:22: warning: Unused import
+//        import cats.effect.IO
+//                           ^
+// &lt;console&gt;:24: warning: Unused import
+//        import cats.implicits._
+//                              ^
+// &lt;console&gt;:26: warning: Unused import
+//        import cats.effect.IO
+//                           ^
+// &lt;console&gt;:28: warning: Unused import
+//        import hammock._
+//                       ^
+// &lt;console&gt;:30: warning: Unused import
+//        import hammock.jvm.free.Interpreter
+//                                ^
+// &lt;console&gt;:32: warning: Unused import
+//        import hammock.hi._
+//                          ^
+// &lt;console&gt;:35: warning: Unused import
+//        import hammock.hi.dsl._
+//                              ^
+// &lt;console&gt;:38: warning: Unused import
+//        import cats._
+//                    ^
+// &lt;console&gt;:41: warning: Unused import
+//        import cats.implicits._
+//                              ^
+// &lt;console&gt;:43: warning: Unused import
+//        import cats.effect.IO
+//                           ^
+// &lt;console&gt;:44: warning: Unused import
+//        import interp
+//                                                                                                                     ^
+// &lt;console&gt;:46: warning: Unused import
+//        import hammock._
+//                       ^
+// &lt;console&gt;:51: warning: Unused import
+//        import hammock.circe._
+//                             ^
+// import hammock.circe._
 </span>
 <span class="k">import</span> <span class="nn">hammock.circe.implicits._</span>
-<span class="c1">// import hammock.circe.implicits._
+<span class="c1">// &lt;console&gt;:10: warning: Unused import
+//        import cats._
+//                    ^
+// &lt;console&gt;:13: warning: Unused import
+//        import cats.free._
+//                         ^
+// &lt;console&gt;:16: warning: Unused import
+//        import cats.data._
+//                         ^
+// &lt;console&gt;:18: warning: Unused import
+//        import cats.effect.Sync
+//                           ^
+// &lt;console&gt;:20: warning: Unused import
+//        import cats.implicits._
+//                              ^
+// &lt;console&gt;:22: warning: Unused import
+//        import cats.effect.IO
+//                           ^
+// &lt;console&gt;:24: warning: Unused import
+//        import cats.implicits._
+//                              ^
+// &lt;console&gt;:26: warning: Unused import
+//        import cats.effect.IO
+//                           ^
+// &lt;console&gt;:28: warning: Unused import
+//        import hammock._
+//                       ^
+// &lt;console&gt;:30: warning: Unused import
+//        import hammock.jvm.free.Interpreter
+//                                ^
+// &lt;console&gt;:32: warning: Unused import
+//        import hammock.hi._
+//                          ^
+// &lt;console&gt;:35: warning: Unused import
+//        import hammock.hi.dsl._
+//                              ^
+// &lt;console&gt;:38: warning: Unused import
+//        import cats._
+//                    ^
+// &lt;console&gt;:41: warning: Unused import
+//        import cats.implicits._
+//                              ^
+// &lt;console&gt;:43: warning: Unused import
+//        import cats.effect.IO
+//                           ^
+// &lt;console&gt;:44: warning: Unused import
+//        import interp
+//                                                                                                                     ^
+// &lt;console&gt;:46: warning: Unused import
+//        import hammock._
+//                       ^
+// &lt;console&gt;:49: warning: Unused import
+//        import hammock.circe._
+//                             ^
+// &lt;console&gt;:54: warning: Unused import
+//        import hammock.circe.implicits._
+//                                       ^
+// import hammock.circe.implicits._
 </span>
 <span class="k">import</span> <span class="nn">io.circe._</span>
-<span class="c1">// import io.circe._
+<span class="c1">// &lt;console&gt;:10: warning: Unused import
+//        import cats._
+//                    ^
+// &lt;console&gt;:13: warning: Unused import
+//        import cats.free._
+//                         ^
+// &lt;console&gt;:16: warning: Unused import
+//        import cats.data._
+//                         ^
+// &lt;console&gt;:18: warning: Unused import
+//        import cats.effect.Sync
+//                           ^
+// &lt;console&gt;:20: warning: Unused import
+//        import cats.implicits._
+//                              ^
+// &lt;console&gt;:22: warning: Unused import
+//        import cats.effect.IO
+//                           ^
+// &lt;console&gt;:24: warning: Unused import
+//        import cats.implicits._
+//                              ^
+// &lt;console&gt;:26: warning: Unused import
+//        import cats.effect.IO
+//                           ^
+// &lt;console&gt;:28: warning: Unused import
+//        import hammock._
+//                       ^
+// &lt;console&gt;:30: warning: Unused import
+//        import hammock.jvm.free.Interpreter
+//                                ^
+// &lt;console&gt;:32: warning: Unused import
+//        import hammock.hi._
+//                          ^
+// &lt;console&gt;:35: warning: Unused import
+//        import hammock.hi.dsl._
+//                              ^
+// &lt;console&gt;:38: warning: Unused import
+//        import cats._
+//                    ^
+// &lt;console&gt;:41: warning: Unused import
+//        import cats.implicits._
+//                              ^
+// &lt;console&gt;:43: warning: Unused import
+//        import cats.effect.IO
+//                           ^
+// &lt;console&gt;:44: warning: Unused import
+//        import interp
+//                                                                                                                     ^
+// &lt;console&gt;:46: warning: Unused import
+//        import hammock._
+//                       ^
+// &lt;console&gt;:49: warning: Unused import
+//        import hammock.circe._
+//                             ^
+// &lt;console&gt;:52: warning: Unused import
+//        import hammock.circe.implicits._
+//                                       ^
+// &lt;console&gt;:57: warning: Unused import
+//        import io.circe._
+//                        ^
+// import io.circe._
 </span>
 <span class="k">import</span> <span class="nn">io.circe.generic.auto._</span>
-<span class="c1">// import io.circe.generic.auto._
+<span class="c1">// &lt;console&gt;:10: warning: Unused import
+//        import cats._
+//                    ^
+// &lt;console&gt;:13: warning: Unused import
+//        import cats.free._
+//                         ^
+// &lt;console&gt;:16: warning: Unused import
+//        import cats.data._
+//                         ^
+// &lt;console&gt;:18: warning: Unused import
+//        import cats.effect.Sync
+//                           ^
+// &lt;console&gt;:20: warning: Unused import
+//        import cats.implicits._
+//                              ^
+// &lt;console&gt;:22: warning: Unused import
+//        import cats.effect.IO
+//                           ^
+// &lt;console&gt;:24: warning: Unused import
+//        import cats.implicits._
+//                              ^
+// &lt;console&gt;:26: warning: Unused import
+//        import cats.effect.IO
+//                           ^
+// &lt;console&gt;:28: warning: Unused import
+//        import hammock._
+//                       ^
+// &lt;console&gt;:30: warning: Unused import
+//        import hammock.jvm.free.Interpreter
+//                                ^
+// &lt;console&gt;:32: warning: Unused import
+//        import hammock.hi._
+//                          ^
+// &lt;console&gt;:35: warning: Unused import
+//        import hammock.hi.dsl._
+//                              ^
+// &lt;console&gt;:38: warning: Unused import
+//        import cats._
+//                    ^
+// &lt;console&gt;:41: warning: Unused import
+//        import cats.implicits._
+//                              ^
+// &lt;console&gt;:43: warning: Unused import
+//        import cats.effect.IO
+//                           ^
+// &lt;console&gt;:44: warning: Unused import
+//        import interp
+//                                                                                                                     ^
+// &lt;console&gt;:46: warning: Unused import
+//        import hammock._
+//                       ^
+// &lt;console&gt;:49: warning: Unused import
+//        import hammock.circe._
+//                             ^
+// &lt;console&gt;:52: warning: Unused import
+//        import hammock.circe.implicits._
+//                                       ^
+// &lt;console&gt;:55: warning: Unused import
+//        import io.circe._
+//                        ^
+// &lt;console&gt;:60: warning: Unused import
+//        import io.circe.generic.auto._
+//                                     ^
+// import io.circe.generic.auto._
 </span>
 <span class="k">case</span> <span class="k">class</span> <span class="nc">MyClass</span><span class="o">(</span><span class="n">stringField</span><span class="k">:</span> <span class="kt">String</span><span class="o">,</span> <span class="n">intField</span><span class="k">:</span> <span class="kt">Int</span><span class="o">)</span>
-<span class="c1">// defined class MyClass
+<span class="c1">// &lt;console&gt;:10: warning: Unused import
+//        import cats._
+//                    ^
+// &lt;console&gt;:13: warning: Unused import
+//        import cats.free._
+//                         ^
+// &lt;console&gt;:16: warning: Unused import
+//        import cats.data._
+//                         ^
+// &lt;console&gt;:18: warning: Unused import
+//        import cats.effect.Sync
+//                           ^
+// &lt;console&gt;:20: warning: Unused import
+//        import cats.implicits._
+//                              ^
+// &lt;console&gt;:22: warning: Unused import
+//        import cats.effect.IO
+//                           ^
+// &lt;console&gt;:24: warning: Unused import
+//        import cats.implicits._
+//                              ^
+// &lt;console&gt;:26: warning: Unused import
+//        import cats.effect.IO
+//                           ^
+// &lt;console&gt;:28: warning: Unused import
+//        import hammock._
+//                       ^
+// &lt;console&gt;:30: warning: Unused import
+//        import hammock.jvm.free.Interpreter
+//                                ^
+// &lt;console&gt;:32: warning: Unused import
+//        import hammock.hi._
+//                          ^
+// &lt;console&gt;:35: warning: Unused import
+//        import hammock.hi.dsl._
+//                              ^
+// &lt;console&gt;:38: warning: Unused import
+//        import cats._
+//                    ^
+// &lt;console&gt;:41: warning: Unused import
+//        import cats.implicits._
+//                              ^
+// &lt;console&gt;:43: warning: Unused import
+//        import cats.effect.IO
+//                           ^
+// &lt;console&gt;:44: warning: Unused import
+//        import interp
+//                                                                                                                     ^
+// &lt;console&gt;:46: warning: Unused import
+//        import hammock._
+//                       ^
+// &lt;console&gt;:49: warning: Unused import
+//        import hammock.circe._
+//                             ^
+// &lt;console&gt;:52: warning: Unused import
+//        import hammock.circe.implicits._
+//                                       ^
+// &lt;console&gt;:55: warning: Unused import
+//        import io.circe._
+//                        ^
+// &lt;console&gt;:58: warning: Unused import
+//        import io.circe.generic.auto._
+//                                     ^
+// defined class MyClass
 </span>
 <span class="nc">Codec</span><span class="o">[</span><span class="kt">MyClass</span><span class="o">].</span><span class="n">decode</span><span class="o">(</span><span class="s">"""{"stringField": "This is Hammock!", "intField": 33}"""</span><span class="o">)</span>
-<span class="c1">// res3: Either[hammock.CodecException,MyClass] = Right(MyClass(This is Hammock!,33))
+<span class="c1">// &lt;console&gt;:10: warning: Unused import
+//        import cats._
+//                    ^
+// &lt;console&gt;:13: warning: Unused import
+//        import cats.free._
+//                         ^
+// &lt;console&gt;:16: warning: Unused import
+//        import cats.data._
+//                         ^
+// &lt;console&gt;:18: warning: Unused import
+//        import cats.effect.Sync
+//                           ^
+// &lt;console&gt;:20: warning: Unused import
+//        import cats.implicits._
+//                              ^
+// &lt;console&gt;:22: warning: Unused import
+//        import cats.effect.IO
+//                           ^
+// &lt;console&gt;:24: warning: Unused import
+//        import cats.implicits._
+//                              ^
+// &lt;console&gt;:26: warning: Unused import
+//        import cats.effect.IO
+//                           ^
+// &lt;console&gt;:28: warning: Unused import
+//        import hammock._
+//                       ^
+// &lt;console&gt;:30: warning: Unused import
+//        import hammock.jvm.free.Interpreter
+//                                ^
+// &lt;console&gt;:32: warning: Unused import
+//        import hammock.hi._
+//                          ^
+// &lt;console&gt;:35: warning: Unused import
+//        import hammock.hi.dsl._
+//                              ^
+// &lt;console&gt;:38: warning: Unused import
+//        import cats._
+//                    ^
+// &lt;console&gt;:41: warning: Unused import
+//        import cats.implicits._
+//                              ^
+// &lt;console&gt;:43: warning: Unused import
+//        import cats.effect.IO
+//                           ^
+// &lt;console&gt;:44: warning: Unused import
+//        import interp
+//                                                                                                                     ^
+// &lt;console&gt;:49: warning: Unused import
+//        import hammock.circe._
+//                             ^
+// &lt;console&gt;:55: warning: Unused import
+//        import io.circe._
+//                        ^
+// res3: Either[hammock.CodecException,MyClass] = Right(MyClass(This is Hammock!,33))
 </span>
 <span class="nc">Codec</span><span class="o">[</span><span class="kt">MyClass</span><span class="o">].</span><span class="n">decode</span><span class="o">(</span><span class="s">"this is not a valid json"</span><span class="o">)</span>
-<span class="c1">// res4: Either[hammock.CodecException,MyClass] = Left(hammock.CodecException: expected true got t (line 1, column 1))
+<span class="c1">// &lt;console&gt;:10: warning: Unused import
+//        import cats._
+//                    ^
+// &lt;console&gt;:13: warning: Unused import
+//        import cats.free._
+//                         ^
+// &lt;console&gt;:16: warning: Unused import
+//        import cats.data._
+//                         ^
+// &lt;console&gt;:18: warning: Unused import
+//        import cats.effect.Sync
+//                           ^
+// &lt;console&gt;:20: warning: Unused import
+//        import cats.implicits._
+//                              ^
+// &lt;console&gt;:22: warning: Unused import
+//        import cats.effect.IO
+//                           ^
+// &lt;console&gt;:24: warning: Unused import
+//        import cats.implicits._
+//                              ^
+// &lt;console&gt;:26: warning: Unused import
+//        import cats.effect.IO
+//                           ^
+// &lt;console&gt;:28: warning: Unused import
+//        import hammock._
+//                       ^
+// &lt;console&gt;:30: warning: Unused import
+//        import hammock.jvm.free.Interpreter
+//                                ^
+// &lt;console&gt;:32: warning: Unused import
+//        import hammock.hi._
+//                          ^
+// &lt;console&gt;:35: warning: Unused import
+//        import hammock.hi.dsl._
+//                              ^
+// &lt;console&gt;:38: warning: Unused import
+//        import cats._
+//                    ^
+// &lt;console&gt;:41: warning: Unused import
+//        import cats.implicits._
+//                              ^
+// &lt;console&gt;:43: warning: Unused import
+//        import cats.effect.IO
+//                           ^
+// &lt;console&gt;:44: warning: Unused import
+//        import interp
+//                                                                                                                     ^
+// &lt;console&gt;:49: warning: Unused import
+//        import hammock.circe._
+//                             ^
+// &lt;console&gt;:55: warning: Unused import
+//        import io.circe._
+//                        ^
+// res4: Either[hammock.CodecException,MyClass] = Left(hammock.CodecException: expected true got t (line 1, column 1))
 </span>
 <span class="nc">Codec</span><span class="o">[</span><span class="kt">MyClass</span><span class="o">].</span><span class="n">encode</span><span class="o">(</span><span class="nc">MyClass</span><span class="o">(</span><span class="s">"hello dolly"</span><span class="o">,</span> <span class="mi">99</span><span class="o">))</span>
-<span class="c1">// res5: String = {"stringField":"hello dolly","intField":99}
+<span class="c1">// &lt;console&gt;:10: warning: Unused import
+//        import cats._
+//                    ^
+// &lt;console&gt;:13: warning: Unused import
+//        import cats.free._
+//                         ^
+// &lt;console&gt;:16: warning: Unused import
+//        import cats.data._
+//                         ^
+// &lt;console&gt;:18: warning: Unused import
+//        import cats.effect.Sync
+//                           ^
+// &lt;console&gt;:20: warning: Unused import
+//        import cats.implicits._
+//                              ^
+// &lt;console&gt;:22: warning: Unused import
+//        import cats.effect.IO
+//                           ^
+// &lt;console&gt;:24: warning: Unused import
+//        import cats.implicits._
+//                              ^
+// &lt;console&gt;:26: warning: Unused import
+//        import cats.effect.IO
+//                           ^
+// &lt;console&gt;:28: warning: Unused import
+//        import hammock._
+//                       ^
+// &lt;console&gt;:30: warning: Unused import
+//        import hammock.jvm.free.Interpreter
+//                                ^
+// &lt;console&gt;:32: warning: Unused import
+//        import hammock.hi._
+//                          ^
+// &lt;console&gt;:35: warning: Unused import
+//        import hammock.hi.dsl._
+//                              ^
+// &lt;console&gt;:38: warning: Unused import
+//        import cats._
+//                    ^
+// &lt;console&gt;:41: warning: Unused import
+//        import cats.implicits._
+//                              ^
+// &lt;console&gt;:43: warning: Unused import
+//        import cats.effect.IO
+//                           ^
+// &lt;console&gt;:44: warning: Unused import
+//        import interp
+//                                                                                                                     ^
+// &lt;console&gt;:49: warning: Unused import
+//        import hammock.circe._
+//                             ^
+// &lt;console&gt;:55: warning: Unused import
+//        import io.circe._
+//                        ^
+// res5: String = {"stringField":"hello dolly","intField":99}
 </span>
 <span class="c1">// Also, you can use Codec's syntax as follows:
 </span>
 <span class="k">import</span> <span class="nn">Codec._</span>
-<span class="c1">// import Codec._
+<span class="c1">// &lt;console&gt;:10: warning: Unused import
+//        import cats._
+//                    ^
+// &lt;console&gt;:13: warning: Unused import
+//        import cats.free._
+//                         ^
+// &lt;console&gt;:16: warning: Unused import
+//        import cats.data._
+//                         ^
+// &lt;console&gt;:18: warning: Unused import
+//        import cats.effect.Sync
+//                           ^
+// &lt;console&gt;:20: warning: Unused import
+//        import cats.implicits._
+//                              ^
+// &lt;console&gt;:22: warning: Unused import
+//        import cats.effect.IO
+//                           ^
+// &lt;console&gt;:24: warning: Unused import
+//        import cats.implicits._
+//                              ^
+// &lt;console&gt;:26: warning: Unused import
+//        import cats.effect.IO
+//                           ^
+// &lt;console&gt;:28: warning: Unused import
+//        import hammock._
+//                       ^
+// &lt;console&gt;:30: warning: Unused import
+//        import hammock.jvm.free.Interpreter
+//                                ^
+// &lt;console&gt;:32: warning: Unused import
+//        import hammock.hi._
+//                          ^
+// &lt;console&gt;:35: warning: Unused import
+//        import hammock.hi.dsl._
+//                              ^
+// &lt;console&gt;:38: warning: Unused import
+//        import cats._
+//                    ^
+// &lt;console&gt;:41: warning: Unused import
+//        import cats.implicits._
+//                              ^
+// &lt;console&gt;:43: warning: Unused import
+//        import cats.effect.IO
+//                           ^
+// &lt;console&gt;:44: warning: Unused import
+//        import interp
+//                                                                                                                     ^
+// &lt;console&gt;:49: warning: Unused import
+//        import hammock.circe._
+//                             ^
+// &lt;console&gt;:52: warning: Unused import
+//        import hammock.circe.implicits._
+//                                       ^
+// &lt;console&gt;:55: warning: Unused import
+//        import io.circe._
+//                        ^
+// &lt;console&gt;:58: warning: Unused import
+//        import io.circe.generic.auto._
+//                                     ^
+// &lt;console&gt;:65: warning: Unused import
+//        import Codec._
+//                     ^
+// import Codec._
 </span>
 <span class="s">"""{"stringField": "This is Hammock!", "intField": 33}"""</span><span class="o">.</span><span class="n">decode</span><span class="o">[</span><span class="kt">MyClass</span><span class="o">]</span>
-<span class="c1">// res8: Either[hammock.CodecException,MyClass] = Right(MyClass(This is Hammock!,33))
+<span class="c1">// &lt;console&gt;:10: warning: Unused import
+//        import cats._
+//                    ^
+// &lt;console&gt;:13: warning: Unused import
+//        import cats.free._
+//                         ^
+// &lt;console&gt;:16: warning: Unused import
+//        import cats.data._
+//                         ^
+// &lt;console&gt;:18: warning: Unused import
+//        import cats.effect.Sync
+//                           ^
+// &lt;console&gt;:20: warning: Unused import
+//        import cats.implicits._
+//                              ^
+// &lt;console&gt;:22: warning: Unused import
+//        import cats.effect.IO
+//                           ^
+// &lt;console&gt;:24: warning: Unused import
+//        import cats.implicits._
+//                              ^
+// &lt;console&gt;:26: warning: Unused import
+//        import cats.effect.IO
+//                           ^
+// &lt;console&gt;:28: warning: Unused import
+//        import hammock._
+//                       ^
+// &lt;console&gt;:30: warning: Unused import
+//        import hammock.jvm.free.Interpreter
+//                                ^
+// &lt;console&gt;:32: warning: Unused import
+//        import hammock.hi._
+//                          ^
+// &lt;console&gt;:35: warning: Unused import
+//        import hammock.hi.dsl._
+//                              ^
+// &lt;console&gt;:38: warning: Unused import
+//        import cats._
+//                    ^
+// &lt;console&gt;:41: warning: Unused import
+//        import cats.implicits._
+//                              ^
+// &lt;console&gt;:43: warning: Unused import
+//        import cats.effect.IO
+//                           ^
+// &lt;console&gt;:44: warning: Unused import
+//        import interp
+//                                                                                                                     ^
+// &lt;console&gt;:49: warning: Unused import
+//        import hammock.circe._
+//                             ^
+// &lt;console&gt;:55: warning: Unused import
+//        import io.circe._
+//                        ^
+// res8: Either[hammock.CodecException,MyClass] = Right(MyClass(This is Hammock!,33))
 </span>
 <span class="s">"this is not a valid json"</span><span class="o">.</span><span class="n">decode</span><span class="o">[</span><span class="kt">MyClass</span><span class="o">]</span>
-<span class="c1">// res9: Either[hammock.CodecException,MyClass] = Left(hammock.CodecException: expected true got t (line 1, column 1))
+<span class="c1">// &lt;console&gt;:10: warning: Unused import
+//        import cats._
+//                    ^
+// &lt;console&gt;:13: warning: Unused import
+//        import cats.free._
+//                         ^
+// &lt;console&gt;:16: warning: Unused import
+//        import cats.data._
+//                         ^
+// &lt;console&gt;:18: warning: Unused import
+//        import cats.effect.Sync
+//                           ^
+// &lt;console&gt;:20: warning: Unused import
+//        import cats.implicits._
+//                              ^
+// &lt;console&gt;:22: warning: Unused import
+//        import cats.effect.IO
+//                           ^
+// &lt;console&gt;:24: warning: Unused import
+//        import cats.implicits._
+//                              ^
+// &lt;console&gt;:26: warning: Unused import
+//        import cats.effect.IO
+//                           ^
+// &lt;console&gt;:28: warning: Unused import
+//        import hammock._
+//                       ^
+// &lt;console&gt;:30: warning: Unused import
+//        import hammock.jvm.free.Interpreter
+//                                ^
+// &lt;console&gt;:32: warning: Unused import
+//        import hammock.hi._
+//                          ^
+// &lt;console&gt;:35: warning: Unused import
+//        import hammock.hi.dsl._
+//                              ^
+// &lt;console&gt;:38: warning: Unused import
+//        import cats._
+//                    ^
+// &lt;console&gt;:41: warning: Unused import
+//        import cats.implicits._
+//                              ^
+// &lt;console&gt;:43: warning: Unused import
+//        import cats.effect.IO
+//                           ^
+// &lt;console&gt;:44: warning: Unused import
+//        import interp
+//                                                                                                                     ^
+// &lt;console&gt;:49: warning: Unused import
+//        import hammock.circe._
+//                             ^
+// &lt;console&gt;:55: warning: Unused import
+//        import io.circe._
+//                        ^
+// res9: Either[hammock.CodecException,MyClass] = Left(hammock.CodecException: expected true got t (line 1, column 1))
 </span>
 <span class="nc">MyClass</span><span class="o">(</span><span class="s">"hello dolly"</span><span class="o">,</span> <span class="mi">99</span><span class="o">).</span><span class="n">encode</span>
-<span class="c1">// res10: String = {"stringField":"hello dolly","intField":99}
+<span class="c1">// &lt;console&gt;:10: warning: Unused import
+//        import cats._
+//                    ^
+// &lt;console&gt;:13: warning: Unused import
+//        import cats.free._
+//                         ^
+// &lt;console&gt;:16: warning: Unused import
+//        import cats.data._
+//                         ^
+// &lt;console&gt;:18: warning: Unused import
+//        import cats.effect.Sync
+//                           ^
+// &lt;console&gt;:20: warning: Unused import
+//        import cats.implicits._
+//                              ^
+// &lt;console&gt;:22: warning: Unused import
+//        import cats.effect.IO
+//                           ^
+// &lt;console&gt;:24: warning: Unused import
+//        import cats.implicits._
+//                              ^
+// &lt;console&gt;:26: warning: Unused import
+//        import cats.effect.IO
+//                           ^
+// &lt;console&gt;:28: warning: Unused import
+//        import hammock._
+//                       ^
+// &lt;console&gt;:30: warning: Unused import
+//        import hammock.jvm.free.Interpreter
+//                                ^
+// &lt;console&gt;:32: warning: Unused import
+//        import hammock.hi._
+//                          ^
+// &lt;console&gt;:35: warning: Unused import
+//        import hammock.hi.dsl._
+//                              ^
+// &lt;console&gt;:38: warning: Unused import
+//        import cats._
+//                    ^
+// &lt;console&gt;:41: warning: Unused import
+//        import cats.implicits._
+//                              ^
+// &lt;console&gt;:43: warning: Unused import
+//        import cats.effect.IO
+//                           ^
+// &lt;console&gt;:44: warning: Unused import
+//        import interp
+//                                                                                                                     ^
+// &lt;console&gt;:49: warning: Unused import
+//        import hammock.circe._
+//                             ^
+// &lt;console&gt;:55: warning: Unused import
+//        import io.circe._
+//                        ^
+// res10: String = {"stringField":"hello dolly","intField":99}
 </span></code></pre>
 </div>
 </section></div></div></div></div><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script><script src="/hammock/highlight/highlight.pack.js"></script><script>hljs.configure({
