@@ -38,8 +38,6 @@ you know how to use them!
 With Hammock you can do HTTP operations in a typeful and functional way.
 
 ```tut:silent
-import cats._
-import cats.implicits._
 import cats.effect.IO
 import io.circe._
 import io.circe.generic.auto._

@@ -48,7 +48,7 @@ object Log {
 }
 ```
 
-### IO
+### Console IO
 
 And this one does IO.
 
@@ -109,9 +109,7 @@ object App {
 You could use this as follows:
 
 ```tut
-import cats.implicits._
 import cats.effect.IO
-
 App.program foldMap App.interp[IO]
 ```
 
@@ -154,9 +152,6 @@ object App {
 ### Result
 
 ```tut
-import cats.implicits._
-import cats.effect.IO
-
 val result = App.program foldMap App.interp[IO]
 
 result.unsafeRunSync

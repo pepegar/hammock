@@ -193,7 +193,8 @@ lazy val docs = project
     micrositeDocumentationUrl := "/hammock/docs.html",
     micrositeGithubOwner := "pepegar",
     micrositeGithubRepo := "hammock",
-    micrositeHighlightTheme := "tomorrow"
+    micrositeHighlightTheme := "tomorrow",
+    scalacOptions ~= (_ filterNot Set("-Ywarn-unused-import", "-Xlint").contains)
   )
   .enablePlugins(MicrositesPlugin)
 
