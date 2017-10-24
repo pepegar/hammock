@@ -29,7 +29,7 @@ libraryDependencies += "com.pepegar" %%% "hammock-core" % "0.7.0"
 2. It's typeful, tries to represent effects at type level.
 3. It does not force a specific target context. You can run your computations in any type `F[_]` that has an instance of cats-effect's `Sync[F]`.
 4. It has good [documentation][docs].
-5. [It's modular](#Modules)
+5. [It's modular](#modules)
 
 [httpcommons]: http://hc.apache.org/
 [xhr]: https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest
