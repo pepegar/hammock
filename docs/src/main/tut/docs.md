@@ -48,7 +48,7 @@ object Log {
 }
 ```
 
-### IO
+### Console IO
 
 And this one does IO.
 
@@ -109,9 +109,7 @@ object App {
 You could use this as follows:
 
 ```tut
-import cats.implicits._
 import cats.effect.IO
-
 App.program foldMap App.interp[IO]
 ```
 
@@ -154,9 +152,6 @@ object App {
 ### Result
 
 ```tut
-import cats.implicits._
-import cats.effect.IO
-
 val result = App.program foldMap App.interp[IO]
 
 result.unsafeRunSync
@@ -298,7 +293,7 @@ Currently, this interface is implemented for `circe` codecs, so you
 can just grab `hammock-circe`:
 
 ```
-libraryDependencies += "hammock" %% "hammock-circe" % "0.6.4"
+libraryDependencies += "hammock" %% "hammock-circe" % "0.7.0"
 ```
 
 And use it directly:

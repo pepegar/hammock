@@ -10,8 +10,8 @@ section: "Home"
 Just add the following to your `libraryDependencies` in SBT:
 
 ```
-libraryDependencies += "com.pepegar" %% "hammock" % "0.6.3" // for JVM
-libraryDependencies += "com.pepegar" %%% "hammock" % "0.6.3" // for JS
+libraryDependencies += "com.pepegar" %% "hammock" % "0.7.0" // for JVM
+libraryDependencies += "com.pepegar" %%% "hammock" % "0.7.0" // for JS
 ```
 
 ## Modules
@@ -20,8 +20,9 @@ There are already some companion modules implemented to ease the
 experience of using hammock.
 
 ```
-libraryDependencies += "com.pepegar" %% "hammock-circe" % "0.6.3" // for JVM
-libraryDependencies += "com.pepegar" %%% "hammock-circe" % "0.6.3" // for JS
+libraryDependencies += "com.pepegar" %% "hammock-circe" % "0.7.0" // for JVM
+libraryDependencies += "com.pepegar" %%% "hammock-circe" % "0.7.0" // for JS
+libraryDependencies += "com.pepegar" %% "hammock-akka-http" % "0.7.0" // only for JVM
 ```
 
 ## Functional programming
@@ -33,13 +34,25 @@ but fear not! Lots of types you were using before are already monads,
 you know how to use them!
 
 
+## Modules
+
+| Module name          | Description                                | Version |
+| -------------------- | ------------------------------------------ | ------- |
+| `hammock-core`      | the core functionality of hammock, using [Apache HTTP commons][httpcommons] for HTTP in JVM and [XHR][xhr] in JS | `0.7.0` |
+| `hammock-circe`      | encode and decode HTTP entities with [Circe][circe] | `0.7.0` |
+| `hammock-akka-http`  | run your HTTP requests with [akka-http][akka-http] | `0.7.0` |
+
+[httpcommons]: http://hc.apache.org/
+[xhr]: https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest
+[circe]: http://circe.io
+[akka-http]: https://doc.akka.io/docs/akka-http/current/scala/http/
+
+
 ## HTTP
 
 With Hammock you can do HTTP operations in a typeful and functional way.
 
 ```tut:silent
-import cats._
-import cats.implicits._
 import cats.effect.IO
 import io.circe._
 import io.circe.generic.auto._
@@ -73,8 +86,9 @@ You can use as a target monad any type `F` that has an instance of
 `Sync`.  There are already several types you can
 use out of the box, for example:
 
-* `Future`: There are lots of applications out there that express
+* `cats.effect.IO`: An `IO` type for the cats ecosystem.
+* `scala.concurrent.Future`: There are lots of applications out there that express
   their `IO` effects with `Future`, you can still use it!
-* `Try`: You don't care of blocking current thread? go ahead, use it!
+* `scala.util.Try`: You don't care of blocking current thread? go ahead, use it!
 * `monix/Task`: Great implementation of a concurrency monad.  You can
   learn more about it [here](https://monix.io/)
