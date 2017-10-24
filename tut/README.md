@@ -42,7 +42,7 @@ libraryDependencies += "com.pepegar" %%% "hammock-core" % "0.7.0"
 
 | Module name          | Description                                | Version |
 | -------------------- | ------------------------------------------ | ------- |
-| `hammock-core`      | the core functioality of hammock, using [Apache HTTP commons][httpcommons] for HTTP in JVM and [XHR][xhr] in JS | `0.7.0` |
+| `hammock-core`      | the core functionality of hammock, using [Apache HTTP commons][httpcommons] for HTTP in JVM and [XHR][xhr] in JS | `0.7.0` |
 | `hammock-circe`      | encode and decode HTTP entities with [Circe][circe] | `0.7.0` |
 | `hammock-akka-http`  | run your HTTP requests with [akka-http][akka-http] | `0.7.0` |
 
