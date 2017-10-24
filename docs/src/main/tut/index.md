@@ -34,6 +34,20 @@ but fear not! Lots of types you were using before are already monads,
 you know how to use them!
 
 
+## Modules
+
+| Module name          | Description                                | Version |
+| -------------------- | ------------------------------------------ | ------- |
+| `hammock-core`      | the core functionality of hammock, using [Apache HTTP commons][httpcommons] for HTTP in JVM and [XHR][xhr] in JS | `0.7.0` |
+| `hammock-circe`      | encode and decode HTTP entities with [Circe][circe] | `0.7.0` |
+| `hammock-akka-http`  | run your HTTP requests with [akka-http][akka-http] | `0.7.0` |
+
+[httpcommons]: http://hc.apache.org/
+[xhr]: https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest
+[circe]: http://circe.io
+[akka-http]: https://doc.akka.io/docs/akka-http/current/scala/http/
+
+
 ## HTTP
 
 With Hammock you can do HTTP operations in a typeful and functional way.
