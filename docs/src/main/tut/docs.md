@@ -293,7 +293,7 @@ Currently, this interface is implemented for `circe` codecs, so you
 can just grab `hammock-circe`:
 
 ```
-libraryDependencies += "hammock" %% "hammock-circe" % "0.6.4"
+libraryDependencies += "hammock" %% "hammock-circe" % "0.7.0"
 ```
 
 And use it directly:

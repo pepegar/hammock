@@ -10,8 +10,8 @@ section: "Home"
 Just add the following to your `libraryDependencies` in SBT:
 
 ```
-libraryDependencies += "com.pepegar" %% "hammock" % "0.6.3" // for JVM
-libraryDependencies += "com.pepegar" %%% "hammock" % "0.6.3" // for JS
+libraryDependencies += "com.pepegar" %% "hammock" % "0.7.0" // for JVM
+libraryDependencies += "com.pepegar" %%% "hammock" % "0.7.0" // for JS
 ```
 
 ## Modules
@@ -20,8 +20,9 @@ There are already some companion modules implemented to ease the
 experience of using hammock.
 
 ```
-libraryDependencies += "com.pepegar" %% "hammock-circe" % "0.6.3" // for JVM
-libraryDependencies += "com.pepegar" %%% "hammock-circe" % "0.6.3" // for JS
+libraryDependencies += "com.pepegar" %% "hammock-circe" % "0.7.0" // for JVM
+libraryDependencies += "com.pepegar" %%% "hammock-circe" % "0.7.0" // for JS
+libraryDependencies += "com.pepegar" %% "hammock-akka-http" % "0.7.0" // only for JVM
 ```
 
 ## Functional programming
@@ -71,8 +72,9 @@ You can use as a target monad any type `F` that has an instance of
 `Sync`.  There are already several types you can
 use out of the box, for example:
 
-* `Future`: There are lots of applications out there that express
+* `cats.effect.IO`: An `IO` type for the cats ecosystem.
+* `scala.concurrent.Future`: There are lots of applications out there that express
   their `IO` effects with `Future`, you can still use it!
-* `Try`: You don't care of blocking current thread? go ahead, use it!
+* `scala.util.Try`: You don't care of blocking current thread? go ahead, use it!
 * `monix/Task`: Great implementation of a concurrency monad.  You can
   learn more about it [here](https://monix.io/)
