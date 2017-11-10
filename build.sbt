@@ -3,7 +3,7 @@ import ReleaseTransformations._
 import sbtcrossproject.{crossProject, CrossType}
 
 val Versions = Map(
-  "circe"          -> "0.7.0",
+  "circe"          -> "0.9.0-M2",
   "monocle"        -> "1.4.0",
   "atto"           -> "0.6.1-M7",
   "cats"           -> "1.0.0-RC1",
