@@ -4,7 +4,7 @@
 [![Join the chat at https://gitter.im/pepegar/hammock](https://badges.gitter.im/pepegar/hammock.svg)](https://gitter.im/pepegar/hammock?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![Build Status](https://travis-ci.org/pepegar/hammock.svg?branch=master)](https://travis-ci.org/pepegar/hammock)
 [![codecov](https://codecov.io/gh/pepegar/hammock/branch/master/graph/badge.svg)](https://codecov.io/gh/pepegar/hammock)
-[![Download](https://api.bintray.com/packages/pepegar/com.pepegar/hammock-core/images/download.svg)](https://bintray.com/pepegar/com.pepegar/hammock-core/_latestVersion)
+[![Maven Central](https://img.shields.io/maven-central/v/com.pepegar/hammock-core_2.12.svg)]()
 
 Hammock is yet another HTTP client for Scala.  It tries to be typeful,
 purely functional, and work along other technologies that you're
