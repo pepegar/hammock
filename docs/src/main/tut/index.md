@@ -10,8 +10,8 @@ section: "Home"
 Just add the following to your `libraryDependencies` in SBT:
 
 ```
-libraryDependencies += "com.pepegar" %% "hammock" % "0.7.0" // for JVM
-libraryDependencies += "com.pepegar" %%% "hammock" % "0.7.0" // for JS
+libraryDependencies += "com.pepegar" %% "hammock" % "0.7.1" // for JVM
+libraryDependencies += "com.pepegar" %%% "hammock" % "0.7.1" // for JS
 ```
 
 ## Modules
@@ -20,9 +20,9 @@ There are already some companion modules implemented to ease the
 experience of using hammock.
 
 ```
-libraryDependencies += "com.pepegar" %% "hammock-circe" % "0.7.0" // for JVM
-libraryDependencies += "com.pepegar" %%% "hammock-circe" % "0.7.0" // for JS
-libraryDependencies += "com.pepegar" %% "hammock-akka-http" % "0.7.0" // only for JVM
+libraryDependencies += "com.pepegar" %% "hammock-circe" % "0.7.1" // for JVM
+libraryDependencies += "com.pepegar" %%% "hammock-circe" % "0.7.1" // for JS
+libraryDependencies += "com.pepegar" %% "hammock-akka-http" % "0.7.1" // only for JVM
 ```
 
 ## Functional programming
@@ -38,9 +38,9 @@ you know how to use them!
 
 | Module name          | Description                                | Version |
 | -------------------- | ------------------------------------------ | ------- |
-| `hammock-core`      | the core functionality of hammock, using [Apache HTTP commons][httpcommons] for HTTP in JVM and [XHR][xhr] in JS | `0.7.0` |
-| `hammock-circe`      | encode and decode HTTP entities with [Circe][circe] | `0.7.0` |
-| `hammock-akka-http`  | run your HTTP requests with [akka-http][akka-http] | `0.7.0` |
+| `hammock-core`      | the core functionality of hammock, using [Apache HTTP commons][httpcommons] for HTTP in JVM and [XHR][xhr] in JS | `0.7.1` |
+| `hammock-circe`      | encode and decode HTTP entities with [Circe][circe] | `0.7.1` |
+| `hammock-akka-http`  | run your HTTP requests with [akka-http][akka-http] | `0.7.1` |
 
 [httpcommons]: http://hc.apache.org/
 [xhr]: https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest
