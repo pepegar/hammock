@@ -4,7 +4,6 @@ import org.scalatest._
 
 import atto._
 import Atto._
-import atto.compat.cats._
 import cats._
 import cats.implicits._
 import cats.syntax.either._

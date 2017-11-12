@@ -3,11 +3,11 @@ import ReleaseTransformations._
 import sbtcrossproject.{crossProject, CrossType}
 
 val Versions = Map(
-  "circe"          -> "0.7.0",
+  "circe"          -> "0.9.0-M2",
   "monocle"        -> "1.4.0",
-  "atto"           -> "0.5.2",
-  "cats"           -> "1.0.0-MF",
-  "cats-effect"    -> "0.4",
+  "atto"           -> "0.6.1-M7",
+  "cats"           -> "1.0.0-RC1",
+  "cats-effect"    -> "0.5",
   "simulacrum"     -> "0.10.0",
   "scalatest"      -> "3.0.1",
   "scalacheck"     -> "1.13.4",
@@ -99,7 +99,6 @@ val commonDependencies = Seq(
     "com.github.julien-truffaut" %%% "monocle-core"     % Versions("monocle"),
     "com.github.julien-truffaut" %%% "monocle-macro"    % Versions("monocle"),
     "org.tpolecat"               %%% "atto-core"        % Versions("atto"),
-    "org.tpolecat"               %%% "atto-compat-cats" % Versions("atto"),
     "org.scalatest"              %%% "scalatest"        % Versions("scalatest") % "test",
     "org.scalacheck"             %%% "scalacheck"       % Versions("scalacheck") % "test",
     "org.typelevel"              %%% "discipline"       % Versions("discipline") % "test"

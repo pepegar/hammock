@@ -1,7 +1,6 @@
 package hammock
 
 import atto._
-import atto.compat.cats._
 import Atto._
 
 import cats._
