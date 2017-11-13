@@ -27,8 +27,7 @@ object Cookie {
   val name: Lens[Cookie, String]  = GenLens[Cookie](_.name)
   val value: Lens[Cookie, String] = GenLens[Cookie](_.value)
   val expires: Optional[Cookie, Date] = Optional[Cookie, Date] {
-    case Cookie(_, _, x @ Some(date), _, _, _, _, _, _, _) => x
-    case _                                                 => None
+    _.expires
   } { date =>
     {
       case cookie @ Cookie(_, _, None, _, _, _, _, _, _, _) => cookie
@@ -36,8 +35,7 @@ object Cookie {
     }
   }
   val maxAge: Optional[Cookie, Int] = Optional[Cookie, Int] {
-    case Cookie(_, _, _, x @ Some(maxAge), _, _, _, _, _, _) => x
-    case _                                                   => None
+    _.maxAge
   } { age =>
     {
       case cookie @ Cookie(_, _, _, None, _, _, _, _, _, _) => cookie
@@ -45,8 +43,7 @@ object Cookie {
     }
   }
   val domain: Optional[Cookie, String] = Optional[Cookie, String] {
-    case Cookie(_, _, _, _, x @ Some(domain), _, _, _, _, _) => x
-    case _                                                   => None
+    _.domain
   } { domain =>
     {
       case cookie @ Cookie(_, _, _, _, None, _, _, _, _, _) => cookie
@@ -54,8 +51,7 @@ object Cookie {
     }
   }
   val path: Optional[Cookie, String] = Optional[Cookie, String] {
-    case Cookie(_, _, _, _, _, x @ Some(path), _, _, _, _) => x
-    case _                                                 => None
+    _.path
   } { path =>
     {
       case cookie @ Cookie(_, _, _, _, _, None, _, _, _, _) => cookie
@@ -63,8 +59,7 @@ object Cookie {
     }
   }
   val secure: Optional[Cookie, Boolean] = Optional[Cookie, Boolean] {
-    case Cookie(_, _, _, _, _, _, x @ Some(secure), _, _, _) => x
-    case _                                                   => None
+    _.secure
   } { secure =>
     {
       case cookie @ Cookie(_, _, _, _, _, _, None, _, _, _) => cookie
@@ -72,8 +67,7 @@ object Cookie {
     }
   }
   val httpOnly: Optional[Cookie, Boolean] = Optional[Cookie, Boolean] {
-    case Cookie(_, _, _, _, _, _, _, x @ Some(httpOnly), _, _) => x
-    case _                                                     => None
+    _.httpOnly
   } { httpOnly =>
     {
       case cookie @ Cookie(_, _, _, _, _, _, _, None, _, _) => cookie
@@ -81,8 +75,7 @@ object Cookie {
     }
   }
   val sameSite: Optional[Cookie, SameSite] = Optional[Cookie, SameSite] {
-    case Cookie(_, _, _, _, _, _, _, _, x @ Some(sameSite), _) => x
-    case _                                                     => None
+    _.sameSite
   } { sameSite =>
     {
       case cookie @ Cookie(_, _, _, _, _, _, _, _, None, _) => cookie
@@ -90,8 +83,7 @@ object Cookie {
     }
   }
   val custom: Optional[Cookie, Map[String, String]] = Optional[Cookie, Map[String, String]] {
-    case Cookie(_, _, _, _, _, _, _, _, _, x @ Some(custom)) => x
-    case _                                                   => None
+    _.custom
   } { custom =>
     {
       case cookie @ Cookie(_, _, _, _, _, _, _, _, _, None) => cookie
