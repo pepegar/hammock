@@ -240,10 +240,10 @@ Hammock:
 
 #### Cookies
 
-Cookies in Hammock are represented by the `Cookie` type:
+Cookies in Hammock are represented by the `Cookie` data type:
 
 ```scala
-@Lenses case class Cookie(
+case class Cookie(
   name: String,
   value: String,
   expires: Option[Date] = None,
@@ -256,8 +256,10 @@ Cookies in Hammock are represented by the `Cookie` type:
   custom: Option[Map[String, String]] = None)
 ```
 
-The `@Lenses` annotation (from Monocle) provides lenses for all the
-fields in a case class.
+In its companion object there are optics for all the
+fields. `Cookie.name` and `Cookie.value` are `Lens`es that allow to
+focus on one particular field of the structure.
+
 
 As you can see most of the behaviour of the cookie can be handled by
 the type itself.  For example, adding a `MaxAge` setting to a cookie
@@ -320,3 +322,7 @@ import Codec._
 "this is not a valid json".decode[MyClass]
 MyClass("hello dolly", 99).encode
 ```
+
+Also, if you use any other library for serialization, you can just
+implement the `Codec` typeclass with it and provide the implicit so
+Hammock can use it.
