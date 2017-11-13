@@ -3,7 +3,6 @@ package hammock
 import free.algebra._
 import org.scalatest._
 import cats._
-import cats.syntax.show._
 import hi.{Cookie, Opts}
 
 class HammockSpec extends WordSpec with Matchers {
