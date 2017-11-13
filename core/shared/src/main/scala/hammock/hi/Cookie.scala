@@ -3,13 +3,13 @@ package hi
 
 import java.util.Date
 
-import monocle.macros.GenLens
 import cats._
 import cats.implicits._
 import hammock.hi.Cookie.SameSite
-import monocle.{Lens, Optional}
+import monocle.Optional
+import monocle.macros.Lenses
 
-case class Cookie(
+@Lenses case class Cookie(
     name: String,
     value: String,
     expires: Option[Date] = None,
@@ -23,10 +23,7 @@ case class Cookie(
 )
 
 object Cookie {
-
-  val name: Lens[Cookie, String]  = GenLens[Cookie](_.name)
-  val value: Lens[Cookie, String] = GenLens[Cookie](_.value)
-  val expires: Optional[Cookie, Date] = Optional[Cookie, Date] {
+  val expiresOpt: Optional[Cookie, Date] = Optional[Cookie, Date] {
     _.expires
   } { date =>
     {
@@ -34,7 +31,7 @@ object Cookie {
       case cookie @ _                                       => cookie.copy(expires = Some(date))
     }
   }
-  val maxAge: Optional[Cookie, Int] = Optional[Cookie, Int] {
+  val maxAgeOpt: Optional[Cookie, Int] = Optional[Cookie, Int] {
     _.maxAge
   } { age =>
     {
@@ -42,7 +39,7 @@ object Cookie {
       case cookie @ _                                       => cookie.copy(maxAge = Some(age))
     }
   }
-  val domain: Optional[Cookie, String] = Optional[Cookie, String] {
+  val domainOpt: Optional[Cookie, String] = Optional[Cookie, String] {
     _.domain
   } { domain =>
     {
@@ -50,7 +47,7 @@ object Cookie {
       case cookie @ _                                       => cookie.copy(domain = Some(domain))
     }
   }
-  val path: Optional[Cookie, String] = Optional[Cookie, String] {
+  val pathOpt: Optional[Cookie, String] = Optional[Cookie, String] {
     _.path
   } { path =>
     {
@@ -58,7 +55,7 @@ object Cookie {
       case cookie @ _                                       => cookie.copy(path = Some(path))
     }
   }
-  val secure: Optional[Cookie, Boolean] = Optional[Cookie, Boolean] {
+  val secureOpt: Optional[Cookie, Boolean] = Optional[Cookie, Boolean] {
     _.secure
   } { secure =>
     {
@@ -66,7 +63,7 @@ object Cookie {
       case cookie @ _                                       => cookie.copy(secure = Some(secure))
     }
   }
-  val httpOnly: Optional[Cookie, Boolean] = Optional[Cookie, Boolean] {
+  val httpOnlyOpt: Optional[Cookie, Boolean] = Optional[Cookie, Boolean] {
     _.httpOnly
   } { httpOnly =>
     {
@@ -74,7 +71,7 @@ object Cookie {
       case cookie @ _                                       => cookie.copy(httpOnly = Some(httpOnly))
     }
   }
-  val sameSite: Optional[Cookie, SameSite] = Optional[Cookie, SameSite] {
+  val sameSiteOpt: Optional[Cookie, SameSite] = Optional[Cookie, SameSite] {
     _.sameSite
   } { sameSite =>
     {
@@ -82,7 +79,7 @@ object Cookie {
       case cookie @ _                                       => cookie.copy(sameSite = Some(sameSite))
     }
   }
-  val custom: Optional[Cookie, Map[String, String]] = Optional[Cookie, Map[String, String]] {
+  val customOpt: Optional[Cookie, Map[String, String]] = Optional[Cookie, Map[String, String]] {
     _.custom
   } { custom =>
     {

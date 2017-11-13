@@ -154,7 +154,7 @@ object App {
 ```tut
 val result = App.program foldMap App.interp[IO]
 
-result.unsafeRunSync
+//result.unsafeRunSync
 ```
 
 
@@ -225,6 +225,32 @@ val req = {
     cookie(Cookie("track", "A lot")) &>
     header("user" -> "potatoman")
 }
+```
+
+You can also use [`Monocle`](https://github.com/julientruffaut/monocle)'s optics to describe and modify your
+requests.  Most datatypes in Hammock provide sensible optics that will
+work out of the box, and you can combine them with the ones provided
+in [`Monocle`](https://github.com/julientruffaut/monocle):
+
+```tut:book
+// import stuff
+import hammock.hi._, hammock.hi.dsl._ , monocle._, monocle.function.all._
+
+// imagine that we have the following Opts value
+val opts = (auth(Auth.BasicAuth("pepe", "password")) &> headers(Map("X-Correlation-Id" -> "234")) &> cookies(List(Cookie("a", "b"))))(Opts.default)
+
+// Since optics compose nicely, we can focus on
+// the first value of the first cookie found in the
+// cookie list, for example:
+
+Opts.cookiesOpt composeOptional index(0) composeLens Cookie.value
+
+// also you can use the symbolic operators for that :D
+Opts.cookiesOpt ^|-? index(0) ^|-> Cookie.value
+
+(Opts.cookiesOpt ^|-? index(0) ^|-> Cookie.value).getOption(opts)
+(Opts.cookiesOpt ^|-? index(0) ^|-> Cookie.value).set("newValue")
+(Opts.cookiesOpt ^|-? index(0) ^|-> Cookie.value).set("newValue")(opts)
 ```
 
 #### Authentication
