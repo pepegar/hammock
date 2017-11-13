@@ -91,17 +91,17 @@ val buildSettings = Seq(
 
 val commonDependencies = Seq(
   libraryDependencies ++= Seq(
-    "org.typelevel"              %%% "cats-core"        % Versions("cats"),
-    "org.typelevel"              %%% "cats-free"        % Versions("cats"),
-    "org.typelevel"              %%% "cats-laws"        % Versions("cats"),
-    "org.typelevel"              %% "cats-effect"       % Versions("cats-effect"),
-    "com.github.mpilquist"       %%% "simulacrum"       % Versions("simulacrum"),
-    "com.github.julien-truffaut" %%% "monocle-core"     % Versions("monocle"),
-    "com.github.julien-truffaut" %%% "monocle-macro"    % Versions("monocle"),
-    "org.tpolecat"               %%% "atto-core"        % Versions("atto"),
-    "org.scalatest"              %%% "scalatest"        % Versions("scalatest") % "test",
-    "org.scalacheck"             %%% "scalacheck"       % Versions("scalacheck") % "test",
-    "org.typelevel"              %%% "discipline"       % Versions("discipline") % "test"
+    "org.typelevel"              %%% "cats-core"     % Versions("cats"),
+    "org.typelevel"              %%% "cats-free"     % Versions("cats"),
+    "org.typelevel"              %%% "cats-laws"     % Versions("cats"),
+    "org.typelevel"              %% "cats-effect"    % Versions("cats-effect"),
+    "com.github.mpilquist"       %%% "simulacrum"    % Versions("simulacrum"),
+    "com.github.julien-truffaut" %%% "monocle-core"  % Versions("monocle"),
+    "com.github.julien-truffaut" %%% "monocle-macro" % Versions("monocle"),
+    "org.tpolecat"               %%% "atto-core"     % Versions("atto"),
+    "org.scalatest"              %%% "scalatest"     % Versions("scalatest") % "test",
+    "org.scalacheck"             %%% "scalacheck"    % Versions("scalacheck") % "test",
+    "org.typelevel"              %%% "discipline"    % Versions("discipline") % "test"
   )
 )
 
