@@ -248,8 +248,10 @@ Opts.cookiesOpt composeOptional index(0) composeLens Cookie.value
 // also you can use the symbolic operators for that :D
 Opts.cookiesOpt ^|-? index(0) ^|-> Cookie.value
 
+// and then, use the optics machinery at your will, for example for getting the focus
 (Opts.cookiesOpt ^|-? index(0) ^|-> Cookie.value).getOption(opts)
-(Opts.cookiesOpt ^|-? index(0) ^|-> Cookie.value).set("newValue")
+
+// or modifying it!
 (Opts.cookiesOpt ^|-? index(0) ^|-> Cookie.value).set("newValue")(opts)
 ```
 
