@@ -154,7 +154,7 @@ object App {
 ```tut
 val result = App.program foldMap App.interp[IO]
 
-//result.unsafeRunSync
+result.unsafeRunSync
 ```
 
 

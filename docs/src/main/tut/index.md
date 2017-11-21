@@ -74,7 +74,7 @@ object HttpClient {
 ```
 
 ```tut
-//HttpClient.response.unsafeRunSync
+HttpClient.response.unsafeRunSync
 ```
 
 ## Target Monad
