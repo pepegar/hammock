@@ -2,23 +2,12 @@ package hammock
 package hi
 
 import java.util.Date
-import monocle.macros.Lenses
 
 import cats._
 import cats.implicits._
-
-sealed trait SameSite
-object SameSite {
-  implicit val show = new Show[SameSite] {
-    def show(s: SameSite): String = s match {
-      case Strict => "Strict"
-      case Lax    => "Lax"
-    }
-  }
-
-  case object Strict extends SameSite
-  case object Lax    extends SameSite
-}
+import hammock.hi.Cookie.SameSite
+import monocle.Optional
+import monocle.macros.Lenses
 
 @Lenses case class Cookie(
     name: String,
@@ -34,6 +23,83 @@ object SameSite {
 )
 
 object Cookie {
+  val expiresOpt: Optional[Cookie, Date] = Optional[Cookie, Date] {
+    _.expires
+  } { date =>
+    {
+      case cookie @ Cookie(_, _, None, _, _, _, _, _, _, _) => cookie
+      case cookie @ _                                       => cookie.copy(expires = Some(date))
+    }
+  }
+  val maxAgeOpt: Optional[Cookie, Int] = Optional[Cookie, Int] {
+    _.maxAge
+  } { age =>
+    {
+      case cookie @ Cookie(_, _, _, None, _, _, _, _, _, _) => cookie
+      case cookie @ _                                       => cookie.copy(maxAge = Some(age))
+    }
+  }
+  val domainOpt: Optional[Cookie, String] = Optional[Cookie, String] {
+    _.domain
+  } { domain =>
+    {
+      case cookie @ Cookie(_, _, _, _, None, _, _, _, _, _) => cookie
+      case cookie @ _                                       => cookie.copy(domain = Some(domain))
+    }
+  }
+  val pathOpt: Optional[Cookie, String] = Optional[Cookie, String] {
+    _.path
+  } { path =>
+    {
+      case cookie @ Cookie(_, _, _, _, _, None, _, _, _, _) => cookie
+      case cookie @ _                                       => cookie.copy(path = Some(path))
+    }
+  }
+  val secureOpt: Optional[Cookie, Boolean] = Optional[Cookie, Boolean] {
+    _.secure
+  } { secure =>
+    {
+      case cookie @ Cookie(_, _, _, _, _, _, None, _, _, _) => cookie
+      case cookie @ _                                       => cookie.copy(secure = Some(secure))
+    }
+  }
+  val httpOnlyOpt: Optional[Cookie, Boolean] = Optional[Cookie, Boolean] {
+    _.httpOnly
+  } { httpOnly =>
+    {
+      case cookie @ Cookie(_, _, _, _, _, _, _, None, _, _) => cookie
+      case cookie @ _                                       => cookie.copy(httpOnly = Some(httpOnly))
+    }
+  }
+  val sameSiteOpt: Optional[Cookie, SameSite] = Optional[Cookie, SameSite] {
+    _.sameSite
+  } { sameSite =>
+    {
+      case cookie @ Cookie(_, _, _, _, _, _, _, _, None, _) => cookie
+      case cookie @ _                                       => cookie.copy(sameSite = Some(sameSite))
+    }
+  }
+  val customOpt: Optional[Cookie, Map[String, String]] = Optional[Cookie, Map[String, String]] {
+    _.custom
+  } { custom =>
+    {
+      case cookie @ Cookie(_, _, _, _, _, _, _, _, _, None) => cookie
+      case cookie @ _                                       => cookie.copy(custom = Some(custom))
+    }
+  }
+
+  sealed trait SameSite
+  object SameSite {
+    case object Strict extends SameSite
+    case object Lax    extends SameSite
+
+    implicit val show = new Show[SameSite] {
+      def show(s: SameSite): String = s match {
+        case Strict => "Strict"
+        case Lax    => "Lax"
+      }
+    }
+  }
 
   implicit val showCookie = new Show[Cookie] {
     def show(cookie: Cookie): String = render(cookie)

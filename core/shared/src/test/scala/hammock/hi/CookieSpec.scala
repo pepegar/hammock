@@ -24,7 +24,7 @@ class CookieSpec extends WordSpec with Matchers {
         Some("/blog"),
         Some(false),
         Some(true),
-        Some(SameSite.Strict))
+        Some(Cookie.SameSite.Strict))
 
       Show[Cookie].show(cookie) shouldEqual "name=value; Expires=Sat, 03 Jan 1970 17:03:54 +0000; MaxAge=123; Domain=pepegar.com; Path=/blog; Secure=false; HttpOnly=true; SameSite=Strict"
     }

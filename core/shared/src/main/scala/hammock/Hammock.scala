@@ -1,10 +1,7 @@
 package hammock
 
-import cats._
-import cats.arrow._
 import cats.syntax.show._
 
-import free._
 import free.algebra.{HttpRequestIO, Ops}
 import hi.Opts
 import Codec._

@@ -22,7 +22,7 @@ install:
 script:
 - sbt ++$TRAVIS_SCALA_VERSION clean coverage coreJVM/test circeJVM/test akka/test coverageReport
 - sbt ++$TRAVIS_SCALA_VERSION clean coreJS/test circeJS/test exampleJS/compile
-- sbt ++$TRAVIS_SCALA_VERSION "docs/tut" "readme/tut" scalafmt
+- sbt "docs/tut" "readme/tut" scalafmt
 - git diff --name-only --exit-code -- $(find . -iname "*.scala")
 
 after_success:

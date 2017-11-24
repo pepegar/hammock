@@ -227,6 +227,34 @@ val req = {
 }
 ```
 
+You can also use [`Monocle`](https://github.com/julientruffaut/monocle)'s optics to describe and modify your
+requests.  Most datatypes in Hammock provide sensible optics that will
+work out of the box, and you can combine them with the ones provided
+in [`Monocle`](https://github.com/julientruffaut/monocle):
+
+```tut:book
+// import stuff
+import hammock.hi._, hammock.hi.dsl._ , monocle._, monocle.function.all._
+
+// imagine that we have the following Opts value
+val opts = (auth(Auth.BasicAuth("pepe", "password")) &> headers(Map("X-Correlation-Id" -> "234")) &> cookies(List(Cookie("a", "b"))))(Opts.default)
+
+// Since optics compose nicely, we can focus on
+// the first value of the first cookie found in the
+// cookie list, for example:
+
+Opts.cookiesOpt composeOptional index(0) composeLens Cookie.value
+
+// also you can use the symbolic operators for that :D
+Opts.cookiesOpt ^|-? index(0) ^|-> Cookie.value
+
+// and then, use the optics machinery at your will, for example for getting the focus
+(Opts.cookiesOpt ^|-? index(0) ^|-> Cookie.value).getOption(opts)
+
+// or modifying it!
+(Opts.cookiesOpt ^|-? index(0) ^|-> Cookie.value).set("newValue")(opts)
+```
+
 #### Authentication
 
 There are a number of authentication headers already implemented in
@@ -240,10 +268,10 @@ Hammock:
 
 #### Cookies
 
-Cookies in Hammock are represented by the `Cookie` type:
+Cookies in Hammock are represented by the `Cookie` data type:
 
 ```scala
-@Lenses case class Cookie(
+case class Cookie(
   name: String,
   value: String,
   expires: Option[Date] = None,
@@ -256,8 +284,10 @@ Cookies in Hammock are represented by the `Cookie` type:
   custom: Option[Map[String, String]] = None)
 ```
 
-The `@Lenses` annotation (from Monocle) provides lenses for all the
-fields in a case class.
+In its companion object there are optics for all the
+fields. `Cookie.name` and `Cookie.value` are `Lens`es that allow to
+focus on one particular field of the structure.
+
 
 As you can see most of the behaviour of the cookie can be handled by
 the type itself.  For example, adding a `MaxAge` setting to a cookie
@@ -320,3 +350,7 @@ import Codec._
 "this is not a valid json".decode[MyClass]
 MyClass("hello dolly", 99).encode
 ```
+
+Also, if you use any other library for serialization, you can just
+implement the `Codec` typeclass with it and provide the implicit so
+Hammock can use it.
