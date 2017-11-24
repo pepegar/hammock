@@ -71,7 +71,7 @@ val buildSettings = Seq(
   organization := "com.pepegar",
   scalaVersion := "2.12.3",
   licenses := Seq(("MIT", url("http://opensource.org/licenses/MIT"))),
-  crossScalaVersions := Seq("2.10.6", "2.11.11", "2.12.3"),
+  crossScalaVersions := Seq("2.11.11", scalaVersion.value),
   scalacOptions ++= Seq(
     "-encoding",
     "UTF-8", // 2 args
