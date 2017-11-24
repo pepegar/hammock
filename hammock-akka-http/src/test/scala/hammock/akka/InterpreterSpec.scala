@@ -29,7 +29,7 @@ class InterpreterSpec extends WordSpec with MockitoSugar with Matchers with Befo
   "akka http interpreter" should {
 
     "create a correct AkkaResponse from akka's Http response" in {
-      val hammockReq = Get(Uri(path = "http://localhost:8080"), Map())
+      val hammockReq = Get(HttpRequest(Method.GET, Uri(path = "http://localhost:8080"), Map(), None))
       val akkaReq    = interp.transformRequest(hammockReq)
       when(client.singleRequest(akkaReq)).thenReturn(Future.successful(httpResponse))
       val result = (Free.liftF(hammockReq) foldMap interp.trans).unsafeRunSync

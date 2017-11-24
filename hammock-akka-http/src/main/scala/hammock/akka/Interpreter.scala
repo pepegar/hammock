@@ -32,13 +32,13 @@ class AkkaInterpreter[F[_]: Async](
 
   def transK(implicit S: Sync[F]): HttpRequestF ~> Kleisli[F, HttpExt, ?] =
     λ[HttpRequestF ~> Kleisli[F, HttpExt, ?]]({
-      case req @ Options(uri, headers)    => doReq(req)
-      case req @ Get(uri, headers)        => doReq(req)
-      case req @ Head(uri, headers)       => doReq(req)
-      case req @ Post(uri, headers, body) => doReq(req)
-      case req @ Put(uri, headers, body)  => doReq(req)
-      case req @ Delete(uri, headers)     => doReq(req)
-      case req @ Trace(uri, headers)      => doReq(req)
+      case req: Options=> doReq(req)
+      case req: Get=> doReq(req)
+      case req: Head=> doReq(req)
+      case req: Post => doReq(req)
+      case req: Put  => doReq(req)
+      case req: Delete=> doReq(req)
+      case req: Trace=> doReq(req)
     })
 
   def doReq(req: HttpRequestF[HttpResponse]): Kleisli[F, HttpExt, HttpResponse] = Kleisli { http =>
@@ -51,8 +51,8 @@ class AkkaInterpreter[F[_]: Async](
     IO.fromFuture(Eval.later(responseFuture)).to[F]
   }
 
-  def transformRequest(req: HttpRequestF[HttpResponse]): AkkaRequest = {
-    val method = req.method match {
+  def transformRequest(reqF: HttpRequestF[HttpResponse]): AkkaRequest = {
+    val method = reqF.req.method match {
       case Method.OPTIONS => HttpMethods.OPTIONS
       case Method.GET     => HttpMethods.GET
       case Method.HEAD    => HttpMethods.HEAD
@@ -63,12 +63,12 @@ class AkkaInterpreter[F[_]: Async](
       case Method.CONNECT => HttpMethods.CONNECT
     }
 
-    req.body match {
+    reqF.req.body match {
       case Some(body) =>
         new RequestBuilder(method)(
-          Uri(req.uri.show),
+          Uri(reqF.req.uri.show),
           HttpEntity.Strict(ContentTypes.`application/json`, ByteString.fromString(body)))
-      case None => new RequestBuilder(method)(Uri(req.uri.show))
+      case None => new RequestBuilder(method)(Uri(reqF.req.uri.show))
     }
   }
 

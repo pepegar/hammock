@@ -17,25 +17,25 @@ class Interpreter[F[_]] extends InterpTrans[F] {
   import algebra._
 
   override def trans(implicit S: Sync[F]): HttpRequestF ~> F =
-    λ[HttpRequestF ~> F](_ match {
-      case req @ Options(url, headers)    => doReq(req, Method.OPTIONS)
-      case req @ Get(url, headers)        => doReq(req, Method.GET)
-      case req @ Head(url, headers)       => doReq(req, Method.HEAD)
-      case req @ Post(url, headers, body) => doReq(req, Method.POST)
-      case req @ Put(url, headers, body)  => doReq(req, Method.PUT)
-      case req @ Delete(url, headers)     => doReq(req, Method.DELETE)
-      case req @ Trace(url, headers)      => doReq(req, Method.TRACE)
-    })
+    λ[HttpRequestF ~> F] {
+      case req: Options => doReq(req, Method.OPTIONS)
+      case req: Get => doReq(req, Method.GET)
+      case req: Head => doReq(req, Method.HEAD)
+      case req: Post => doReq(req, Method.POST)
+      case req: Put => doReq(req, Method.PUT)
+      case req: Delete => doReq(req, Method.DELETE)
+      case req: Trace => doReq(req, Method.TRACE)
+    }
 
-  private def doReq(req: HttpRequestF[HttpResponse], method: Method)(implicit S: Sync[F]): F[HttpResponse] = S.delay {
+  private def doReq(reqF: HttpRequestF[HttpResponse], method: Method)(implicit S: Sync[F]): F[HttpResponse] = S.delay {
     val xhr   = new dom.XMLHttpRequest()
     val async = false // asynchronicity should be handled by the concurrency monad `F`, not the HTTP driver
 
-    xhr.open(method.name, req.uri.show, async)
-    req.headers foreach {
+    xhr.open(method.name, reqF.req.uri.show, async)
+    reqF.req.headers foreach {
       case (k, v) => xhr.setRequestHeader(k, v)
     }
-    xhr.send(req.body.fold("")(identity))
+    xhr.send(reqF.req.body.fold("")(identity))
 
     val status          = Status.get(xhr.status)
     val responseHeaders = parseHeaders(xhr.getAllResponseHeaders)

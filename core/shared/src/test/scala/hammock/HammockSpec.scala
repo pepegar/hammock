@@ -31,17 +31,17 @@ class HammockSpec extends WordSpec with Matchers {
     methods.map { method =>
       s"create a valid $method request without a body" in {
         Hammock.request(method, uri, Map()) foldMap test { r =>
-          r.uri shouldEqual Uri.fromString("http://pepegar.com").right.get
-          r.headers shouldEqual Map()
+          r.req.uri shouldEqual Uri.fromString("http://pepegar.com").right.get
+          r.req.headers shouldEqual Map()
         }
       }
 
       s"create a valid $method request with a body" in {
         val body = None
         Hammock.request(method, uri, Map(), body) foldMap test { r =>
-          r.uri shouldEqual Uri.fromString("http://pepegar.com").right.get
-          r.headers shouldEqual Map()
-          r.body shouldEqual None
+          r.req.uri shouldEqual Uri.fromString("http://pepegar.com").right.get
+          r.req.headers shouldEqual Map()
+          r.req.body shouldEqual None
         }
       }
     }
@@ -52,8 +52,8 @@ class HammockSpec extends WordSpec with Matchers {
       Uri.fromString("http://pepegar.com") match {
         case Right(uri) =>
           Hammock.getWithOpts(uri, opts) foldMap test { r =>
-            r.uri shouldEqual Uri.fromString("http://pepegar.com").right.get
-            r.headers shouldEqual Map("header" -> "3", "Set-Cookie" -> "thisisacookie=thisisthevalue")
+            r.req.uri shouldEqual Uri.fromString("http://pepegar.com").right.get
+            r.req.headers shouldEqual Map("header" -> "3", "Set-Cookie" -> "thisisacookie=thisisthevalue")
           }
         case Left(err) => fail(s"failed with $err")
       }

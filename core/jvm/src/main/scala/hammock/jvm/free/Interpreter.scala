@@ -28,24 +28,19 @@ class Interpreter[F[_]](client: HttpClient) extends InterpTrans[F] {
 
   def transK(implicit S: Sync[F]): HttpRequestF ~> Kleisli[F, HttpClient, ?] =
     λ[HttpRequestF ~> Kleisli[F, HttpClient, ?]](_ match {
-      case req @ Options(uri, headers)    => doReq(req)
-      case req @ Get(uri, headers)        => doReq(req)
-      case req @ Head(uri, headers)       => doReq(req)
-      case req @ Post(uri, headers, body) => doReq(req)
-      case req @ Put(uri, headers, body)  => doReq(req)
-      case req @ Delete(uri, headers)     => doReq(req)
-      case req @ Trace(uri, headers)      => doReq(req)
+      case req: Options    => doReq(req)
+      case req: Get        => doReq(req)
+      case req: Head      => doReq(req)
+      case req: Post => doReq(req)
+      case req: Put  => doReq(req)
+      case req: Delete     => doReq(req)
+      case req: Trace      => doReq(req)
     })
 
   private def doReq(reqF: HttpRequestF[HttpResponse])(implicit S: Sync[F]): Kleisli[F, HttpClient, HttpResponse] =
     Kleisli { client =>
       Sync[F].delay {
         val req = getApacheRequest(reqF)
-        reqF.headers.foreach {
-          case (k, v) =>
-            req.addHeader(k, v)
-        }
-
         val resp            = client.execute(req)
         val entity          = resp.getEntity
         val body            = responseContentToString(entity.getContent())
@@ -58,33 +53,33 @@ class Interpreter[F[_]](client: HttpClient) extends InterpTrans[F] {
     }
 
   private def getApacheRequest(f: HttpRequestF[HttpResponse]): HttpUriRequest = f match {
-    case Get(uri, headers) =>
+    case Get(HttpRequest(_, uri, headers, _)) =>
       val req = new HttpGet(uri.show)
       req.setHeaders(prepareHeaders(headers))
       req
-    case Options(uri, headers) =>
+    case Options(HttpRequest(_, uri, headers, _)) =>
       val req = new HttpOptions(uri.show)
       req.setHeaders(prepareHeaders(headers))
       req
-    case Head(uri, headers) =>
+    case Head(HttpRequest(_, uri, headers, _)) =>
       val req = new HttpHead(uri.show)
       req.setHeaders(prepareHeaders(headers))
       req
-    case Post(uri, headers, body) =>
+    case Post(HttpRequest(_, uri, headers, body)) =>
       val req = new HttpPost(uri.show)
       req.setHeaders(prepareHeaders(headers))
       body foreach (b => req.setEntity(new StringEntity(b)))
       req
-    case Put(uri, headers, body) =>
+    case Put(HttpRequest(_, uri, headers, body)) =>
       val req = new HttpPut(uri.show)
       req.setHeaders(prepareHeaders(headers))
       body foreach (b => req.setEntity(new StringEntity(b)))
       req
-    case Delete(uri, headers) =>
+    case Delete(HttpRequest(_, uri, headers, _)) =>
       val req = new HttpDelete(uri.show)
       req.setHeaders(prepareHeaders(headers))
       req
-    case Trace(uri, headers) =>
+    case Trace(HttpRequest(_, uri, headers, _)) =>
       val req = new HttpTrace(uri.show)
       req.setHeaders(prepareHeaders(headers))
       req
