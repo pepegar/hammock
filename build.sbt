@@ -18,9 +18,7 @@ val Versions = Map(
 )
 
 val noPublishSettings = Seq(
-  publish := (),
-  publishLocal := (),
-  publishArtifact := false
+  skip in publish := true
 )
 
 val publishSettings = Seq(
@@ -36,9 +34,9 @@ val publishSettings = Seq(
   useGpg := true,
   homepage := Some(url("https://github.com/pepegar/hammock")),
   pomIncludeRepository := Function.const(false),
-  pomExtra := (
+  pomExtra :=
     <scm>
-      <url>git@github.com:pepegar/hammock.git</url>
+      <url>https://github.com/pepegar/hammock</url>
       <connection>scm:git:git@github.com:pepegar/hammock.git</connection>
     </scm>
     <developers>
@@ -47,8 +45,7 @@ val publishSettings = Seq(
         <name>Pepe García</name>
         <url>http://pepegar.com</url>
       </developer>
-    </developers>
-  ),
+    </developers>,
   releaseCrossBuild := true,
   releasePublishArtifactsAction := PgpKeys.publishSigned.value,
   releaseProcess := Seq[ReleaseStep](
@@ -59,17 +56,18 @@ val publishSettings = Seq(
     setReleaseVersion,
     commitReleaseVersion,
     tagRelease,
-    ReleaseStep(action = Command.process("publishSigned", _)),
+    releaseStepCommand("publishSigned"),
     setNextVersion,
     commitNextVersion,
-    ReleaseStep(action = Command.process("sonatypeReleaseAll", _)),
+    releaseStepCommand("sonatypeReleaseAll"),
+    releaseStepCommand("docs/publishMicrosite"),
     pushChanges
   )
 )
 
 val buildSettings = Seq(
   organization := "com.pepegar",
-  scalaVersion := "2.12.3",
+  scalaVersion := "2.12.4",
   licenses := Seq(("MIT", url("http://opensource.org/licenses/MIT"))),
   crossScalaVersions := Seq("2.11.11", scalaVersion.value),
   scalacOptions ++= Seq(
@@ -124,10 +122,10 @@ lazy val core = crossProject(JSPlatform, JVMPlatform)
   .crossType(CrossType.Full)
   .in(file("core"))
   .settings(moduleName := "hammock-core")
-  .settings(buildSettings: _*)
-  .settings(commonDependencies: _*)
-  .settings(compilerPlugins: _*)
-  .settings(publishSettings: _*)
+  .settings(buildSettings)
+  .settings(commonDependencies)
+  .settings(compilerPlugins)
+  .settings(publishSettings)
   .jsSettings(
     libraryDependencies += "org.scala-js" %%% "scalajs-dom" % "0.9.1"
   )
@@ -145,10 +143,10 @@ lazy val circe = crossProject(JSPlatform, JVMPlatform)
   .crossType(CrossType.Pure)
   .in(file("hammock-circe"))
   .settings(moduleName := "hammock-circe")
-  .settings(buildSettings: _*)
-  .settings(publishSettings: _*)
-  .settings(commonDependencies: _*)
-  .settings(compilerPlugins: _*)
+  .settings(buildSettings)
+  .settings(publishSettings)
+  .settings(commonDependencies)
+  .settings(compilerPlugins)
   .settings(libraryDependencies ++= Seq(
     "io.circe" %%% "circe-core"    % Versions("circe"),
     "io.circe" %%% "circe-generic" % Versions("circe"),
@@ -161,10 +159,10 @@ lazy val circeJS  = circe.js
 lazy val akka = project
   .in(file("hammock-akka-http"))
   .settings(moduleName := "hammock-akka-http")
-  .settings(buildSettings: _*)
-  .settings(commonDependencies: _*)
-  .settings(compilerPlugins: _*)
-  .settings(publishSettings: _*)
+  .settings(buildSettings)
+  .settings(commonDependencies)
+  .settings(compilerPlugins)
+  .settings(publishSettings)
   .settings(
     libraryDependencies += {
       CrossVersion.partialVersion(scalaVersion.value) match {
@@ -182,9 +180,9 @@ lazy val docs = project
   .in(file("docs"))
   .dependsOn(coreJVM, circeJVM)
   .settings(moduleName := "hammock-docs")
-  .settings(buildSettings: _*)
-  .settings(compilerPlugins: _*)
-  .settings(noPublishSettings: _*)
+  .settings(buildSettings)
+  .settings(compilerPlugins)
+  .settings(noPublishSettings)
   .settings(
     micrositeName := "Hammock",
     micrositeDescription := "Purely functional HTTP client",
@@ -200,33 +198,27 @@ lazy val docs = project
 lazy val readme = (project in file("tut"))
   .settings(moduleName := "hammock-readme")
   .dependsOn(coreJVM, circeJVM)
-  .settings(tutSettings: _*)
-  .settings(buildSettings: _*)
-  .settings(noPublishSettings: _*)
+  .settings(buildSettings)
+  .settings(noPublishSettings)
   .settings(
     tutSourceDirectory := baseDirectory.value,
     tutTargetDirectory := baseDirectory.value.getParentFile,
-    tutScalacOptions ~= (_.filterNot(Set("-Ywarn-unused-import", "-Ywarn-dead-code"))),
-    tutScalacOptions ++= (scalaBinaryVersion.value match {
-      case "2.10" => Seq("-Xdivergence211")
-      case _      => Nil
-    }),
     tutNameFilter := """README.md""".r
   )
 
 lazy val example = project
   .in(file("example"))
-  .settings(buildSettings: _*)
-  .settings(noPublishSettings: _*)
-  .settings(compilerPlugins: _*)
+  .settings(buildSettings)
+  .settings(noPublishSettings)
+  .settings(compilerPlugins)
   .dependsOn(coreJVM, circeJVM)
 
 lazy val exampleJS = project
   .in(file("example-js"))
   .enablePlugins(ScalaJSPlugin)
-  .settings(buildSettings: _*)
-  .settings(noPublishSettings: _*)
-  .settings(compilerPlugins: _*)
+  .settings(buildSettings)
+  .settings(noPublishSettings)
+  .settings(compilerPlugins)
   .settings(libraryDependencies += "be.doeraene" %%% "scalajs-jquery" % "0.9.2")
   .settings(jsDependencies += "org.webjars" % "jquery" % "2.1.3" / "2.1.3/jquery.js")
   .dependsOn(coreJS, circeJS)
