@@ -29,7 +29,7 @@ class Interpreter[F[_]] extends InterpTrans[F] {
 
   private def doReq(reqF: HttpRequestF[HttpResponse], method: Method)(implicit S: Sync[F]): F[HttpResponse] = S.delay {
     val xhr   = new dom.XMLHttpRequest()
-    val async = false // asynchronicity should be handled by the concurrency monad `F`, not the HTTP driver
+    val async = true // async = false is deprecated in JS
 
     xhr.open(method.name, reqF.req.uri.show, async)
     reqF.req.headers foreach {
