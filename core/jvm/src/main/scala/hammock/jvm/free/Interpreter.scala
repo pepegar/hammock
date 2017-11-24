@@ -39,17 +39,14 @@ class Interpreter[F[_]](client: HttpClient) extends InterpTrans[F] {
 
   private def doReq(reqF: HttpRequestF[HttpResponse])(implicit S: Sync[F]): Kleisli[F, HttpClient, HttpResponse] =
     Kleisli { client =>
-      Sync[F].delay {
-        val req = getApacheRequest(reqF)
-        val resp            = client.execute(req)
-        val entity          = resp.getEntity
-        val body            = responseContentToString(entity.getContent())
-        val status          = Status.get(resp.getStatusLine.getStatusCode)
-        val responseHeaders = resp.getAllHeaders().map(h => h.getName -> h.getValue).toMap
-        EntityUtils.consume(entity)
-
-        HttpResponse(status, responseHeaders, body)
-      }
+      for {
+        req             <- getApacheRequest(reqF).pure[F]
+        resp            <- Sync[F].delay(client.execute(req))
+        body            <- Sync[F].delay(responseContentToString(resp.getEntity.getContent))
+        status          <- Status.get(resp.getStatusLine.getStatusCode).pure[F]
+        responseHeaders <- resp.getAllHeaders.map(h => h.getName -> h.getValue).toMap.pure[F]
+        _               <- Sync[F].delay(EntityUtils.consume(resp.getEntity))
+      } yield HttpResponse(status, responseHeaders, body)
     }
 
   private def getApacheRequest(f: HttpRequestF[HttpResponse]): HttpUriRequest = f match {
