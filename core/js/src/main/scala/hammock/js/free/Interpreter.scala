@@ -19,12 +19,12 @@ class Interpreter[F[_]] extends InterpTrans[F] {
   override def trans(implicit S: Sync[F]): HttpRequestF ~> F =
     λ[HttpRequestF ~> F] {
       case req: Options => doReq(req, Method.OPTIONS)
-      case req: Get => doReq(req, Method.GET)
-      case req: Head => doReq(req, Method.HEAD)
-      case req: Post => doReq(req, Method.POST)
-      case req: Put => doReq(req, Method.PUT)
-      case req: Delete => doReq(req, Method.DELETE)
-      case req: Trace => doReq(req, Method.TRACE)
+      case req: Get     => doReq(req, Method.GET)
+      case req: Head    => doReq(req, Method.HEAD)
+      case req: Post    => doReq(req, Method.POST)
+      case req: Put     => doReq(req, Method.PUT)
+      case req: Delete  => doReq(req, Method.DELETE)
+      case req: Trace   => doReq(req, Method.TRACE)
     }
 
   private def doReq(reqF: HttpRequestF[HttpResponse], method: Method)(implicit S: Sync[F]): F[HttpResponse] = S.delay {

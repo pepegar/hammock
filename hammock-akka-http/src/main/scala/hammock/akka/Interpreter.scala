@@ -32,13 +32,13 @@ class AkkaInterpreter[F[_]: Async](
 
   def transK(implicit S: Sync[F]): HttpRequestF ~> Kleisli[F, HttpExt, ?] =
     λ[HttpRequestF ~> Kleisli[F, HttpExt, ?]]({
-      case req: Options=> doReq(req)
-      case req: Get=> doReq(req)
-      case req: Head=> doReq(req)
-      case req: Post => doReq(req)
-      case req: Put  => doReq(req)
-      case req: Delete=> doReq(req)
-      case req: Trace=> doReq(req)
+      case req: Options => doReq(req)
+      case req: Get     => doReq(req)
+      case req: Head    => doReq(req)
+      case req: Post    => doReq(req)
+      case req: Put     => doReq(req)
+      case req: Delete  => doReq(req)
+      case req: Trace   => doReq(req)
     })
 
   def doReq(req: HttpRequestF[HttpResponse]): Kleisli[F, HttpExt, HttpResponse] = Kleisli { http =>

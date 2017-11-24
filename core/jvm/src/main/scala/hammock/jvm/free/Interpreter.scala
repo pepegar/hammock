@@ -5,8 +5,8 @@ package free
 import hammock.free._
 
 import cats._
+import cats.implicits._
 import cats.data._
-import cats.syntax.show._
 import cats.effect.Sync
 
 import java.io.{BufferedReader, InputStream, InputStreamReader}
@@ -27,15 +27,15 @@ class Interpreter[F[_]](client: HttpClient) extends InterpTrans[F] {
   override def trans(implicit S: Sync[F]) = transK andThen λ[Kleisli[F, HttpClient, ?] ~> F](_.run(client))
 
   def transK(implicit S: Sync[F]): HttpRequestF ~> Kleisli[F, HttpClient, ?] =
-    λ[HttpRequestF ~> Kleisli[F, HttpClient, ?]](_ match {
-      case req: Options    => doReq(req)
-      case req: Get        => doReq(req)
-      case req: Head      => doReq(req)
+    λ[HttpRequestF ~> Kleisli[F, HttpClient, ?]] {
+      case req: Options => doReq(req)
+      case req: Get => doReq(req)
+      case req: Head => doReq(req)
       case req: Post => doReq(req)
-      case req: Put  => doReq(req)
-      case req: Delete     => doReq(req)
-      case req: Trace      => doReq(req)
-    })
+      case req: Put => doReq(req)
+      case req: Delete => doReq(req)
+      case req: Trace => doReq(req)
+    }
 
   private def doReq(reqF: HttpRequestF[HttpResponse])(implicit S: Sync[F]): Kleisli[F, HttpClient, HttpResponse] =
     Kleisli { client =>
