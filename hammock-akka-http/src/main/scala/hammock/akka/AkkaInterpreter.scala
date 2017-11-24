@@ -1,37 +1,34 @@
 package hammock
 package akka
 
-import _root_.akka.http
-import _root_.akka.actor.ActorSystem
-import _root_.akka.http.scaladsl.{Http, HttpExt}
+import _root_.akka.http.scaladsl.HttpExt
+import _root_.akka.http.scaladsl.client.RequestBuilding.RequestBuilder
 import _root_.akka.http.scaladsl.model.{
-  HttpResponse => AkkaResponse,
+  HttpMethods,
   HttpRequest => AkkaRequest,
+  HttpResponse => AkkaResponse,
   StatusCode => AkkaStatus,
   _
 }
 import _root_.akka.stream.ActorMaterializer
-import _root_.akka.http.scaladsl.model.HttpMethods
-import _root_.akka.http.scaladsl.client.RequestBuilding.RequestBuilder
 import _root_.akka.util.ByteString
-import scala.concurrent.{ExecutionContext, Future}
-
-import cats.{~>, Eval}
-import cats.syntax.show._
+import cats._
 import cats.data.Kleisli
 import cats.effect.{Async, IO, Sync}
-
+import cats.implicits._
 import hammock.free._
 import hammock.free.algebra._
 
+import scala.concurrent.{ExecutionContext, Future}
+
 class AkkaInterpreter[F[_]: Async](
-    client: HttpExt)(implicit system: ActorSystem, materializer: ActorMaterializer, executionContext: ExecutionContext)
+    client: HttpExt)(implicit materializer: ActorMaterializer, executionContext: ExecutionContext)
     extends InterpTrans[F] {
 
   def trans(implicit S: Sync[F]): HttpRequestF ~> F = transK andThen λ[Kleisli[F, HttpExt, ?] ~> F](_.run(client))
 
   def transK(implicit S: Sync[F]): HttpRequestF ~> Kleisli[F, HttpExt, ?] =
-    λ[HttpRequestF ~> Kleisli[F, HttpExt, ?]]({
+    λ[HttpRequestF ~> Kleisli[F, HttpExt, ?]] {
       case req: Options => doReq(req)
       case req: Get     => doReq(req)
       case req: Head    => doReq(req)
@@ -39,16 +36,17 @@ class AkkaInterpreter[F[_]: Async](
       case req: Put     => doReq(req)
       case req: Delete  => doReq(req)
       case req: Trace   => doReq(req)
-    })
+    }
 
   def doReq(req: HttpRequestF[HttpResponse]): Kleisli[F, HttpExt, HttpResponse] = Kleisli { http =>
-    val akkaRequest = transformRequest(req)
-
-    val responseFuture = http
-      .singleRequest(akkaRequest)
-      .flatMap(transformResponse)
-
-    IO.fromFuture(Eval.later(responseFuture)).to[F]
+    for {
+      akkaRequest <- transformRequest(req).pure[F]
+      responseFuture <- Sync[F].delay(
+        http
+          .singleRequest(akkaRequest)
+          .flatMap(transformResponse))
+      responseF <- IO.fromFuture(Eval.later(responseFuture)).to[F]
+    } yield responseF
   }
 
   def transformRequest(reqF: HttpRequestF[HttpResponse]): AkkaRequest = {

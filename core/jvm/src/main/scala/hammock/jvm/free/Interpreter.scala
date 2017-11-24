@@ -29,12 +29,12 @@ class Interpreter[F[_]](client: HttpClient) extends InterpTrans[F] {
   def transK(implicit S: Sync[F]): HttpRequestF ~> Kleisli[F, HttpClient, ?] =
     λ[HttpRequestF ~> Kleisli[F, HttpClient, ?]] {
       case req: Options => doReq(req)
-      case req: Get => doReq(req)
-      case req: Head => doReq(req)
-      case req: Post => doReq(req)
-      case req: Put => doReq(req)
-      case req: Delete => doReq(req)
-      case req: Trace => doReq(req)
+      case req: Get     => doReq(req)
+      case req: Head    => doReq(req)
+      case req: Post    => doReq(req)
+      case req: Put     => doReq(req)
+      case req: Delete  => doReq(req)
+      case req: Trace   => doReq(req)
     }
 
   private def doReq(reqF: HttpRequestF[HttpResponse])(implicit S: Sync[F]): Kleisli[F, HttpClient, HttpResponse] =
