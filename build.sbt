@@ -4,7 +4,7 @@ import sbtcrossproject.{crossProject, CrossType}
 
 val Versions = Map(
   "circe"          -> "0.9.0-M2",
-  "monocle"        -> "1.4.0",
+  "monocle"        -> "1.5.0-cats-M2",
   "atto"           -> "0.6.1-M7",
   "cats"           -> "1.0.0-RC1",
   "cats-effect"    -> "0.5",
@@ -71,7 +71,7 @@ val buildSettings = Seq(
   organization := "com.pepegar",
   scalaVersion := "2.12.3",
   licenses := Seq(("MIT", url("http://opensource.org/licenses/MIT"))),
-  crossScalaVersions := Seq("2.10.6", "2.11.11", "2.12.3"),
+  crossScalaVersions := Seq("2.11.11", scalaVersion.value),
   scalacOptions ++= Seq(
     "-encoding",
     "UTF-8", // 2 args
