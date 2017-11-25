@@ -203,8 +203,8 @@ lazy val readme = (project in file("tut"))
   .settings(
     tutSourceDirectory := baseDirectory.value,
     tutTargetDirectory := baseDirectory.value.getParentFile,
-    tutNameFilter := """README.md""".r
-  )
+    tutNameFilter := """README.md""".r)
+  .enablePlugins(TutPlugin)
 
 lazy val example = project
   .in(file("example"))
