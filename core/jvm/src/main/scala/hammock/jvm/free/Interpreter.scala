@@ -11,10 +11,10 @@ import cats.effect.Sync
 
 import java.io.{BufferedReader, InputStream, InputStreamReader}
 
-import org.apache.http.Header
+import org.apache.http.{Header, HttpEntity}
 import org.apache.http.client.HttpClient
 import org.apache.http.client.methods._
-import org.apache.http.entity.StringEntity
+import org.apache.http.{entity => apache}
 import org.apache.http.impl.client.HttpClientBuilder
 import org.apache.http.message.BasicHeader
 import org.apache.http.util.EntityUtils
@@ -37,50 +37,40 @@ class Interpreter[F[_]](client: HttpClient) extends InterpTrans[F] {
       case req: Trace   => doReq(req)
     }
 
-  private def doReq(reqF: HttpRequestF[HttpResponse])(implicit S: Sync[F]): Kleisli[F, HttpClient, HttpResponse] =
+  private def doReq(reqF: HttpRequestF[HttpResponse])(implicit F: Sync[F]): Kleisli[F, HttpClient, HttpResponse] =
     Kleisli { client =>
       for {
-        req             <- getApacheRequest(reqF).pure[F]
-        resp            <- Sync[F].delay(client.execute(req))
-        body            <- Sync[F].delay(responseContentToString(resp.getEntity.getContent))
+        req             <- getApacheRequest(reqF)
+        resp            <- F.delay(client.execute(req))
+        body            <- F.delay(responseContentToString(resp.getEntity.getContent))
         status          <- Status.get(resp.getStatusLine.getStatusCode).pure[F]
         responseHeaders <- resp.getAllHeaders.map(h => h.getName -> h.getValue).toMap.pure[F]
-        _               <- Sync[F].delay(EntityUtils.consume(resp.getEntity))
-      } yield HttpResponse(status, responseHeaders, body)
+        _               <- F.delay(EntityUtils.consume(resp.getEntity))
+      } yield HttpResponse(status, responseHeaders, new Entity.StringEntity(body))
     }
 
-  private def getApacheRequest(f: HttpRequestF[HttpResponse]): HttpUriRequest = f match {
-    case Get(HttpRequest(_, uri, headers, _)) =>
-      val req = new HttpGet(uri.show)
-      req.setHeaders(prepareHeaders(headers))
-      req
-    case Options(HttpRequest(_, uri, headers, _)) =>
-      val req = new HttpOptions(uri.show)
-      req.setHeaders(prepareHeaders(headers))
-      req
-    case Head(HttpRequest(_, uri, headers, _)) =>
-      val req = new HttpHead(uri.show)
-      req.setHeaders(prepareHeaders(headers))
-      req
-    case Post(HttpRequest(_, uri, headers, body)) =>
-      val req = new HttpPost(uri.show)
-      req.setHeaders(prepareHeaders(headers))
-      body foreach (b => req.setEntity(new StringEntity(b)))
-      req
-    case Put(HttpRequest(_, uri, headers, body)) =>
-      val req = new HttpPut(uri.show)
-      req.setHeaders(prepareHeaders(headers))
-      body foreach (b => req.setEntity(new StringEntity(b)))
-      req
-    case Delete(HttpRequest(_, uri, headers, _)) =>
-      val req = new HttpDelete(uri.show)
-      req.setHeaders(prepareHeaders(headers))
-      req
-    case Trace(HttpRequest(_, uri, headers, _)) =>
-      val req = new HttpTrace(uri.show)
-      req.setHeaders(prepareHeaders(headers))
-      req
+  private def getApacheRequest(f: HttpRequestF[HttpResponse])(implicit F: Sync[F]): F[HttpUriRequest] = f match {
+    case reqF @ (Get(_) | Options(_) | Head(_) | Delete(_) | Trace(_) | Post(_) | Put(_)) => for {
+      req <- F.pure(new HttpPost(reqF.req.uri.show))
+      _ <- F.delay(req.setHeaders(prepareHeaders(reqF.req.headers)))
+      _ <- reqF.req.entity match {
+        case Some(e) =>
+          mapEntity(e) map req.setEntity
+        case None =>
+          F.pure(())
+      }
+    } yield req
   }
+
+  private def mapEntity(entity: Entity)(implicit F: Sync[F]): F[HttpEntity] = entity match {
+    case Entity.StringEntity(body, contentType) =>
+      mapContentType(contentType) map { parsedContentType =>
+        new apache.StringEntity(body, parsedContentType)
+      }
+  }
+
+  private def mapContentType(contentType: ContentType)(implicit F: Sync[F]): F[apache.ContentType] =
+    F.delay(apache.ContentType.parse(contentType.name))
 
   private def prepareHeaders(headers: Map[String, String]): Array[Header] =
     headers map {

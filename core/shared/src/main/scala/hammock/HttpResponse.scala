@@ -3,7 +3,7 @@ package hammock
 import cats.Eq
 import monocle.macros.Lenses
 
-@Lenses case class HttpResponse(status: Status, headers: Map[String, String], content: String)
+@Lenses case class HttpResponse(status: Status, headers: Map[String, String], content: Entity)
 
 object HttpResponse {
 
