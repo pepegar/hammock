@@ -89,17 +89,18 @@ val buildSettings = Seq(
 
 val commonDependencies = Seq(
   libraryDependencies ++= Seq(
-    "org.typelevel"              %%% "cats-core"     % Versions("cats"),
-    "org.typelevel"              %%% "cats-free"     % Versions("cats"),
-    "org.typelevel"              %%% "cats-laws"     % Versions("cats"),
-    "org.typelevel"              %% "cats-effect"    % Versions("cats-effect"),
-    "com.github.mpilquist"       %%% "simulacrum"    % Versions("simulacrum"),
-    "com.github.julien-truffaut" %%% "monocle-core"  % Versions("monocle"),
-    "com.github.julien-truffaut" %%% "monocle-macro" % Versions("monocle"),
-    "org.tpolecat"               %%% "atto-core"     % Versions("atto"),
-    "org.scalatest"              %%% "scalatest"     % Versions("scalatest") % "test",
-    "org.scalacheck"             %%% "scalacheck"    % Versions("scalacheck") % "test",
-    "org.typelevel"              %%% "discipline"    % Versions("discipline") % "test"
+    "org.typelevel"              %%% "cats-core"      % Versions("cats"),
+    "org.typelevel"              %%% "cats-free"      % Versions("cats"),
+    "org.typelevel"              %%% "cats-laws"      % Versions("cats"),
+    "org.typelevel"              %%% "alleycats-core" % Versions("cats"),
+    "org.typelevel"              %% "cats-effect"     % Versions("cats-effect"),
+    "com.github.mpilquist"       %%% "simulacrum"     % Versions("simulacrum"),
+    "com.github.julien-truffaut" %%% "monocle-core"   % Versions("monocle"),
+    "com.github.julien-truffaut" %%% "monocle-macro"  % Versions("monocle"),
+    "org.tpolecat"               %%% "atto-core"      % Versions("atto"),
+    "org.scalatest"              %%% "scalatest"      % Versions("scalatest") % "test",
+    "org.scalacheck"             %%% "scalacheck"     % Versions("scalacheck") % "test",
+    "org.typelevel"              %%% "discipline"     % Versions("discipline") % "test"
   )
 )
 
@@ -222,3 +223,9 @@ lazy val exampleJS = project
   .settings(libraryDependencies += "be.doeraene" %%% "scalajs-jquery" % "0.9.2")
   .settings(jsDependencies += "org.webjars" % "jquery" % "2.1.3" / "2.1.3/jquery.js")
   .dependsOn(coreJS, circeJS)
+
+addCommandAlias("validateScalafmt", ";sbt:scalafmt::test;test:scalafmt::test;compile:scalafmt::test")
+addCommandAlias("validateDoc", ";docs/makeMicrosite;readme/tut")
+addCommandAlias("validateJVM", ";validateScalafmt;coreJVM/test;circeJVM/test;akka/test;validateDoc")
+addCommandAlias("validateJS", ";validateScalafmt;coreJS/test;circeJS/test")
+addCommandAlias("validate", ";clean;validateScalafmt;validateJS;validateJVM;validateDoc")

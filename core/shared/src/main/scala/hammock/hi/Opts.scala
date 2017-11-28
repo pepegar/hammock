@@ -1,6 +1,8 @@
 package hammock
 package hi
 
+import alleycats.Empty
+
 import monocle.{Lens, Optional}
 import monocle.macros.GenLens
 
@@ -32,9 +34,9 @@ object Opts {
     }
   }
 
-  implicit val defaultOptions = new Default[Opts] {
-    def default = Opts(None, Map(), None)
+  implicit val emptyOptions = new Empty[Opts] {
+    def empty = Opts(None, Map(), None)
   }
 
-  val default = Default[Opts].default
+  val empty = emptyOptions.empty
 }

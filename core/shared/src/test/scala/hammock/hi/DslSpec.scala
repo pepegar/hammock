@@ -9,7 +9,7 @@ class DslSpec extends WordSpec with Matchers {
 
   "`cookies`" should {
     "work when there were no cookies before" in {
-      val opts = cookies(List(Cookie("a", "b"), Cookie("c", "d")))(Opts.default)
+      val opts = cookies(List(Cookie("a", "b"), Cookie("c", "d")))(Opts.empty)
 
       opts shouldEqual Opts(None, Map(), Some(List(Cookie("a", "b"), Cookie("c", "d"))))
     }
@@ -25,7 +25,7 @@ class DslSpec extends WordSpec with Matchers {
     "allow concatenation of operations" in {
       val req = (auth(Auth.BasicAuth("pepegar", "h4rdp4ssw0rd")) &>
         header("X-Forwarded-Proto" -> "https") &>
-        cookie(Cookie("track", "A lot")))(Opts.default)
+        cookie(Cookie("track", "A lot")))(Opts.empty)
 
       req shouldEqual Opts(
         Some(Auth.BasicAuth("pepegar", "h4rdp4ssw0rd")),

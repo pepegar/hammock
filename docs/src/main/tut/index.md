@@ -67,7 +67,7 @@ object HttpClient {
   implicit val interp = Interpreter[IO]
   
   val response = Hammock
-    .getWithOpts(Uri.unsafeParse("https://api.fidesmo.com/apps"), Opts.default)
+    .getWithOpts(Uri.unsafeParse("https://api.fidesmo.com/apps"), Opts.empty)
     .exec[IO]
     .as[List[String]]
 }

@@ -181,7 +181,7 @@ import cats.effect.IO
 
 implicit val interp = Interpreter[IO]
 
-val opts = (header("user" -> "pepegar") &> cookie(Cookie("track", "a lot")))(Opts.default)
+val opts = (header("user" -> "pepegar") &> cookie(Cookie("track", "a lot")))(Opts.empty)
 
 val response = Hammock.getWithOpts(Uri.unsafeParse("http://httpbin.org/get"), opts).exec[IO]
 ```
@@ -237,7 +237,7 @@ in [`Monocle`](https://github.com/julientruffaut/monocle):
 import hammock.hi._, hammock.hi.dsl._ , monocle._, monocle.function.all._
 
 // imagine that we have the following Opts value
-val opts = (auth(Auth.BasicAuth("pepe", "password")) &> headers(Map("X-Correlation-Id" -> "234")) &> cookies(List(Cookie("a", "b"))))(Opts.default)
+val opts = (auth(Auth.BasicAuth("pepe", "password")) &> headers(Map("X-Correlation-Id" -> "234")) &> cookies(List(Cookie("a", "b"))))(Opts.empty)
 
 // Since optics compose nicely, we can focus on
 // the first value of the first cookie found in the
