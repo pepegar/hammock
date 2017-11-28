@@ -1,7 +1,9 @@
 package hammock
 
 sealed trait Entity {
+
   type Content
+
   def contentType: ContentType
   def content: Content
   def contentLength: Long

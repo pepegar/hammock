@@ -1,5 +1,8 @@
 package hammock
 
+import cats._
+import simulacrum.typeclass
+
 class CodecException private (val message: String, underlying: Throwable) extends Throwable(message, underlying)
 
 object CodecException {
@@ -7,14 +10,25 @@ object CodecException {
   def withMessageAndException(message: String, ex: Throwable) = new CodecException(message, ex)
 }
 
-trait Codec[A] {
+@typeclass trait Encoder[A] {
   def encode(a: A): Entity
+}
+
+object Encoder {
+  implicit val encoderContravariant: Contravariant[Encoder] = new Contravariant[Encoder] {
+    def contramap[A, B](fa: Encoder[A])(fn: B => A): Encoder[B] = new Encoder[B] {
+      def encode(b: B): Entity = fa.encode(fn(b))
+    }
+  }
+}
+
+@typeclass trait Decoder[A] {
   def decode(a: Entity): Either[CodecException, A]
 }
 
-object Codec {
-  def apply[A](implicit c: Codec[A]): Codec[A] = c
+@typeclass trait Codec[A] extends Encoder[A] with Decoder[A]
 
+object Codec {
   implicit class EncodeOpOnA[A](a: A)(implicit C: Codec[A]) {
     def encode: Entity = C.encode(a)
   }

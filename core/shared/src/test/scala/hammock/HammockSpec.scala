@@ -9,8 +9,10 @@ class HammockSpec extends WordSpec with Matchers {
   val methods = Seq(Method.OPTIONS, Method.GET, Method.HEAD, Method.POST, Method.PUT, Method.DELETE, Method.TRACE)
 
   implicit val stringCodec = new Codec[String] {
-    def encode(s: String) = s
-    def decode(s: String) = Right(s)
+    def decode(a: hammock.Entity): Either[hammock.CodecException,String] = a match {
+      case Entity.StringEntity(str, _) => Right(str)
+    }
+    def encode(a: String): hammock.Entity = Entity.StringEntity(a)
   }
 
   /**
@@ -41,7 +43,7 @@ class HammockSpec extends WordSpec with Matchers {
         Hammock.request(method, uri, Map(), body) foldMap test { r =>
           r.req.uri shouldEqual Uri.fromString("http://pepegar.com").right.get
           r.req.headers shouldEqual Map()
-          r.req.body shouldEqual None
+          r.req.entity shouldEqual None
         }
       }
     }

@@ -71,7 +71,7 @@ class InterpreterSpec extends WordSpec with MockitoSugar with BeforeAndAfter {
 
       assert(result.status == Status.OK)
       assert(result.headers == Map())
-      assert(result.content == "content")
+      assert(result.entity.content == "content")
     }
 
   }

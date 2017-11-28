@@ -50,16 +50,17 @@ class Interpreter[F[_]](client: HttpClient) extends InterpTrans[F] {
     }
 
   private def getApacheRequest(f: HttpRequestF[HttpResponse])(implicit F: Sync[F]): F[HttpUriRequest] = f match {
-    case reqF @ (Get(_) | Options(_) | Head(_) | Delete(_) | Trace(_) | Post(_) | Put(_)) => for {
-      req <- F.pure(new HttpPost(reqF.req.uri.show))
-      _ <- F.delay(req.setHeaders(prepareHeaders(reqF.req.headers)))
-      _ <- reqF.req.entity match {
-        case Some(e) =>
-          mapEntity(e) map req.setEntity
-        case None =>
-          F.pure(())
-      }
-    } yield req
+    case reqF @ (Get(_) | Options(_) | Head(_) | Delete(_) | Trace(_) | Post(_) | Put(_)) =>
+      for {
+        req <- F.pure(new HttpPost(reqF.req.uri.show))
+        _   <- F.delay(req.setHeaders(prepareHeaders(reqF.req.headers)))
+        _ <- reqF.req.entity match {
+          case Some(e) =>
+            mapEntity(e) map req.setEntity
+          case None =>
+            F.pure(())
+        }
+      } yield req
   }
 
   private def mapEntity(entity: Entity)(implicit F: Sync[F]): F[HttpEntity] = entity match {
