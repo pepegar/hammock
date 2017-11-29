@@ -11,7 +11,7 @@ class CirceCodecSpec extends WordSpec with Matchers {
   import implicits._
 
   val dummyValue = Dummy(1, "patata")
-  val json       = """{"a":1,"b":"patata"}"""
+  val json       = Entity.StringEntity("""{"a":1,"b":"patata"}""")
 
   "Codec.encode" should {
     "return the string representation of a type" in {
@@ -25,7 +25,7 @@ class CirceCodecSpec extends WordSpec with Matchers {
     }
 
     "fail to parse an invalid value" in {
-      Codec[Dummy].decode("this is of course not valid") shouldBe a[Left[String, Dummy]]
+      Codec[Dummy].decode(Entity.StringEntity("this is of course not valid")) shouldBe a[Left[String, Dummy]]
     }
   }
 
