@@ -5,11 +5,13 @@ import _root_.akka.http.scaladsl.HttpExt
 import _root_.akka.http.scaladsl.client.RequestBuilding.RequestBuilder
 import _root_.akka.http.scaladsl.model.{
   HttpMethods,
+  ContentType => AkkaContentType,
   HttpRequest => AkkaRequest,
   HttpResponse => AkkaResponse,
   StatusCode => AkkaStatus,
   _
 }
+import _root_.akka.http.scaladsl.model.headers.RawHeader
 import _root_.akka.stream.ActorMaterializer
 import _root_.akka.util.ByteString
 import cats._
@@ -29,18 +31,12 @@ class AkkaInterpreter[F[_]: Async](
 
   def transK(implicit S: Sync[F]): HttpRequestF ~> Kleisli[F, HttpExt, ?] =
     λ[HttpRequestF ~> Kleisli[F, HttpExt, ?]] {
-      case req: Options => doReq(req)
-      case req: Get     => doReq(req)
-      case req: Head    => doReq(req)
-      case req: Post    => doReq(req)
-      case req: Put     => doReq(req)
-      case req: Delete  => doReq(req)
-      case req: Trace   => doReq(req)
+      case req @ (Options(_) | Get(_) | Head(_) | Post(_) | Put(_) | Delete(_) | Trace(_)) => doReq(req)
     }
 
   def doReq(req: HttpRequestF[HttpResponse]): Kleisli[F, HttpExt, HttpResponse] = Kleisli { http =>
     for {
-      akkaRequest <- transformRequest(req).pure[F]
+      akkaRequest <- transformRequest(req)
       responseFuture <- Sync[F].delay(
         http
           .singleRequest(akkaRequest)
@@ -49,34 +45,47 @@ class AkkaInterpreter[F[_]: Async](
     } yield responseF
   }
 
-  def transformRequest(reqF: HttpRequestF[HttpResponse]): AkkaRequest = {
-    val method = reqF.req.method match {
-      case Method.OPTIONS => HttpMethods.OPTIONS
-      case Method.GET     => HttpMethods.GET
-      case Method.HEAD    => HttpMethods.HEAD
-      case Method.POST    => HttpMethods.POST
-      case Method.PUT     => HttpMethods.PUT
-      case Method.DELETE  => HttpMethods.DELETE
-      case Method.TRACE   => HttpMethods.TRACE
-      case Method.CONNECT => HttpMethods.CONNECT
-    }
+  def transformRequest(reqF: HttpRequestF[HttpResponse]): F[AkkaRequest] =
+    for {
+      method      <- mapMethod(reqF)
+      akkaHeaders <- reqF.req.headers.map { case (k, v) => RawHeader(k, v) }.toList.pure[F]
+      req <- (reqF.req.entity match {
+        case Some(Entity.StringEntity(body, contentType)) =>
+          new RequestBuilder(method)(
+            Uri(reqF.req.uri.show),
+            HttpEntity.Strict(ContentTypes.`application/json`, ByteString.fromString(body)))
+        case None => new RequestBuilder(method)(Uri(reqF.req.uri.show))
+      }).withHeaders(akkaHeaders).pure[F]
+    } yield req
 
-    reqF.req.body match {
-      case Some(body) =>
-        new RequestBuilder(method)(
-          Uri(reqF.req.uri.show),
-          HttpEntity.Strict(ContentTypes.`application/json`, ByteString.fromString(body)))
-      case None => new RequestBuilder(method)(Uri(reqF.req.uri.show))
-    }
-  }
+  def mapMethod(reqF: HttpRequestF[HttpResponse]): F[HttpMethod] =
+    (reqF match {
+      case Options(_) => HttpMethods.OPTIONS
+      case Get(_)     => HttpMethods.GET
+      case Head(_)    => HttpMethods.HEAD
+      case Post(_)    => HttpMethods.POST
+      case Put(_)     => HttpMethods.PUT
+      case Delete(_)  => HttpMethods.DELETE
+      case Trace(_)   => HttpMethods.TRACE
+    }).pure[F]
+
+  def mapContentType(ct: ContentType)(implicit F: Sync[F]): F[AkkaContentType] =
+    for {
+      parsed <- AkkaContentType.parse(ct.name) match {
+        case Left(errors) =>
+          F.raiseError(new Exception(s"unable to parse content type ${ct.name}, $errors"))
+        case Right(contentType) =>
+          F.pure(contentType)
+      }
+    } yield parsed
 
   def transformResponse(akkaResp: AkkaResponse): Future[HttpResponse] = {
     val status  = mapStatus(akkaResp.status)
     val headers = akkaResp.headers.map(h => (h.name, h.value)).toMap
     akkaResp.entity.dataBytes
       .runFold(ByteString(""))(_ ++ _)
-      .map(_.utf8String)
-      .map(body => HttpResponse(status, headers, body))
+      .map(bs => Entity.StringEntity(bs.utf8String))
+      .map(entity => HttpResponse(status, headers, entity))
   }
 
   def mapStatus(st: AkkaStatus): Status = st match {
