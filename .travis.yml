@@ -1,7 +1,6 @@
 language: scala
 
 scala:
-- 2.11.11
 - 2.12.4
 
 jdk:
@@ -19,7 +18,7 @@ install:
 - gem install jekyll -v 3.2.1
 
 script:
-- sbt ++$TRAVIS_SCALA_VERSION clean coverage validateJVM coverageReport
+- sbt ++$TRAVIS_SCALA_VERSION clean coverage +coreJVM/test +akka/test +circeJVM/test coverageReport
 - sbt ++$TRAVIS_SCALA_VERSION clean validateJS
 - sbt validateDoc validateScalafmt
 
