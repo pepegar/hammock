@@ -50,17 +50,60 @@ class Interpreter[F[_]](client: HttpClient) extends InterpTrans[F] {
     }
 
   private def getApacheRequest(f: HttpRequestF[HttpResponse])(implicit F: Sync[F]): F[HttpUriRequest] = f match {
-    case reqF @ (Get(_) | Options(_) | Head(_) | Delete(_) | Trace(_) | Post(_) | Put(_)) =>
+    case Get(HttpRequest(uri, headers, _)) =>
+      F.delay {
+        val req = new HttpGet(uri.show)
+        req.setHeaders(prepareHeaders(headers))
+        req
+      }
+    case Options(HttpRequest(uri, headers, _)) =>
+      F.delay {
+        val req = new HttpOptions(uri.show)
+        req.setHeaders(prepareHeaders(headers))
+        req
+      }
+    case Head(HttpRequest(uri, headers, _)) =>
+      F.delay {
+        val req = new HttpHead(uri.show)
+        req.setHeaders(prepareHeaders(headers))
+        req
+      }
+    case Post(HttpRequest(uri, headers, entity)) =>
       for {
-        req <- F.pure(new HttpPost(reqF.req.uri.show))
-        _   <- F.delay(req.setHeaders(prepareHeaders(reqF.req.headers)))
-        _ <- reqF.req.entity match {
-          case Some(e) =>
-            mapEntity(e) map req.setEntity
-          case None =>
-            F.pure(())
+        req <- new HttpPost(uri.show).pure[F]
+        _   <- F.delay(req.setHeaders(prepareHeaders(headers)))
+        _ <- if (entity.isDefined) {
+          mapEntity(entity.get) >>= { apacheEntity =>
+            F.delay(req.setEntity(apacheEntity))
+          }
+        } else {
+          ().pure[F]
         }
       } yield req
+    case Put(HttpRequest(uri, headers, entity)) =>
+      for {
+        req <- new HttpPut(uri.show).pure[F]
+        _   <- F.delay(req.setHeaders(prepareHeaders(headers)))
+        _ <- if (entity.isDefined) {
+          mapEntity(entity.get) >>= { apacheEntity =>
+            F.delay(req.setEntity(apacheEntity))
+          }
+        } else {
+          ().pure[F]
+        }
+      } yield req
+    case Delete(HttpRequest(uri, headers, _)) =>
+      F.delay {
+        val req = new HttpDelete(uri.show)
+        req.setHeaders(prepareHeaders(headers))
+        req
+      }
+    case Trace(HttpRequest(uri, headers, _)) =>
+      F.delay {
+        val req = new HttpTrace(uri.show)
+        req.setHeaders(prepareHeaders(headers))
+        req
+      }
   }
 
   private def mapEntity(entity: Entity)(implicit F: Sync[F]): F[HttpEntity] = entity match {

@@ -35,13 +35,19 @@ class Interpreter[F[_]] extends InterpTrans[F] {
     reqF.req.headers foreach {
       case (k, v) => xhr.setRequestHeader(k, v)
     }
-    xhr.send(reqF.req.body.fold("")(identity))
+    val data = reqF.req match {
+      case HttpRequest(_, _, Some(Entity.StringEntity(data, contentType))) =>
+        data
+      case _ =>
+        ""
+    }
+    xhr.send(data)
 
     val status          = Status.get(xhr.status)
     val responseHeaders = parseHeaders(xhr.getAllResponseHeaders)
     val body            = xhr.responseText
 
-    HttpResponse(status, responseHeaders, body)
+    HttpResponse(status, responseHeaders, Entity.StringEntity(body))
   }
 
   private def parseHeaders(str: String): Map[String, String] =
