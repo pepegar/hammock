@@ -165,14 +165,7 @@ lazy val akka = project
   .settings(compilerPlugins)
   .settings(publishSettings)
   .settings(
-    libraryDependencies += {
-      CrossVersion.partialVersion(scalaVersion.value) match {
-        case Some((2, scalaMajor)) if scalaMajor >= 11 =>
-          "com.typesafe.akka" %% "akka-http" % Versions("akka-http")
-        case Some((2, scalaMajor)) if scalaMajor == 10 =>
-          "com.typesafe.akka" %% "akka-http-experimental" % "2.0.5"
-      }
-    }
+    libraryDependencies += "com.typesafe.akka" %% "akka-http" % Versions("akka-http")
   )
   .settings(libraryDependencies += "org.mockito" % "mockito-all" % "1.10.18" % "test")
   .dependsOn(coreJVM)
@@ -224,6 +217,7 @@ lazy val exampleJS = project
   .settings(jsDependencies += "org.webjars" % "jquery" % "2.1.3" / "2.1.3/jquery.js")
   .dependsOn(coreJS, circeJS)
 
+addCommandAlias("formatAll", ";sbt:scalafmt;test:scalafmt;compile:scalafmt")
 addCommandAlias("validateScalafmt", ";sbt:scalafmt::test;test:scalafmt::test;compile:scalafmt::test")
 addCommandAlias("validateDoc", ";docs/makeMicrosite;readme/tut")
 addCommandAlias("validateJVM", ";validateScalafmt;coreJVM/test;circeJVM/test;akka/test;validateDoc")
