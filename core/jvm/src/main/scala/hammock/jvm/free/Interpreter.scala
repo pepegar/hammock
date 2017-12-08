@@ -40,12 +40,7 @@ class Interpreter[F[_]](client: HttpClient) extends InterpTrans[F] {
   private def doReq(reqF: HttpRequestF[HttpResponse])(implicit S: Sync[F]): Kleisli[F, HttpClient, HttpResponse] =
     Kleisli { client =>
       Sync[F].delay {
-        val req = getApacheRequest(reqF)
-        reqF.headers.foreach {
-          case (k, v) =>
-            req.addHeader(k, v)
-        }
-
+        val req             = getApacheRequest(reqF)
         val resp            = client.execute(req)
         val entity          = resp.getEntity
         val body            = responseContentToString(entity.getContent())

@@ -63,13 +63,14 @@ class AkkaInterpreter[F[_]: Async](
       case Method.CONNECT => HttpMethods.CONNECT
     }
 
-    req.body match {
+    val res = req.body match {
       case Some(body) =>
         new RequestBuilder(method)(
           Uri(req.uri.show),
           HttpEntity.Strict(ContentTypes.`application/json`, ByteString.fromString(body)))
       case None => new RequestBuilder(method)(Uri(req.uri.show))
     }
+    res.withHeaders(req.headers.map(Function.tupled(headers.RawHeader.apply)).toSeq: _*)
   }
 
   def transformResponse(akkaResp: AkkaResponse): Future[HttpResponse] = {
