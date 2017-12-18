@@ -172,7 +172,7 @@ lazy val akka = project
 
 lazy val docs = project
   .in(file("docs"))
-  .dependsOn(coreJVM, circeJVM)
+  .dependsOn(coreJVM, circeJVM, akka)
   .settings(moduleName := "hammock-docs")
   .settings(buildSettings)
   .settings(compilerPlugins)

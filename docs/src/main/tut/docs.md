@@ -354,3 +354,29 @@ MyClass("hello dolly", 99).encode
 Also, if you use any other library for serialization, you can just
 implement the `Codec` typeclass with it and provide the implicit so
 Hammock can use it.
+
+# Akka-HTTP integration
+
+hammock supports using akka-http as an interpreter:
+
+```tut:book
+import _root_.akka.actor.ActorSystem
+import _root_.akka.http.scaladsl._
+import _root_.akka.stream.ActorMaterializer
+import cats.effect.IO
+import hammock._
+import hammock.akka.AkkaInterpreter
+import hammock.circe.implicits._
+import hammock.hi._
+
+import scala.concurrent.ExecutionContext
+
+
+implicit val system = ActorSystem("hammock-actor-system")
+implicit val mat = ActorMaterializer()
+implicit val ec = ExecutionContext.Implicits.global
+val httpExt: HttpExt = Http()
+implicit val interp = new AkkaInterpreter[IO](httpExt)
+
+val response = Hammock.getWithOpts(Uri.unsafeParse("https://api.fidesmo.com/apps"), Opts.empty).exec[IO].as[List[String]].unsafeRunSync
+```
