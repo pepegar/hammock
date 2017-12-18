@@ -29,7 +29,7 @@ class AkkaInterpreter[F[_]: Async](
 
   def trans(implicit S: Sync[F]): HttpRequestF ~> F = transK andThen λ[Kleisli[F, HttpExt, ?] ~> F](_.run(client))
 
-  def transK(implicit S: Sync[F]): HttpRequestF ~> Kleisli[F, HttpExt, ?] =
+  def transK: HttpRequestF ~> Kleisli[F, HttpExt, ?] =
     λ[HttpRequestF ~> Kleisli[F, HttpExt, ?]] {
       case req @ (Options(_) | Get(_) | Head(_) | Post(_) | Put(_) | Delete(_) | Trace(_)) => doReq(req)
     }
@@ -51,11 +51,12 @@ class AkkaInterpreter[F[_]: Async](
       akkaHeaders <- reqF.req.headers.map { case (k, v) => RawHeader(k, v) }.toList.pure[F]
       req <- (reqF.req.entity match {
         case Some(Entity.StringEntity(body, contentType)) =>
-          new RequestBuilder(method)(
-            Uri(reqF.req.uri.show),
-            HttpEntity.Strict(ContentTypes.`application/json`, ByteString.fromString(body)))
-        case None => new RequestBuilder(method)(Uri(reqF.req.uri.show))
-      }).withHeaders(akkaHeaders).pure[F]
+          mapContentType(contentType) >>= { ct =>
+            new RequestBuilder(method)(Uri(reqF.req.uri.show), HttpEntity.Strict(ct, ByteString.fromString(body)))
+              .pure[F]
+          }
+        case None => new RequestBuilder(method)(Uri(reqF.req.uri.show)).pure[F]
+      }).map(_.withHeaders(akkaHeaders))
     } yield req
 
   def mapMethod(reqF: HttpRequestF[HttpResponse]): F[HttpMethod] =
