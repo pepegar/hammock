@@ -37,7 +37,7 @@ class InterpreterSpec extends WordSpec with MockitoSugar with Matchers with Befo
 
   "akka http interpreter" should {
 
-    "create correct Akka request objects with body" in {
+    "create correct Akka request objects with a ByteArrayentity" in {
       val hammockReq =
         Post(
           HttpRequest(
@@ -47,6 +47,21 @@ class InterpreterSpec extends WordSpec with MockitoSugar with Matchers with Befo
 
       val akkaReq = AkkaRequest(method = HttpMethods.POST, uri = AkkaUri("http://localhost:8080"))
         .withEntity(HttpEntity.Strict(ContentTypes.`application/octet-stream`, ByteString(Array[Byte]())))
+
+      interp.transformRequest(hammockReq).unsafeRunSync shouldEqual akkaReq
+
+    }
+
+    "create correct Akka request objects with a StringEntity" in {
+      val hammockReq =
+        Post(
+          HttpRequest(
+            Uri(path = "http://localhost:8080"),
+            Map.empty[String, String],
+            Some(Entity.StringEntity("potato"))))
+
+      val akkaReq = AkkaRequest(method = HttpMethods.POST, uri = AkkaUri("http://localhost:8080"))
+        .withEntity(HttpEntity.Strict(ContentTypes.`application/json`, ByteString.fromString("potato")))
 
       interp.transformRequest(hammockReq).unsafeRunSync shouldEqual akkaReq
 
