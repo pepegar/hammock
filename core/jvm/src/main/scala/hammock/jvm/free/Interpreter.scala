@@ -111,6 +111,10 @@ class Interpreter[F[_]](client: HttpClient) extends InterpTrans[F] {
       mapContentType(contentType) map { parsedContentType =>
         new apache.StringEntity(body, parsedContentType)
       }
+    case Entity.ByteArrayEntity(body, contentType) =>
+      mapContentType(contentType) map { parsedContentType =>
+        new apache.ByteArrayEntity(body, parsedContentType)
+      }
   }
 
   private def mapContentType(contentType: ContentType)(implicit F: Sync[F]): F[apache.ContentType] =

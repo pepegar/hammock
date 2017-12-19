@@ -55,6 +55,11 @@ class AkkaInterpreter[F[_]: Async](
             new RequestBuilder(method)(Uri(reqF.req.uri.show), HttpEntity.Strict(ct, ByteString.fromString(body)))
               .pure[F]
           }
+        case Some(Entity.ByteArrayEntity(body, contentType)) =>
+          mapContentType(contentType) >>= { ct =>
+            new RequestBuilder(method)(Uri(reqF.req.uri.show), HttpEntity.Strict(ct, ByteString(body)))
+              .pure[F]
+          }
         case None => new RequestBuilder(method)(Uri(reqF.req.uri.show)).pure[F]
       }).map(_.withHeaders(akkaHeaders))
     } yield req
