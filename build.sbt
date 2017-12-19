@@ -84,7 +84,8 @@ val buildSettings = Seq(
     "-Yno-adapted-args",
     "-Ywarn-dead-code",
     "-Ywarn-value-discard"
-  )
+  ),
+  scalafmtOnCompile in ThisBuild := true
 )
 
 val commonDependencies = Seq(
