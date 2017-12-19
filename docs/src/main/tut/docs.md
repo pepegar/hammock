@@ -379,4 +379,5 @@ val httpExt: HttpExt = Http()
 implicit val interp = new AkkaInterpreter[IO](httpExt)
 
 val response = Hammock.getWithOpts(Uri.unsafeParse("https://api.fidesmo.com/apps"), Opts.empty).exec[IO].as[List[String]].unsafeRunSync
+system.shutdown()
 ```

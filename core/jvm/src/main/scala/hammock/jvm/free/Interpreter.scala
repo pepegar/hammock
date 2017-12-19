@@ -49,7 +49,7 @@ class Interpreter[F[_]](client: HttpClient) extends InterpTrans[F] {
       } yield HttpResponse(status, responseHeaders, new Entity.StringEntity(body))
     }
 
-  private def getApacheRequest(f: HttpRequestF[HttpResponse])(implicit F: Sync[F]): F[HttpUriRequest] = f match {
+  def getApacheRequest(f: HttpRequestF[HttpResponse])(implicit F: Sync[F]): F[HttpUriRequest] = f match {
     case Get(HttpRequest(uri, headers, _)) =>
       F.delay {
         val req = new HttpGet(uri.show)

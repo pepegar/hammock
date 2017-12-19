@@ -2,26 +2,25 @@ package hammock
 package jvm
 package free
 
-import hammock.free._
-import org.apache.http.ProtocolVersion
-import org.apache.http.client.HttpClient
-import org.apache.http.entity.StringEntity
-import org.apache.http.{HttpResponse => ApacheHttpResponse}
-import org.apache.http.message.{BasicHttpResponse, BasicStatusLine}
-import org.scalatest._
-import org.scalatest.mockito._
-import org.mockito.{Matchers => MM, _}
-import org.mockito.Mockito._
+import java.net.URI
+
 import cats._
-import cats.implicits._
 import cats.data.Kleisli
 import cats.effect._
+import hammock.free._
+import org.apache.http.client.HttpClient
+import org.apache.http.entity.StringEntity
+import org.apache.http.message.{BasicHeader, BasicHttpResponse, BasicStatusLine}
+import org.apache.http.{ProtocolVersion, HttpResponse => ApacheHttpResponse}
+import org.mockito.Mockito._
+import org.mockito.{Matchers => MM}
+import org.scalatest._
+import org.scalatest.mockito._
 
 class InterpreterSpec extends WordSpec with MockitoSugar with BeforeAndAfter {
   import HttpResponse._
-
-  import algebra._
   import MM._
+  import algebra._
 
   val client = mock[HttpClient]
   val interp = new Interpreter[IO](client)
@@ -55,7 +54,29 @@ class InterpreterSpec extends WordSpec with MockitoSugar with BeforeAndAfter {
 
           assert(Eq[HttpResponse].eqv(transkResult, transResult))
         }
+    }
 
+    "create a correct Apache's HTTP request from HttpRequestF" in {
+      val req = Get(
+        HttpRequest(
+          Uri.unsafeParse("http://localhost:8080"),
+          Map(
+            "header1" -> "value1",
+            "header2" -> "value2"
+          ),
+          None))
+
+      val apacheReq = interp.getApacheRequest(req).unsafeRunSync
+      assert(apacheReq.getURI() == new URI("http://localhost:8080"))
+      assert(apacheReq.getAllHeaders().length == 2)
+      assert(
+        apacheReq
+          .getHeaders("header1")(0)
+          .getValue == "value1")
+      assert(
+        apacheReq
+          .getHeaders("header2")(0)
+          .getValue == "value2")
     }
 
     "create a correct HttpResponse from Apache's HTTP response" in {
