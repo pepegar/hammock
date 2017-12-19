@@ -46,19 +46,22 @@ class CodecSpec extends FunSuite with Discipline with Matchers {
   import Codec._
 
   implicit val intCodec = new Codec[Int] {
-    def encode(t: Int) = t.toString
-    def decode(s: String): Either[CodecException, Int] =
-      Either
-        .catchOnly[NumberFormatException](s.toInt)
-        .left
-        .map(ex => CodecException.withMessageAndException(ex.getMessage, ex))
+    def encode(t: Int): Entity = Entity.StringEntity(t.toString)
+    def decode(s: Entity): Either[CodecException, Int] = s match {
+      case Entity.StringEntity(body, contentType) =>
+        Either
+          .catchOnly[NumberFormatException](body.toInt)
+          .left
+          .map(ex => CodecException.withMessageAndException(ex.getMessage, ex))
+      case _ => Left(CodecException.withMessage("only StringEntities accepted"))
+    }
   }
 
   checkAll("Codec[Int]", CodecTests[Int].codec)
 
   test("syntax should exist for types for which a Codec exist") {
-    1.encode shouldEqual "1"
-    "1".decode[Int] shouldEqual Right(1)
-    "potato".decode[Int].left.get.getMessage shouldEqual "For input string: \"potato\""
+    1.encode shouldEqual Entity.StringEntity("1")
+    Entity.StringEntity("1").decode[Int] shouldEqual Right(1)
+    Entity.StringEntity("potato").decode[Int].left.get.getMessage shouldEqual "For input string: \"potato\""
   }
 }

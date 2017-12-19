@@ -84,22 +84,24 @@ val buildSettings = Seq(
     "-Yno-adapted-args",
     "-Ywarn-dead-code",
     "-Ywarn-value-discard"
-  )
+  ),
+  scalafmtOnCompile in ThisBuild := true
 )
 
 val commonDependencies = Seq(
   libraryDependencies ++= Seq(
-    "org.typelevel"              %%% "cats-core"     % Versions("cats"),
-    "org.typelevel"              %%% "cats-free"     % Versions("cats"),
-    "org.typelevel"              %%% "cats-laws"     % Versions("cats"),
-    "org.typelevel"              %% "cats-effect"    % Versions("cats-effect"),
-    "com.github.mpilquist"       %%% "simulacrum"    % Versions("simulacrum"),
-    "com.github.julien-truffaut" %%% "monocle-core"  % Versions("monocle"),
-    "com.github.julien-truffaut" %%% "monocle-macro" % Versions("monocle"),
-    "org.tpolecat"               %%% "atto-core"     % Versions("atto"),
-    "org.scalatest"              %%% "scalatest"     % Versions("scalatest") % "test",
-    "org.scalacheck"             %%% "scalacheck"    % Versions("scalacheck") % "test",
-    "org.typelevel"              %%% "discipline"    % Versions("discipline") % "test"
+    "org.typelevel"              %%% "cats-core"      % Versions("cats"),
+    "org.typelevel"              %%% "cats-free"      % Versions("cats"),
+    "org.typelevel"              %%% "cats-laws"      % Versions("cats"),
+    "org.typelevel"              %%% "alleycats-core" % Versions("cats"),
+    "org.typelevel"              %% "cats-effect"     % Versions("cats-effect"),
+    "com.github.mpilquist"       %%% "simulacrum"     % Versions("simulacrum"),
+    "com.github.julien-truffaut" %%% "monocle-core"   % Versions("monocle"),
+    "com.github.julien-truffaut" %%% "monocle-macro"  % Versions("monocle"),
+    "org.tpolecat"               %%% "atto-core"      % Versions("atto"),
+    "org.scalatest"              %%% "scalatest"      % Versions("scalatest") % "test",
+    "org.scalacheck"             %%% "scalacheck"     % Versions("scalacheck") % "test",
+    "org.typelevel"              %%% "discipline"     % Versions("discipline") % "test"
   )
 )
 
@@ -164,21 +166,14 @@ lazy val akka = project
   .settings(compilerPlugins)
   .settings(publishSettings)
   .settings(
-    libraryDependencies += {
-      CrossVersion.partialVersion(scalaVersion.value) match {
-        case Some((2, scalaMajor)) if scalaMajor >= 11 =>
-          "com.typesafe.akka" %% "akka-http" % Versions("akka-http")
-        case Some((2, scalaMajor)) if scalaMajor == 10 =>
-          "com.typesafe.akka" %% "akka-http-experimental" % "2.0.5"
-      }
-    }
+    libraryDependencies += "com.typesafe.akka" %% "akka-http" % Versions("akka-http")
   )
   .settings(libraryDependencies += "org.mockito" % "mockito-all" % "1.10.18" % "test")
   .dependsOn(coreJVM)
 
 lazy val docs = project
   .in(file("docs"))
-  .dependsOn(coreJVM, circeJVM)
+  .dependsOn(coreJVM, circeJVM, akka)
   .settings(moduleName := "hammock-docs")
   .settings(buildSettings)
   .settings(compilerPlugins)
@@ -222,3 +217,10 @@ lazy val exampleJS = project
   .settings(libraryDependencies += "be.doeraene" %%% "scalajs-jquery" % "0.9.2")
   .settings(jsDependencies += "org.webjars" % "jquery" % "2.1.3" / "2.1.3/jquery.js")
   .dependsOn(coreJS, circeJS)
+
+addCommandAlias("formatAll", ";sbt:scalafmt;test:scalafmt;compile:scalafmt")
+addCommandAlias("validateScalafmt", ";sbt:scalafmt::test;test:scalafmt::test;compile:scalafmt::test")
+addCommandAlias("validateDoc", ";docs/tut;readme/tut")
+addCommandAlias("validateJVM", ";validateScalafmt;coreJVM/test;circeJVM/test;akka/test;validateDoc")
+addCommandAlias("validateJS", ";validateScalafmt;coreJS/test;circeJS/test")
+addCommandAlias("validate", ";clean;validateScalafmt;validateJS;validateJVM;validateDoc")

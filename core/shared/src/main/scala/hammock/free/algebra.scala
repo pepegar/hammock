@@ -3,70 +3,58 @@ package free
 
 import cats._
 import cats.free._
+import monocle.macros.Lenses
 
 object algebra {
 
-  sealed trait HttpRequestF[A] extends Product with Serializable {
-    def method: Method
-    def uri: Uri
-    def headers: Map[String, String]
-    def body: Option[String]
+  @Lenses case class HttpRequest(uri: Uri, headers: Map[String, String], entity: Option[Entity])
+
+  sealed trait HttpRequestF[A] {
+    def req: HttpRequest
   }
 
-  final case class Options(uri: Uri, headers: Map[String, String]) extends HttpRequestF[HttpResponse] {
-    def body   = None
-    def method = Method.OPTIONS
-  }
-  final case class Get(uri: Uri, headers: Map[String, String]) extends HttpRequestF[HttpResponse] {
-    def body   = None
-    def method = Method.GET
-  }
-  final case class Head(uri: Uri, headers: Map[String, String]) extends HttpRequestF[HttpResponse] {
-    def body   = None
-    def method = Method.HEAD
-  }
-  final case class Post(uri: Uri, headers: Map[String, String], body: Option[String])
-      extends HttpRequestF[HttpResponse] {
-    def method = Method.POST
-  }
-  final case class Put(uri: Uri, headers: Map[String, String], body: Option[String])
-      extends HttpRequestF[HttpResponse] {
-    def method = Method.PUT
-  }
-  final case class Delete(uri: Uri, headers: Map[String, String]) extends HttpRequestF[HttpResponse] {
-    def body   = None
-    def method = Method.DELETE
-  }
-  final case class Trace(uri: Uri, headers: Map[String, String]) extends HttpRequestF[HttpResponse] {
-    def body   = None
-    def method = Method.TRACE
-  }
+  final case class Options(req: HttpRequest) extends HttpRequestF[HttpResponse]
+  final case class Get(req: HttpRequest)     extends HttpRequestF[HttpResponse]
+  final case class Head(req: HttpRequest)    extends HttpRequestF[HttpResponse]
+  final case class Post(req: HttpRequest)    extends HttpRequestF[HttpResponse]
+  final case class Put(req: HttpRequest)     extends HttpRequestF[HttpResponse]
+  final case class Delete(req: HttpRequest)  extends HttpRequestF[HttpResponse]
+  final case class Trace(req: HttpRequest)   extends HttpRequestF[HttpResponse]
 
   type HttpRequestIO[A] = Free[HttpRequestF, A]
 
   object Ops {
     def options(uri: Uri, headers: Map[String, String]): HttpRequestIO[HttpResponse] =
-      Free.liftF(Options(uri, headers))
-    def get(uri: Uri, headers: Map[String, String]): HttpRequestIO[HttpResponse]  = Free.liftF(Get(uri, headers))
-    def head(uri: Uri, headers: Map[String, String]): HttpRequestIO[HttpResponse] = Free.liftF(Head(uri, headers))
-    def post(uri: Uri, headers: Map[String, String], body: Option[String]): HttpRequestIO[HttpResponse] =
-      Free.liftF(Post(uri, headers, body))
-    def put(uri: Uri, headers: Map[String, String], body: Option[String]): HttpRequestIO[HttpResponse] =
-      Free.liftF(Put(uri, headers, body))
-    def delete(uri: Uri, headers: Map[String, String]): HttpRequestIO[HttpResponse] = Free.liftF(Delete(uri, headers))
-    def trace(uri: Uri, headers: Map[String, String]): HttpRequestIO[HttpResponse]  = Free.liftF(Trace(uri, headers))
+      Free.liftF(Options(HttpRequest(uri, headers, None)))
+    def get(uri: Uri, headers: Map[String, String]): HttpRequestIO[HttpResponse] =
+      Free.liftF(Get(HttpRequest(uri, headers, None)))
+    def head(uri: Uri, headers: Map[String, String]): HttpRequestIO[HttpResponse] =
+      Free.liftF(Head(HttpRequest(uri, headers, None)))
+    def post(uri: Uri, headers: Map[String, String], entity: Option[Entity]): HttpRequestIO[HttpResponse] =
+      Free.liftF(Post(HttpRequest(uri, headers, entity)))
+    def put(uri: Uri, headers: Map[String, String], entity: Option[Entity]): HttpRequestIO[HttpResponse] =
+      Free.liftF(Put(HttpRequest(uri, headers, entity)))
+    def delete(uri: Uri, headers: Map[String, String]): HttpRequestIO[HttpResponse] =
+      Free.liftF(Delete(HttpRequest(uri, headers, None)))
+    def trace(uri: Uri, headers: Map[String, String]): HttpRequestIO[HttpResponse] =
+      Free.liftF(Trace(HttpRequest(uri, headers, None)))
   }
 
   class HttpRequestC[F[_]](implicit I: InjectK[HttpRequestF, F]) {
-    def options(uri: Uri, headers: Map[String, String]): Free[F, HttpResponse] = Free.inject(Options(uri, headers))
-    def get(uri: Uri, headers: Map[String, String]): Free[F, HttpResponse]     = Free.inject(Get(uri, headers))
-    def head(uri: Uri, headers: Map[String, String]): Free[F, HttpResponse]    = Free.inject(Head(uri, headers))
-    def post(uri: Uri, headers: Map[String, String], body: Option[String]): Free[F, HttpResponse] =
-      Free.inject(Post(uri, headers, body))
-    def put(uri: Uri, headers: Map[String, String], body: Option[String]): Free[F, HttpResponse] =
-      Free.inject(Put(uri, headers, body))
-    def delete(uri: Uri, headers: Map[String, String]): Free[F, HttpResponse] = Free.inject(Delete(uri, headers))
-    def trace(uri: Uri, headers: Map[String, String]): Free[F, HttpResponse]  = Free.inject(Trace(uri, headers))
+    def options(uri: Uri, headers: Map[String, String]): Free[F, HttpResponse] =
+      Free.inject(Options(HttpRequest(uri, headers, None)))
+    def get(uri: Uri, headers: Map[String, String]): Free[F, HttpResponse] =
+      Free.inject(Get(HttpRequest(uri, headers, None)))
+    def head(uri: Uri, headers: Map[String, String]): Free[F, HttpResponse] =
+      Free.inject(Head(HttpRequest(uri, headers, None)))
+    def post(uri: Uri, headers: Map[String, String], entity: Option[Entity]): Free[F, HttpResponse] =
+      Free.inject(Post(HttpRequest(uri, headers, entity)))
+    def put(uri: Uri, headers: Map[String, String], entity: Option[Entity]): Free[F, HttpResponse] =
+      Free.inject(Put(HttpRequest(uri, headers, entity)))
+    def delete(uri: Uri, headers: Map[String, String]): Free[F, HttpResponse] =
+      Free.inject(Delete(HttpRequest(uri, headers, None)))
+    def trace(uri: Uri, headers: Map[String, String]): Free[F, HttpResponse] =
+      Free.inject(Trace(HttpRequest(uri, headers, None)))
   }
 
   object HttpRequestC {

@@ -9,8 +9,10 @@ class HammockSpec extends WordSpec with Matchers {
   val methods = Seq(Method.OPTIONS, Method.GET, Method.HEAD, Method.POST, Method.PUT, Method.DELETE, Method.TRACE)
 
   implicit val stringCodec = new Codec[String] {
-    def encode(s: String) = s
-    def decode(s: String) = Right(s)
+    def decode(a: hammock.Entity): Either[hammock.CodecException,String] = a match {
+      case Entity.StringEntity(str, _) => Right(str)
+    }
+    def encode(a: String): hammock.Entity = Entity.StringEntity(a)
   }
 
   /**
@@ -31,17 +33,17 @@ class HammockSpec extends WordSpec with Matchers {
     methods.map { method =>
       s"create a valid $method request without a body" in {
         Hammock.request(method, uri, Map()) foldMap test { r =>
-          r.uri shouldEqual Uri.fromString("http://pepegar.com").right.get
-          r.headers shouldEqual Map()
+          r.req.uri shouldEqual Uri.fromString("http://pepegar.com").right.get
+          r.req.headers shouldEqual Map()
         }
       }
 
       s"create a valid $method request with a body" in {
         val body = None
         Hammock.request(method, uri, Map(), body) foldMap test { r =>
-          r.uri shouldEqual Uri.fromString("http://pepegar.com").right.get
-          r.headers shouldEqual Map()
-          r.body shouldEqual None
+          r.req.uri shouldEqual Uri.fromString("http://pepegar.com").right.get
+          r.req.headers shouldEqual Map()
+          r.req.entity shouldEqual None
         }
       }
     }
@@ -52,8 +54,8 @@ class HammockSpec extends WordSpec with Matchers {
       Uri.fromString("http://pepegar.com") match {
         case Right(uri) =>
           Hammock.getWithOpts(uri, opts) foldMap test { r =>
-            r.uri shouldEqual Uri.fromString("http://pepegar.com").right.get
-            r.headers shouldEqual Map("header" -> "3", "Set-Cookie" -> "thisisacookie=thisisthevalue")
+            r.req.uri shouldEqual Uri.fromString("http://pepegar.com").right.get
+            r.req.headers shouldEqual Map("header" -> "3", "Set-Cookie" -> "thisisacookie=thisisthevalue")
           }
         case Left(err) => fail(s"failed with $err")
       }

@@ -1,84 +1,92 @@
 package hammock
 package akka
 
-import _root_.akka.http
-import _root_.akka.actor.ActorSystem
-import _root_.akka.http.scaladsl.{Http, HttpExt}
+import _root_.akka.http.scaladsl.HttpExt
+import _root_.akka.http.scaladsl.client.RequestBuilding.RequestBuilder
 import _root_.akka.http.scaladsl.model.{
-  HttpResponse => AkkaResponse,
+  HttpMethods,
+  ContentType => AkkaContentType,
   HttpRequest => AkkaRequest,
+  HttpResponse => AkkaResponse,
   StatusCode => AkkaStatus,
   _
 }
+import _root_.akka.http.scaladsl.model.headers.RawHeader
 import _root_.akka.stream.ActorMaterializer
-import _root_.akka.http.scaladsl.model.HttpMethods
-import _root_.akka.http.scaladsl.client.RequestBuilding.RequestBuilder
 import _root_.akka.util.ByteString
-import scala.concurrent.{ExecutionContext, Future}
-
-import cats.{~>, Eval}
-import cats.syntax.show._
+import cats._
 import cats.data.Kleisli
 import cats.effect.{Async, IO, Sync}
-
+import cats.implicits._
 import hammock.free._
 import hammock.free.algebra._
 
+import scala.concurrent.{ExecutionContext, Future}
+
 class AkkaInterpreter[F[_]: Async](
-    client: HttpExt)(implicit system: ActorSystem, materializer: ActorMaterializer, executionContext: ExecutionContext)
+    client: HttpExt)(implicit materializer: ActorMaterializer, executionContext: ExecutionContext)
     extends InterpTrans[F] {
 
   def trans(implicit S: Sync[F]): HttpRequestF ~> F = transK andThen λ[Kleisli[F, HttpExt, ?] ~> F](_.run(client))
 
-  def transK(implicit S: Sync[F]): HttpRequestF ~> Kleisli[F, HttpExt, ?] =
-    λ[HttpRequestF ~> Kleisli[F, HttpExt, ?]]({
-      case req @ Options(uri, headers)    => doReq(req)
-      case req @ Get(uri, headers)        => doReq(req)
-      case req @ Head(uri, headers)       => doReq(req)
-      case req @ Post(uri, headers, body) => doReq(req)
-      case req @ Put(uri, headers, body)  => doReq(req)
-      case req @ Delete(uri, headers)     => doReq(req)
-      case req @ Trace(uri, headers)      => doReq(req)
-    })
+  def transK: HttpRequestF ~> Kleisli[F, HttpExt, ?] =
+    λ[HttpRequestF ~> Kleisli[F, HttpExt, ?]] {
+      case req @ (Options(_) | Get(_) | Head(_) | Post(_) | Put(_) | Delete(_) | Trace(_)) => doReq(req)
+    }
 
   def doReq(req: HttpRequestF[HttpResponse]): Kleisli[F, HttpExt, HttpResponse] = Kleisli { http =>
-    val akkaRequest = transformRequest(req)
-
-    val responseFuture = http
-      .singleRequest(akkaRequest)
-      .flatMap(transformResponse)
-
-    IO.fromFuture(Eval.later(responseFuture)).to[F]
+    for {
+      akkaRequest <- transformRequest(req)
+      responseFuture <- Sync[F].delay(
+        http
+          .singleRequest(akkaRequest)
+          .flatMap(transformResponse))
+      responseF <- IO.fromFuture(Eval.later(responseFuture)).to[F]
+    } yield responseF
   }
 
-  def transformRequest(req: HttpRequestF[HttpResponse]): AkkaRequest = {
-    val method = req.method match {
-      case Method.OPTIONS => HttpMethods.OPTIONS
-      case Method.GET     => HttpMethods.GET
-      case Method.HEAD    => HttpMethods.HEAD
-      case Method.POST    => HttpMethods.POST
-      case Method.PUT     => HttpMethods.PUT
-      case Method.DELETE  => HttpMethods.DELETE
-      case Method.TRACE   => HttpMethods.TRACE
-      case Method.CONNECT => HttpMethods.CONNECT
-    }
+  def transformRequest(reqF: HttpRequestF[HttpResponse]): F[AkkaRequest] =
+    for {
+      method      <- mapMethod(reqF)
+      akkaHeaders <- reqF.req.headers.map { case (k, v) => RawHeader(k, v) }.toList.pure[F]
+      req <- (reqF.req.entity match {
+        case Some(Entity.StringEntity(body, contentType)) =>
+          mapContentType(contentType) >>= { ct =>
+            new RequestBuilder(method)(Uri(reqF.req.uri.show), HttpEntity.Strict(ct, ByteString.fromString(body)))
+              .pure[F]
+          }
+        case None => new RequestBuilder(method)(Uri(reqF.req.uri.show)).pure[F]
+      }).map(_.withHeaders(akkaHeaders))
+    } yield req
 
-    req.body match {
-      case Some(body) =>
-        new RequestBuilder(method)(
-          Uri(req.uri.show),
-          HttpEntity.Strict(ContentTypes.`application/json`, ByteString.fromString(body)))
-      case None => new RequestBuilder(method)(Uri(req.uri.show))
-    }
-  }
+  def mapMethod(reqF: HttpRequestF[HttpResponse]): F[HttpMethod] =
+    (reqF match {
+      case Options(_) => HttpMethods.OPTIONS
+      case Get(_)     => HttpMethods.GET
+      case Head(_)    => HttpMethods.HEAD
+      case Post(_)    => HttpMethods.POST
+      case Put(_)     => HttpMethods.PUT
+      case Delete(_)  => HttpMethods.DELETE
+      case Trace(_)   => HttpMethods.TRACE
+    }).pure[F]
+
+  def mapContentType(ct: ContentType)(implicit F: Sync[F]): F[AkkaContentType] =
+    for {
+      parsed <- AkkaContentType.parse(ct.name) match {
+        case Left(errors) =>
+          F.raiseError(new Exception(s"unable to parse content type ${ct.name}, $errors"))
+        case Right(contentType) =>
+          F.pure(contentType)
+      }
+    } yield parsed
 
   def transformResponse(akkaResp: AkkaResponse): Future[HttpResponse] = {
     val status  = mapStatus(akkaResp.status)
     val headers = akkaResp.headers.map(h => (h.name, h.value)).toMap
     akkaResp.entity.dataBytes
       .runFold(ByteString(""))(_ ++ _)
-      .map(_.utf8String)
-      .map(body => HttpResponse(status, headers, body))
+      .map(bs => Entity.StringEntity(bs.utf8String))
+      .map(entity => HttpResponse(status, headers, entity))
   }
 
   def mapStatus(st: AkkaStatus): Status = st match {

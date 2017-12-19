@@ -181,7 +181,7 @@ import cats.effect.IO
 
 implicit val interp = Interpreter[IO]
 
-val opts = (header("user" -> "pepegar") &> cookie(Cookie("track", "a lot")))(Opts.default)
+val opts = (header("user" -> "pepegar") &> cookie(Cookie("track", "a lot")))(Opts.empty)
 
 val response = Hammock.getWithOpts(Uri.unsafeParse("http://httpbin.org/get"), opts).exec[IO]
 ```
@@ -237,7 +237,7 @@ in [`Monocle`](https://github.com/julientruffaut/monocle):
 import hammock.hi._, hammock.hi.dsl._ , monocle._, monocle.function.all._
 
 // imagine that we have the following Opts value
-val opts = (auth(Auth.BasicAuth("pepe", "password")) &> headers(Map("X-Correlation-Id" -> "234")) &> cookies(List(Cookie("a", "b"))))(Opts.default)
+val opts = (auth(Auth.BasicAuth("pepe", "password")) &> headers(Map("X-Correlation-Id" -> "234")) &> cookies(List(Cookie("a", "b"))))(Opts.empty)
 
 // Since optics compose nicely, we can focus on
 // the first value of the first cookie found in the
@@ -338,19 +338,46 @@ import io.circe.generic.auto._
 
 case class MyClass(stringField: String, intField: Int)
 
-Codec[MyClass].decode("""{"stringField": "This is Hammock!", "intField": 33}""")
-Codec[MyClass].decode("this is not a valid json")
+Codec[MyClass].decode(Entity.StringEntity("""{"stringField": "This is Hammock!", "intField": 33}"""))
+Codec[MyClass].decode(Entity.StringEntity("this is not a valid json"))
 Codec[MyClass].encode(MyClass("hello dolly", 99))
 
 // Also, you can use Codec's syntax as follows:
 
 import Codec._
 
-"""{"stringField": "This is Hammock!", "intField": 33}""".decode[MyClass]
-"this is not a valid json".decode[MyClass]
+Entity.StringEntity("""{"stringField": "This is Hammock!", "intField": 33}""").decode[MyClass]
+Entity.StringEntity("this is not a valid json").decode[MyClass]
 MyClass("hello dolly", 99).encode
 ```
 
 Also, if you use any other library for serialization, you can just
 implement the `Codec` typeclass with it and provide the implicit so
 Hammock can use it.
+
+# Akka-HTTP integration
+
+hammock supports using akka-http as an interpreter:
+
+```tut:book
+import _root_.akka.actor.ActorSystem
+import _root_.akka.http.scaladsl._
+import _root_.akka.stream.ActorMaterializer
+import cats.effect.IO
+import hammock._
+import hammock.akka.AkkaInterpreter
+import hammock.circe.implicits._
+import hammock.hi._
+
+import scala.concurrent.ExecutionContext
+
+
+implicit val system = ActorSystem("hammock-actor-system")
+implicit val mat = ActorMaterializer()
+implicit val ec = ExecutionContext.Implicits.global
+val httpExt: HttpExt = Http()
+implicit val interp = new AkkaInterpreter[IO](httpExt)
+
+val response = Hammock.getWithOpts(Uri.unsafeParse("https://api.fidesmo.com/apps"), Opts.empty).exec[IO].as[List[String]].unsafeRunSync
+system.shutdown()
+```

@@ -15,7 +15,7 @@ package object hammock {
   implicit class HttpResponseSyncAs[F[_]: Sync](fa: F[HttpResponse]) {
     def as[T: Codec]: F[T] = fa >>= { f =>
       Sync[F].delay {
-        Codec[T].decode(f.content) match {
+        Codec[T].decode(f.entity) match {
           case Right(x) => x
           case Left(ex) => throw ex
         }
