@@ -1,9 +1,17 @@
 package hammock
 package akka
 
+import _root_.akka.util.ByteString
 import _root_.akka.actor.ActorSystem
 import _root_.akka.http.scaladsl.HttpExt
-import _root_.akka.http.scaladsl.model.{HttpRequest => AkkaRequest, HttpResponse => AkkaResponse, Uri => AkkaUri}
+import _root_.akka.http.scaladsl.model.{
+  HttpRequest => AkkaRequest,
+  HttpResponse => AkkaResponse,
+  Uri => AkkaUri,
+  HttpEntity,
+  ContentTypes,
+  HttpMethods
+}
 import _root_.akka.stream.ActorMaterializer
 import _root_.akka.http.scaladsl.model.headers.RawHeader
 import cats.effect.IO
@@ -29,20 +37,47 @@ class InterpreterSpec extends WordSpec with MockitoSugar with Matchers with Befo
 
   "akka http interpreter" should {
 
-    "create a correct Akka HTTP request from Hammock's" in {
-      val hammockReq = Get(
+    "create correct Akka request objects with body" in {
+      val hammockReq =
+        Post(
+          HttpRequest(
+            Uri(path = "http://localhost:8080"),
+            Map.empty[String, String],
+            Some(Entity.ByteArrayEntity(Array[Byte]()))))
+
+      val akkaReq = AkkaRequest(method = HttpMethods.POST, uri = AkkaUri("http://localhost:8080"))
+        .withEntity(HttpEntity.Strict(ContentTypes.`application/octet-stream`, ByteString(Array[Byte]())))
+
+      interp.transformRequest(hammockReq).unsafeRunSync shouldEqual akkaReq
+
+    }
+
+    "create correct Akka request objects without body" in {
+      val hammockReq = Post(HttpRequest(Uri(path = "http://localhost:8080"), Map.empty[String, String], None))
+
+      val akkaReq = AkkaRequest(method = HttpMethods.POST, uri = AkkaUri("http://localhost:8080"))
+
+      interp.transformRequest(hammockReq).unsafeRunSync shouldEqual akkaReq
+
+    }
+
+    "create correct Akka HTTP request from Hammock's" in {
+      val hammockReq = Post(
         HttpRequest(
           Uri(path = "http://localhost:8080"),
           Map(
             "header1" -> "value1",
             "header2" -> "value2"
           ),
-          None))
-      val akkaReq = AkkaRequest(uri = AkkaUri("http://localhost:8080")).withHeaders(
-        List(
-          RawHeader("header1", "value1"),
-          RawHeader("header2", "value2")
-        ))
+          Some(Entity.ByteArrayEntity(Array[Byte]()))))
+
+      val akkaReq = AkkaRequest(method = HttpMethods.POST, uri = AkkaUri("http://localhost:8080"))
+        .withHeaders(
+          List(
+            RawHeader("header1", "value1"),
+            RawHeader("header2", "value2")
+          ))
+        .withEntity(HttpEntity.Strict(ContentTypes.`application/octet-stream`, ByteString(Array[Byte]())))
 
       interp.transformRequest(hammockReq).unsafeRunSync shouldEqual akkaReq
     }
