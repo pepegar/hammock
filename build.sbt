@@ -14,7 +14,8 @@ val Versions = Map(
   "discipline"     -> "0.7.3",
   "macro-paradise" -> "2.1.0",
   "kind-projector" -> "0.9.4",
-  "akka-http"      -> "10.0.9"
+  "akka-http"      -> "10.0.9",
+  "ahc"            -> "2.1.0-RC2"
 )
 
 val noPublishSettings = Seq(
@@ -116,8 +117,8 @@ lazy val hammock = project
   .in(file("."))
   .settings(buildSettings)
   .settings(noPublishSettings)
-  .dependsOn(coreJVM, coreJS, circeJVM, circeJS, akka)
-  .aggregate(coreJVM, coreJS, circeJVM, circeJS, akka)
+  .dependsOn(coreJVM, coreJS, circeJVM, circeJS, akka, asynchttpclient)
+  .aggregate(coreJVM, coreJS, circeJVM, circeJS, akka, asynchttpclient)
   .enablePlugins(ScalaUnidocPlugin)
 
 lazy val core = crossProject(JSPlatform, JVMPlatform)
@@ -167,6 +168,19 @@ lazy val akka = project
   .settings(publishSettings)
   .settings(
     libraryDependencies += "com.typesafe.akka" %% "akka-http" % Versions("akka-http")
+  )
+  .settings(libraryDependencies += "org.mockito" % "mockito-all" % "1.10.18" % "test")
+  .dependsOn(coreJVM)
+
+lazy val asynchttpclient = project
+  .in(file("hammock-asynchttpclient"))
+  .settings(moduleName := "hammock-asynchttpclient")
+  .settings(buildSettings)
+  .settings(commonDependencies)
+  .settings(compilerPlugins)
+  .settings(publishSettings)
+  .settings(
+    libraryDependencies += "org.asynchttpclient" % "async-http-client" % Versions("ahc")
   )
   .settings(libraryDependencies += "org.mockito" % "mockito-all" % "1.10.18" % "test")
   .dependsOn(coreJVM)

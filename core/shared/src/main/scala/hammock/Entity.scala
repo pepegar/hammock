@@ -1,5 +1,8 @@
 package hammock
 
+import cats._
+import monocle._
+
 sealed trait Entity {
   type Content
 
@@ -9,6 +12,14 @@ sealed trait Entity {
   def chunked: Boolean
   def repeatable: Boolean
   def streaming: Boolean
+
+  def cata[X](
+    onStringEntity: Entity.StringEntity => X,
+    onByteArrayEntity: Entity.ByteArrayEntity => X
+  ): X = this match {
+    case e: Entity.StringEntity => onStringEntity(e)
+    case e: Entity.ByteArrayEntity => onByteArrayEntity(e)
+  }
 }
 
 object Entity {
@@ -29,4 +40,12 @@ object Entity {
     def repeatable: Boolean = true
     def streaming: Boolean = false
   }
+
+  implicit val eq: Eq[Entity] = Eq.fromUniversalEquals
+
+  val string: Prism[Entity, String] =
+    Prism.partial[Entity, String]{case StringEntity(body, _) => body}(StringEntity(_, ContentType.`text/plain`))
+
+  val byteArray: Prism[Entity, Array[Byte]] =
+    Prism.partial[Entity, Array[Byte]]{case ByteArrayEntity(body, _) => body}(ByteArrayEntity(_, ContentType.`application/octet-stream`))
 }
