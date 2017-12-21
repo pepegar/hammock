@@ -1,7 +1,6 @@
 package hammock
 
 sealed trait Entity {
-
   type Content
 
   def contentType: ContentType
@@ -20,5 +19,14 @@ object Entity {
     def chunked = false
     def repeatable = true
     def streaming = false
+  }
+
+  case class ByteArrayEntity(body: Array[Byte], contentType: ContentType = ContentType.`application/octet-stream`) extends Entity {
+    type Content = Array[Byte]
+    def chunked: Boolean = false
+    def content: Array[Byte] = body
+    def contentLength: Long = body.length
+    def repeatable: Boolean = true
+    def streaming: Boolean = false
   }
 }
