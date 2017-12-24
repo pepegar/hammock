@@ -43,7 +43,7 @@ object CodecTests {
 }
 
 class CodecSpec extends FunSuite with Discipline with Matchers {
-  import Codec._
+  import Encoder.ops._
 
   implicit val intCodec = new Codec[Int] {
     def encode(t: Int): Entity = Entity.StringEntity(t.toString)
@@ -61,7 +61,5 @@ class CodecSpec extends FunSuite with Discipline with Matchers {
 
   test("syntax should exist for types for which a Codec exist") {
     1.encode shouldEqual Entity.StringEntity("1")
-    Entity.StringEntity("1").decode[Int] shouldEqual Right(1)
-    Entity.StringEntity("potato").decode[Int].left.get.getMessage shouldEqual "For input string: \"potato\""
   }
 }

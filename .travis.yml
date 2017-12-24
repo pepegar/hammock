@@ -15,6 +15,7 @@ script:
 - sbt ++$TRAVIS_SCALA_VERSION clean coverage +coreJVM/test +akka/test +circeJVM/test coverageReport
 - sbt ++$TRAVIS_SCALA_VERSION clean validateJS
 - sbt validateDoc validateScalafmt
+- sbt example/compile exampleJS/compile
 
 after_success:
 - bash <(curl -s https://codecov.io/bash)

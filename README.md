@@ -50,24 +50,20 @@ libraryDependencies += "com.pepegar" %%% "hammock-core" % "0.7.1"
 ## How does Hammock look in action?
 
 ```scala
-import cats._
-import cats.implicits._
 import cats.effect.IO
-import io.circe._
 import io.circe.generic.auto._
 import hammock._
-import hammock.Uri._
+import hammock.marshalling._
 import hammock.jvm.free.Interpreter
 import hammock.circe.implicits._
-
 
 object HttpClient {
   implicit val interpreter = Interpreter[IO]
 
   val response = Hammock
     .request(Method.GET, Uri.unsafeParse("https://api.fidesmo.com/apps"), Map()) // In the `request` method, you describe your HTTP request
-    .exec[IO]
     .as[List[String]]
+    .exec[IO]
 }
 ```
 
