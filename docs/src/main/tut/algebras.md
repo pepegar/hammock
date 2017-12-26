@@ -16,8 +16,10 @@ interpreted with an `InterpTrans`.
 
 ## MarshallF algebra
 
-Our marshalling algebra only has one operation, `unmarshall`, that
-transforms an `Entity` into an `A` for which a `Decoder` exist.
+Our
+[marshalling algebra](http://pepegar.com/hammock/docs/marshalling.html) only
+has one operation, `unmarshall`, that transforms an `Entity` into an
+`A` for which a `Decoder` exist.
 
 Also, the `marshalling` package provides a natural transformation
 `MarshalF ~> F`, for arbitrary `F[_]` for which there exist an
