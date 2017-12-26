@@ -1,5 +1,7 @@
 package hammock
 
+import cats._
+
 trait ContentType {
   def name: String
 }
@@ -12,5 +14,10 @@ object ContentType {
 
   def fromName(givenName: String): ContentType = new ContentType {
     def name: String = givenName
+  }
+
+  implicit val eq = new Eq[ContentType] {
+    def eqv(x: ContentType, y: ContentType): Boolean =
+      x.name == y.name
   }
 }
