@@ -1,25 +1,51 @@
 package hammock
 package asynchttpclient
 
-import cats._
 import cats.implicits._
 import cats.effect._
-import cats.free.Free
-import org.scalatest._
 import org.scalatest._
 import org.asynchttpclient._
-import org.asynchttpclient.netty._
 import io.netty.handler.codec.http.{DefaultHttpHeaders, HttpHeaders}
 import io.netty.handler.codec.http.cookie.Cookie
-import java.lang.Class
-import java.lang.reflect.Field
 import hammock.free.algebra._
+import scala.collection.JavaConverters._
 
 class AsyncHttpClientInterpreterTest extends WordSpec with Matchers {
 
   val interpreter = new AsyncHttpClientInterpreter[IO]
 
   "asynchttpclient" should {
+
+    "map requests correctly" in {
+      val hreq1 = Get(HttpRequest(Uri.unsafeParse("http://google.com"), Map.empty[String, String], None))
+      val req1  = interpreter.mapRequest(hreq1).unsafeRunSync.build()
+
+      val hreq2 = Post(HttpRequest(Uri.unsafeParse("http://google.com"), Map("header1" -> "value1"), None))
+      val req2  = interpreter.mapRequest(hreq2).unsafeRunSync.build()
+
+      val hreq3 = Put(
+        HttpRequest(
+          Uri.unsafeParse("http://google.com"),
+          Map("header1" -> "value1", "header2" -> "value2"),
+          Some(Entity.StringEntity("the body"))))
+      val req3 = interpreter.mapRequest(hreq3).unsafeRunSync.build()
+
+      req1.getUrl shouldEqual hreq1.req.uri.show
+      req1.getMethod shouldEqual "GET"
+      req1.getHeaders shouldBe empty
+
+      req2.getUrl shouldEqual hreq2.req.uri.show
+      req2.getMethod shouldEqual "POST"
+      req2.getHeaders.asScala.size shouldEqual hreq2.req.headers.size
+      req2.getHeaders.asScala.find(_.getKey == "header1").map(_.getValue) shouldEqual Some("value1")
+
+      req3.getUrl shouldEqual hreq3.req.uri.show
+      req3.getMethod shouldEqual "PUT"
+      req3.getHeaders.asScala.size shouldEqual hreq3.req.headers.size
+      req3.getHeaders.asScala.find(_.getKey == "header1").map(_.getValue) shouldEqual Some("value1")
+      req3.getHeaders.asScala.find(_.getKey == "header2").map(_.getValue) shouldEqual Some("value2")
+      req3.getStringData shouldEqual "the body"
+    }
 
     "map responses correctly" in {
 
