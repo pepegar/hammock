@@ -1,5 +1,7 @@
 ---
 layout: docs
+title: Algebras
+position: 3
 ---
 
 # Algebras
@@ -141,7 +143,9 @@ object App {
   import IOEff._
   import Log._
   import cats._
+  import cats.implicits._
   import cats.effect.IO
+  import hammock._
   import hammock.free.algebra._
   import hammock.marshalling._
   import hammock.jvm.free._
@@ -149,6 +153,10 @@ object App {
   type Eff1[A] = EitherK[LogF, IOF, A]
   type Eff2[A] = EitherK[HttpRequestF, Eff1, A]
   type Eff[A] = EitherK[MarshallF, Eff2, A]
+
+  implicit val dummyDecoder: Decoder[String] = new Decoder[String] {
+    def decode(a: Entity) = a.toString.asRight
+  }
 
   def program(implicit
     Log: LogC[Eff],
@@ -160,7 +168,7 @@ object App {
     id = "4" // for the sake of docs, lets hardcode this... It should be `id <- IO.read`
     _ <- Log.info(s"id was $id")
     response <- Hammock.get(Uri.unsafeParse(s"https://jsonplaceholder.typicode.com/users?id=${id.toString}"), Map())
-	parsed <- Marshall.unmarshal[String](response)
+	parsed <- Marshall.unmarshall[String](response.entity)
   } yield response
 
   def interp1[F[_]: Sync]: Eff1 ~> F = Log.interp or IOEff.interp

@@ -1,5 +1,7 @@
 ---
 layout: docs
+title: DSL
+position: 5
 ---
 
 # High level DSL

@@ -1,5 +1,7 @@
 ---
 layout: docs
+title: Interpreters
+position: 2
 ---
 
 # Interpreters
@@ -41,7 +43,7 @@ import hammock._
 import hammock.hi._
 import hammock.hi.dsl._
 
-val request = Hammock.getWithOpts(
+val httpReq = Hammock.getWithOpts(
   Uri.unsafeParse("http://httpbin.org/get"),
   (header("header1", "value1"))(Opts.empty))
 ```
@@ -56,7 +58,7 @@ For using it use the `Interpreter` included in `hammock-core`:
 import cats.effect.IO
 import hammock.jvm.free.Interpreter
 
-request foldMap Interpreter[IO].trans unsafeRunSync
+httpReq foldMap Interpreter[IO].trans unsafeRunSync
 ```
 
 ## XmlHttpRequest
@@ -77,7 +79,7 @@ implicit val ec = system.dispatcher
 val httpExt: HttpExt = Http()
 implicit val interp = new AkkaInterpreter[IO](httpExt)
 
-request foldMap Interpreter[IO].trans unsafeRunSync
+httpReq foldMap Interpreter[IO].trans unsafeRunSync
 
 system.shutdown()
 ```
@@ -89,9 +91,13 @@ import org.asynchttpclient._
 import cats.effect.IO
 import hammock.asynchttpclient.AsyncHttpClientInterpreter
 
-implicit val interp = new AsyncHttpClientInterpreter[IO]()
+val client: AsyncHttpClient = new DefaultAsyncHttpClient()
 
-request foldmap interp.trans unsafeRunSync
+implicit val interp = new AsyncHttpClientInterpreter[IO](client)
+
+httpReq foldMap interp.trans unsafeRunSync
+
+client.close()
 ```
 
 

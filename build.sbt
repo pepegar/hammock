@@ -1,5 +1,5 @@
+import microsites._
 import ReleaseTransformations._
-
 import sbtcrossproject.{crossProject, CrossType}
 
 val Versions = Map(
@@ -185,9 +185,11 @@ lazy val asynchttpclient = project
   .settings(libraryDependencies += "org.mockito" % "mockito-all" % "1.10.18" % "test")
   .dependsOn(coreJVM)
 
+lazy val docsMappingsAPIDir = settingKey[String]("Name of subdirectory in site target directory for api docs")
+
 lazy val docs = project
   .in(file("docs"))
-  .dependsOn(coreJVM, circeJVM, akka)
+  .dependsOn(coreJVM, circeJVM, akka, asynchttpclient)
   .settings(moduleName := "hammock-docs")
   .settings(buildSettings)
   .settings(compilerPlugins)
@@ -196,15 +198,27 @@ lazy val docs = project
     micrositeName := "Hammock",
     micrositeDescription := "Purely functional HTTP client",
     micrositeBaseUrl := "hammock",
-    micrositeDocumentationUrl := "/hammock/docs.html",
+    micrositeDocumentationUrl := "api/hammock/index.html",
     micrositeGithubOwner := "pepegar",
     micrositeGithubRepo := "hammock",
     micrositeHighlightTheme := "tomorrow",
     micrositePushSiteWith := GitHub4s,
     micrositeGithubToken := sys.env.get("GITHUB_TOKEN"),
+    micrositeExtraMdFiles := Map(
+      file("README.md") -> ExtraMdFileConfig(
+        "index.md",
+        "home",
+        Map("title" -> "Home", "section" -> "home", "position" -> "0")
+      )
+    ),
+    autoAPIMappings := true,
+    unidocProjectFilter in (ScalaUnidoc, unidoc) := inProjects(coreJVM, circeJVM, akka, asynchttpclient),
+    docsMappingsAPIDir := "api",
+    addMappingsToSiteDir(mappings in (ScalaUnidoc, packageDoc), docsMappingsAPIDir),
     scalacOptions ~= (_ filterNot Set("-Ywarn-unused-import", "-Xlint").contains)
   )
   .enablePlugins(MicrositesPlugin)
+  .enablePlugins(ScalaUnidocPlugin)
 
 lazy val readme = (project in file("tut"))
   .settings(moduleName := "hammock-readme")

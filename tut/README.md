@@ -36,6 +36,7 @@ libraryDependencies += "com.pepegar" %%% "hammock-core" % "0.7.1"
 [docs]: http://pepegar.com/hammock
 [circe]: http://circe.io
 [akka-http]: https://doc.akka.io/docs/akka-http/current/scala/http/
+[async-http-client]: https://github.com/asynchttpclient/async-http-client
 
 
 ## Modules
@@ -45,6 +46,7 @@ libraryDependencies += "com.pepegar" %%% "hammock-core" % "0.7.1"
 | `hammock-core`      | the core functionality of hammock, using [Apache HTTP commons][httpcommons] for HTTP in JVM and [XHR][xhr] in JS | `0.7.1` |
 | `hammock-circe`      | encode and decode HTTP entities with [Circe][circe] | `0.7.1` |
 | `hammock-akka-http`  | run your HTTP requests with [akka-http][akka-http] | `0.7.1` |
+| `hammock-asynchttpclient`  | run your HTTP requests with [AsyncHttpClient][async-http-client] | `0.7.1` |
 
 
 ## How does Hammock look in action?
