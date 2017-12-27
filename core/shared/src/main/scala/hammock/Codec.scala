@@ -27,13 +27,3 @@ object Encoder {
 }
 
 @typeclass trait Codec[A] extends Encoder[A] with Decoder[A]
-
-object Codec {
-  implicit class EncodeOpOnA[A](a: A)(implicit C: Codec[A]) {
-    def encode: Entity = C.encode(a)
-  }
-
-  implicit class DecodeOpOnEntity(str: Entity) {
-    def decode[A: Codec]: Either[CodecException, A] = Codec[A].decode(str)
-  }
-}

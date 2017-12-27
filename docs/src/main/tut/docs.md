@@ -176,7 +176,6 @@ import hammock.hi._
 import hammock.hi.dsl._
 
 import cats._
-import cats.implicits._
 import cats.effect.IO
 
 implicit val interp = Interpreter[IO]
@@ -333,7 +332,6 @@ import hammock._
 import hammock.circe._
 import hammock.circe.implicits._
 
-import io.circe._
 import io.circe.generic.auto._
 
 case class MyClass(stringField: String, intField: Int)
@@ -342,12 +340,10 @@ Codec[MyClass].decode(Entity.StringEntity("""{"stringField": "This is Hammock!",
 Codec[MyClass].decode(Entity.StringEntity("this is not a valid json"))
 Codec[MyClass].encode(MyClass("hello dolly", 99))
 
-// Also, you can use Codec's syntax as follows:
+// Also, you can use Encoder's syntax for encoding:
 
-import Codec._
+import Encoder.ops._
 
-Entity.StringEntity("""{"stringField": "This is Hammock!", "intField": 33}""").decode[MyClass]
-Entity.StringEntity("this is not a valid json").decode[MyClass]
 MyClass("hello dolly", 99).encode
 ```
 
@@ -368,9 +364,9 @@ import hammock._
 import hammock.akka.AkkaInterpreter
 import hammock.circe.implicits._
 import hammock.hi._
+import hammock.marshalling._
 
 import scala.concurrent.ExecutionContext
-
 
 implicit val system = ActorSystem("hammock-actor-system")
 implicit val mat = ActorMaterializer()
@@ -378,6 +374,7 @@ implicit val ec = ExecutionContext.Implicits.global
 val httpExt: HttpExt = Http()
 implicit val interp = new AkkaInterpreter[IO](httpExt)
 
-val response = Hammock.getWithOpts(Uri.unsafeParse("https://api.fidesmo.com/apps"), Opts.empty).exec[IO].as[List[String]].unsafeRunSync
+val response = Hammock.getWithOpts(Uri.unsafeParse("https://api.fidesmo.com/apps"), Opts.empty).as[List[String]].exec[IO].unsafeRunSync
+  
 system.shutdown()
 ```

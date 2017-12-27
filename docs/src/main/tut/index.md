@@ -59,6 +59,7 @@ import io.circe.generic.auto._
 import hammock._
 import hammock.Uri._
 import hammock.hi._
+import hammock.marshalling._
 import hammock.jvm.free.Interpreter
 import hammock.circe.implicits._
 
@@ -68,8 +69,8 @@ object HttpClient {
   
   val response = Hammock
     .getWithOpts(Uri.unsafeParse("https://api.fidesmo.com/apps"), Opts.empty)
-    .exec[IO]
     .as[List[String]]
+    .exec[IO]
 }
 ```
 

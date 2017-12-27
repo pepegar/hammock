@@ -200,6 +200,8 @@ lazy val docs = project
     micrositeGithubOwner := "pepegar",
     micrositeGithubRepo := "hammock",
     micrositeHighlightTheme := "tomorrow",
+    micrositePushSiteWith := GitHub4s,
+    micrositeGithubToken := sys.env.get("GITHUB_TOKEN"),
     scalacOptions ~= (_ filterNot Set("-Ywarn-unused-import", "-Xlint").contains)
   )
   .enablePlugins(MicrositesPlugin)

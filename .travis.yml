@@ -7,14 +7,22 @@ jdk:
 - oraclejdk8
 
 before_install:
-- if [ "$TRAVIS_BRANCH" = "master" -a "$TRAVIS_PULL_REQUEST" = "false" ]; then bash
-  scripts/decrypt-keys.sh; fi
 - export PATH=${PATH}:./vendor/bundle
 
 script:
 - sbt ++$TRAVIS_SCALA_VERSION clean coverage +coreJVM/test +akka/test +circeJVM/test coverageReport
 - sbt ++$TRAVIS_SCALA_VERSION clean validateJS
 - sbt validateDoc validateScalafmt
+- sbt example/compile exampleJS/compile
 
 after_success:
 - bash <(curl -s https://codecov.io/bash)
+- if [ "$TRAVIS_BRANCH" = "master" -a "$TRAVIS_PULL_REQUEST" = "false" ]; then bash
+  scripts/publishMicrosite.sh; fi
+- if [ "$TRAVIS_PULL_REQUEST" = "true" ]; then echo "Not in master branch, skipping
+  deploy and release"; fi
+
+
+env:
+  matrix:
+    secure: gyBEbHIX6LddN9nUN/gSNoDp9/kyWtpg7qaFIAxusbsmefAM59CmpcSsdQkzrhTBG1ozz5o5kB8x++LHGk4NI3Ae/NEYEKLOx2sb9ChTCHpfK0srQq/Pn/LKl5+noo6dLJdsj2eBVfl/CoDkxag+0sjHrDBkYs6PBBEmBOxtMtJ5fKiFkTgC/dvYo6FYgvhg3rbxuLPy9r4/XuDrzwKoFTyrcPxvd8lsvSHkOMKmB/rR3GPSodKQiF5aOJCsdJDTSspnvNidJHfU1Pu3SqrU8xFgCDIPBZPUVdfMaAdjhArRJU8BlV4WuuytdceHZvZ7nagfsD/aa/f/K16bQkzlKa+3pOzNYV0pknMtsonsOCsr7apO5kSKiYERjyYUtqNLPrDxYrvHWgKPNOBcAuB4A8INVIN+V3xyL7bn32PgfcxFvhKVM8GpaB4G0byf8kGJf6vurTxxmy3fkiAJ7WQAkVy77uTxdrucyud2c31zKM8Ye+isVPZqfLy8E0/fR6CcAtec1XTTCab7qopPlUcNSUGBTNajuNF9oMnOQy3jxTSahV6idaBjtKICCsFLZtOv14yCu3puivZ8v/qV/w6TLw0fCHM8dCIny6d9F7Ep6YH2RZPc22ySxPiNTipGJxzsIQkxUGH7e2VN8Zqr0OkP2jTkiQWXHpouspSiVr8s0T0=

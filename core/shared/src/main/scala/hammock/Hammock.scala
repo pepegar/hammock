@@ -4,7 +4,7 @@ import cats.syntax.show._
 
 import free.algebra.{HttpRequestIO, Ops}
 import hi.Opts
-import Codec._
+import Codec.ops._
 
 object Hammock {
 
