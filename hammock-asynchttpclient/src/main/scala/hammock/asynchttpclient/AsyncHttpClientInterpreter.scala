@@ -15,7 +15,11 @@ import scala.collection.JavaConverters._
 class AsyncHttpClientInterpreter[F[_]: Async](client: AsyncHttpClient = new DefaultAsyncHttpClient())
     extends InterpTrans[F] {
 
-  def toF[A](future: jc.Future[A]): F[A] = Async[F].async(_(Try(future.get).toEither))
+  def toF[A](future: jc.Future[A]): F[A] =
+    Async[F].async(_(Try(future.get) match {
+      case Failure(err) => Left(err)
+      case Success(a)   => Right(a)
+    }))
 
   def getBuilder(reqF: HttpRequestF[HttpResponse]): BoundRequestBuilder = reqF match {
     case Get(_)     => client.prepareGet(reqF.req.uri.show)
