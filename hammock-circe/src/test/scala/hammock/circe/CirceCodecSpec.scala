@@ -1,7 +1,6 @@
 package hammock
 package circe
 
-import io.circe._
 import io.circe.generic.auto._
 
 import org.scalatest._
@@ -25,7 +24,7 @@ class CirceCodecSpec extends WordSpec with Matchers {
     }
 
     "fail to parse an invalid value" in {
-      Codec[Dummy].decode(Entity.StringEntity("this is of course not valid")) shouldBe a[Left[String, Dummy]]
+      Codec[Dummy].decode(Entity.StringEntity("this is of course not valid")) shouldBe a[Left[_, _]]
     }
   }
 

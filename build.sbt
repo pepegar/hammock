@@ -1,5 +1,5 @@
+import microsites._
 import ReleaseTransformations._
-
 import sbtcrossproject.{crossProject, CrossType}
 
 val Versions = Map(
@@ -119,7 +119,6 @@ lazy val hammock = project
   .settings(noPublishSettings)
   .dependsOn(coreJVM, coreJS, circeJVM, circeJS, akka, asynchttpclient)
   .aggregate(coreJVM, coreJS, circeJVM, circeJS, akka, asynchttpclient)
-  .enablePlugins(ScalaUnidocPlugin)
 
 lazy val core = crossProject(JSPlatform, JVMPlatform)
   .crossType(CrossType.Full)
@@ -182,12 +181,13 @@ lazy val asynchttpclient = project
   .settings(
     libraryDependencies += "org.asynchttpclient" % "async-http-client" % Versions("ahc")
   )
-  .settings(libraryDependencies += "org.mockito" % "mockito-all" % "1.10.18" % "test")
   .dependsOn(coreJVM)
+
+lazy val javadocIoUrl = settingKey[String]("the url of hammock documentation in http://javadoc.io")
 
 lazy val docs = project
   .in(file("docs"))
-  .dependsOn(coreJVM, circeJVM, akka)
+  .dependsOn(coreJVM, circeJVM, akka, asynchttpclient)
   .settings(moduleName := "hammock-docs")
   .settings(buildSettings)
   .settings(compilerPlugins)
@@ -196,12 +196,20 @@ lazy val docs = project
     micrositeName := "Hammock",
     micrositeDescription := "Purely functional HTTP client",
     micrositeBaseUrl := "hammock",
-    micrositeDocumentationUrl := "/hammock/docs.html",
+    javadocIoUrl := s"https://www.javadoc.io/doc/${organization.value}/hammock-core_2.12/${version.value}",
+    micrositeDocumentationUrl := javadocIoUrl.value,
     micrositeGithubOwner := "pepegar",
     micrositeGithubRepo := "hammock",
     micrositeHighlightTheme := "tomorrow",
     micrositePushSiteWith := GitHub4s,
     micrositeGithubToken := sys.env.get("GITHUB_TOKEN"),
+    micrositeExtraMdFiles := Map(
+      file("README.md") -> ExtraMdFileConfig(
+        "index.md",
+        "home",
+        Map("title" -> "Home", "section" -> "home", "position" -> "0")
+      )
+    ),
     scalacOptions ~= (_ filterNot Set("-Ywarn-unused-import", "-Xlint").contains)
   )
   .enablePlugins(MicrositesPlugin)
