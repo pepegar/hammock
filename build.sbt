@@ -119,7 +119,6 @@ lazy val hammock = project
   .settings(noPublishSettings)
   .dependsOn(coreJVM, coreJS, circeJVM, circeJS, akka, asynchttpclient)
   .aggregate(coreJVM, coreJS, circeJVM, circeJS, akka, asynchttpclient)
-  .enablePlugins(ScalaUnidocPlugin)
 
 lazy val core = crossProject(JSPlatform, JVMPlatform)
   .crossType(CrossType.Full)
@@ -185,7 +184,7 @@ lazy val asynchttpclient = project
   .settings(libraryDependencies += "org.mockito" % "mockito-all" % "1.10.18" % "test")
   .dependsOn(coreJVM)
 
-lazy val docsMappingsAPIDir = settingKey[String]("Name of subdirectory in site target directory for api docs")
+lazy val javadocIoUrl = settingKey[String]("the url of hammock documentation in http://javadoc.io")
 
 lazy val docs = project
   .in(file("docs"))
@@ -198,7 +197,8 @@ lazy val docs = project
     micrositeName := "Hammock",
     micrositeDescription := "Purely functional HTTP client",
     micrositeBaseUrl := "hammock",
-    micrositeDocumentationUrl := "api/hammock/index.html",
+    javadocIoUrl := s"https://www.javadoc.io/doc/${organization.value}/hammock-core_2.12/${version.value}",
+    micrositeDocumentationUrl := javadocIoUrl.value,
     micrositeGithubOwner := "pepegar",
     micrositeGithubRepo := "hammock",
     micrositeHighlightTheme := "tomorrow",
@@ -211,14 +211,9 @@ lazy val docs = project
         Map("title" -> "Home", "section" -> "home", "position" -> "0")
       )
     ),
-    autoAPIMappings := true,
-    unidocProjectFilter in (ScalaUnidoc, unidoc) := inProjects(coreJVM, circeJVM, akka, asynchttpclient),
-    docsMappingsAPIDir := "api",
-    addMappingsToSiteDir(mappings in (ScalaUnidoc, packageDoc), docsMappingsAPIDir),
     scalacOptions ~= (_ filterNot Set("-Ywarn-unused-import", "-Xlint").contains)
   )
   .enablePlugins(MicrositesPlugin)
-  .enablePlugins(ScalaUnidocPlugin)
 
 lazy val readme = (project in file("tut"))
   .settings(moduleName := "hammock-readme")
