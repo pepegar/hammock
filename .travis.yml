@@ -10,7 +10,7 @@ before_install:
 - export PATH=${PATH}:./vendor/bundle
 
 script:
-- sbt ++$TRAVIS_SCALA_VERSION clean coverage +coreJVM/test +akka/test +circeJVM/test coverageReport
+- sbt ++$TRAVIS_SCALA_VERSION clean coverage +coreJVM/test +akka/test +circeJVM/test +asynchttpclient/test coverageReport
 - sbt ++$TRAVIS_SCALA_VERSION clean validateJS
 - sbt validateDoc validateScalafmt
 - sbt example/compile exampleJS/compile

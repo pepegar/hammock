@@ -181,7 +181,6 @@ lazy val asynchttpclient = project
   .settings(
     libraryDependencies += "org.asynchttpclient" % "async-http-client" % Versions("ahc")
   )
-  .settings(libraryDependencies += "org.mockito" % "mockito-all" % "1.10.18" % "test")
   .dependsOn(coreJVM)
 
 lazy val javadocIoUrl = settingKey[String]("the url of hammock documentation in http://javadoc.io")
