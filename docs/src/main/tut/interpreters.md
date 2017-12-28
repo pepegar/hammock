@@ -79,7 +79,7 @@ implicit val ec = system.dispatcher
 val httpExt: HttpExt = Http()
 implicit val interp = new AkkaInterpreter[IO](httpExt)
 
-httpReq foldMap Interpreter[IO].trans unsafeRunSync
+httpReq foldMap interp.trans unsafeRunSync
 
 system.shutdown()
 ```
