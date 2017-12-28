@@ -1,6 +1,5 @@
 package hammock
 
-import monocle.Lens
 import monocle.macros.Lenses
 
 @Lenses case class Status(code: Int, text: String, description: String)
@@ -163,6 +162,8 @@ object Status {
     Status(511, "Network Authentication Required", "The client needs to authenticate to gain network access.")
   val NetworkReadTimeout    = Status(598, "Network read timeout error", "")
   val NetworkConnectTimeout = Status(599, "Network connect timeout error", "")
+
+  def custom(x: Int, text: String = "", description: String = "") = Status(x, text, description)
 
   val Statuses = Map(
     100 -> Continue,

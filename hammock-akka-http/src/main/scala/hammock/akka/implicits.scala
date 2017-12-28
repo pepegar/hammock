@@ -8,8 +8,8 @@ import _root_.akka.http.scaladsl.model.HttpEntity
 trait Implicits {
   implicit def encoderToEntityMarshaller[A: Encoder]: ToEntityMarshaller[A] = Marshaller.strict { a =>
     Encoder[A].encode(a) match {
-      case Entity.StringEntity(body, _)              => Marshalling.Opaque(() => HttpEntity(body))
-      case Entity.ByteArrayEntity(body, contentType) => Marshalling.Opaque(() => HttpEntity(body))
+      case Entity.StringEntity(body, _)    => Marshalling.Opaque(() => HttpEntity(body))
+      case Entity.ByteArrayEntity(body, _) => Marshalling.Opaque(() => HttpEntity(body))
     }
   }
 

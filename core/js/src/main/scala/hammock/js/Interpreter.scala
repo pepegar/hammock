@@ -30,7 +30,7 @@ class Interpreter[F[_]] extends InterpTrans[F] {
       case (k, v) => xhr.setRequestHeader(k, v)
     }
     val data = reqF.req match {
-      case HttpRequest(_, _, Some(Entity.StringEntity(data, contentType))) =>
+      case HttpRequest(_, _, Some(Entity.StringEntity(data, _))) =>
         data
       case _ =>
         ""

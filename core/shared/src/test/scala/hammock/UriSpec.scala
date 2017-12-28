@@ -2,11 +2,7 @@ package hammock
 
 import org.scalatest._
 
-import atto._
-import Atto._
-import cats._
 import cats.implicits._
-import cats.syntax.either._
 
 class UriSpec extends WordSpec with Matchers {
 

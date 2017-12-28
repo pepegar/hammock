@@ -1,7 +1,6 @@
 package hammock
 
 import cats.Eq
-import cats.implicits
 import monocle.macros.Lenses
 
 @Lenses case class HttpResponse(status: Status, headers: Map[String, String], entity: Entity)
