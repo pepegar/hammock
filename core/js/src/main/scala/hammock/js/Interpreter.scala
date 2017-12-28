@@ -1,25 +1,9 @@
-package hammock.js
+package hammock
+package js
 
 import cats._
 import cats.effect.Sync
 import cats.syntax.show._
-import hammock.{
-  Delete,
-  Entity,
-  Get,
-  Head,
-  HttpF,
-  HttpRequest,
-  HttpResponse,
-  InterpTrans,
-  Method,
-  Options,
-  Post,
-  Put,
-  Status,
-  Trace,
-  Uri
-}
 import org.scalajs.dom
 
 class Interpreter[F[_]] extends InterpTrans[F] {

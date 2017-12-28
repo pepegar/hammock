@@ -1,4 +1,5 @@
-package hammock.jvm
+package hammock
+package jvm
 
 import java.net.URI
 
@@ -6,7 +7,6 @@ import cats._
 import cats.data.Kleisli
 import cats.effect._
 import hammock.jvm.Interpreter
-import hammock.{Get, HttpRequest, HttpResponse, Ops, Status, Uri}
 import org.apache.http.client.HttpClient
 import org.apache.http.entity.StringEntity
 import org.apache.http.message.{BasicHttpResponse, BasicStatusLine}
