@@ -9,7 +9,7 @@ import cats.effect._
 
 import hammock._
 import hammock.marshalling._
-import hammock.js.free._
+import hammock.js._
 import hammock.circe.implicits._
 
 import io.circe.generic.auto._
