@@ -56,7 +56,7 @@ import cats.effect.IO
 import io.circe.generic.auto._
 import hammock._
 import hammock.marshalling._
-import hammock.jvm.free.Interpreter
+import hammock.jvm.Interpreter
 import hammock.circe.implicits._
 
 object HttpClient {

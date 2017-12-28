@@ -1,16 +1,15 @@
-package hammock
-package jvm
-package free
+package hammock.jvm
 
 import java.net.URI
 
 import cats._
 import cats.data.Kleisli
 import cats.effect._
-import hammock.free._
+import hammock.jvm.Interpreter
+import hammock.{Get, HttpRequest, HttpResponse, Ops, Status, Uri}
 import org.apache.http.client.HttpClient
 import org.apache.http.entity.StringEntity
-import org.apache.http.message.{BasicHeader, BasicHttpResponse, BasicStatusLine}
+import org.apache.http.message.{BasicHttpResponse, BasicStatusLine}
 import org.apache.http.{ProtocolVersion, HttpResponse => ApacheHttpResponse}
 import org.mockito.Mockito._
 import org.mockito.{Matchers => MM}
@@ -20,7 +19,6 @@ import org.scalatest.mockito._
 class InterpreterSpec extends WordSpec with MockitoSugar with BeforeAndAfter {
   import HttpResponse._
   import MM._
-  import algebra._
 
   val client = mock[HttpClient]
   val interp = new Interpreter[IO](client)
@@ -56,7 +54,7 @@ class InterpreterSpec extends WordSpec with MockitoSugar with BeforeAndAfter {
         }
     }
 
-    "create a correct Apache's HTTP request from HttpRequestF" in {
+    "create a correct Apache's HTTP request from HttpF" in {
       val req = Get(
         HttpRequest(
           Uri.unsafeParse("http://localhost:8080"),

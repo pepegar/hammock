@@ -5,8 +5,7 @@ import cats._
 import cats.implicits._
 import cats.data.Kleisli
 import cats.effect._
-import hammock.free._
-import hammock.free.algebra._
+
 import org.asynchttpclient._
 import java.util.{concurrent => jc}
 import scala.util._
@@ -21,7 +20,7 @@ class AsyncHttpClientInterpreter[F[_]: Async](client: AsyncHttpClient = new Defa
       case Success(a)   => Right(a)
     }))
 
-  def getBuilder(reqF: HttpRequestF[HttpResponse]): BoundRequestBuilder = reqF match {
+  def getBuilder(reqF: HttpF[HttpResponse]): BoundRequestBuilder = reqF match {
     case Get(_)     => client.prepareGet(reqF.req.uri.show)
     case Delete(_)  => client.prepareDelete(reqF.req.uri.show)
     case Head(_)    => client.prepareHead(reqF.req.uri.show)
@@ -36,7 +35,7 @@ class AsyncHttpClientInterpreter[F[_]: Async](client: AsyncHttpClient = new Defa
     ()
   }
 
-  def mapRequest(reqF: HttpRequestF[HttpResponse]): F[BoundRequestBuilder] =
+  def mapRequest(reqF: HttpF[HttpResponse]): F[BoundRequestBuilder] =
     for {
       req <- getBuilder(reqF).pure[F]
       _   <- putHeaders(req, reqF.req.headers)
@@ -44,8 +43,8 @@ class AsyncHttpClientInterpreter[F[_]: Async](client: AsyncHttpClient = new Defa
         .foreach(_.cata(str => req.setBody(str.content), bytes => req.setBody(bytes.content)))
     } yield req
 
-  def transK: HttpRequestF ~> Kleisli[F, AsyncHttpClient, ?] =
-    λ[HttpRequestF ~> Kleisli[F, AsyncHttpClient, ?]] { reqF =>
+  def transK: HttpF ~> Kleisli[F, AsyncHttpClient, ?] =
+    λ[HttpF ~> Kleisli[F, AsyncHttpClient, ?]] { reqF =>
       reqF match {
         case Get(_) | Options(_) | Delete(_) | Head(_) | Options(_) | Trace(_) | Post(_) | Put(_) =>
           Kleisli { client =>
@@ -58,7 +57,7 @@ class AsyncHttpClientInterpreter[F[_]: Async](client: AsyncHttpClient = new Defa
       }
     }
 
-  def trans(implicit S: Sync[F]): HttpRequestF ~> F =
+  def trans(implicit S: Sync[F]): HttpF ~> F =
     transK andThen λ[Kleisli[F, AsyncHttpClient, ?] ~> F](_.run(client))
 
   def createEntity(contentType: String, body: String): Entity = contentType match {

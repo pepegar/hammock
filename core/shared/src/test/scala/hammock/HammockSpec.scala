@@ -1,6 +1,6 @@
 package hammock
 
-import free.algebra._
+
 import org.scalatest._
 import cats._
 import hi.{Cookie, Opts}
@@ -18,8 +18,8 @@ class HammockSpec extends WordSpec with Matchers {
   /**
    * This is really dirty... but I cannot come up with a better solution right now...
    */
-  def test(assertions: HttpRequestF[_] => Any) = new (HttpRequestF ~> Id) {
-    def apply[A](h: HttpRequestF[A]): A = {
+  def test(assertions: HttpF[_] => Any) = new (HttpF ~> Id) {
+    def apply[A](h: HttpF[A]): A = {
       assertions(h)
 
       null.asInstanceOf[A]

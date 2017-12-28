@@ -146,12 +146,11 @@ object App {
   import cats.implicits._
   import cats.effect.IO
   import hammock._
-  import hammock.free.algebra._
   import hammock.marshalling._
-  import hammock.jvm.free._
+  import hammock.jvm._
 
   type Eff1[A] = EitherK[LogF, IOF, A]
-  type Eff2[A] = EitherK[HttpRequestF, Eff1, A]
+  type Eff2[A] = EitherK[HttpF, Eff1, A]
   type Eff[A] = EitherK[MarshallF, Eff2, A]
 
   implicit val dummyDecoder: Decoder[String] = new Decoder[String] {

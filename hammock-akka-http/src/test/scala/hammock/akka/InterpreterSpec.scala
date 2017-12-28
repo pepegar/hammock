@@ -16,7 +16,7 @@ import _root_.akka.stream.ActorMaterializer
 import _root_.akka.http.scaladsl.model.headers.RawHeader
 import cats.effect.IO
 import cats.free.Free
-import hammock.free.algebra._
+
 import org.mockito.Mockito._
 import org.scalatest._
 import org.scalatest.mockito.MockitoSugar

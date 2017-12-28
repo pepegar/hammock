@@ -1,8 +1,5 @@
 package hammock
 package jvm
-package free
-
-import hammock.free._
 
 import cats._
 import cats.implicits._
@@ -21,13 +18,12 @@ import org.apache.http.util.EntityUtils
 
 class Interpreter[F[_]](client: HttpClient) extends InterpTrans[F] {
 
-  import hammock.free.algebra._
   import Uri._
 
   override def trans(implicit S: Sync[F]) = transK andThen λ[Kleisli[F, HttpClient, ?] ~> F](_.run(client))
 
-  def transK(implicit S: Sync[F]): HttpRequestF ~> Kleisli[F, HttpClient, ?] =
-    λ[HttpRequestF ~> Kleisli[F, HttpClient, ?]] {
+  def transK(implicit S: Sync[F]): HttpF ~> Kleisli[F, HttpClient, ?] =
+    λ[HttpF ~> Kleisli[F, HttpClient, ?]] {
       case req: Options => doReq(req)
       case req: Get     => doReq(req)
       case req: Head    => doReq(req)
@@ -37,7 +33,7 @@ class Interpreter[F[_]](client: HttpClient) extends InterpTrans[F] {
       case req: Trace   => doReq(req)
     }
 
-  private def doReq(reqF: HttpRequestF[HttpResponse])(implicit F: Sync[F]): Kleisli[F, HttpClient, HttpResponse] =
+  private def doReq(reqF: HttpF[HttpResponse])(implicit F: Sync[F]): Kleisli[F, HttpClient, HttpResponse] =
     Kleisli { client =>
       for {
         req             <- getApacheRequest(reqF)
@@ -49,7 +45,7 @@ class Interpreter[F[_]](client: HttpClient) extends InterpTrans[F] {
       } yield HttpResponse(status, responseHeaders, new Entity.StringEntity(body))
     }
 
-  def getApacheRequest(f: HttpRequestF[HttpResponse])(implicit F: Sync[F]): F[HttpUriRequest] = f match {
+  def getApacheRequest(f: HttpF[HttpResponse])(implicit F: Sync[F]): F[HttpUriRequest] = f match {
     case Get(HttpRequest(uri, headers, _)) =>
       F.delay {
         val req = new HttpGet(uri.show)
