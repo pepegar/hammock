@@ -7,7 +7,7 @@ import org.scalatest._
 import org.asynchttpclient._
 import io.netty.handler.codec.http.{DefaultHttpHeaders, HttpHeaders}
 import io.netty.handler.codec.http.cookie.Cookie
-import hammock.free.algebra._
+
 import scala.collection.JavaConverters._
 
 class AsyncHttpClientInterpreterTest extends WordSpec with Matchers {

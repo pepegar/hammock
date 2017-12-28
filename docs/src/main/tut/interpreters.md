@@ -21,7 +21,7 @@ trait:
 ```
 trait InterpTrans[F[_]] {
 
-  def trans(implicit S: Sync[F]): HttpRequestF ~> F
+  def trans(implicit S: Sync[F]): HttpF ~> F
 
 }
 ```
@@ -30,8 +30,8 @@ Currently we have interpreters for several HTTP clients:
 
 | Interpreter | Location | Artifact | Platform |
 | ----------- | -------- | -------- | -------- |
-| [apache HttpCommons][httpcommons] | `hammock.jvm.free.Interpreter` | `hammock-core` | JVM |
-| [XmlHttpRequest][xhr] | `hammock.js.free.Interpreter` | `hammock-core` | JavaScript |
+| [apache HttpCommons][httpcommons] | `hammock.jvm.Interpreter` | `hammock-core` | JVM |
+| [XmlHttpRequest][xhr] | `hammock.js.Interpreter` | `hammock-core` | JavaScript |
 | [Akka HTTP][akka-http] | `hammock.akka.AkkaInterpreter` | `hammock-akka-http` | JVM |
 | [AsyncHttpClient][asynchttpclient] | `hammock.asynchttpclient.AsyncHttpClientInterpreter` | `hammock-asynchttpclient` | JVM |
 
@@ -56,7 +56,7 @@ For using it use the `Interpreter` included in `hammock-core`:
 
 ```tut
 import cats.effect.IO
-import hammock.jvm.free.Interpreter
+import hammock.jvm.Interpreter
 
 httpReq foldMap Interpreter[IO].trans unsafeRunSync
 ```
@@ -79,7 +79,7 @@ implicit val ec = system.dispatcher
 val httpExt: HttpExt = Http()
 implicit val interp = new AkkaInterpreter[IO](httpExt)
 
-httpReq foldMap Interpreter[IO].trans unsafeRunSync
+httpReq foldMap interp.trans unsafeRunSync
 
 system.shutdown()
 ```

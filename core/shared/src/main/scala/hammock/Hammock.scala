@@ -1,18 +1,18 @@
 package hammock
 
 import cats.syntax.show._
+import cats.free.Free
 
-import free.algebra.{HttpRequestIO, Ops}
 import hi.Opts
 import Codec.ops._
 
 object Hammock {
 
-  /** Creates an [[HttpRequestF]] and from the
+  /** Creates an [[HttpF]] and from the
    * [[Method]], [[Uri]], and [[Map[String, String] headers]].  It
    * can be later executed via an interpreter.
    */
-  def request(method: Method, uri: Uri, headers: Map[String, String]): HttpRequestIO[HttpResponse] = method match {
+  def request(method: Method, uri: Uri, headers: Map[String, String]): Free[HttpF, HttpResponse] = method match {
     case Method.OPTIONS => Ops.options(uri, headers)
     case Method.GET     => Ops.get(uri, headers)
     case Method.HEAD    => Ops.head(uri, headers)
@@ -30,7 +30,7 @@ object Hammock {
       method: Method,
       uri: Uri,
       headers: Map[String, String],
-      body: Option[A]): HttpRequestIO[HttpResponse] = method match {
+      body: Option[A]): Free[HttpF, HttpResponse] = method match {
     case Method.OPTIONS => Ops.options(uri, headers)
     case Method.GET     => Ops.get(uri, headers)
     case Method.HEAD    => Ops.head(uri, headers)
@@ -45,9 +45,9 @@ object Hammock {
    * Usage:
    *
    * {{{
-   * scala> import hammock._, hammock.jvm.free.Interpreter, hammock.hi._, hammock.hi.dsl._, cats._, cats.implicits._, scala.util.Try
+   * scala> import hammock._, hammock.jvm.Interpreter, hammock.hi._, hammock.hi.dsl._, cats._, cats.implicits._, scala.util.Try
    * import hammock._
-   * import hammock.jvm.free.Interpreter
+   * import hammock.jvm.Interpreter
    * import hammock.hi._
    * import hammock.hi.dsl._
    * import cats._
@@ -58,11 +58,11 @@ object Hammock {
    * opts: hammock.hi.Opts = Opts(Some(BasicAuth(user,pass)),Map(X-Test -> works!),Some(List(Cookie(key,value,None,None,None,None,None,None,None,None))))
    *
    * scala> val response = Hammock.withOpts(Method.GET, Uri.unsafeParse("http://httpbin.org/get"), opts)
-   * response: hammock.free.algebra.HttpRequestIO[hammock.HttpResponse] = Free(...)
+   * response: Free[HttpF, hammock.HttpResponse] = Free(...)
    * }}}
    *
    */
-  def withOpts(method: Method, uri: Uri, opts: Opts): HttpRequestIO[HttpResponse] =
+  def withOpts(method: Method, uri: Uri, opts: Opts): Free[HttpF, HttpResponse] =
     request(method, uri, constructHeaders(opts))
 
   /** Variant of [[withOpts]] methods that also takes an optional body
@@ -71,15 +71,15 @@ object Hammock {
    *
    * @see Hammock.withOpts
    */
-  def withOpts[A: Codec](method: Method, uri: Uri, opts: Opts, body: Option[A]): HttpRequestIO[HttpResponse] =
+  def withOpts[A: Codec](method: Method, uri: Uri, opts: Opts, body: Option[A]): Free[HttpF, HttpResponse] =
     request(method, uri, constructHeaders(opts), body)
 
   /** Creates an OPTIONS request to the given [[Uri uri]] and [[hi.Opts opts]].
    *
    * {{{
-   * scala> import hammock._, hammock.jvm.free.Interpreter, hammock.hi._, hammock.hi.dsl._, cats._, cats.implicits._, scala.util.Try
+   * scala> import hammock._, hammock.jvm.Interpreter, hammock.hi._, hammock.hi.dsl._, cats._, cats.implicits._, scala.util.Try
    * import hammock._
-   * import hammock.jvm.free.Interpreter
+   * import hammock.jvm.Interpreter
    * import hammock.hi._
    * import hammock.hi.dsl._
    * import cats._
@@ -90,18 +90,18 @@ object Hammock {
    * opts: hammock.hi.Opts = Opts(Some(BasicAuth(user,pass)),Map(X-Test -> works!),Some(List(Cookie(key,value,None,None,None,None,None,None,None,None))))
    *
    * scala> Hammock.optionsWithOpts(Uri.unsafeParse("http://httpbin.org/get"), opts)
-   * res1: hammock.free.algebra.HttpRequestIO[hammock.HttpResponse] = Free(...)
+   * res1: Free[HttpF, hammock.HttpResponse] = Free(...)
    * }}}
    *
    */
-  def optionsWithOpts(uri: Uri, opts: Opts): HttpRequestIO[HttpResponse] = withOpts(Method.OPTIONS, uri, opts)
+  def optionsWithOpts(uri: Uri, opts: Opts): Free[HttpF, HttpResponse] = withOpts(Method.OPTIONS, uri, opts)
 
   /** Creates a GET request to the given [[Uri uri]] and [[hi.Opts opts]].
    *
    * {{{
-   * scala> import hammock._, hammock.jvm.free.Interpreter, hammock.hi._, hammock.hi.dsl._, cats._, cats.implicits._, scala.util.Try
+   * scala> import hammock._, hammock.jvm.Interpreter, hammock.hi._, hammock.hi.dsl._, cats._, cats.implicits._, scala.util.Try
    * import hammock._
-   * import hammock.jvm.free.Interpreter
+   * import hammock.jvm.Interpreter
    * import hammock.hi._
    * import hammock.hi.dsl._
    * import cats._
@@ -112,17 +112,17 @@ object Hammock {
    * opts: hammock.hi.Opts = Opts(Some(BasicAuth(user,pass)),Map(X-Test -> works!),Some(List(Cookie(key,value,None,None,None,None,None,None,None,None))))
    *
    * scala> Hammock.getWithOpts(Uri.unsafeParse("http://httpbin.org/get"), opts)
-   * res1: hammock.free.algebra.HttpRequestIO[hammock.HttpResponse] = Free(...)
+   * res1: Free[HttpF, hammock.HttpResponse] = Free(...)
    * }}}
    *
    */
-  def getWithOpts(uri: Uri, opts: Opts): HttpRequestIO[HttpResponse] = withOpts(Method.GET, uri, opts)
+  def getWithOpts(uri: Uri, opts: Opts): Free[HttpF, HttpResponse] = withOpts(Method.GET, uri, opts)
 
   /** Creates a HEAD request to the given [[Uri uri]] and [[hi.Opts opts]].
    *
    * {{{
    * import hammock._
-   * import hammock.jvm.free.Interpreter
+   * import hammock.jvm.Interpreter
    * import hammock.hi._
    * import hammock.hi.dsl._
    * import cats._
@@ -135,7 +135,7 @@ object Hammock {
    * }}}
    *
    */
-  def headWithOpts(uri: Uri, opts: Opts): HttpRequestIO[HttpResponse] = withOpts(Method.HEAD, uri, opts)
+  def headWithOpts(uri: Uri, opts: Opts): Free[HttpF, HttpResponse] = withOpts(Method.HEAD, uri, opts)
 
   /** Creates a POST request to the given [[Uri uri]] and [[hi.Opts opts]].
    * It also has an optional body parameter that can be
@@ -143,7 +143,7 @@ object Hammock {
    *
    * {{{
    * import hammock._
-   * import hammock.jvm.free.Interpreter
+   * import hammock.jvm.Interpreter
    * import hammock.hi._
    * import hammock.hi.dsl._
    * import cats._
@@ -160,7 +160,7 @@ object Hammock {
    * Hammock.postWithOpts(Uri.unsafeParse("http://httpbin.org/get"), opts, Some("""{"body": true}"""))
    * }}}
    */
-  def postWithOpts[A: Codec](uri: Uri, opts: Opts, body: Option[A] = None): HttpRequestIO[HttpResponse] =
+  def postWithOpts[A: Codec](uri: Uri, opts: Opts, body: Option[A] = None): Free[HttpF, HttpResponse] =
     withOpts(Method.POST, uri, opts, body)
 
   /** Creates a PUT request to the given [[Uri uri]] and [[hi.Opts opts]].
@@ -169,7 +169,7 @@ object Hammock {
    *
    * {{{
    * import hammock._
-   * import hammock.jvm.free.Interpreter
+   * import hammock.jvm.Interpreter
    * import hammock.hi._
    * import hammock.hi.dsl._
    * import cats._
@@ -187,7 +187,7 @@ object Hammock {
    * }}}
    *
    */
-  def putWithOpts[A: Codec](uri: Uri, opts: Opts, body: Option[A] = None): HttpRequestIO[HttpResponse] =
+  def putWithOpts[A: Codec](uri: Uri, opts: Opts, body: Option[A] = None): Free[HttpF, HttpResponse] =
     withOpts(Method.PUT, uri, opts, body)
 
   /** Creates a DELETE request to the given [[Uri uri]] and [[hi.Opts opts]].
@@ -199,7 +199,7 @@ object Hammock {
    * }}}
    *
    */
-  def deleteWithOpts(uri: Uri, opts: Opts): HttpRequestIO[HttpResponse] = withOpts(Method.DELETE, uri, opts)
+  def deleteWithOpts(uri: Uri, opts: Opts): Free[HttpF, HttpResponse] = withOpts(Method.DELETE, uri, opts)
 
   /** Creates a TRACE request to the given [[Uri uri]] and [[hi.Opts opts]].
    *
@@ -210,7 +210,7 @@ object Hammock {
    * }}}
    *
    */
-  def traceWithOpts(uri: Uri, opts: Opts): HttpRequestIO[HttpResponse] = withOpts(Method.TRACE, uri, opts)
+  def traceWithOpts(uri: Uri, opts: Opts): Free[HttpF, HttpResponse] = withOpts(Method.TRACE, uri, opts)
 
   private def constructHeaders(opts: Opts) =
     opts.headers ++

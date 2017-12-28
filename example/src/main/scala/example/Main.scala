@@ -3,7 +3,7 @@ package example
 import cats.effect._
 
 import hammock._
-import hammock.jvm.free._
+import hammock.jvm._
 import hammock.marshalling._
 import hammock.circe.implicits._
 

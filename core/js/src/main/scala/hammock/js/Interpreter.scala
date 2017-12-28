@@ -1,23 +1,17 @@
 package hammock
 package js
-package free
-
-import hammock.free._
-
-import org.scalajs.dom
 
 import cats._
-import cats.data._
-import cats.syntax.show._
 import cats.effect.Sync
+import cats.syntax.show._
+import org.scalajs.dom
 
 class Interpreter[F[_]] extends InterpTrans[F] {
 
   import Uri._
-  import algebra._
 
-  override def trans(implicit S: Sync[F]): HttpRequestF ~> F =
-    λ[HttpRequestF ~> F] {
+  override def trans(implicit S: Sync[F]): HttpF ~> F =
+    λ[HttpF ~> F] {
       case req: Options => doReq(req, Method.OPTIONS)
       case req: Get     => doReq(req, Method.GET)
       case req: Head    => doReq(req, Method.HEAD)
@@ -27,7 +21,7 @@ class Interpreter[F[_]] extends InterpTrans[F] {
       case req: Trace   => doReq(req, Method.TRACE)
     }
 
-  private def doReq(reqF: HttpRequestF[HttpResponse], method: Method)(implicit S: Sync[F]): F[HttpResponse] = S.delay {
+  private def doReq(reqF: HttpF[HttpResponse], method: Method)(implicit S: Sync[F]): F[HttpResponse] = S.delay {
     val xhr   = new dom.XMLHttpRequest()
     val async = true // async = false is deprecated in JS
 

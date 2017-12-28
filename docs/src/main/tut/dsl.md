@@ -17,7 +17,7 @@ your requests.
 
 ```tut:book
 import hammock._
-import hammock.jvm.free.Interpreter
+import hammock.jvm.Interpreter
 import hammock.hi._
 import hammock.hi.dsl._
 

@@ -18,8 +18,6 @@ import cats._
 import cats.data.Kleisli
 import cats.effect.{Async, IO, Sync}
 import cats.implicits._
-import hammock.free._
-import hammock.free.algebra._
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -27,14 +25,14 @@ class AkkaInterpreter[F[_]: Async](
     client: HttpExt)(implicit materializer: ActorMaterializer, executionContext: ExecutionContext)
     extends InterpTrans[F] {
 
-  def trans(implicit S: Sync[F]): HttpRequestF ~> F = transK andThen λ[Kleisli[F, HttpExt, ?] ~> F](_.run(client))
+  def trans(implicit S: Sync[F]): HttpF ~> F = transK andThen λ[Kleisli[F, HttpExt, ?] ~> F](_.run(client))
 
-  def transK: HttpRequestF ~> Kleisli[F, HttpExt, ?] =
-    λ[HttpRequestF ~> Kleisli[F, HttpExt, ?]] {
+  def transK: HttpF ~> Kleisli[F, HttpExt, ?] =
+    λ[HttpF ~> Kleisli[F, HttpExt, ?]] {
       case req @ (Options(_) | Get(_) | Head(_) | Post(_) | Put(_) | Delete(_) | Trace(_)) => doReq(req)
     }
 
-  def doReq(req: HttpRequestF[HttpResponse]): Kleisli[F, HttpExt, HttpResponse] = Kleisli { http =>
+  def doReq(req: HttpF[HttpResponse]): Kleisli[F, HttpExt, HttpResponse] = Kleisli { http =>
     for {
       akkaRequest <- transformRequest(req)
       responseFuture <- Sync[F].delay(
@@ -45,7 +43,7 @@ class AkkaInterpreter[F[_]: Async](
     } yield responseF
   }
 
-  def transformRequest(reqF: HttpRequestF[HttpResponse]): F[AkkaRequest] =
+  def transformRequest(reqF: HttpF[HttpResponse]): F[AkkaRequest] =
     for {
       method      <- mapMethod(reqF)
       akkaHeaders <- reqF.req.headers.map { case (k, v) => RawHeader(k, v) }.toList.pure[F]
@@ -64,7 +62,7 @@ class AkkaInterpreter[F[_]: Async](
       }).map(_.withHeaders(akkaHeaders))
     } yield req
 
-  def mapMethod(reqF: HttpRequestF[HttpResponse]): F[HttpMethod] =
+  def mapMethod(reqF: HttpF[HttpResponse]): F[HttpMethod] =
     (reqF match {
       case Options(_) => HttpMethods.OPTIONS
       case Get(_)     => HttpMethods.GET
