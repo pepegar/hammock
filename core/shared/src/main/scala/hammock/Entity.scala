@@ -26,7 +26,7 @@ object Entity {
   case class StringEntity(body: String, contentType: ContentType = ContentType.`text/plain`) extends Entity {
     type Content = String
     def content = body
-    def contentLength = body.size
+    def contentLength = body.size.toLong
     def chunked = false
     def repeatable = true
     def streaming = false
@@ -36,7 +36,7 @@ object Entity {
     type Content = Array[Byte]
     def chunked: Boolean = false
     def content: Array[Byte] = body
-    def contentLength: Long = body.length
+    def contentLength: Long = body.length.toLong
     def repeatable: Boolean = true
     def streaming: Boolean = false
   }

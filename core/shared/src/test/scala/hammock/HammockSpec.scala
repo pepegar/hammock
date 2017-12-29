@@ -11,6 +11,7 @@ class HammockSpec extends WordSpec with Matchers {
   implicit val stringCodec = new Codec[String] {
     def decode(a: hammock.Entity): Either[hammock.CodecException,String] = a match {
       case Entity.StringEntity(str, _) => Right(str)
+      case _ => Left(CodecException.withMessage("expected string entity"))
     }
     def encode(a: String): hammock.Entity = Entity.StringEntity(a)
   }

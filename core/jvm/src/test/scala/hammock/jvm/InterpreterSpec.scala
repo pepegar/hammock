@@ -6,8 +6,8 @@ import java.net.URI
 import cats._
 import cats.data.Kleisli
 import cats.effect._
-import hammock.jvm.Interpreter
 import org.apache.http.client.HttpClient
+import org.apache.http.client.methods.HttpUriRequest
 import org.apache.http.entity.StringEntity
 import org.apache.http.message.{BasicHttpResponse, BasicStatusLine}
 import org.apache.http.{ProtocolVersion, HttpResponse => ApacheHttpResponse}
@@ -28,7 +28,7 @@ class InterpreterSpec extends WordSpec with MockitoSugar with BeforeAndAfter {
   }
 
   "Interpreter.trans" should {
-    val methods = Seq(
+    Seq(
       ("Options", (uri: Uri, headers: Map[String, String]) => Ops.options(uri, headers)),
       ("Get", (uri: Uri, headers: Map[String, String]) => Ops.get(uri, headers)),
       ("Head", (uri: Uri, headers: Map[String, String]) => Ops.head(uri, headers)),
@@ -39,11 +39,9 @@ class InterpreterSpec extends WordSpec with MockitoSugar with BeforeAndAfter {
     ) map {
       case (method, operation) =>
         s"have the same result as transK.run(client) with $method requests" in {
-          when(client.execute(any())).thenReturn(httpResponse)
+          when(client.execute(any[HttpUriRequest])).thenReturn(httpResponse)
 
           val op = operation(Uri(path = ""), Map())
-
-          implicit def monadKleisli[A] = Kleisli.catsDataMonadForKleisli[IO, A]
 
           val k = op.foldMap[Kleisli[IO, HttpClient, ?]](interp.transK)
 
@@ -78,13 +76,9 @@ class InterpreterSpec extends WordSpec with MockitoSugar with BeforeAndAfter {
     }
 
     "create a correct HttpResponse from Apache's HTTP response" in {
-      when(client.execute(any())).thenReturn(httpResponse)
+      when(client.execute(any[HttpUriRequest])).thenReturn(httpResponse)
 
       val op = Ops.get(Uri(path = ""), Map())
-
-      implicit def monadKleisli[A] = Kleisli.catsDataMonadForKleisli[IO, A]
-
-      val k = op.foldMap[Kleisli[IO, HttpClient, ?]](interp.transK)
 
       val result = (op foldMap interp.trans).unsafeRunSync
 

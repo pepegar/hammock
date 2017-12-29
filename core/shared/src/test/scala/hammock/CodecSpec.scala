@@ -36,7 +36,7 @@ trait CodecTests[A] extends Laws {
 
 object CodecTests {
 
-  def apply[A: Codec](implicit A: Arbitrary[A], eq: Eq[A]): CodecTests[A] = new CodecTests[A] {
+  def apply[A: Codec : Arbitrary : Eq]: CodecTests[A] = new CodecTests[A] {
     def laws: CodecLaws[A] = CodecLaws[A]
   }
 
@@ -48,7 +48,7 @@ class CodecSpec extends FunSuite with Discipline with Matchers {
   implicit val intCodec = new Codec[Int] {
     def encode(t: Int): Entity = Entity.StringEntity(t.toString)
     def decode(s: Entity): Either[CodecException, Int] = s match {
-      case Entity.StringEntity(body, contentType) =>
+      case Entity.StringEntity(body, _) =>
         Either
           .catchOnly[NumberFormatException](body.toInt)
           .left

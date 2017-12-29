@@ -158,11 +158,11 @@ class AkkaInterpreter[F[_]: Async](
     case StatusCodes.NetworkAuthenticationRequired => Status.NetworkAuthenticationRequired
     case StatusCodes.NetworkReadTimeout            => Status.NetworkReadTimeout
     case StatusCodes.NetworkConnectTimeout         => Status.NetworkConnectTimeout
-    // case StatusCodes.ClientError(x) => Status.ClientError(x)
-    // case StatusCodes.CustomStatusCode(x) => Status.CustomStatusCode(x)
-    // case StatusCodes.Informational(x) => Status.Informational(x)
-    // case StatusCodes.Redirection(x) => Status.Redirection(x)
-    // case StatusCodes.ServerError(x) => Status.ServerError(x)
-    // case StatusCodes.Success(x) => Status.Success(x)
+    case StatusCodes.ClientError(x)                => Status.custom(x)
+    case StatusCodes.CustomStatusCode(x)           => Status.custom(x)
+    case StatusCodes.Informational(x)              => Status.custom(x)
+    case StatusCodes.Redirection(x)                => Status.custom(x)
+    case StatusCodes.ServerError(x)                => Status.custom(x)
+    case StatusCodes.Success(x)                    => Status.custom(x)
   }
 }
