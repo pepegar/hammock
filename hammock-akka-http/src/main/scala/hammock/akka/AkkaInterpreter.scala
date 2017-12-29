@@ -39,7 +39,7 @@ class AkkaInterpreter[F[_]: Async](
         http
           .singleRequest(akkaRequest)
           .flatMap(transformResponse))
-      responseF <- IO.fromFuture(Eval.later(responseFuture)).to[F]
+      responseF <- IO.fromFuture(IO(responseFuture)).to[F]
     } yield responseF
   }
 
