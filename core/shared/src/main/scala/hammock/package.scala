@@ -38,6 +38,7 @@ package object hammock {
   object UriContext extends Context
 
   object UriInterpolator extends Interpolator {
+    type Output = Uri
     type Context = UriContext.type
     type Input = String
     def contextualize(interpolation: StaticInterpolation) = {
