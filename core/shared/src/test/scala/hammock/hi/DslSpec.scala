@@ -6,8 +6,6 @@ import org.scalatest._
 
 class DslSpec extends WordSpec with Matchers {
 
-  import dsl._
-
   "`cookies`" should {
     "work when there were no cookies before" in {
       val opts = cookies(List(Cookie("a", "b"), Cookie("c", "d")))(Opts.empty)
@@ -22,7 +20,7 @@ class DslSpec extends WordSpec with Matchers {
     }
   }
 
-  "hi.dsl" should {
+  "high level dsl" should {
     "allow concatenation of operations" in {
       val req = (auth(Auth.BasicAuth("pepegar", "h4rdp4ssw0rd")) >>>
         header("X-Forwarded-Proto" -> "https") >>>
