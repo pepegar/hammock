@@ -6,6 +6,7 @@ import java.util.Date
 import cats._
 import cats.implicits._
 import hammock.hi.Cookie.SameSite
+import hammock.hi.platformspecific._
 import monocle.Optional
 import monocle.macros.Lenses
 

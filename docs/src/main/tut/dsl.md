@@ -19,7 +19,7 @@ your requests.
 import hammock._
 import hammock.jvm.Interpreter
 import hammock.hi._
-import hammock.hi.dsl._
+import hammock.hi._
 
 import cats._
 import cats.implicits._
@@ -27,7 +27,7 @@ import cats.effect.IO
 
 implicit val interp = Interpreter[IO]
 
-val opts = (header("user" -> "pepegar") &> cookie(Cookie("track", "a lot")))(Opts.empty)
+val opts = (header("user" -> "pepegar") >>> cookie(Cookie("track", "a lot")))(Opts.empty)
 
 val response = Hammock.getWithOpts(Uri.unsafeParse("http://httpbin.org/get"), opts).exec[IO]
 ```
@@ -47,8 +47,9 @@ case class Opts(
 
 All the combinators for manipulating the `Opts` type return a value of
 the type `Opts => Opts`, so you can combine directly via the `andThen`
-combinator of `Function1`.  Also, Hammock provides a helper combinator
-`&>` for composing `Opts => Opts` functions.
+combinator of `Function1`.  Also, since all these combinators are
+plain `Function1[Opts, Opts]`, for which there's an instance of
+`cats.arrow.Compose`, we can use the much nicer `>>>` operator.
 
 ### Combinators that operate on `Opts`
 
@@ -67,8 +68,8 @@ Here's an example of how can you use the high level DSL:
 
 ```tut:book
 val req = {
-  auth(Auth.BasicAuth("pepegar", "p4ssw0rd")) &>
-    cookie(Cookie("track", "A lot")) &>
+  auth(Auth.BasicAuth("pepegar", "p4ssw0rd")) >>>
+    cookie(Cookie("track", "A lot")) >>>
     header("user" -> "potatoman")
 }
 ```
@@ -80,25 +81,28 @@ in [`Monocle`](https://github.com/julientruffaut/monocle):
 
 ```tut:book
 // import stuff
-import hammock.hi._, hammock.hi.dsl._ , monocle._, monocle.function.all._
+import hammock.hi._, hammock.hi._ , monocle._, monocle.function.all._
 
 // imagine that we have the following Opts value
-val opts = (auth(Auth.BasicAuth("pepe", "password")) &> headers(Map("X-Correlation-Id" -> "234")) &> cookies(List(Cookie("a", "b"))))(Opts.empty)
+val opts = (auth(Auth.BasicAuth("pepe", "password")) >>> headers(Map("X-Correlation-Id" -> "234")) >>> cookies(List(Cookie("a", "b"))))(Opts.empty)
+
+import Opts._
+import Cookie._
 
 // Since optics compose nicely, we can focus on
 // the first value of the first cookie found in the
 // cookie list, for example:
 
-Opts.cookiesOpt composeOptional index(0) composeLens Cookie.value
+cookiesOpt composeOptional index(0) composeLens value
 
 // also you can use the symbolic operators for that :D
-Opts.cookiesOpt ^|-? index(0) ^|-> Cookie.value
+cookiesOpt ^|-? index(0) ^|-> value
 
 // and then, use the optics machinery at your will, for example for getting the focus
-(Opts.cookiesOpt ^|-? index(0) ^|-> Cookie.value).getOption(opts)
+(cookiesOpt ^|-? index(0) ^|-> value).getOption(opts)
 
 // or modifying it!
-(Opts.cookiesOpt ^|-? index(0) ^|-> Cookie.value).set("newValue")(opts)
+(cookiesOpt ^|-? index(0) ^|-> value).set("newValue")(opts)
 ```
 
 #### Authentication
