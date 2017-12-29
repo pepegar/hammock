@@ -75,5 +75,11 @@ class UriSpec extends WordSpec with Matchers {
         query = Map("page" -> "33", "sauce" -> "bbq"),
         fragment = "index".some).show shouldEqual "ftp://user:pass@patata.com?page=33&sauce=bbq#index"
     }
+
+    "/ method appends to the path" in {
+      Uri(path = "") / "segment" shouldEqual Uri(path = "/segment")
+      Uri(path = "/nonemptypath") / "segment" shouldEqual Uri(path = "/nonemptypath/segment")
+    }
   }
+
 }
