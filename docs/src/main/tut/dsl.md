@@ -1,7 +1,7 @@
 ---
 layout: docs
 title: DSL
-position: 5
+position: 4
 ---
 
 # High level DSL
@@ -29,7 +29,7 @@ implicit val interp = Interpreter[IO]
 
 val opts = (header("user" -> "pepegar") >>> cookie(Cookie("track", "a lot")))(Opts.empty)
 
-val response = Hammock.getWithOpts(Uri.unsafeParse("http://httpbin.org/get"), opts).exec[IO]
+val response = Hammock.getWithOpts(uri"http://httpbin.org/get", opts).exec[IO]
 ```
 
 ## Opts
@@ -138,7 +138,6 @@ In its companion object there are optics for all the
 fields. `Cookie.name` and `Cookie.value` are `Lens`es that allow to
 focus on one particular field of the structure.
 
-
 As you can see most of the behaviour of the cookie can be handled by
 the type itself.  For example, adding a `MaxAge` setting to a cookie
 is just matter of doing:
@@ -154,4 +153,3 @@ Cookie.maxAge.set(Some(234))(cookie)
 Headers in the `Opts` type are represented by a `Map[String, String]`.
 In this field, you normally want to put all the headers that are not
 strictly cookies or authentication header.
-
