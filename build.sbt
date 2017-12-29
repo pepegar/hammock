@@ -3,17 +3,17 @@ import ReleaseTransformations._
 import sbtcrossproject.{crossProject, CrossType}
 
 val Versions = Map(
-  "circe"          -> "0.9.0-M2",
+  "circe"          -> "0.9.0-M3",
   "monocle"        -> "1.5.0-cats-M2",
-  "atto"           -> "0.6.1-M7",
-  "cats"           -> "1.0.0-RC1",
-  "cats-effect"    -> "0.5",
-  "simulacrum"     -> "0.10.0",
-  "scalatest"      -> "3.0.1",
-  "scalacheck"     -> "1.13.4",
+  "atto"           -> "0.6.1",
+  "cats"           -> "1.0.0",
+  "cats-effect"    -> "0.7",
+  "simulacrum"     -> "0.11.0",
+  "scalatest"      -> "3.0.4",
+  "scalacheck"     -> "1.13.5",
   "discipline"     -> "0.7.3",
-  "macro-paradise" -> "2.1.0",
-  "kind-projector" -> "0.9.4",
+  "macro-paradise" -> "2.1.1",
+  "kind-projector" -> "0.9.5",
   "akka-http"      -> "10.0.9",
   "ahc"            -> "2.1.0-RC2"
 )
@@ -70,7 +70,7 @@ val buildSettings = Seq(
   organization := "com.pepegar",
   scalaVersion := "2.12.4",
   licenses := Seq(("MIT", url("http://opensource.org/licenses/MIT"))),
-  crossScalaVersions := Seq("2.11.11", scalaVersion.value),
+  crossScalaVersions := Seq("2.11.12", scalaVersion.value),
   scalacOptions ++= Seq(
     "-deprecation", // Emit warning and location for usages of deprecated APIs.
     "-encoding",
