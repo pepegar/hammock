@@ -57,7 +57,7 @@ object Hammock {
    * scala> val opts = (header("X-Test" -> "works!") >>> auth(Auth.BasicAuth("user", "pass")) >>> cookie(Cookie("key", "value")))(Opts.empty)
    * opts: hammock.hi.Opts = Opts(Some(BasicAuth(user,pass)),Map(X-Test -> works!),Some(List(Cookie(key,value,None,None,None,None,None,None,None,None))))
    *
-   * scala> val response = Hammock.withOpts(Method.GET, Uri.unsafeParse("http://httpbin.org/get"), opts)
+   * scala> val response = Hammock.withOpts(Method.GET, uri"http://httpbin.org/get", opts)
    * response: Free[HttpF, hammock.HttpResponse] = Free(...)
    * }}}
    *
@@ -89,7 +89,7 @@ object Hammock {
    * scala> val opts = (header("X-Test" -> "works!") >>> auth(Auth.BasicAuth("user", "pass")) >>> cookie(Cookie("key", "value")))(Opts.empty)
    * opts: hammock.hi.Opts = Opts(Some(BasicAuth(user,pass)),Map(X-Test -> works!),Some(List(Cookie(key,value,None,None,None,None,None,None,None,None))))
    *
-   * scala> Hammock.optionsWithOpts(Uri.unsafeParse("http://httpbin.org/get"), opts)
+   * scala> Hammock.optionsWithOpts(uri"http://httpbin.org/get", opts)
    * res1: Free[HttpF, hammock.HttpResponse] = Free(...)
    * }}}
    *
@@ -111,7 +111,7 @@ object Hammock {
    * scala> val opts = (header("X-Test" -> "works!") >>> auth(Auth.BasicAuth("user", "pass")) >>> cookie(Cookie("key", "value")))(Opts.empty)
    * opts: hammock.hi.Opts = Opts(Some(BasicAuth(user,pass)),Map(X-Test -> works!),Some(List(Cookie(key,value,None,None,None,None,None,None,None,None))))
    *
-   * scala> Hammock.getWithOpts(Uri.unsafeParse("http://httpbin.org/get"), opts)
+   * scala> Hammock.getWithOpts(uri"http://httpbin.org/get", opts)
    * res1: Free[HttpF, hammock.HttpResponse] = Free(...)
    * }}}
    *
@@ -131,7 +131,7 @@ object Hammock {
    *
    * val opts = (header("X-Test" -> "works!") >>> auth(Auth.BasicAuth("user", "pass")) >>> cookie(Cookie("key", "value")))(Opts.empty)
    *
-   * Hammock.headWithOpts(Uri.unsafeParse("http://httpbin.org/get"), opts)
+   * Hammock.headWithOpts(uri"http://httpbin.org/get", opts)
    * }}}
    *
    */
@@ -157,7 +157,7 @@ object Hammock {
    *    def decode(s: String) = Right(s)
    * }
    *
-   * Hammock.postWithOpts(Uri.unsafeParse("http://httpbin.org/get"), opts, Some("""{"body": true}"""))
+   * Hammock.postWithOpts(uri"http://httpbin.org/get", opts, Some("""{"body": true}"""))
    * }}}
    */
   def postWithOpts[A: Codec](uri: Uri, opts: Opts, body: Option[A] = None): Free[HttpF, HttpResponse] =
@@ -183,7 +183,7 @@ object Hammock {
    *    def decode(s: String) = Right(s)
    * }
    *
-   * Hammock.postWithOpts(Uri.unsafeParse("http://httpbin.org/get"), opts, Some("""{"body": true}"""))
+   * Hammock.postWithOpts(uri"http://httpbin.org/get", opts, Some("""{"body": true}"""))
    * }}}
    *
    */
@@ -195,7 +195,7 @@ object Hammock {
    * {{{
    * val opts = (header("X-Test" -> "works!") >>> auth(Auth.BasicAuth("user", "pass")) >>> cookie(Cookie("key", "value")))(Opts.empty)
    *
-   * Hammock.deleteWithOpts(Uri.unsafeParse("http://httpbin.org/get"), opts)
+   * Hammock.deleteWithOpts(uri"http://httpbin.org/get", opts)
    * }}}
    *
    */
@@ -206,7 +206,7 @@ object Hammock {
    * {{{
    * val opts = (header("X-Test" -> "works!") >>> auth(Auth.BasicAuth("user", "pass")) >>> cookie(Cookie("key", "value")))(Opts.empty)
    *
-   * Hammock.traceWithOpts(Uri.unsafeParse("http://httpbin.org/get"), opts)
+   * Hammock.traceWithOpts(uri"http://httpbin.org/get", opts)
    * }}}
    *
    */

@@ -166,7 +166,7 @@ object App {
     _ <- IO.write("What's the ID?")
     id = "4" // for the sake of docs, lets hardcode this... It should be `id <- IO.read`
     _ <- Log.info(s"id was $id")
-    response <- Hammock.get(Uri.unsafeParse(s"https://jsonplaceholder.typicode.com/users?id=${id.toString}"), Map())
+    response <- Hammock.get(uri"https://jsonplaceholder.typicode.com/users?id=${id.toString}", Map())
 	parsed <- Marshall.unmarshall[String](response.entity)
   } yield response
 

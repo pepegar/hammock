@@ -22,7 +22,7 @@ object Main extends JSApp {
     case class Resp(json: String)
     case class Req(name: String, number: Int)
 
-    val uri = Uri.unsafeParse("http://httpbin.org/post")
+    val uri = uri"http://httpbin.org/post"
 
     val request: IO[Resp] = Hammock
       .request(Method.POST, uri, Map(), Some(Req("name", 4)))

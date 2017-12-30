@@ -43,7 +43,7 @@ import hammock._
 import hammock.hi._
 
 val httpReq = Hammock.getWithOpts(
-  Uri.unsafeParse("http://httpbin.org/get"),
+  uri"http://httpbin.org/get",
   (header("header1", "value1"))(Opts.empty))
 ```
 

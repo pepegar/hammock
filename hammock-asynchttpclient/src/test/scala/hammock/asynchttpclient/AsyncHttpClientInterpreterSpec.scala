@@ -17,15 +17,15 @@ class AsyncHttpClientInterpreterTest extends WordSpec with Matchers {
   "asynchttpclient" should {
 
     "map requests correctly" in {
-      val hreq1 = Get(HttpRequest(Uri.unsafeParse("http://google.com"), Map.empty[String, String], None))
+      val hreq1 = Get(HttpRequest(uri"http://google.com", Map.empty[String, String], None))
       val req1  = interpreter.mapRequest(hreq1).unsafeRunSync.build()
 
-      val hreq2 = Post(HttpRequest(Uri.unsafeParse("http://google.com"), Map("header1" -> "value1"), None))
+      val hreq2 = Post(HttpRequest(uri"http://google.com", Map("header1" -> "value1"), None))
       val req2  = interpreter.mapRequest(hreq2).unsafeRunSync.build()
 
       val hreq3 = Put(
         HttpRequest(
-          Uri.unsafeParse("http://google.com"),
+          uri"http://google.com",
           Map("header1" -> "value1", "header2" -> "value2"),
           Some(Entity.StringEntity("the body"))))
       val req3 = interpreter.mapRequest(hreq3).unsafeRunSync.build()
