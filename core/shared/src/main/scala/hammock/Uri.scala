@@ -51,21 +51,21 @@ object Uri {
     case object Localhost extends Host
     case class Other(repr: String) extends Host
 
-    case class IPv6Group(bytes: Array[Byte])
+    case class IPv6Group(bytes: Vector[Byte])
 
     implicit val showIpv6Group: Show[IPv6Group] = new Show[IPv6Group] {
       def show(group: IPv6Group): String = group.bytes.map("%02X" format _).mkString
     }
 
     object IPv6Group {
-      val empty = IPv6Group(Array.empty[Byte])
+      val empty = IPv6Group(Vector.empty[Byte])
     }
 
     def ipv6Group: Parser[IPv6Group] = many(hexDigit).map { chars =>
       IPv6Group(
         chars.mkString
           .sliding(2,2)
-          .toArray.map(Integer.parseInt(_, 16).toByte)
+          .toVector.map(Integer.parseInt(_, 16).toByte)
       )
     }
 

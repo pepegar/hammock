@@ -4,11 +4,8 @@ import org.scalatest._
 import cats.implicits._
 import atto._
 import Atto._
-import org.scalactic.StringNormalizations._
 
 class UriSpec extends WordSpec with Matchers {
-
-
   import Uri._
 
   val ipv4 = "192.168.1.1"
@@ -16,6 +13,11 @@ class UriSpec extends WordSpec with Matchers {
   def others = "google.com" :: "test" :: "test.google.com.asdf.qwer" :: Nil
   val users = "pepe" :: "pepe:pass" :: Nil
   val ports: List[Long] = List(1L, 65536L)
+
+  def group(str: String): Host.IPv6Group =
+    Host.IPv6Group(str.sliding(2, 2).toVector.map(Integer.parseInt(_, 16).toByte))
+
+  val ipv6Host = Host.IPv6(group("2001"), group("0db8"), group("0000"), group("0042"), group("0000"), group("8a2e"), group("0370"), group("7334"))
 
   val `potato.com` = Authority(None, Host.Other("potato.com"), None)
   val `user:pass@potato.com:443` = Authority("user:pass".some, Host.Other("potato.com"), 443L.some)
@@ -27,7 +29,7 @@ class UriSpec extends WordSpec with Matchers {
     }
 
     "parse ipv6 correctly" in {
-      Host.parseHost.parseOnly(ipv6).either.right.get.show shouldEqual "[2001:0DB8:0000:0042:0000:8A2E:0370:7334]"
+      Host.parseHost.parseOnly(ipv6).either.right.get shouldEqual ipv6Host
     }
 
     "parse localhost correctly" in {
@@ -43,7 +45,7 @@ class UriSpec extends WordSpec with Matchers {
 
   "Authority" should {
     "parse authorities without user nor port correctly" in {
-      (Authority.authorityParser.parseOnly(ipv6).either.right.get.show shouldEqual ipv6) (after being lowerCased)
+      (Authority.authorityParser.parseOnly(ipv6).either.right.get shouldEqual Authority(None, ipv6Host, None))
       (Authority.authorityParser.parseOnly(ipv4).either.right.get shouldEqual Authority(None, Host.IPv4(192, 168, 1,1), None))
       (Authority.authorityParser.parseOnly("localhost").either.right.get shouldEqual Authority(None, Host.Localhost, None))
 
@@ -55,7 +57,7 @@ class UriSpec extends WordSpec with Matchers {
     "parse authorities with an user" in {
 
       users foreach { user =>
-        (Authority.authorityParser.parseOnly(s"$user@$ipv6").either.right.get.show shouldEqual s"$user@$ipv6") (after being lowerCased)
+        (Authority.authorityParser.parseOnly(s"$user@$ipv6").either.right.get shouldEqual Authority(user.some, ipv6Host, none))
         (Authority.authorityParser.parseOnly(s"$user@$ipv4").either.right.get shouldEqual Authority(user.some, Host.IPv4(192, 168, 1,1), None))
         (Authority.authorityParser.parseOnly(s"$user@localhost").either.right.get shouldEqual Authority(user.some, Host.Localhost, None))
 
@@ -68,7 +70,7 @@ class UriSpec extends WordSpec with Matchers {
     "parse authorities with an user and a port" in {
       ports foreach { port =>
         users foreach { user =>
-          (Authority.authorityParser.parseOnly(s"$user@$ipv6:$port").either.right.get.show shouldEqual s"$user@$ipv6:$port") (after being lowerCased)
+          (Authority.authorityParser.parseOnly(s"$user@$ipv6:$port").either.right.get shouldEqual Authority(user.some, ipv6Host, port.some))
           (Authority.authorityParser.parseOnly(s"$user@$ipv4:$port").either.right.get shouldEqual Authority(user.some, Host.IPv4(192, 168, 1,1), port.some))
           (Authority.authorityParser.parseOnly(s"$user@localhost:$port").either.right.get shouldEqual Authority(user.some, Host.Localhost, port.some))
 
