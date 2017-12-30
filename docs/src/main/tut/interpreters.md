@@ -41,10 +41,9 @@ For demonstrating all the interpreters we'll use the same HTTP request:
 import cats.free.Free
 import hammock._
 import hammock.hi._
-import hammock.hi.dsl._
 
 val httpReq = Hammock.getWithOpts(
-  Uri.unsafeParse("http://httpbin.org/get"),
+  uri"http://httpbin.org/get",
   (header("header1", "value1"))(Opts.empty))
 ```
 

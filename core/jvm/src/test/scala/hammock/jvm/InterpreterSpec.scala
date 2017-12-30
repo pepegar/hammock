@@ -17,6 +17,7 @@ import org.scalatest._
 import org.scalatest.mockito._
 
 class InterpreterSpec extends WordSpec with MockitoSugar with BeforeAndAfter {
+  import Uri._
   import HttpResponse._
   import MM._
 
@@ -55,7 +56,7 @@ class InterpreterSpec extends WordSpec with MockitoSugar with BeforeAndAfter {
     "create a correct Apache's HTTP request from HttpF" in {
       val req = Get(
         HttpRequest(
-          Uri.unsafeParse("http://localhost:8080"),
+          uri"http://localhost:8080",
           Map(
             "header1" -> "value1",
             "header2" -> "value2"
@@ -89,7 +90,7 @@ class InterpreterSpec extends WordSpec with MockitoSugar with BeforeAndAfter {
 
   }
 
-  private[this] def httpResponse: ApacheHttpResponse = {
+  val httpResponse: ApacheHttpResponse = {
     val resp   = new BasicHttpResponse(new BasicStatusLine(new ProtocolVersion("HTTP", 1, 1), 200, null))
     val entity = new StringEntity("content")
 

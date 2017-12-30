@@ -3,6 +3,7 @@ import ReleaseTransformations._
 import sbtcrossproject.{crossProject, CrossType}
 
 val Versions = Map(
+  "contextual"     -> "1.0.1",
   "circe"          -> "0.9.0-M3",
   "monocle"        -> "1.5.0-cats-M2",
   "atto"           -> "0.6.1",
@@ -127,6 +128,7 @@ val buildSettings = Seq(
       case _ => Seq.empty[String]
     }
   },
+  scalacOptions in (Compile, console) --= Seq("-Ywarn-unused:imports", "-Xfatal-warnings"),
   scalafmtOnCompile in ThisBuild := true
 )
 
@@ -136,6 +138,7 @@ val commonDependencies = Seq(
     "org.typelevel"              %%% "cats-free"      % Versions("cats"),
     "org.typelevel"              %%% "cats-laws"      % Versions("cats"),
     "org.typelevel"              %%% "alleycats-core" % Versions("cats"),
+    "com.propensive"             %%% "contextual"     % Versions("contextual"),
     "org.typelevel"              %% "cats-effect"     % Versions("cats-effect"),
     "com.github.mpilquist"       %%% "simulacrum"     % Versions("simulacrum"),
     "com.github.julien-truffaut" %%% "monocle-core"   % Versions("monocle"),

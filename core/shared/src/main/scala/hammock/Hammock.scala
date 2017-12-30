@@ -45,19 +45,19 @@ object Hammock {
    * Usage:
    *
    * {{{
-   * scala> import hammock._, hammock.jvm.Interpreter, hammock.hi._, hammock.hi.dsl._, cats._, cats.implicits._, scala.util.Try
+   * scala> import hammock._, hammock.jvm.Interpreter, hammock.hi._, hammock.hi._, cats._, cats.implicits._, scala.util.Try
    * import hammock._
    * import hammock.jvm.Interpreter
    * import hammock.hi._
-   * import hammock.hi.dsl._
+   * import hammock.hi._
    * import cats._
    * import cats.implicits._
    * import scala.util.Try
    *
-   * scala> val opts = (header("X-Test" -> "works!") &> auth(Auth.BasicAuth("user", "pass")) &> cookie(Cookie("key", "value")))(Opts.empty)
+   * scala> val opts = (header("X-Test" -> "works!") >>> auth(Auth.BasicAuth("user", "pass")) >>> cookie(Cookie("key", "value")))(Opts.empty)
    * opts: hammock.hi.Opts = Opts(Some(BasicAuth(user,pass)),Map(X-Test -> works!),Some(List(Cookie(key,value,None,None,None,None,None,None,None,None))))
    *
-   * scala> val response = Hammock.withOpts(Method.GET, Uri.unsafeParse("http://httpbin.org/get"), opts)
+   * scala> val response = Hammock.withOpts(Method.GET, uri"http://httpbin.org/get", opts)
    * response: Free[HttpF, hammock.HttpResponse] = Free(...)
    * }}}
    *
@@ -77,19 +77,19 @@ object Hammock {
   /** Creates an OPTIONS request to the given [[Uri uri]] and [[hi.Opts opts]].
    *
    * {{{
-   * scala> import hammock._, hammock.jvm.Interpreter, hammock.hi._, hammock.hi.dsl._, cats._, cats.implicits._, scala.util.Try
+   * scala> import hammock._, hammock.jvm.Interpreter, hammock.hi._, hammock.hi._, cats._, cats.implicits._, scala.util.Try
    * import hammock._
    * import hammock.jvm.Interpreter
    * import hammock.hi._
-   * import hammock.hi.dsl._
+   * import hammock.hi._
    * import cats._
    * import cats.implicits._
    * import scala.util.Try
    *
-   * scala> val opts = (header("X-Test" -> "works!") &> auth(Auth.BasicAuth("user", "pass")) &> cookie(Cookie("key", "value")))(Opts.empty)
+   * scala> val opts = (header("X-Test" -> "works!") >>> auth(Auth.BasicAuth("user", "pass")) >>> cookie(Cookie("key", "value")))(Opts.empty)
    * opts: hammock.hi.Opts = Opts(Some(BasicAuth(user,pass)),Map(X-Test -> works!),Some(List(Cookie(key,value,None,None,None,None,None,None,None,None))))
    *
-   * scala> Hammock.optionsWithOpts(Uri.unsafeParse("http://httpbin.org/get"), opts)
+   * scala> Hammock.optionsWithOpts(uri"http://httpbin.org/get", opts)
    * res1: Free[HttpF, hammock.HttpResponse] = Free(...)
    * }}}
    *
@@ -99,19 +99,19 @@ object Hammock {
   /** Creates a GET request to the given [[Uri uri]] and [[hi.Opts opts]].
    *
    * {{{
-   * scala> import hammock._, hammock.jvm.Interpreter, hammock.hi._, hammock.hi.dsl._, cats._, cats.implicits._, scala.util.Try
+   * scala> import hammock._, hammock.jvm.Interpreter, hammock.hi._, hammock.hi._, cats._, cats.implicits._, scala.util.Try
    * import hammock._
    * import hammock.jvm.Interpreter
    * import hammock.hi._
-   * import hammock.hi.dsl._
+   * import hammock.hi._
    * import cats._
    * import cats.implicits._
    * import scala.util.Try
    *
-   * scala> val opts = (header("X-Test" -> "works!") &> auth(Auth.BasicAuth("user", "pass")) &> cookie(Cookie("key", "value")))(Opts.empty)
+   * scala> val opts = (header("X-Test" -> "works!") >>> auth(Auth.BasicAuth("user", "pass")) >>> cookie(Cookie("key", "value")))(Opts.empty)
    * opts: hammock.hi.Opts = Opts(Some(BasicAuth(user,pass)),Map(X-Test -> works!),Some(List(Cookie(key,value,None,None,None,None,None,None,None,None))))
    *
-   * scala> Hammock.getWithOpts(Uri.unsafeParse("http://httpbin.org/get"), opts)
+   * scala> Hammock.getWithOpts(uri"http://httpbin.org/get", opts)
    * res1: Free[HttpF, hammock.HttpResponse] = Free(...)
    * }}}
    *
@@ -124,14 +124,14 @@ object Hammock {
    * import hammock._
    * import hammock.jvm.Interpreter
    * import hammock.hi._
-   * import hammock.hi.dsl._
+   * import hammock.hi._
    * import cats._
    * import cats.implicits._
    * import scala.util.Try
    *
-   * val opts = (header("X-Test" -> "works!") &> auth(Auth.BasicAuth("user", "pass")) &> cookie(Cookie("key", "value")))(Opts.empty)
+   * val opts = (header("X-Test" -> "works!") >>> auth(Auth.BasicAuth("user", "pass")) >>> cookie(Cookie("key", "value")))(Opts.empty)
    *
-   * Hammock.headWithOpts(Uri.unsafeParse("http://httpbin.org/get"), opts)
+   * Hammock.headWithOpts(uri"http://httpbin.org/get", opts)
    * }}}
    *
    */
@@ -145,19 +145,19 @@ object Hammock {
    * import hammock._
    * import hammock.jvm.Interpreter
    * import hammock.hi._
-   * import hammock.hi.dsl._
+   * import hammock.hi._
    * import cats._
    * import cats.implicits._
    * import scala.util.Try
    *
-   * val opts = (header("X-Test" -> "works!") &> auth(Auth.BasicAuth("user", "pass")) &> cookie(Cookie("key", "value")))(Opts.empty)
+   * val opts = (header("X-Test" -> "works!") >>> auth(Auth.BasicAuth("user", "pass")) >>> cookie(Cookie("key", "value")))(Opts.empty)
    *
    * implicit val stringCodec = new Codec[String] {
    *    def encode(s: String) = s
    *    def decode(s: String) = Right(s)
    * }
    *
-   * Hammock.postWithOpts(Uri.unsafeParse("http://httpbin.org/get"), opts, Some("""{"body": true}"""))
+   * Hammock.postWithOpts(uri"http://httpbin.org/get", opts, Some("""{"body": true}"""))
    * }}}
    */
   def postWithOpts[A: Codec](uri: Uri, opts: Opts, body: Option[A] = None): Free[HttpF, HttpResponse] =
@@ -171,19 +171,19 @@ object Hammock {
    * import hammock._
    * import hammock.jvm.Interpreter
    * import hammock.hi._
-   * import hammock.hi.dsl._
+   * import hammock.hi._
    * import cats._
    * import cats.implicits._
    * import scala.util.Try
    *
-   * val opts = (header("X-Test" -> "works!") &> auth(Auth.BasicAuth("user", "pass")) &> cookie(Cookie("key", "value")))(Opts.empty)
+   * val opts = (header("X-Test" -> "works!") >>> auth(Auth.BasicAuth("user", "pass")) >>> cookie(Cookie("key", "value")))(Opts.empty)
    *
    * implicit val stringCodec = new Codec[String] {
    *    def encode(s: String) = s
    *    def decode(s: String) = Right(s)
    * }
    *
-   * Hammock.postWithOpts(Uri.unsafeParse("http://httpbin.org/get"), opts, Some("""{"body": true}"""))
+   * Hammock.postWithOpts(uri"http://httpbin.org/get", opts, Some("""{"body": true}"""))
    * }}}
    *
    */
@@ -193,9 +193,9 @@ object Hammock {
   /** Creates a DELETE request to the given [[Uri uri]] and [[hi.Opts opts]].
    *
    * {{{
-   * val opts = (header("X-Test" -> "works!") &> auth(Auth.BasicAuth("user", "pass")) &> cookie(Cookie("key", "value")))(Opts.empty)
+   * val opts = (header("X-Test" -> "works!") >>> auth(Auth.BasicAuth("user", "pass")) >>> cookie(Cookie("key", "value")))(Opts.empty)
    *
-   * Hammock.deleteWithOpts(Uri.unsafeParse("http://httpbin.org/get"), opts)
+   * Hammock.deleteWithOpts(uri"http://httpbin.org/get", opts)
    * }}}
    *
    */
@@ -204,9 +204,9 @@ object Hammock {
   /** Creates a TRACE request to the given [[Uri uri]] and [[hi.Opts opts]].
    *
    * {{{
-   * val opts = (header("X-Test" -> "works!") &> auth(Auth.BasicAuth("user", "pass")) &> cookie(Cookie("key", "value")))(Opts.empty)
+   * val opts = (header("X-Test" -> "works!") >>> auth(Auth.BasicAuth("user", "pass")) >>> cookie(Cookie("key", "value")))(Opts.empty)
    *
-   * Hammock.traceWithOpts(Uri.unsafeParse("http://httpbin.org/get"), opts)
+   * Hammock.traceWithOpts(uri"http://httpbin.org/get", opts)
    * }}}
    *
    */

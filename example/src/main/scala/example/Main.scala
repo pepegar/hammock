@@ -15,7 +15,7 @@ object Main extends App {
   case class Resp(data: String)
   case class Req(name: String, number: Int)
 
-  val uri = Uri.unsafeParse("http://httpbin.org/post")
+  val uri = uri"http://httpbin.org/post"
 
   val resp = Hammock
     .request(Method.POST, uri, Map(), Some(Req("name", 4)))

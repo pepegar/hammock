@@ -1,8 +1,6 @@
 package hammock
-package hi
 
-object dsl {
-
+package object hi {
   def auth(a: Auth): Opts => Opts = Opts.auth.set(Some(a))
 
   def cookies_!(cookies: List[Cookie]): Opts => Opts = Opts.cookies.set(Some(cookies))
@@ -20,6 +18,7 @@ object dsl {
   def header(header: (String, String)): Opts => Opts        = Opts.headers.modify(_ + header)
 
   implicit class opts2OptsSyntax(a: Opts => Opts) {
+    @deprecated("use cats' <<< or >>> instead")
     def &>(b: Opts => Opts): Opts => Opts = a compose b
   }
 }
