@@ -19,23 +19,23 @@ val Versions = Map(
   "ahc"            -> "2.1.0-RC2"
 )
 
+publishTo in ThisBuild := {
+  val nexus = "https://oss.sonatype.org/"
+  if (isSnapshot.value)
+    Some("snapshots" at nexus + "content/repositories/snapshots")
+  else
+    Some("releases" at nexus + "service/local/staging/deploy/maven2")
+}
+
 val noPublishSettings = Seq(
   publish := {},
   publishLocal := {},
-  publishTo := None,
   publishArtifact := false,
   skip in publish := true
 )
 
 val publishSettings = Seq(
   publishMavenStyle := true,
-  publishTo := {
-    val nexus = "https://oss.sonatype.org/"
-    if (isSnapshot.value)
-      Some("snapshots" at nexus + "content/repositories/snapshots")
-    else
-      Some("releases" at nexus + "service/local/staging/deploy/maven2")
-  },
   publishArtifact in Test := false,
   useGpg := true,
   homepage := Some(url("https://github.com/pepegar/hammock")),
