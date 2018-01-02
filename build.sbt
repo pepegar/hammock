@@ -20,6 +20,9 @@ val Versions = Map(
 )
 
 val noPublishSettings = Seq(
+  publish := {},
+  publishLocal := {},
+  publishArtifact := false,
   skip in publish := true
 )
 
