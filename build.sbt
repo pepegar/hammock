@@ -4,15 +4,15 @@ import sbtcrossproject.{crossProject, CrossType}
 
 val Versions = Map(
   "contextual"     -> "1.0.1",
-  "circe"          -> "0.9.0-M3",
+  "circe"          -> "0.9.0",
   "monocle"        -> "1.5.0-cats-M2",
   "atto"           -> "0.6.1",
-  "cats"           -> "1.0.0",
+  "cats"           -> "1.0.1",
   "cats-effect"    -> "0.7",
   "simulacrum"     -> "0.11.0",
   "scalatest"      -> "3.0.4",
   "scalacheck"     -> "1.13.5",
-  "discipline"     -> "0.7.3",
+  "discipline"     -> "0.8",
   "macro-paradise" -> "2.1.1",
   "kind-projector" -> "0.9.5",
   "akka-http"      -> "10.0.9",
