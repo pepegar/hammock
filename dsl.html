@@ -129,7 +129,7 @@ your requests.</p>
 // &lt;console&gt;:23: warning: Unused import
 //        import cats.implicits._
 //                              ^
-// interp: hammock.jvm.Interpreter[cats.effect.IO] = hammock.jvm.Interpreter@27b5ceb7
+// interp: hammock.jvm.Interpreter[cats.effect.IO] = hammock.jvm.Interpreter@416a188d
 </span>
 <span class="k">val</span> <span class="n">opts</span> <span class="k">=</span> <span class="o">(</span><span class="n">header</span><span class="o">(</span><span class="s">"user"</span> <span class="o">-&gt;</span> <span class="s">"pepegar"</span><span class="o">)</span> <span class="o">&gt;&gt;&gt;</span> <span class="n">cookie</span><span class="o">(</span><span class="nc">Cookie</span><span class="o">(</span><span class="s">"track"</span><span class="o">,</span> <span class="s">"a lot"</span><span class="o">)))(</span><span class="nc">Opts</span><span class="o">.</span><span class="n">empty</span><span class="o">)</span>
 <span class="c1">// &lt;console&gt;:10: warning: Unused import
@@ -168,7 +168,7 @@ your requests.</p>
 // &lt;console&gt;:23: warning: Unused import
 //        import cats.implicits._
 //                              ^
-// response: cats.effect.IO[hammock.HttpResponse] = IO$54124997
+// response: cats.effect.IO[hammock.HttpResponse] = IO$303069620
 </span></code></pre>
 </div>
 
@@ -257,7 +257,7 @@ plain <code class="highlighter-rouge">Function1[Opts, Opts]</code>, for which th
 // &lt;console&gt;:26: warning: Unused import
 //        import interp
 //                                                                            ^
-// req: hammock.hi.Opts =&gt; hammock.hi.Opts = scala.Function1$$Lambda$607/2076627578@49ea78ea
+// req: hammock.hi.Opts =&gt; hammock.hi.Opts = scala.Function1$$Lambda$607/2076627578@65322c24
 </span></code></pre>
 </div>
 
@@ -459,7 +459,7 @@ in <a href="https://github.com/julientruffaut/monocle"><code class="highlighter-
 // &lt;console&gt;:34: warning: Unused import
 //        import monocle._
 //                       ^
-// res6: monocle.POptional[hammock.hi.Opts,hammock.hi.Opts,String,String] = monocle.POptional$$anon$2@612f7a6c
+// res6: monocle.POptional[hammock.hi.Opts,hammock.hi.Opts,String,String] = monocle.POptional$$anon$2@1d746cda
 </span>
 <span class="c1">// also you can use the symbolic operators for that :D
 </span><span class="n">cookiesOpt</span> <span class="o">^|-?</span> <span class="n">index</span><span class="o">(</span><span class="mi">0</span><span class="o">)</span> <span class="o">^|-&gt;</span> <span class="n">value</span>
@@ -493,7 +493,7 @@ in <a href="https://github.com/julientruffaut/monocle"><code class="highlighter-
 // &lt;console&gt;:34: warning: Unused import
 //        import monocle._
 //                       ^
-// res8: monocle.POptional[hammock.hi.Opts,hammock.hi.Opts,String,String] = monocle.POptional$$anon$2@1616f037
+// res8: monocle.POptional[hammock.hi.Opts,hammock.hi.Opts,String,String] = monocle.POptional$$anon$2@3af4e69b
 </span>
 <span class="c1">// and then, use the optics machinery at your will, for example for getting the focus
 </span><span class="o">(</span><span class="n">cookiesOpt</span> <span class="o">^|-?</span> <span class="n">index</span><span class="o">(</span><span class="mi">0</span><span class="o">)</span> <span class="o">^|-&gt;</span> <span class="n">value</span><span class="o">).</span><span class="n">getOption</span><span class="o">(</span><span class="n">opts</span><span class="o">)</span>
