@@ -21,8 +21,9 @@ import cats.implicits._
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class AkkaInterpreter[F[_]: Async](
-    client: HttpExt)(implicit materializer: ActorMaterializer, executionContext: ExecutionContext)
+class AkkaInterpreter[F[_]: Async](client: HttpExt)(
+    implicit materializer: ActorMaterializer,
+    executionContext: ExecutionContext)
     extends InterpTrans[F] {
 
   def trans(implicit S: Sync[F]): HttpF ~> F = transK andThen λ[Kleisli[F, HttpExt, ?] ~> F](_.run(client))
@@ -39,7 +40,7 @@ class AkkaInterpreter[F[_]: Async](
         http
           .singleRequest(akkaRequest)
           .flatMap(transformResponse))
-      responseF <- IO.fromFuture(Eval.later(responseFuture)).to[F]
+      responseF <- IO.fromFuture(IO(responseFuture)).to[F]
     } yield responseF
   }
 

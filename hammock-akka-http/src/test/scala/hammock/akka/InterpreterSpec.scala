@@ -154,8 +154,7 @@ class InterpreterSpec extends WordSpec with MockitoSugar with Matchers with Befo
             RawHeader("header1", "value1"),
             RawHeader("header2", "value2")
           ))
-        .withEntity(
-          HttpEntity.Strict(ContentTypes.`application/octet-stream`, ByteString(Array[Byte](11, 12, 13, 14))))
+        .withEntity(HttpEntity.Strict(ContentTypes.`application/octet-stream`, ByteString(Array[Byte](11, 12, 13, 14))))
       when(client.singleRequest(akkaReq)).thenReturn(Future.successful(httpResponse))
       val result = (Free.liftF(hammockReq) foldMap interp.trans).unsafeRunSync
 
