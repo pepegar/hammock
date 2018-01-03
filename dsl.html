@@ -9,166 +9,34 @@ your requests.</p>
 <h2 id="example-of-use">Example of use</h2>
 
 <div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="k">import</span> <span class="nn">hammock._</span>
-<span class="c1">// &lt;console&gt;:12: warning: Unused import
-//        import hammock._
-//                       ^
-// import hammock._
+<span class="c1">// import hammock._
 </span>
 <span class="k">import</span> <span class="nn">hammock.jvm.Interpreter</span>
-<span class="c1">// &lt;console&gt;:10: warning: Unused import
-//        import hammock._
-//                       ^
-// &lt;console&gt;:15: warning: Unused import
-//        import hammock.jvm.Interpreter
-//                           ^
-// import hammock.jvm.Interpreter
+<span class="c1">// import hammock.jvm.Interpreter
 </span>
 <span class="k">import</span> <span class="nn">hammock.hi._</span>
-<span class="c1">// &lt;console&gt;:10: warning: Unused import
-//        import hammock._
-//                       ^
-// &lt;console&gt;:12: warning: Unused import
-//        import hammock.jvm.Interpreter
-//                           ^
-// &lt;console&gt;:16: warning: Unused import
-//        import hammock.hi._
-//                          ^
-// import hammock.hi._
+<span class="c1">// import hammock.hi._
 </span>
 <span class="k">import</span> <span class="nn">hammock.hi._</span>
-<span class="c1">// &lt;console&gt;:10: warning: Unused import
-//        import hammock._
-//                       ^
-// &lt;console&gt;:12: warning: Unused import
-//        import hammock.jvm.Interpreter
-//                           ^
-// &lt;console&gt;:14: warning: Unused import
-//        import hammock.hi._
-//                          ^
-// &lt;console&gt;:19: warning: Unused import
-//        import hammock.hi._
-//                          ^
-// import hammock.hi._
+<span class="c1">// import hammock.hi._
 </span>
 <span class="k">import</span> <span class="nn">cats._</span>
-<span class="c1">// &lt;console&gt;:10: warning: Unused import
-//        import hammock._
-//                       ^
-// &lt;console&gt;:12: warning: Unused import
-//        import hammock.jvm.Interpreter
-//                           ^
-// &lt;console&gt;:14: warning: Unused import
-//        import hammock.hi._
-//                          ^
-// &lt;console&gt;:17: warning: Unused import
-//        import hammock.hi._
-//                          ^
-// &lt;console&gt;:22: warning: Unused import
-//        import cats._
-//                    ^
-// import cats._
+<span class="c1">// import cats._
 </span>
 <span class="k">import</span> <span class="nn">cats.implicits._</span>
-<span class="c1">// &lt;console&gt;:10: warning: Unused import
-//        import hammock._
-//                       ^
-// &lt;console&gt;:12: warning: Unused import
-//        import hammock.jvm.Interpreter
-//                           ^
-// &lt;console&gt;:14: warning: Unused import
-//        import hammock.hi._
-//                          ^
-// &lt;console&gt;:17: warning: Unused import
-//        import hammock.hi._
-//                          ^
-// &lt;console&gt;:20: warning: Unused import
-//        import cats._
-//                    ^
-// &lt;console&gt;:25: warning: Unused import
-//        import cats.implicits._
-//                              ^
-// import cats.implicits._
+<span class="c1">// import cats.implicits._
 </span>
 <span class="k">import</span> <span class="nn">cats.effect.IO</span>
-<span class="c1">// &lt;console&gt;:10: warning: Unused import
-//        import hammock._
-//                       ^
-// &lt;console&gt;:12: warning: Unused import
-//        import hammock.jvm.Interpreter
-//                           ^
-// &lt;console&gt;:14: warning: Unused import
-//        import hammock.hi._
-//                          ^
-// &lt;console&gt;:17: warning: Unused import
-//        import hammock.hi._
-//                          ^
-// &lt;console&gt;:20: warning: Unused import
-//        import cats._
-//                    ^
-// &lt;console&gt;:23: warning: Unused import
-//        import cats.implicits._
-//                              ^
-// &lt;console&gt;:28: warning: Unused import
-//        import cats.effect.IO
-//                           ^
-// import cats.effect.IO
+<span class="c1">// import cats.effect.IO
 </span>
 <span class="k">implicit</span> <span class="k">val</span> <span class="n">interp</span> <span class="k">=</span> <span class="nc">Interpreter</span><span class="o">[</span><span class="kt">IO</span><span class="o">]</span>
-<span class="c1">// &lt;console&gt;:10: warning: Unused import
-//        import hammock._
-//                       ^
-// &lt;console&gt;:14: warning: Unused import
-//        import hammock.hi._
-//                          ^
-// &lt;console&gt;:17: warning: Unused import
-//        import hammock.hi._
-//                          ^
-// &lt;console&gt;:20: warning: Unused import
-//        import cats._
-//                    ^
-// &lt;console&gt;:23: warning: Unused import
-//        import cats.implicits._
-//                              ^
-// interp: hammock.jvm.Interpreter[cats.effect.IO] = hammock.jvm.Interpreter@416a188d
+<span class="c1">// interp: hammock.jvm.Interpreter[cats.effect.IO] = hammock.jvm.Interpreter@3ab3fcdc
 </span>
 <span class="k">val</span> <span class="n">opts</span> <span class="k">=</span> <span class="o">(</span><span class="n">header</span><span class="o">(</span><span class="s">"user"</span> <span class="o">-&gt;</span> <span class="s">"pepegar"</span><span class="o">)</span> <span class="o">&gt;&gt;&gt;</span> <span class="n">cookie</span><span class="o">(</span><span class="nc">Cookie</span><span class="o">(</span><span class="s">"track"</span><span class="o">,</span> <span class="s">"a lot"</span><span class="o">)))(</span><span class="nc">Opts</span><span class="o">.</span><span class="n">empty</span><span class="o">)</span>
-<span class="c1">// &lt;console&gt;:10: warning: Unused import
-//        import hammock._
-//                       ^
-// &lt;console&gt;:12: warning: Unused import
-//        import hammock.jvm.Interpreter
-//                           ^
-// &lt;console&gt;:14: warning: Unused import
-//        import hammock.hi._
-//                          ^
-// &lt;console&gt;:20: warning: Unused import
-//        import cats._
-//                    ^
-// &lt;console&gt;:25: warning: Unused import
-//        import cats.effect.IO
-//                           ^
-// &lt;console&gt;:26: warning: Unused import
-//        import interp
-//                                                                            ^
-// opts: hammock.hi.Opts = Opts(None,Map(user -&gt; pepegar),Some(List(Cookie(track,a lot,None,None,None,None,None,None,None,None))))
+<span class="c1">// opts: hammock.hi.Opts = Opts(None,Map(user -&gt; pepegar),Some(List(Cookie(track,a lot,None,None,None,None,None,None,None,None))))
 </span>
 <span class="k">val</span> <span class="n">response</span> <span class="k">=</span> <span class="nc">Hammock</span><span class="o">.</span><span class="n">getWithOpts</span><span class="o">(</span><span class="n">uri</span><span class="s">"http://httpbin.org/get"</span><span class="o">,</span> <span class="n">opts</span><span class="o">).</span><span class="n">exec</span><span class="o">[</span><span class="kt">IO</span><span class="o">]</span>
-<span class="c1">// &lt;console&gt;:12: warning: Unused import
-//        import hammock.jvm.Interpreter
-//                           ^
-// &lt;console&gt;:14: warning: Unused import
-//        import hammock.hi._
-//                          ^
-// &lt;console&gt;:17: warning: Unused import
-//        import hammock.hi._
-//                          ^
-// &lt;console&gt;:20: warning: Unused import
-//        import cats._
-//                    ^
-// &lt;console&gt;:23: warning: Unused import
-//        import cats.implicits._
-//                              ^
-// response: cats.effect.IO[hammock.HttpResponse] = IO$303069620
+<span class="c1">// response: cats.effect.IO[hammock.HttpResponse] = IO$575792144
 </span></code></pre>
 </div>
 
@@ -239,25 +107,7 @@ plain <code class="highlighter-rouge">Function1[Opts, Opts]</code>, for which th
     <span class="n">cookie</span><span class="o">(</span><span class="nc">Cookie</span><span class="o">(</span><span class="s">"track"</span><span class="o">,</span> <span class="s">"A lot"</span><span class="o">))</span> <span class="o">&gt;&gt;&gt;</span>
     <span class="n">header</span><span class="o">(</span><span class="s">"user"</span> <span class="o">-&gt;</span> <span class="s">"potatoman"</span><span class="o">)</span>
 <span class="o">}</span>
-<span class="c1">// &lt;console&gt;:10: warning: Unused import
-//        import hammock._
-//                       ^
-// &lt;console&gt;:12: warning: Unused import
-//        import hammock.jvm.Interpreter
-//                           ^
-// &lt;console&gt;:14: warning: Unused import
-//        import hammock.hi._
-//                          ^
-// &lt;console&gt;:20: warning: Unused import
-//        import cats._
-//                    ^
-// &lt;console&gt;:25: warning: Unused import
-//        import cats.effect.IO
-//                           ^
-// &lt;console&gt;:26: warning: Unused import
-//        import interp
-//                                                                            ^
-// req: hammock.hi.Opts =&gt; hammock.hi.Opts = scala.Function1$$Lambda$607/2076627578@65322c24
+<span class="c1">// req: hammock.hi.Opts =&gt; hammock.hi.Opts = scala.Function1$$Lambda$607/2076627578@4092a689
 </span></code></pre>
 </div>
 
@@ -268,300 +118,39 @@ in <a href="https://github.com/julientruffaut/monocle"><code class="highlighter-
 
 <div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="c1">// import stuff
 </span><span class="k">import</span> <span class="nn">hammock.hi._</span><span class="o">,</span> <span class="n">hammock</span><span class="o">.</span><span class="n">hi</span><span class="o">.</span><span class="k">_</span> <span class="o">,</span> <span class="n">monocle</span><span class="o">.</span><span class="k">_</span><span class="o">,</span> <span class="n">monocle</span><span class="o">.</span><span class="n">function</span><span class="o">.</span><span class="n">all</span><span class="o">.</span><span class="k">_</span>
-<span class="c1">// &lt;console&gt;:10: warning: Unused import
-//        import hammock._
-//                       ^
-// &lt;console&gt;:12: warning: Unused import
-//        import hammock.jvm.Interpreter
-//                           ^
-// &lt;console&gt;:14: warning: Unused import
-//        import hammock.hi._
-//                          ^
-// &lt;console&gt;:17: warning: Unused import
-//        import hammock.hi._
-//                          ^
-// &lt;console&gt;:20: warning: Unused import
-//        import cats._
-//                    ^
-// &lt;console&gt;:23: warning: Unused import
-//        import cats.implicits._
-//                              ^
-// &lt;console&gt;:25: warning: Unused import
-//        import cats.effect.IO
-//                           ^
-// &lt;console&gt;:26: warning: Unused import
-//        import interp
-//                                                                            ^
-// &lt;console&gt;:31: warning: Unused import
-//        import hammock.hi._, hammock.hi._ , monocle._, monocle.function.all._
-//                          ^
-// &lt;console&gt;:31: warning: Unused import
-//        import hammock.hi._, hammock.hi._ , monocle._, monocle.function.all._
-//                                        ^
-// &lt;console&gt;:31: warning: Unused import
-//        import hammock.hi._, hammock.hi._ , monocle._, monocle.function.all._
-//                                                    ^
-// &lt;console&gt;:31: warning: Unused import
-//        import hammock.hi._, hammock.hi._ , monocle._, monocle.function.all._
-//                                                                            ^
-// import hammock.hi._
+<span class="c1">// import hammock.hi._
 // import hammock.hi._
 // import monocle._
 // import monocle.function.all._
 </span>
 <span class="c1">// imagine that we have the following Opts value
 </span><span class="k">val</span> <span class="n">opts</span> <span class="k">=</span> <span class="o">(</span><span class="n">auth</span><span class="o">(</span><span class="nc">Auth</span><span class="o">.</span><span class="nc">BasicAuth</span><span class="o">(</span><span class="s">"pepe"</span><span class="o">,</span> <span class="s">"password"</span><span class="o">))</span> <span class="o">&gt;&gt;&gt;</span> <span class="n">headers</span><span class="o">(</span><span class="nc">Map</span><span class="o">(</span><span class="s">"X-Correlation-Id"</span> <span class="o">-&gt;</span> <span class="s">"234"</span><span class="o">))</span> <span class="o">&gt;&gt;&gt;</span> <span class="n">cookies</span><span class="o">(</span><span class="nc">List</span><span class="o">(</span><span class="nc">Cookie</span><span class="o">(</span><span class="s">"a"</span><span class="o">,</span> <span class="s">"b"</span><span class="o">))))(</span><span class="nc">Opts</span><span class="o">.</span><span class="n">empty</span><span class="o">)</span>
-<span class="c1">// &lt;console&gt;:10: warning: Unused import
-//        import hammock._
-//                       ^
-// &lt;console&gt;:12: warning: Unused import
-//        import hammock.jvm.Interpreter
-//                           ^
-// &lt;console&gt;:14: warning: Unused import
-//        import hammock.hi._
-//                          ^
-// &lt;console&gt;:17: warning: Unused import
-//        import hammock.hi._
-//                          ^
-// &lt;console&gt;:20: warning: Unused import
-//        import cats._
-//                    ^
-// &lt;console&gt;:25: warning: Unused import
-//        import cats.effect.IO
-//                           ^
-// &lt;console&gt;:26: warning: Unused import
-//        import interp
-//                                                                            ^
-// &lt;console&gt;:28: warning: Unused import
-//        import hammock.hi._
-//                          ^
-// &lt;console&gt;:34: warning: Unused import
-//        import monocle._
-//                       ^
-// &lt;console&gt;:37: warning: Unused import
-//        import monocle.function.all._
-//                                    ^
-// opts: hammock.hi.Opts = Opts(Some(BasicAuth(pepe,password)),Map(X-Correlation-Id -&gt; 234),Some(List(Cookie(a,b,None,None,None,None,None,None,None,None))))
+<span class="c1">// opts: hammock.hi.Opts = Opts(Some(BasicAuth(pepe,password)),Map(X-Correlation-Id -&gt; 234),Some(List(Cookie(a,b,None,None,None,None,None,None,None,None))))
 </span>
 <span class="k">import</span> <span class="nn">Opts._</span>
-<span class="c1">// &lt;console&gt;:10: warning: Unused import
-//        import hammock._
-//                       ^
-// &lt;console&gt;:12: warning: Unused import
-//        import hammock.jvm.Interpreter
-//                           ^
-// &lt;console&gt;:14: warning: Unused import
-//        import hammock.hi._
-//                          ^
-// &lt;console&gt;:17: warning: Unused import
-//        import hammock.hi._
-//                          ^
-// &lt;console&gt;:20: warning: Unused import
-//        import cats._
-//                    ^
-// &lt;console&gt;:23: warning: Unused import
-//        import cats.implicits._
-//                              ^
-// &lt;console&gt;:25: warning: Unused import
-//        import cats.effect.IO
-//                           ^
-// &lt;console&gt;:26: warning: Unused import
-//        import interp
-//                                                                            ^
-// &lt;console&gt;:28: warning: Unused import
-//        import hammock.hi._
-//                          ^
-// &lt;console&gt;:34: warning: Unused import
-//        import monocle._
-//                       ^
-// &lt;console&gt;:37: warning: Unused import
-//        import monocle.function.all._
-//                                    ^
-// &lt;console&gt;:42: warning: Unused import
-//        import Opts._
-//                    ^
-// import Opts._
+<span class="c1">// import Opts._
 </span>
 <span class="k">import</span> <span class="nn">Cookie._</span>
-<span class="c1">// &lt;console&gt;:10: warning: Unused import
-//        import hammock._
-//                       ^
-// &lt;console&gt;:12: warning: Unused import
-//        import hammock.jvm.Interpreter
-//                           ^
-// &lt;console&gt;:14: warning: Unused import
-//        import hammock.hi._
-//                          ^
-// &lt;console&gt;:17: warning: Unused import
-//        import hammock.hi._
-//                          ^
-// &lt;console&gt;:20: warning: Unused import
-//        import cats._
-//                    ^
-// &lt;console&gt;:23: warning: Unused import
-//        import cats.implicits._
-//                              ^
-// &lt;console&gt;:25: warning: Unused import
-//        import cats.effect.IO
-//                           ^
-// &lt;console&gt;:26: warning: Unused import
-//        import interp
-//                                                                            ^
-// &lt;console&gt;:28: warning: Unused import
-//        import hammock.hi._
-//                          ^
-// &lt;console&gt;:34: warning: Unused import
-//        import monocle._
-//                       ^
-// &lt;console&gt;:37: warning: Unused import
-//        import monocle.function.all._
-//                                    ^
-// &lt;console&gt;:40: warning: Unused import
-//        import Opts._
-//                    ^
-// &lt;console&gt;:45: warning: Unused import
-//        import Cookie._
-//                      ^
-// import Cookie._
+<span class="c1">// import Cookie._
 </span>
 <span class="c1">// Since optics compose nicely, we can focus on
 // the first value of the first cookie found in the
 // cookie list, for example:
 </span>
 <span class="n">cookiesOpt</span> <span class="n">composeOptional</span> <span class="n">index</span><span class="o">(</span><span class="mi">0</span><span class="o">)</span> <span class="n">composeLens</span> <span class="n">value</span>
-<span class="c1">// &lt;console&gt;:10: warning: Unused import
-//        import hammock._
-//                       ^
-// &lt;console&gt;:12: warning: Unused import
-//        import hammock.jvm.Interpreter
-//                           ^
-// &lt;console&gt;:14: warning: Unused import
-//        import hammock.hi._
-//                          ^
-// &lt;console&gt;:17: warning: Unused import
-//        import hammock.hi._
-//                          ^
-// &lt;console&gt;:20: warning: Unused import
-//        import cats._
-//                    ^
-// &lt;console&gt;:23: warning: Unused import
-//        import cats.implicits._
-//                              ^
-// &lt;console&gt;:25: warning: Unused import
-//        import cats.effect.IO
-//                           ^
-// &lt;console&gt;:26: warning: Unused import
-//        import interp
-//                                                                            ^
-// &lt;console&gt;:28: warning: Unused import
-//        import hammock.hi._
-//                          ^
-// &lt;console&gt;:34: warning: Unused import
-//        import monocle._
-//                       ^
-// res6: monocle.POptional[hammock.hi.Opts,hammock.hi.Opts,String,String] = monocle.POptional$$anon$2@1d746cda
+<span class="c1">// res6: monocle.POptional[hammock.hi.Opts,hammock.hi.Opts,String,String] = monocle.POptional$$anon$2@4d2a99ca
 </span>
 <span class="c1">// also you can use the symbolic operators for that :D
 </span><span class="n">cookiesOpt</span> <span class="o">^|-?</span> <span class="n">index</span><span class="o">(</span><span class="mi">0</span><span class="o">)</span> <span class="o">^|-&gt;</span> <span class="n">value</span>
-<span class="c1">// &lt;console&gt;:10: warning: Unused import
-//        import hammock._
-//                       ^
-// &lt;console&gt;:12: warning: Unused import
-//        import hammock.jvm.Interpreter
-//                           ^
-// &lt;console&gt;:14: warning: Unused import
-//        import hammock.hi._
-//                          ^
-// &lt;console&gt;:17: warning: Unused import
-//        import hammock.hi._
-//                          ^
-// &lt;console&gt;:20: warning: Unused import
-//        import cats._
-//                    ^
-// &lt;console&gt;:23: warning: Unused import
-//        import cats.implicits._
-//                              ^
-// &lt;console&gt;:25: warning: Unused import
-//        import cats.effect.IO
-//                           ^
-// &lt;console&gt;:26: warning: Unused import
-//        import interp
-//                                                                            ^
-// &lt;console&gt;:28: warning: Unused import
-//        import hammock.hi._
-//                          ^
-// &lt;console&gt;:34: warning: Unused import
-//        import monocle._
-//                       ^
-// res8: monocle.POptional[hammock.hi.Opts,hammock.hi.Opts,String,String] = monocle.POptional$$anon$2@3af4e69b
+<span class="c1">// res8: monocle.POptional[hammock.hi.Opts,hammock.hi.Opts,String,String] = monocle.POptional$$anon$2@234c548d
 </span>
 <span class="c1">// and then, use the optics machinery at your will, for example for getting the focus
 </span><span class="o">(</span><span class="n">cookiesOpt</span> <span class="o">^|-?</span> <span class="n">index</span><span class="o">(</span><span class="mi">0</span><span class="o">)</span> <span class="o">^|-&gt;</span> <span class="n">value</span><span class="o">).</span><span class="n">getOption</span><span class="o">(</span><span class="n">opts</span><span class="o">)</span>
-<span class="c1">// &lt;console&gt;:10: warning: Unused import
-//        import hammock._
-//                       ^
-// &lt;console&gt;:12: warning: Unused import
-//        import hammock.jvm.Interpreter
-//                           ^
-// &lt;console&gt;:14: warning: Unused import
-//        import hammock.hi._
-//                          ^
-// &lt;console&gt;:17: warning: Unused import
-//        import hammock.hi._
-//                          ^
-// &lt;console&gt;:20: warning: Unused import
-//        import cats._
-//                    ^
-// &lt;console&gt;:23: warning: Unused import
-//        import cats.implicits._
-//                              ^
-// &lt;console&gt;:25: warning: Unused import
-//        import cats.effect.IO
-//                           ^
-// &lt;console&gt;:26: warning: Unused import
-//        import interp
-//                                                                            ^
-// &lt;console&gt;:28: warning: Unused import
-//        import hammock.hi._
-//                          ^
-// &lt;console&gt;:34: warning: Unused import
-//        import monocle._
-//                       ^
-// res10: Option[String] = Some(b)
+<span class="c1">// res10: Option[String] = Some(b)
 </span>
 <span class="c1">// or modifying it!
 </span><span class="o">(</span><span class="n">cookiesOpt</span> <span class="o">^|-?</span> <span class="n">index</span><span class="o">(</span><span class="mi">0</span><span class="o">)</span> <span class="o">^|-&gt;</span> <span class="n">value</span><span class="o">).</span><span class="n">set</span><span class="o">(</span><span class="s">"newValue"</span><span class="o">)(</span><span class="n">opts</span><span class="o">)</span>
-<span class="c1">// &lt;console&gt;:10: warning: Unused import
-//        import hammock._
-//                       ^
-// &lt;console&gt;:12: warning: Unused import
-//        import hammock.jvm.Interpreter
-//                           ^
-// &lt;console&gt;:14: warning: Unused import
-//        import hammock.hi._
-//                          ^
-// &lt;console&gt;:17: warning: Unused import
-//        import hammock.hi._
-//                          ^
-// &lt;console&gt;:20: warning: Unused import
-//        import cats._
-//                    ^
-// &lt;console&gt;:23: warning: Unused import
-//        import cats.implicits._
-//                              ^
-// &lt;console&gt;:25: warning: Unused import
-//        import cats.effect.IO
-//                           ^
-// &lt;console&gt;:26: warning: Unused import
-//        import interp
-//                                                                            ^
-// &lt;console&gt;:28: warning: Unused import
-//        import hammock.hi._
-//                          ^
-// &lt;console&gt;:34: warning: Unused import
-//        import monocle._
-//                       ^
-// res12: hammock.hi.Opts = Opts(Some(BasicAuth(pepe,password)),Map(X-Correlation-Id -&gt; 234),Some(List(Cookie(a,newValue,None,None,None,None,None,None,None,None))))
+<span class="c1">// res12: hammock.hi.Opts = Opts(Some(BasicAuth(pepe,password)),Map(X-Correlation-Id -&gt; 234),Some(List(Cookie(a,newValue,None,None,None,None,None,None,None,None))))
 </span></code></pre>
 </div>
 
@@ -605,88 +194,10 @@ the type itself.  For example, adding a <code class="highlighter-rouge">MaxAge</
 is just matter of doing:</p>
 
 <div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="k">val</span> <span class="n">cookie</span> <span class="k">=</span> <span class="nc">Cookie</span><span class="o">(</span><span class="s">"_ga"</span><span class="o">,</span> <span class="s">"werwer"</span><span class="o">)</span>
-<span class="c1">// &lt;console&gt;:10: warning: Unused import
-//        import hammock._
-//                       ^
-// &lt;console&gt;:12: warning: Unused import
-//        import hammock.jvm.Interpreter
-//                           ^
-// &lt;console&gt;:14: warning: Unused import
-//        import hammock.hi._
-//                          ^
-// &lt;console&gt;:17: warning: Unused import
-//        import hammock.hi._
-//                          ^
-// &lt;console&gt;:20: warning: Unused import
-//        import cats._
-//                    ^
-// &lt;console&gt;:23: warning: Unused import
-//        import cats.implicits._
-//                              ^
-// &lt;console&gt;:25: warning: Unused import
-//        import cats.effect.IO
-//                           ^
-// &lt;console&gt;:26: warning: Unused import
-//        import interp
-//                                                                            ^
-// &lt;console&gt;:28: warning: Unused import
-//        import hammock.hi._
-//                          ^
-// &lt;console&gt;:34: warning: Unused import
-//        import monocle._
-//                       ^
-// &lt;console&gt;:37: warning: Unused import
-//        import monocle.function.all._
-//                                    ^
-// &lt;console&gt;:40: warning: Unused import
-//        import Opts._
-//                    ^
-// &lt;console&gt;:43: warning: Unused import
-//        import Cookie._
-//                      ^
-// cookie: hammock.hi.Cookie = Cookie(_ga,werwer,None,None,None,None,None,None,None,None)
+<span class="c1">// cookie: hammock.hi.Cookie = Cookie(_ga,werwer,None,None,None,None,None,None,None,None)
 </span>
 <span class="nc">Cookie</span><span class="o">.</span><span class="n">maxAge</span><span class="o">.</span><span class="n">set</span><span class="o">(</span><span class="nc">Some</span><span class="o">(</span><span class="mi">234</span><span class="o">))(</span><span class="n">cookie</span><span class="o">)</span>
-<span class="c1">// &lt;console&gt;:10: warning: Unused import
-//        import hammock._
-//                       ^
-// &lt;console&gt;:12: warning: Unused import
-//        import hammock.jvm.Interpreter
-//                           ^
-// &lt;console&gt;:14: warning: Unused import
-//        import hammock.hi._
-//                          ^
-// &lt;console&gt;:17: warning: Unused import
-//        import hammock.hi._
-//                          ^
-// &lt;console&gt;:20: warning: Unused import
-//        import cats._
-//                    ^
-// &lt;console&gt;:23: warning: Unused import
-//        import cats.implicits._
-//                              ^
-// &lt;console&gt;:25: warning: Unused import
-//        import cats.effect.IO
-//                           ^
-// &lt;console&gt;:26: warning: Unused import
-//        import interp
-//                                                                            ^
-// &lt;console&gt;:28: warning: Unused import
-//        import hammock.hi._
-//                          ^
-// &lt;console&gt;:34: warning: Unused import
-//        import monocle._
-//                       ^
-// &lt;console&gt;:37: warning: Unused import
-//        import monocle.function.all._
-//                                    ^
-// &lt;console&gt;:40: warning: Unused import
-//        import Opts._
-//                    ^
-// &lt;console&gt;:43: warning: Unused import
-//        import Cookie._
-//                      ^
-// res13: hammock.hi.Cookie = Cookie(_ga,werwer,None,Some(234),None,None,None,None,None,None)
+<span class="c1">// res13: hammock.hi.Cookie = Cookie(_ga,werwer,None,Some(234),None,None,None,None,None,None)
 </span></code></pre>
 </div>
 

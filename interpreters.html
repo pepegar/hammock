@@ -77,50 +77,14 @@ trait:</p>
 For using it use the <code class="highlighter-rouge">Interpreter</code> included in <code class="highlighter-rouge">hammock-core</code>:</p>
 
 <div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="n">scala</span><span class="o">&gt;</span> <span class="k">import</span> <span class="nn">cats.effect.IO</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">9</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">cats.free.Free</span>
-                        <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">11</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">hammock._</span>
-                      <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">14</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">hammock.hi._</span>
-                         <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">19</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">cats.effect.IO</span>
-                          <span class="o">^</span>
 <span class="k">import</span> <span class="nn">cats.effect.IO</span>
 
 <span class="n">scala</span><span class="o">&gt;</span> <span class="k">import</span> <span class="nn">hammock.jvm.Interpreter</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">9</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">cats.free.Free</span>
-                        <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">11</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">hammock._</span>
-                      <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">14</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">hammock.hi._</span>
-                         <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">16</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">cats.effect.IO</span>
-                          <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">20</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">hammock.jvm.Interpreter</span>
-                          <span class="o">^</span>
 <span class="k">import</span> <span class="nn">hammock.jvm.Interpreter</span>
 
 <span class="n">scala</span><span class="o">&gt;</span> <span class="n">httpReq</span> <span class="n">foldMap</span> <span class="nc">Interpreter</span><span class="o">[</span><span class="kt">IO</span><span class="o">].</span><span class="n">trans</span> <span class="n">unsafeRunSync</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">9</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">cats.free.Free</span>
-                        <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">11</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">hammock._</span>
-                      <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">14</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">hammock.hi._</span>
-                         <span class="o">^</span>
 <span class="n">warning</span><span class="k">:</span> <span class="kt">there</span> <span class="kt">was</span> <span class="kt">one</span> <span class="kt">feature</span> <span class="kt">warning</span><span class="o">;</span> <span class="k">for</span> <span class="n">details</span><span class="o">,</span> <span class="n">enable</span> <span class="n">`:setting -feature' or `</span><span class="k">:</span><span class="kt">replay</span> <span class="kt">-feature'</span>
-<span class="kt">res1:</span> <span class="kt">hammock.HttpResponse</span> <span class="o">=</span> <span class="nc">HttpResponse</span><span class="o">(</span><span class="nc">Status</span><span class="o">(</span><span class="mi">200</span><span class="o">,</span><span class="nc">OK</span><span class="o">,</span><span class="nc">OK</span><span class="o">),</span><span class="nc">Map</span><span class="o">(</span><span class="nc">Access</span><span class="o">-</span><span class="nc">Control</span><span class="o">-</span><span class="nc">Allow</span><span class="o">-</span><span class="nc">Origin</span> <span class="o">-&gt;</span> <span class="o">*,</span> <span class="nc">Server</span> <span class="o">-&gt;</span> <span class="n">meinheld</span><span class="o">/</span><span class="mf">0.6</span><span class="o">.</span><span class="mi">1</span><span class="o">,</span> <span class="nc">Access</span><span class="o">-</span><span class="nc">Control</span><span class="o">-</span><span class="nc">Allow</span><span class="o">-</span><span class="nc">Credentials</span> <span class="o">-&gt;</span> <span class="kc">true</span><span class="o">,</span> <span class="n">X</span><span class="o">-</span><span class="nc">Processed</span><span class="o">-</span><span class="nc">Time</span> <span class="o">-&gt;</span> <span class="mf">0.00134205818176</span><span class="o">,</span> <span class="nc">Connection</span> <span class="o">-&gt;</span> <span class="n">keep</span><span class="o">-</span><span class="n">alive</span><span class="o">,</span> <span class="nc">Content</span><span class="o">-</span><span class="nc">Length</span> <span class="o">-&gt;</span> <span class="mi">287</span><span class="o">,</span> <span class="nc">Via</span> <span class="o">-&gt;</span> <span class="mf">1.1</span> <span class="n">vegur</span><span class="o">,</span> <span class="nc">Content</span><span class="o">-</span><span class="nc">Type</span> <span class="o">-&gt;</span> <span class="n">application</span><span class="o">/</span><span class="n">json</span><span class="o">,</span> <span class="nc">Date</span> <span class="o">-&gt;</span> <span class="nc">Wed</span><span class="o">,</span> <span class="mi">03</span> <span class="nc">Jan</span> <span class="mi">2018</span> <span class="mi">14</span><span class="k">:</span><span class="err">20</span><span class="kt">:</span><span class="err">36</span> <span class="kt">GMT</span><span class="o">,</span> <span class="n">X</span><span class="o">-</span><span class="nc">Powered</span><span class="o">-</span><span class="nc">By</span> <span class="o">-&gt;</span> <span class="nc">Flask</span><span class="o">),</span><span class="nc">StringEntity</span><span class="o">({</span>  <span class="s">"args"</span><span class="k">:</span> <span class="o">{},</span>   <span class="s">"headers"</span><span class="k">:</span> <span class="o">{</span>    <span class="err">"</span><span class="kt">Accept-Encoding</span><span class="err">"</span><span class="kt">:</span> <span class="err">"</span><span class="kt">gzip</span><span class="o">,</span><span class="kt">deflate</span><span class="err">"</span><span class="o">,</span>     <span class="s">"Connection"</span><span class="k">:</span> <span class="err">"</span><span class="kt">close</span><span class="err">"</span><span class="o">,</span>     <span class="s">"Header1"</span><span class="k">:</span> <span class="err">"</span><span class="kt">value1</span><span class="err">"</span><span class="o">,</span>     <span class="s">"Host"</span><span class="k">:</span> <span class="err">"</span><span class="kt">httpbin.org</span><span class="err">"</span><span class="o">,</span>     <span class="s">"User-Agent"</span><span class="k">:</span> <span class="err">"</span><span class="kt">Apache-HttpClient/</span><span class="err">4</span><span class="kt">.</span><span class="err">5</span><span class="kt">.</span><span class="err">2</span> <span class="o">(</span><span class="kt">Java/</span><span class="err">1</span><span class="kt">.</span><span class="err">8</span><span class="kt">.</span><span class="err">0</span><span class="k">_</span><span class="err">131</span><span class="o">)</span><span class="err">"</span>  <span class="o">},</span>   <span class="s">"origin"</span><span class="k">:</span> <span class="err">"81</span><span class="kt">.</span><span class="err">36</span><span class="kt">.</span><span class="err">112</span><span class="kt">.</span><span class="err">110"</span><span class="o">,</span>   <span class="s">"url"</span><span class="k">:</span> <span class="err">"</span><span class="kt">http://httpbin.org/get</span><span class="err">"</span><span class="o">},</span><span class="n">hammock</span><span class="o">.</span><span class="nc">ContentType$$anon$2</span><span class="k">@</span><span class="mi">1</span><span class="n">e73a034</span><span class="o">))</span>
+<span class="kt">res1:</span> <span class="kt">hammock.HttpResponse</span> <span class="o">=</span> <span class="nc">HttpResponse</span><span class="o">(</span><span class="nc">Status</span><span class="o">(</span><span class="mi">200</span><span class="o">,</span><span class="nc">OK</span><span class="o">,</span><span class="nc">OK</span><span class="o">),</span><span class="nc">Map</span><span class="o">(</span><span class="nc">Access</span><span class="o">-</span><span class="nc">Control</span><span class="o">-</span><span class="nc">Allow</span><span class="o">-</span><span class="nc">Origin</span> <span class="o">-&gt;</span> <span class="o">*,</span> <span class="nc">Server</span> <span class="o">-&gt;</span> <span class="n">meinheld</span><span class="o">/</span><span class="mf">0.6</span><span class="o">.</span><span class="mi">1</span><span class="o">,</span> <span class="nc">Access</span><span class="o">-</span><span class="nc">Control</span><span class="o">-</span><span class="nc">Allow</span><span class="o">-</span><span class="nc">Credentials</span> <span class="o">-&gt;</span> <span class="kc">true</span><span class="o">,</span> <span class="n">X</span><span class="o">-</span><span class="nc">Processed</span><span class="o">-</span><span class="nc">Time</span> <span class="o">-&gt;</span> <span class="mf">0.000766038894653</span><span class="o">,</span> <span class="nc">Connection</span> <span class="o">-&gt;</span> <span class="n">keep</span><span class="o">-</span><span class="n">alive</span><span class="o">,</span> <span class="nc">Content</span><span class="o">-</span><span class="nc">Length</span> <span class="o">-&gt;</span> <span class="mi">287</span><span class="o">,</span> <span class="nc">Via</span> <span class="o">-&gt;</span> <span class="mf">1.1</span> <span class="n">vegur</span><span class="o">,</span> <span class="nc">Content</span><span class="o">-</span><span class="nc">Type</span> <span class="o">-&gt;</span> <span class="n">application</span><span class="o">/</span><span class="n">json</span><span class="o">,</span> <span class="nc">Date</span> <span class="o">-&gt;</span> <span class="nc">Wed</span><span class="o">,</span> <span class="mi">03</span> <span class="nc">Jan</span> <span class="mi">2018</span> <span class="mi">14</span><span class="k">:</span><span class="err">32</span><span class="kt">:</span><span class="err">27</span> <span class="kt">GMT</span><span class="o">,</span> <span class="n">X</span><span class="o">-</span><span class="nc">Powered</span><span class="o">-</span><span class="nc">By</span> <span class="o">-&gt;</span> <span class="nc">Flask</span><span class="o">),</span><span class="nc">StringEntity</span><span class="o">({</span>  <span class="s">"args"</span><span class="k">:</span> <span class="o">{},</span>   <span class="s">"headers"</span><span class="k">:</span> <span class="o">{</span>    <span class="err">"</span><span class="kt">Accept-Encoding</span><span class="err">"</span><span class="kt">:</span> <span class="err">"</span><span class="kt">gzip</span><span class="o">,</span><span class="kt">deflate</span><span class="err">"</span><span class="o">,</span>     <span class="s">"Connection"</span><span class="k">:</span> <span class="err">"</span><span class="kt">close</span><span class="err">"</span><span class="o">,</span>     <span class="s">"Header1"</span><span class="k">:</span> <span class="err">"</span><span class="kt">value1</span><span class="err">"</span><span class="o">,</span>     <span class="s">"Host"</span><span class="k">:</span> <span class="err">"</span><span class="kt">httpbin.org</span><span class="err">"</span><span class="o">,</span>     <span class="s">"User-Agent"</span><span class="k">:</span> <span class="err">"</span><span class="kt">Apache-HttpClient/</span><span class="err">4</span><span class="kt">.</span><span class="err">5</span><span class="kt">.</span><span class="err">2</span> <span class="o">(</span><span class="kt">Java/</span><span class="err">1</span><span class="kt">.</span><span class="err">8</span><span class="kt">.</span><span class="err">0</span><span class="k">_</span><span class="err">131</span><span class="o">)</span><span class="err">"</span>  <span class="o">},</span>   <span class="s">"origin"</span><span class="k">:</span> <span class="err">"81</span><span class="kt">.</span><span class="err">36</span><span class="kt">.</span><span class="err">112</span><span class="kt">.</span><span class="err">110"</span><span class="o">,</span>   <span class="s">"url"</span><span class="k">:</span> <span class="err">"</span><span class="kt">http://httpbin.org/get</span><span class="err">"</span><span class="o">},</span><span class="n">hammock</span><span class="o">.</span><span class="nc">ContentType$$anon$2</span><span class="k">@</span><span class="mi">42</span><span class="n">c0b9d0</span><span class="o">))</span>
 </code></pre>
 </div>
 
@@ -129,345 +93,39 @@ For using it use the <code class="highlighter-rouge">Interpreter</code> included
 <h2 id="akka-http">Akka HTTP</h2>
 
 <div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="n">scala</span><span class="o">&gt;</span> <span class="k">import</span> <span class="nn">_root_.akka.actor.ActorSystem</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">9</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">cats.free.Free</span>
-                        <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">11</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">hammock._</span>
-                      <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">14</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">hammock.hi._</span>
-                         <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">16</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">cats.effect.IO</span>
-                          <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">17</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">hammock.jvm.Interpreter</span>
-                          <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">21</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">_root_.akka.actor.ActorSystem</span>
-                                <span class="o">^</span>
 <span class="k">import</span> <span class="nn">_root_.akka.actor.ActorSystem</span>
 
 <span class="n">scala</span><span class="o">&gt;</span> <span class="k">import</span> <span class="nn">_root_.akka.http.scaladsl._</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">9</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">cats.free.Free</span>
-                        <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">11</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">hammock._</span>
-                      <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">14</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">hammock.hi._</span>
-                         <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">16</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">cats.effect.IO</span>
-                          <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">17</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">hammock.jvm.Interpreter</span>
-                          <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">18</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">_root_.akka.actor.ActorSystem</span>
-                                <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">22</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">_root_.akka.http.scaladsl._</span>
-                                        <span class="o">^</span>
 <span class="k">import</span> <span class="nn">_root_.akka.http.scaladsl._</span>
 
 <span class="n">scala</span><span class="o">&gt;</span> <span class="k">import</span> <span class="nn">_root_.akka.stream.ActorMaterializer</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">9</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">cats.free.Free</span>
-                        <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">11</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">hammock._</span>
-                      <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">14</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">hammock.hi._</span>
-                         <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">16</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">cats.effect.IO</span>
-                          <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">17</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">hammock.jvm.Interpreter</span>
-                          <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">18</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">_root_.akka.actor.ActorSystem</span>
-                                <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">20</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">_root_.akka.http.scaladsl._</span>
-                                        <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">25</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">_root_.akka.stream.ActorMaterializer</span>
-                                 <span class="o">^</span>
 <span class="k">import</span> <span class="nn">_root_.akka.stream.ActorMaterializer</span>
 
 <span class="n">scala</span><span class="o">&gt;</span> <span class="k">import</span> <span class="nn">cats.effect.IO</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">9</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">cats.free.Free</span>
-                        <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">11</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">hammock._</span>
-                      <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">14</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">hammock.hi._</span>
-                         <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">16</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">cats.effect.IO</span>
-                          <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">17</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">hammock.jvm.Interpreter</span>
-                          <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">18</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">_root_.akka.actor.ActorSystem</span>
-                                <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">20</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">_root_.akka.http.scaladsl._</span>
-                                        <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">22</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">_root_.akka.stream.ActorMaterializer</span>
-                                 <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">26</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">cats.effect.IO</span>
-                          <span class="o">^</span>
 <span class="k">import</span> <span class="nn">cats.effect.IO</span>
 
 <span class="n">scala</span><span class="o">&gt;</span> <span class="k">import</span> <span class="nn">hammock.akka.AkkaInterpreter</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">9</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">cats.free.Free</span>
-                        <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">11</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">hammock._</span>
-                      <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">14</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">hammock.hi._</span>
-                         <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">16</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">cats.effect.IO</span>
-                          <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">17</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">hammock.jvm.Interpreter</span>
-                          <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">18</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">_root_.akka.actor.ActorSystem</span>
-                                <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">20</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">_root_.akka.http.scaladsl._</span>
-                                        <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">22</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">_root_.akka.stream.ActorMaterializer</span>
-                                 <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">23</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">cats.effect.IO</span>
-                          <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">27</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">hammock.akka.AkkaInterpreter</span>
-                           <span class="o">^</span>
 <span class="k">import</span> <span class="nn">hammock.akka.AkkaInterpreter</span>
 
 <span class="n">scala</span><span class="o">&gt;</span> <span class="k">implicit</span> <span class="k">val</span> <span class="n">system</span> <span class="k">=</span> <span class="nc">ActorSystem</span><span class="o">(</span><span class="s">"hammock-actor-system"</span><span class="o">)</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">9</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">cats.free.Free</span>
-                        <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">11</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">hammock._</span>
-                      <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">14</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">hammock.hi._</span>
-                         <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">16</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">cats.effect.IO</span>
-                          <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">17</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">hammock.jvm.Interpreter</span>
-                          <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">20</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">_root_.akka.http.scaladsl._</span>
-                                        <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">22</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">_root_.akka.stream.ActorMaterializer</span>
-                                 <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">23</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">cats.effect.IO</span>
-                          <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">24</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">hammock.akka.AkkaInterpreter</span>
-                           <span class="o">^</span>
 <span class="n">system</span><span class="k">:</span> <span class="kt">akka.actor.ActorSystem</span> <span class="o">=</span> <span class="n">akka</span><span class="o">://</span><span class="n">hammock</span><span class="o">-</span><span class="n">actor</span><span class="o">-</span><span class="n">system</span>
 
 <span class="n">scala</span><span class="o">&gt;</span> <span class="k">implicit</span> <span class="k">val</span> <span class="n">mat</span> <span class="k">=</span> <span class="nc">ActorMaterializer</span><span class="o">()</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">9</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">cats.free.Free</span>
-                        <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">11</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">hammock._</span>
-                      <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">14</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">hammock.hi._</span>
-                         <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">16</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">cats.effect.IO</span>
-                          <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">17</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">hammock.jvm.Interpreter</span>
-                          <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">18</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">_root_.akka.actor.ActorSystem</span>
-                                <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">20</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">_root_.akka.http.scaladsl._</span>
-                                        <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">23</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">cats.effect.IO</span>
-                          <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">24</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">hammock.akka.AkkaInterpreter</span>
-                           <span class="o">^</span>
-<span class="n">mat</span><span class="k">:</span> <span class="kt">akka.stream.ActorMaterializer</span> <span class="o">=</span> <span class="nc">ActorMaterializerImpl</span><span class="o">(</span><span class="n">akka</span><span class="o">://</span><span class="n">hammock</span><span class="o">-</span><span class="n">actor</span><span class="o">-</span><span class="n">system</span><span class="o">,</span><span class="nc">ActorMaterializerSettings</span><span class="o">(</span><span class="mi">4</span><span class="o">,</span><span class="mi">16</span><span class="o">,,&lt;</span><span class="n">function1</span><span class="o">&gt;,</span><span class="nc">StreamSubscriptionTimeoutSettings</span><span class="o">(</span><span class="nc">CancelTermination</span><span class="o">,</span><span class="mi">5000</span> <span class="n">milliseconds</span><span class="o">),</span><span class="kc">false</span><span class="o">,</span><span class="mi">1000</span><span class="o">,</span><span class="mi">1000</span><span class="o">,</span><span class="kc">false</span><span class="o">,</span><span class="kc">true</span><span class="o">),</span><span class="n">akka</span><span class="o">.</span><span class="n">dispatch</span><span class="o">.</span><span class="nc">Dispatchers</span><span class="k">@</span><span class="mi">77</span><span class="n">e42418</span><span class="o">,</span><span class="nc">Actor</span><span class="o">[</span><span class="kt">akka://hammock-actor-system/user/StreamSupervisor-</span><span class="err">0</span><span class="k">#</span><span class="err">1270495958</span><span class="o">],</span><span class="kc">false</span><span class="o">,</span><span class="n">akka</span><span class="o">.</span><span class="n">stream</span><span class="o">.</span><span class="n">impl</span><span class="o">.</span><span class="nc">SeqActorNameImpl</span><span class="k">@</span><span class="mi">468</span><span class="n">ea1bf</span><span class="o">)</span>
+<span class="n">mat</span><span class="k">:</span> <span class="kt">akka.stream.ActorMaterializer</span> <span class="o">=</span> <span class="nc">ActorMaterializerImpl</span><span class="o">(</span><span class="n">akka</span><span class="o">://</span><span class="n">hammock</span><span class="o">-</span><span class="n">actor</span><span class="o">-</span><span class="n">system</span><span class="o">,</span><span class="nc">ActorMaterializerSettings</span><span class="o">(</span><span class="mi">4</span><span class="o">,</span><span class="mi">16</span><span class="o">,,&lt;</span><span class="n">function1</span><span class="o">&gt;,</span><span class="nc">StreamSubscriptionTimeoutSettings</span><span class="o">(</span><span class="nc">CancelTermination</span><span class="o">,</span><span class="mi">5000</span> <span class="n">milliseconds</span><span class="o">),</span><span class="kc">false</span><span class="o">,</span><span class="mi">1000</span><span class="o">,</span><span class="mi">1000</span><span class="o">,</span><span class="kc">false</span><span class="o">,</span><span class="kc">true</span><span class="o">),</span><span class="n">akka</span><span class="o">.</span><span class="n">dispatch</span><span class="o">.</span><span class="nc">Dispatchers</span><span class="k">@</span><span class="mf">5d</span><span class="n">ddc7d0</span><span class="o">,</span><span class="nc">Actor</span><span class="o">[</span><span class="kt">akka://hammock-actor-system/user/StreamSupervisor-</span><span class="err">0</span><span class="k">#</span><span class="kt">-</span><span class="err">2089598505</span><span class="o">],</span><span class="kc">false</span><span class="o">,</span><span class="n">akka</span><span class="o">.</span><span class="n">stream</span><span class="o">.</span><span class="n">impl</span><span class="o">.</span><span class="nc">SeqActorNameImpl</span><span class="k">@</span><span class="mi">5</span><span class="n">e47cfd0</span><span class="o">)</span>
 
 <span class="n">scala</span><span class="o">&gt;</span> <span class="k">implicit</span> <span class="k">val</span> <span class="n">ec</span> <span class="k">=</span> <span class="n">system</span><span class="o">.</span><span class="n">dispatcher</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">9</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">cats.free.Free</span>
-                        <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">11</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">hammock._</span>
-                      <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">14</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">hammock.hi._</span>
-                         <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">16</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">cats.effect.IO</span>
-                          <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">17</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">hammock.jvm.Interpreter</span>
-                          <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">18</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">_root_.akka.actor.ActorSystem</span>
-                                <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">20</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">_root_.akka.http.scaladsl._</span>
-                                        <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">22</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">_root_.akka.stream.ActorMaterializer</span>
-                                 <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">23</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">cats.effect.IO</span>
-                          <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">24</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">hammock.akka.AkkaInterpreter</span>
-                           <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">26</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">mat</span>
-                                                            <span class="o">^</span>
 <span class="n">ec</span><span class="k">:</span> <span class="kt">scala.concurrent.ExecutionContextExecutor</span> <span class="o">=</span> <span class="nc">Dispatcher</span><span class="o">[</span><span class="kt">akka.actor.default-dispatcher</span><span class="o">]</span>
 
 <span class="n">scala</span><span class="o">&gt;</span> <span class="k">val</span> <span class="n">httpExt</span><span class="k">:</span> <span class="kt">HttpExt</span> <span class="o">=</span> <span class="nc">Http</span><span class="o">()</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">9</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">cats.free.Free</span>
-                        <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">11</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">hammock._</span>
-                      <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">14</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">hammock.hi._</span>
-                         <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">16</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">cats.effect.IO</span>
-                          <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">17</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">hammock.jvm.Interpreter</span>
-                          <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">18</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">_root_.akka.actor.ActorSystem</span>
-                                <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">22</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">_root_.akka.stream.ActorMaterializer</span>
-                                 <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">23</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">cats.effect.IO</span>
-                          <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">24</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">hammock.akka.AkkaInterpreter</span>
-                           <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">26</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">mat</span>
-                                                            <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">27</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">ec</span>
-                                                            <span class="o">^</span>
-<span class="n">httpExt</span><span class="k">:</span> <span class="kt">akka.http.scaladsl.HttpExt</span> <span class="o">=</span> <span class="n">akka</span><span class="o">.</span><span class="n">http</span><span class="o">.</span><span class="n">scaladsl</span><span class="o">.</span><span class="nc">HttpExt</span><span class="k">@</span><span class="mi">75</span><span class="n">e357f9</span>
+<span class="n">httpExt</span><span class="k">:</span> <span class="kt">akka.http.scaladsl.HttpExt</span> <span class="o">=</span> <span class="n">akka</span><span class="o">.</span><span class="n">http</span><span class="o">.</span><span class="n">scaladsl</span><span class="o">.</span><span class="nc">HttpExt</span><span class="k">@</span><span class="mf">26d46f</span><span class="n">ef</span>
 
 <span class="n">scala</span><span class="o">&gt;</span> <span class="k">implicit</span> <span class="k">val</span> <span class="n">interp</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">AkkaInterpreter</span><span class="o">[</span><span class="kt">IO</span><span class="o">](</span><span class="n">httpExt</span><span class="o">)</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">9</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">cats.free.Free</span>
-                        <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">11</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">hammock._</span>
-                      <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">14</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">hammock.hi._</span>
-                         <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">16</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">cats.effect.IO</span>
-                          <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">17</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">hammock.jvm.Interpreter</span>
-                          <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">18</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">_root_.akka.actor.ActorSystem</span>
-                                <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">20</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">_root_.akka.http.scaladsl._</span>
-                                        <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">22</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">_root_.akka.stream.ActorMaterializer</span>
-                                 <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">25</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">system</span>
-                                                            <span class="o">^</span>
-<span class="n">interp</span><span class="k">:</span> <span class="kt">hammock.akka.AkkaInterpreter</span><span class="o">[</span><span class="kt">cats.effect.IO</span><span class="o">]</span> <span class="k">=</span> <span class="n">hammock</span><span class="o">.</span><span class="n">akka</span><span class="o">.</span><span class="nc">AkkaInterpreter</span><span class="k">@</span><span class="mi">4</span><span class="n">cf54d75</span>
+<span class="n">interp</span><span class="k">:</span> <span class="kt">hammock.akka.AkkaInterpreter</span><span class="o">[</span><span class="kt">cats.effect.IO</span><span class="o">]</span> <span class="k">=</span> <span class="n">hammock</span><span class="o">.</span><span class="n">akka</span><span class="o">.</span><span class="nc">AkkaInterpreter</span><span class="k">@</span><span class="mi">5</span><span class="n">b693f53</span>
 
 <span class="n">scala</span><span class="o">&gt;</span> <span class="n">httpReq</span> <span class="n">foldMap</span> <span class="n">interp</span><span class="o">.</span><span class="n">trans</span> <span class="n">unsafeRunSync</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">9</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">cats.free.Free</span>
-                        <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">11</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">hammock._</span>
-                      <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">14</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">hammock.hi._</span>
-                         <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">17</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">cats.effect.IO</span>
-                          <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">18</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">hammock.jvm.Interpreter</span>
-                          <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">19</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">_root_.akka.actor.ActorSystem</span>
-                                <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">21</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">_root_.akka.http.scaladsl._</span>
-                                        <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">23</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">_root_.akka.stream.ActorMaterializer</span>
-                                 <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">24</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">cats.effect.IO</span>
-                          <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">25</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">hammock.akka.AkkaInterpreter</span>
-                           <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">26</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">system</span>
-                                                            <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">27</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">mat</span>
-                                                            <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">28</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">ec</span>
-                                                            <span class="o">^</span>
 <span class="n">warning</span><span class="k">:</span> <span class="kt">there</span> <span class="kt">was</span> <span class="kt">one</span> <span class="kt">feature</span> <span class="kt">warning</span><span class="o">;</span> <span class="k">for</span> <span class="n">details</span><span class="o">,</span> <span class="n">enable</span> <span class="n">`:setting -feature' or `</span><span class="k">:</span><span class="kt">replay</span> <span class="kt">-feature'</span>
 <span class="kt">res2:</span> <span class="kt">hammock.HttpResponse</span> <span class="o">=</span>
-<span class="nc">HttpResponse</span><span class="o">(</span><span class="nc">Status</span><span class="o">(</span><span class="mi">200</span><span class="o">,</span><span class="nc">OK</span><span class="o">,</span><span class="nc">OK</span><span class="o">),</span><span class="nc">Map</span><span class="o">(</span><span class="nc">Access</span><span class="o">-</span><span class="nc">Control</span><span class="o">-</span><span class="nc">Allow</span><span class="o">-</span><span class="nc">Origin</span> <span class="o">-&gt;</span> <span class="o">*,</span> <span class="nc">Server</span> <span class="o">-&gt;</span> <span class="n">meinheld</span><span class="o">/</span><span class="mf">0.6</span><span class="o">.</span><span class="mi">1</span><span class="o">,</span> <span class="nc">Access</span><span class="o">-</span><span class="nc">Control</span><span class="o">-</span><span class="nc">Allow</span><span class="o">-</span><span class="nc">Credentials</span> <span class="o">-&gt;</span> <span class="kc">true</span><span class="o">,</span> <span class="n">X</span><span class="o">-</span><span class="nc">Processed</span><span class="o">-</span><span class="nc">Time</span> <span class="o">-&gt;</span> <span class="mf">0.000708103179932</span><span class="o">,</span> <span class="nc">Connection</span> <span class="o">-&gt;</span> <span class="n">keep</span><span class="o">-</span><span class="n">alive</span><span class="o">,</span> <span class="nc">Via</span> <span class="o">-&gt;</span> <span class="mf">1.1</span> <span class="n">vegur</span><span class="o">,</span> <span class="nc">Date</span> <span class="o">-&gt;</span> <span class="nc">Wed</span><span class="o">,</span> <span class="mi">03</span> <span class="nc">Jan</span> <span class="mi">2018</span> <span class="mi">14</span><span class="k">:</span><span class="err">20</span><span class="kt">:</span><span class="err">40</span> <span class="kt">GMT</span><span class="o">,</span> <span class="n">X</span><span class="o">-</span><span class="nc">Powered</span><span class="o">-</span><span class="nc">By</span> <span class="o">-&gt;</span> <span class="nc">Flask</span><span class="o">),</span><span class="nc">StringEntity</span><span class="o">({</span>
+<span class="nc">HttpResponse</span><span class="o">(</span><span class="nc">Status</span><span class="o">(</span><span class="mi">200</span><span class="o">,</span><span class="nc">OK</span><span class="o">,</span><span class="nc">OK</span><span class="o">),</span><span class="nc">Map</span><span class="o">(</span><span class="nc">Access</span><span class="o">-</span><span class="nc">Control</span><span class="o">-</span><span class="nc">Allow</span><span class="o">-</span><span class="nc">Origin</span> <span class="o">-&gt;</span> <span class="o">*,</span> <span class="nc">Server</span> <span class="o">-&gt;</span> <span class="n">meinheld</span><span class="o">/</span><span class="mf">0.6</span><span class="o">.</span><span class="mi">1</span><span class="o">,</span> <span class="nc">Access</span><span class="o">-</span><span class="nc">Control</span><span class="o">-</span><span class="nc">Allow</span><span class="o">-</span><span class="nc">Credentials</span> <span class="o">-&gt;</span> <span class="kc">true</span><span class="o">,</span> <span class="n">X</span><span class="o">-</span><span class="nc">Processed</span><span class="o">-</span><span class="nc">Time</span> <span class="o">-&gt;</span> <span class="mf">0.000739097595215</span><span class="o">,</span> <span class="nc">Connection</span> <span class="o">-&gt;</span> <span class="n">keep</span><span class="o">-</span><span class="n">alive</span><span class="o">,</span> <span class="nc">Via</span> <span class="o">-&gt;</span> <span class="mf">1.1</span> <span class="n">vegur</span><span class="o">,</span> <span class="nc">Date</span> <span class="o">-&gt;</span> <span class="nc">Wed</span><span class="o">,</span> <span class="mi">03</span> <span class="nc">Jan</span> <span class="mi">2018</span> <span class="mi">14</span><span class="k">:</span><span class="err">32</span><span class="kt">:</span><span class="err">30</span> <span class="kt">GMT</span><span class="o">,</span> <span class="n">X</span><span class="o">-</span><span class="nc">Powered</span><span class="o">-</span><span class="nc">By</span> <span class="o">-&gt;</span> <span class="nc">Flask</span><span class="o">),</span><span class="nc">StringEntity</span><span class="o">({</span>
   <span class="s">"args"</span><span class="k">:</span> <span class="o">{},</span>
   <span class="s">"headers"</span><span class="k">:</span> <span class="o">{</span>
     <span class="err">"</span><span class="kt">Connection</span><span class="err">"</span><span class="kt">:</span> <span class="err">"</span><span class="kt">close</span><span class="err">"</span><span class="o">,</span>
@@ -478,48 +136,9 @@ For using it use the <code class="highlighter-rouge">Interpreter</code> included
   <span class="s">"origin"</span><span class="k">:</span> <span class="err">"81</span><span class="kt">.</span><span class="err">36</span><span class="kt">.</span><span class="err">112</span><span class="kt">.</span><span class="err">110"</span><span class="o">,</span>
   <span class="s">"url"</span><span class="k">:</span> <span class="err">"</span><span class="kt">http://httpbin.org/get</span><span class="err">"</span>
 <span class="o">}</span>
-<span class="o">,</span><span class="n">hammock</span><span class="o">.</span><span class="nc">ContentType$$anon$2</span><span class="k">@</span><span class="mi">1</span><span class="n">e73a034</span><span class="o">))</span>
+<span class="o">,</span><span class="n">hammock</span><span class="o">.</span><span class="nc">ContentType$$anon$2</span><span class="k">@</span><span class="mi">42</span><span class="n">c0b9d0</span><span class="o">))</span>
 
 <span class="n">scala</span><span class="o">&gt;</span> <span class="n">system</span><span class="o">.</span><span class="n">shutdown</span><span class="o">()</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">9</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">cats.free.Free</span>
-                        <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">11</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">hammock._</span>
-                      <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">14</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">hammock.hi._</span>
-                         <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">16</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">cats.effect.IO</span>
-                          <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">17</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">hammock.jvm.Interpreter</span>
-                          <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">18</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">_root_.akka.actor.ActorSystem</span>
-                                <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">20</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">_root_.akka.http.scaladsl._</span>
-                                        <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">22</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">_root_.akka.stream.ActorMaterializer</span>
-                                 <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">23</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">cats.effect.IO</span>
-                          <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">24</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">hammock.akka.AkkaInterpreter</span>
-                           <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">26</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">mat</span>
-                                                            <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">27</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">ec</span>
-                                                            <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">28</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">interp</span>
-                                                            <span class="o">^</span>
 <span class="n">warning</span><span class="k">:</span> <span class="kt">there</span> <span class="kt">was</span> <span class="kt">one</span> <span class="kt">deprecation</span> <span class="kt">warning</span> <span class="o">(</span><span class="kt">since</span> <span class="err">2</span><span class="kt">.</span><span class="err">4</span><span class="o">);</span> <span class="k">for</span> <span class="n">details</span><span class="o">,</span> <span class="n">enable</span> <span class="n">`:setting -deprecation' or `</span><span class="k">:</span><span class="kt">replay</span> <span class="kt">-deprecation'</span>
 </code></pre>
 </div>
@@ -527,312 +146,24 @@ For using it use the <code class="highlighter-rouge">Interpreter</code> included
 <h2 id="asynchttpclient">AsyncHttpClient</h2>
 
 <div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="n">scala</span><span class="o">&gt;</span> <span class="k">import</span> <span class="nn">org.asynchttpclient._</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">9</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">cats.free.Free</span>
-                        <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">11</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">hammock._</span>
-                      <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">14</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">hammock.hi._</span>
-                         <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">16</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">cats.effect.IO</span>
-                          <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">17</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">hammock.jvm.Interpreter</span>
-                          <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">18</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">_root_.akka.actor.ActorSystem</span>
-                                <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">20</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">_root_.akka.http.scaladsl._</span>
-                                        <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">22</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">_root_.akka.stream.ActorMaterializer</span>
-                                 <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">23</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">cats.effect.IO</span>
-                          <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">24</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">hammock.akka.AkkaInterpreter</span>
-                           <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">25</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">system</span>
-                                                            <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">26</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">mat</span>
-                                                            <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">27</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">ec</span>
-                                                            <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">28</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">interp</span>
-                                                            <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">32</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">org.asynchttpclient._</span>
-                                  <span class="o">^</span>
 <span class="k">import</span> <span class="nn">org.asynchttpclient._</span>
 
 <span class="n">scala</span><span class="o">&gt;</span> <span class="k">import</span> <span class="nn">cats.effect.IO</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">9</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">cats.free.Free</span>
-                        <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">11</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">hammock._</span>
-                      <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">14</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">hammock.hi._</span>
-                         <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">16</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">cats.effect.IO</span>
-                          <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">17</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">hammock.jvm.Interpreter</span>
-                          <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">18</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">_root_.akka.actor.ActorSystem</span>
-                                <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">20</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">_root_.akka.http.scaladsl._</span>
-                                        <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">22</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">_root_.akka.stream.ActorMaterializer</span>
-                                 <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">23</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">cats.effect.IO</span>
-                          <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">24</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">hammock.akka.AkkaInterpreter</span>
-                           <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">25</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">system</span>
-                                                            <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">26</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">mat</span>
-                                                            <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">27</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">ec</span>
-                                                            <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">28</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">interp</span>
-                                                            <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">30</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">org.asynchttpclient._</span>
-                                  <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">35</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">cats.effect.IO</span>
-                          <span class="o">^</span>
 <span class="k">import</span> <span class="nn">cats.effect.IO</span>
 
 <span class="n">scala</span><span class="o">&gt;</span> <span class="k">import</span> <span class="nn">hammock.asynchttpclient.AsyncHttpClientInterpreter</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">9</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">cats.free.Free</span>
-                        <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">11</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">hammock._</span>
-                      <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">14</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">hammock.hi._</span>
-                         <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">16</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">cats.effect.IO</span>
-                          <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">17</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">hammock.jvm.Interpreter</span>
-                          <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">18</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">_root_.akka.actor.ActorSystem</span>
-                                <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">20</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">_root_.akka.http.scaladsl._</span>
-                                        <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">22</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">_root_.akka.stream.ActorMaterializer</span>
-                                 <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">23</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">cats.effect.IO</span>
-                          <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">24</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">hammock.akka.AkkaInterpreter</span>
-                           <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">25</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">system</span>
-                                                            <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">26</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">mat</span>
-                                                            <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">27</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">ec</span>
-                                                            <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">28</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">interp</span>
-                                                            <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">30</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">org.asynchttpclient._</span>
-                                  <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">32</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">cats.effect.IO</span>
-                          <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">36</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">hammock.asynchttpclient.AsyncHttpClientInterpreter</span>
-                                      <span class="o">^</span>
 <span class="k">import</span> <span class="nn">hammock.asynchttpclient.AsyncHttpClientInterpreter</span>
 
 <span class="n">scala</span><span class="o">&gt;</span> <span class="k">val</span> <span class="n">client</span><span class="k">:</span> <span class="kt">AsyncHttpClient</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">DefaultAsyncHttpClient</span><span class="o">()</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">9</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">cats.free.Free</span>
-                        <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">11</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">hammock._</span>
-                      <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">14</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">hammock.hi._</span>
-                         <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">16</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">cats.effect.IO</span>
-                          <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">17</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">hammock.jvm.Interpreter</span>
-                          <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">18</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">_root_.akka.actor.ActorSystem</span>
-                                <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">20</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">_root_.akka.http.scaladsl._</span>
-                                        <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">22</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">_root_.akka.stream.ActorMaterializer</span>
-                                 <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">23</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">cats.effect.IO</span>
-                          <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">24</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">hammock.akka.AkkaInterpreter</span>
-                           <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">25</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">system</span>
-                                                            <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">26</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">mat</span>
-                                                            <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">27</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">ec</span>
-                                                            <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">28</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">interp</span>
-                                                            <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">32</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">cats.effect.IO</span>
-                          <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">33</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">hammock.asynchttpclient.AsyncHttpClientInterpreter</span>
-                                      <span class="o">^</span>
-<span class="n">client</span><span class="k">:</span> <span class="kt">org.asynchttpclient.AsyncHttpClient</span> <span class="o">=</span> <span class="n">org</span><span class="o">.</span><span class="n">asynchttpclient</span><span class="o">.</span><span class="nc">DefaultAsyncHttpClient</span><span class="k">@</span><span class="mi">1</span><span class="n">cf5140e</span>
+<span class="n">client</span><span class="k">:</span> <span class="kt">org.asynchttpclient.AsyncHttpClient</span> <span class="o">=</span> <span class="n">org</span><span class="o">.</span><span class="n">asynchttpclient</span><span class="o">.</span><span class="nc">DefaultAsyncHttpClient</span><span class="k">@</span><span class="mi">362</span><span class="n">a4afb</span>
 
 <span class="n">scala</span><span class="o">&gt;</span> <span class="k">implicit</span> <span class="k">val</span> <span class="n">interp</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">AsyncHttpClientInterpreter</span><span class="o">[</span><span class="kt">IO</span><span class="o">](</span><span class="n">client</span><span class="o">)</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">9</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">cats.free.Free</span>
-                        <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">11</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">hammock._</span>
-                      <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">14</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">hammock.hi._</span>
-                         <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">16</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">cats.effect.IO</span>
-                          <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">17</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">hammock.jvm.Interpreter</span>
-                          <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">18</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">_root_.akka.actor.ActorSystem</span>
-                                <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">20</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">_root_.akka.http.scaladsl._</span>
-                                        <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">22</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">_root_.akka.stream.ActorMaterializer</span>
-                                 <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">23</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">cats.effect.IO</span>
-                          <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">24</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">hammock.akka.AkkaInterpreter</span>
-                           <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">25</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">system</span>
-                                                            <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">26</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">mat</span>
-                                                            <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">27</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">ec</span>
-                                                            <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">28</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">interp</span>
-                                                            <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">30</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">org.asynchttpclient._</span>
-                                  <span class="o">^</span>
-<span class="n">interp</span><span class="k">:</span> <span class="kt">hammock.asynchttpclient.AsyncHttpClientInterpreter</span><span class="o">[</span><span class="kt">cats.effect.IO</span><span class="o">]</span> <span class="k">=</span> <span class="n">hammock</span><span class="o">.</span><span class="n">asynchttpclient</span><span class="o">.</span><span class="nc">AsyncHttpClientInterpreter</span><span class="k">@</span><span class="mf">12d0d</span><span class="mi">1</span><span class="n">b7</span>
+<span class="n">interp</span><span class="k">:</span> <span class="kt">hammock.asynchttpclient.AsyncHttpClientInterpreter</span><span class="o">[</span><span class="kt">cats.effect.IO</span><span class="o">]</span> <span class="k">=</span> <span class="n">hammock</span><span class="o">.</span><span class="n">asynchttpclient</span><span class="o">.</span><span class="nc">AsyncHttpClientInterpreter</span><span class="k">@</span><span class="mi">4</span><span class="n">ac8f7e7</span>
 
 <span class="n">scala</span><span class="o">&gt;</span> <span class="n">httpReq</span> <span class="n">foldMap</span> <span class="n">interp</span><span class="o">.</span><span class="n">trans</span> <span class="n">unsafeRunSync</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">9</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">cats.free.Free</span>
-                        <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">11</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">hammock._</span>
-                      <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">14</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">hammock.hi._</span>
-                         <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">17</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">cats.effect.IO</span>
-                          <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">18</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">hammock.jvm.Interpreter</span>
-                          <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">19</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">_root_.akka.actor.ActorSystem</span>
-                                <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">21</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">_root_.akka.http.scaladsl._</span>
-                                        <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">23</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">_root_.akka.stream.ActorMaterializer</span>
-                                 <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">24</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">cats.effect.IO</span>
-                          <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">25</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">hammock.akka.AkkaInterpreter</span>
-                           <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">26</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">system</span>
-                                                            <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">27</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">mat</span>
-                                                            <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">28</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">ec</span>
-                                                            <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">29</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">interp</span>
-                                                            <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">31</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">org.asynchttpclient._</span>
-                                  <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">33</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">cats.effect.IO</span>
-                          <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">34</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">hammock.asynchttpclient.AsyncHttpClientInterpreter</span>
-                                      <span class="o">^</span>
 <span class="n">warning</span><span class="k">:</span> <span class="kt">there</span> <span class="kt">was</span> <span class="kt">one</span> <span class="kt">feature</span> <span class="kt">warning</span><span class="o">;</span> <span class="k">for</span> <span class="n">details</span><span class="o">,</span> <span class="n">enable</span> <span class="n">`:setting -feature' or `</span><span class="k">:</span><span class="kt">replay</span> <span class="kt">-feature'</span>
 <span class="kt">res4:</span> <span class="kt">hammock.HttpResponse</span> <span class="o">=</span>
-<span class="nc">HttpResponse</span><span class="o">(</span><span class="nc">Status</span><span class="o">(</span><span class="mi">200</span><span class="o">,</span><span class="nc">OK</span><span class="o">,</span><span class="nc">OK</span><span class="o">),</span><span class="nc">Map</span><span class="o">(</span><span class="nc">Access</span><span class="o">-</span><span class="nc">Control</span><span class="o">-</span><span class="nc">Allow</span><span class="o">-</span><span class="nc">Origin</span> <span class="o">-&gt;</span> <span class="o">*,</span> <span class="nc">Server</span> <span class="o">-&gt;</span> <span class="n">meinheld</span><span class="o">/</span><span class="mf">0.6</span><span class="o">.</span><span class="mi">1</span><span class="o">,</span> <span class="nc">Access</span><span class="o">-</span><span class="nc">Control</span><span class="o">-</span><span class="nc">Allow</span><span class="o">-</span><span class="nc">Credentials</span> <span class="o">-&gt;</span> <span class="kc">true</span><span class="o">,</span> <span class="n">X</span><span class="o">-</span><span class="nc">Processed</span><span class="o">-</span><span class="nc">Time</span> <span class="o">-&gt;</span> <span class="mf">0.00103998184204</span><span class="o">,</span> <span class="nc">Connection</span> <span class="o">-&gt;</span> <span class="n">keep</span><span class="o">-</span><span class="n">alive</span><span class="o">,</span> <span class="nc">Content</span><span class="o">-</span><span class="nc">Length</span> <span class="o">-&gt;</span> <span class="mi">236</span><span class="o">,</span> <span class="nc">Via</span> <span class="o">-&gt;</span> <span class="mf">1.1</span> <span class="n">vegur</span><span class="o">,</span> <span class="nc">Content</span><span class="o">-</span><span class="nc">Type</span> <span class="o">-&gt;</span> <span class="n">application</span><span class="o">/</span><span class="n">json</span><span class="o">,</span> <span class="nc">Date</span> <span class="o">-&gt;</span> <span class="nc">Wed</span><span class="o">,</span> <span class="mi">03</span> <span class="nc">Jan</span> <span class="mi">2018</span> <span class="mi">14</span><span class="k">:</span><span class="err">20</span><span class="kt">:</span><span class="err">43</span> <span class="kt">GMT</span><span class="o">,</span> <span class="n">X</span><span class="o">-</span><span class="nc">Powered</span><span class="o">-</span><span class="nc">By</span> <span class="o">-&gt;</span> <span class="nc">Flask</span><span class="o">),</span><span class="nc">StringEntity</span><span class="o">({</span>
+<span class="nc">HttpResponse</span><span class="o">(</span><span class="nc">Status</span><span class="o">(</span><span class="mi">200</span><span class="o">,</span><span class="nc">OK</span><span class="o">,</span><span class="nc">OK</span><span class="o">),</span><span class="nc">Map</span><span class="o">(</span><span class="nc">Access</span><span class="o">-</span><span class="nc">Control</span><span class="o">-</span><span class="nc">Allow</span><span class="o">-</span><span class="nc">Origin</span> <span class="o">-&gt;</span> <span class="o">*,</span> <span class="nc">Server</span> <span class="o">-&gt;</span> <span class="n">meinheld</span><span class="o">/</span><span class="mf">0.6</span><span class="o">.</span><span class="mi">1</span><span class="o">,</span> <span class="nc">Access</span><span class="o">-</span><span class="nc">Control</span><span class="o">-</span><span class="nc">Allow</span><span class="o">-</span><span class="nc">Credentials</span> <span class="o">-&gt;</span> <span class="kc">true</span><span class="o">,</span> <span class="n">X</span><span class="o">-</span><span class="nc">Processed</span><span class="o">-</span><span class="nc">Time</span> <span class="o">-&gt;</span> <span class="mf">0.00102090835571</span><span class="o">,</span> <span class="nc">Connection</span> <span class="o">-&gt;</span> <span class="n">keep</span><span class="o">-</span><span class="n">alive</span><span class="o">,</span> <span class="nc">Content</span><span class="o">-</span><span class="nc">Length</span> <span class="o">-&gt;</span> <span class="mi">236</span><span class="o">,</span> <span class="nc">Via</span> <span class="o">-&gt;</span> <span class="mf">1.1</span> <span class="n">vegur</span><span class="o">,</span> <span class="nc">Content</span><span class="o">-</span><span class="nc">Type</span> <span class="o">-&gt;</span> <span class="n">application</span><span class="o">/</span><span class="n">json</span><span class="o">,</span> <span class="nc">Date</span> <span class="o">-&gt;</span> <span class="nc">Wed</span><span class="o">,</span> <span class="mi">03</span> <span class="nc">Jan</span> <span class="mi">2018</span> <span class="mi">14</span><span class="k">:</span><span class="err">32</span><span class="kt">:</span><span class="err">34</span> <span class="kt">GMT</span><span class="o">,</span> <span class="n">X</span><span class="o">-</span><span class="nc">Powered</span><span class="o">-</span><span class="nc">By</span> <span class="o">-&gt;</span> <span class="nc">Flask</span><span class="o">),</span><span class="nc">StringEntity</span><span class="o">({</span>
   <span class="s">"args"</span><span class="k">:</span> <span class="o">{},</span>
   <span class="s">"headers"</span><span class="k">:</span> <span class="o">{</span>
     <span class="err">"</span><span class="kt">Accept</span><span class="err">"</span><span class="kt">:</span> <span class="err">"</span><span class="kt">*/*</span><span class="err">"</span><span class="o">,</span>
@@ -844,63 +175,9 @@ For using it use the <code class="highlighter-rouge">Interpreter</code> included
   <span class="s">"origin"</span><span class="k">:</span> <span class="err">"81</span><span class="kt">.</span><span class="err">36</span><span class="kt">.</span><span class="err">112</span><span class="kt">.</span><span class="err">110"</span><span class="o">,</span>
   <span class="s">"url"</span><span class="k">:</span> <span class="err">"</span><span class="kt">http://httpbin.org/get</span><span class="err">"</span>
 <span class="o">}</span>
-<span class="o">,</span><span class="n">hammock</span><span class="o">.</span><span class="nc">ContentType$$anon$2</span><span class="k">@</span><span class="mi">1</span><span class="n">e73a034</span><span class="o">))</span>
+<span class="o">,</span><span class="n">hammock</span><span class="o">.</span><span class="nc">ContentType$$anon$2</span><span class="k">@</span><span class="mi">42</span><span class="n">c0b9d0</span><span class="o">))</span>
 
 <span class="n">scala</span><span class="o">&gt;</span> <span class="n">client</span><span class="o">.</span><span class="n">close</span><span class="o">()</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">9</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">cats.free.Free</span>
-                        <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">11</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">hammock._</span>
-                      <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">14</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">hammock.hi._</span>
-                         <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">16</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">cats.effect.IO</span>
-                          <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">17</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">hammock.jvm.Interpreter</span>
-                          <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">18</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">_root_.akka.actor.ActorSystem</span>
-                                <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">20</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">_root_.akka.http.scaladsl._</span>
-                                        <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">22</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">_root_.akka.stream.ActorMaterializer</span>
-                                 <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">23</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">cats.effect.IO</span>
-                          <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">24</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">hammock.akka.AkkaInterpreter</span>
-                           <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">25</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">system</span>
-                                                            <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">26</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">mat</span>
-                                                            <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">27</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">ec</span>
-                                                            <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">28</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">interp</span>
-                                                            <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">30</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">org.asynchttpclient._</span>
-                                  <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">32</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">cats.effect.IO</span>
-                          <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">33</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">hammock.asynchttpclient.AsyncHttpClientInterpreter</span>
-                                      <span class="o">^</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">35</span><span class="k">:</span> <span class="kt">warning:</span> <span class="kt">Unused</span> <span class="kt">import</span>
-       <span class="k">import</span> <span class="nn">interp</span>
-                                                                    <span class="o">^</span>
 </code></pre>
 </div>
 
