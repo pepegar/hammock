@@ -256,6 +256,11 @@ lazy val docs = project
         "index.md",
         "home",
         Map("title" -> "Home", "section" -> "home", "position" -> "0")
+      ),
+      file("CHANGELOG.md") -> ExtraMdFileConfig(
+        "changelog.md",
+        "home",
+        Map("title" -> "changelog", "section" -> "changelog", "position" -> "99")
       )
     ),
     scalacOptions in Tut ~= (_ filterNot Set(
