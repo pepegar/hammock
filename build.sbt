@@ -244,7 +244,7 @@ lazy val docs = project
     micrositeName := "Hammock",
     micrositeDescription := "Purely functional HTTP client",
     micrositeBaseUrl := "hammock",
-    javadocIoUrl := s"https://www.javadoc.io/doc/${organization.value}/hammock-core_2.12/${version.value}",
+    javadocIoUrl := s"https://www.javadoc.io/doc/${organization.value}/hammock-core_2.12",
     micrositeDocumentationUrl := javadocIoUrl.value,
     micrositeGithubOwner := "pepegar",
     micrositeGithubRepo := "hammock",
@@ -258,7 +258,11 @@ lazy val docs = project
         Map("title" -> "Home", "section" -> "home", "position" -> "0")
       )
     ),
-    scalacOptions ~= (_ filterNot Set("-Xfatal-warnings", "-Ywarn-unused-import", "-Xlint").contains)
+    scalacOptions in Tut ~= (_ filterNot Set(
+      "-Xfatal-warnings",
+      "-Ywarn-unused-import",
+      "-Ywarn-unused:imports",
+      "-Xlint").contains)
   )
   .enablePlugins(MicrositesPlugin)
 
