@@ -1,32 +1,38 @@
-<html><head><title>Hammock</title><meta charset="utf-8" /><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" /><meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="com.pepegar" /><meta name="description" content="Purely functional HTTP client" /><meta name="og:image" content="/hammock/img/poster.png" /><meta name="og:title" content="Hammock" /><meta name="og:site_name" content="Hammock" /><meta name="og:url" content="" /><meta name="og:type" content="website" /><meta name="og:description" content="Purely functional HTTP client" /><link rel="icon" type="image/png" href="/hammock/img/favicon.png" /><meta name="twitter:title" content="Hammock" /><meta name="twitter:image" content="img/poster.png" /><meta name="twitter:description" content="Purely functional HTTP client" /><meta name="twitter:card" content="summary_large_image" /><link rel="icon" type="image/png" sizes="16x16" href="/hammock/img/favicon16x16.png" /><link rel="icon" type="image/png" sizes="24x24" href="/hammock/img/favicon24x24.png" /><link rel="icon" type="image/png" sizes="32x32" href="/hammock/img/favicon32x32.png" /><link rel="icon" type="image/png" sizes="48x48" href="/hammock/img/favicon48x48.png" /><link rel="icon" type="image/png" sizes="57x57" href="/hammock/img/favicon57x57.png" /><link rel="icon" type="image/png" sizes="60x60" href="/hammock/img/favicon60x60.png" /><link rel="icon" type="image/png" sizes="64x64" href="/hammock/img/favicon64x64.png" /><link rel="icon" type="image/png" sizes="70x70" href="/hammock/img/favicon70x70.png" /><link rel="icon" type="image/png" sizes="72x72" href="/hammock/img/favicon72x72.png" /><link rel="icon" type="image/png" sizes="76x76" href="/hammock/img/favicon76x76.png" /><link rel="icon" type="image/png" sizes="96x96" href="/hammock/img/favicon96x96.png" /><link rel="icon" type="image/png" sizes="114x114" href="/hammock/img/favicon114x114.png" /><link rel="icon" type="image/png" sizes="120x120" href="/hammock/img/favicon120x120.png" /><link rel="icon" type="image/png" sizes="128x128" href="/hammock/img/favicon128x128.png" /><link rel="icon" type="image/png" sizes="144x144" href="/hammock/img/favicon144x144.png" /><link rel="icon" type="image/png" sizes="150x150" href="/hammock/img/favicon150x150.png" /><link rel="icon" type="image/png" sizes="152x152" href="/hammock/img/favicon152x152.png" /><link rel="icon" type="image/png" sizes="196x196" href="/hammock/img/favicon196x196.png" /><link rel="icon" type="image/png" sizes="310x310" href="/hammock/img/favicon310x310.png" /><link rel="icon" type="image/png" sizes="310x150" href="/hammock/img/favicon310x150.png" /><link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" /><link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" /><link rel="stylesheet" href="/hammock/highlight/styles/tomorrow.css" /><link rel="stylesheet" href="/hammock/css/style.css" /><link rel="stylesheet" href="/hammock/css/palette.css" /><link rel="stylesheet" href="/hammock/css/codemirror.css" /><link rel="stylesheet" href="/hammock/css/kazari-style.css" /><link rel="stylesheet" href="/hammock/css/monokai.css" /></head><body><header id="site-header"><div class="navbar-wrapper"><div class="container"><div class="row"><div class="col-xs-6"><a href="/hammock/" class="brand"><div class="icon-wrapper"><span>Hammock</span></div></a></div><div class="col-xs-6"><nav class="text-right"><ul class=""><li><a href="https://github.com/pepegar/hammock"><i class="fa fa-github"></i><span class="hidden-xs">GitHub</span></a></li><li><a href="/hammock/docs.html"><i class="fa fa-file-text"></i><span class="hidden-xs">Documentation</span></a></li></ul></nav></div></div></div></div><div class="jumbotron"><div class="container"><h1 class="text-center">Purely functional HTTP client</h1><h2></h2><p class="text-center"><a href="https://github.com/pepegar/hammock" class="btn btn-outline-inverse">View on GitHub</a></p></div></div><div><ul class="horizontalNav">        </ul></div></header><main id="site-main"><section class="use"><div class="container"><div id="content"><h2 id="installation">Installation</h2>
+<html><head><title>Hammock</title><meta charset="utf-8" /><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" /><meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="com.pepegar" /><meta name="description" content="Purely functional HTTP client" /><meta name="og:image" content="/hammock/img/poster.png" /><meta name="og:title" content="Hammock" /><meta name="og:site_name" content="Hammock" /><meta name="og:url" content="" /><meta name="og:type" content="website" /><meta name="og:description" content="Purely functional HTTP client" /><link rel="icon" type="image/png" href="/hammock/img/favicon.png" /><meta name="twitter:title" content="Hammock" /><meta name="twitter:image" content="img/poster.png" /><meta name="twitter:description" content="Purely functional HTTP client" /><meta name="twitter:card" content="summary_large_image" /><link rel="icon" type="image/png" sizes="16x16" href="/hammock/img/favicon16x16.png" /><link rel="icon" type="image/png" sizes="24x24" href="/hammock/img/favicon24x24.png" /><link rel="icon" type="image/png" sizes="32x32" href="/hammock/img/favicon32x32.png" /><link rel="icon" type="image/png" sizes="48x48" href="/hammock/img/favicon48x48.png" /><link rel="icon" type="image/png" sizes="57x57" href="/hammock/img/favicon57x57.png" /><link rel="icon" type="image/png" sizes="60x60" href="/hammock/img/favicon60x60.png" /><link rel="icon" type="image/png" sizes="64x64" href="/hammock/img/favicon64x64.png" /><link rel="icon" type="image/png" sizes="70x70" href="/hammock/img/favicon70x70.png" /><link rel="icon" type="image/png" sizes="72x72" href="/hammock/img/favicon72x72.png" /><link rel="icon" type="image/png" sizes="76x76" href="/hammock/img/favicon76x76.png" /><link rel="icon" type="image/png" sizes="96x96" href="/hammock/img/favicon96x96.png" /><link rel="icon" type="image/png" sizes="114x114" href="/hammock/img/favicon114x114.png" /><link rel="icon" type="image/png" sizes="120x120" href="/hammock/img/favicon120x120.png" /><link rel="icon" type="image/png" sizes="128x128" href="/hammock/img/favicon128x128.png" /><link rel="icon" type="image/png" sizes="144x144" href="/hammock/img/favicon144x144.png" /><link rel="icon" type="image/png" sizes="150x150" href="/hammock/img/favicon150x150.png" /><link rel="icon" type="image/png" sizes="152x152" href="/hammock/img/favicon152x152.png" /><link rel="icon" type="image/png" sizes="196x196" href="/hammock/img/favicon196x196.png" /><link rel="icon" type="image/png" sizes="310x310" href="/hammock/img/favicon310x310.png" /><link rel="icon" type="image/png" sizes="310x150" href="/hammock/img/favicon310x150.png" /><link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" /><link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" /><link rel="stylesheet" href="/hammock/highlight/styles/tomorrow.css" /><link rel="stylesheet" href="/hammock/css/style.css" /><link rel="stylesheet" href="/hammock/css/palette.css" /><link rel="stylesheet" href="/hammock/css/codemirror.css" /><link rel="stylesheet" href="/hammock/css/kazari-style.css" /><link rel="stylesheet" href="/hammock/css/monokai.css" /></head><body><header id="site-header"><div class="navbar-wrapper"><div class="container"><div class="row"><div class="col-xs-6"><a href="/hammock/" class="brand"><div class="icon-wrapper"><span>Hammock</span></div></a></div><div class="col-xs-6"><nav class="text-right"><ul class=""><li><a href="https://github.com/pepegar/hammock"><i class="fa fa-github"></i><span class="hidden-xs">GitHub</span></a></li><li><a href="https://www.javadoc.io/doc/com.pepegar/hammock-core_2.12/0.8.1-SNAPSHOT"><i class="fa fa-file-text"></i><span class="hidden-xs">Documentation</span></a></li></ul></nav></div></div></div></div><div class="jumbotron"><div class="container"><h1 class="text-center">Purely functional HTTP client</h1><h2></h2><p class="text-center"><a href="https://github.com/pepegar/hammock" class="btn btn-outline-inverse">View on GitHub</a></p></div></div><div><ul class="horizontalNav">     <li><a class=" active " href="/hammock/">Home</a></li>  <li><a class="" href="/hammock/interpreters.html">Interpreters</a></li>  <li><a class="" href="/hammock/algebras.html">Algebras</a></li>  <li><a class="" href="/hammock/marshalling.html">Marshalling</a></li>  <li><a class="" href="/hammock/dsl.html">DSL</a></li> </ul></div></header><main id="site-main"><section class="use"><div class="container"><div id="content"><h1 id="hammock">Hammock</h1>
 
-<p>Just add the following to your <code class="highlighter-rouge">libraryDependencies</code> in SBT:</p>
+<p><a href="http://typelevel.org/projects"><img src="https://img.shields.io/badge/typelevel-incubator-F51C2B.svg" alt="Typelevel incubator" /></a>
+<a href="https://gitter.im/pepegar/hammock?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge"><img src="https://badges.gitter.im/pepegar/hammock.svg" alt="Join the chat at https://gitter.im/pepegar/hammock" /></a>
+<a href="https://travis-ci.org/pepegar/hammock"><img src="https://travis-ci.org/pepegar/hammock.svg?branch=master" alt="Build Status" /></a>
+<a href="https://codecov.io/gh/pepegar/hammock"><img src="https://codecov.io/gh/pepegar/hammock/branch/master/graph/badge.svg" alt="codecov" /></a>
+<a href=""><img src="https://img.shields.io/maven-central/v/com.pepegar/hammock-core_2.12.svg" alt="Maven Central" /></a></p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>libraryDependencies += "com.pepegar" %% "hammock" % "0.7.1" // for JVM
-libraryDependencies += "com.pepegar" %%% "hammock" % "0.7.1" // for JS
+<p>Hammock is yet another HTTP client for Scala.  It tries to be typeful,
+purely functional, and work along other technologies that you’re
+already using such as akka-http, circe, or cats.</p>
+
+<h2 id="installation">Installation</h2>
+
+<p>Add the following to your <code class="highlighter-rouge">build.sbt</code>.</p>
+
+<div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="c1">// For Scala 2.10, 2.11, or 2.12
+</span><span class="n">libraryDependencies</span> <span class="o">+=</span> <span class="s">"com.pepegar"</span> <span class="o">%%</span> <span class="s">"hammock-core"</span> <span class="o">%</span> <span class="s">"0.7.1"</span>
+
+<span class="c1">// For ScalaJS
+</span><span class="n">libraryDependencies</span> <span class="o">+=</span> <span class="s">"com.pepegar"</span> <span class="o">%%%</span> <span class="s">"hammock-core"</span> <span class="o">%</span> <span class="s">"0.7.1"</span>
 </code></pre>
 </div>
+
+<h2 id="rationale">Rationale</h2>
+
+<ol>
+  <li>It’s easy to use, has a high level API</li>
+  <li>It’s typeful, tries to represent effects at type level.</li>
+  <li>It does not force a specific target context. You can run your computations in any type <code class="highlighter-rouge">F[_]</code> that has an instance of cats-effect’s <code class="highlighter-rouge">Sync[F]</code>.</li>
+  <li>It has good <a href="http://pepegar.com/hammock">documentation</a>.</li>
+  <li><a href="#modules">It’s modular</a></li>
+</ol>
 
 <h2 id="modules">Modules</h2>
-
-<p>There are already some companion modules implemented to ease the
-experience of using hammock.</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code>libraryDependencies += "com.pepegar" %% "hammock-circe" % "0.7.1" // for JVM
-libraryDependencies += "com.pepegar" %%% "hammock-circe" % "0.7.1" // for JS
-libraryDependencies += "com.pepegar" %% "hammock-akka-http" % "0.7.1" // only for JVM
-</code></pre>
-</div>
-
-<h2 id="functional-programming">Functional programming</h2>
-
-<p>Hammock tries to be as functional as possible.  For example, the
-environment in wich all the actions will be executed is
-called <a href="http://typelevel.org/cats/typeclasses/monad.html"><code class="highlighter-rouge">Monad</code></a>,
-but fear not! Lots of types you were using before are already monads,
-you know how to use them!</p>
-
-<h2 id="modules-1">Modules</h2>
 
 <table>
   <thead>
@@ -52,61 +58,43 @@ you know how to use them!</p>
       <td>run your HTTP requests with <a href="https://doc.akka.io/docs/akka-http/current/scala/http/">akka-http</a></td>
       <td><code class="highlighter-rouge">0.7.1</code></td>
     </tr>
+    <tr>
+      <td><code class="highlighter-rouge">hammock-asynchttpclient</code></td>
+      <td>run your HTTP requests with <a href="https://github.com/asynchttpclient/async-http-client">AsyncHttpClient</a></td>
+      <td><code class="highlighter-rouge">0.7.1</code></td>
+    </tr>
   </tbody>
 </table>
 
-<h2 id="http">HTTP</h2>
-
-<p>With Hammock you can do HTTP operations in a typeful and functional way.</p>
+<h2 id="how-does-hammock-look-in-action">How does Hammock look in action?</h2>
 
 <div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="k">import</span> <span class="nn">cats.effect.IO</span>
-<span class="k">import</span> <span class="nn">io.circe._</span>
 <span class="k">import</span> <span class="nn">io.circe.generic.auto._</span>
 <span class="k">import</span> <span class="nn">hammock._</span>
-<span class="k">import</span> <span class="nn">hammock.Uri._</span>
-<span class="k">import</span> <span class="nn">hammock.hi._</span>
-<span class="k">import</span> <span class="nn">hammock.jvm.free.Interpreter</span>
+<span class="k">import</span> <span class="nn">hammock.marshalling._</span>
+<span class="k">import</span> <span class="nn">hammock.jvm.Interpreter</span>
 <span class="k">import</span> <span class="nn">hammock.circe.implicits._</span>
 
-
 <span class="k">object</span> <span class="nc">HttpClient</span> <span class="o">{</span>
-  <span class="k">implicit</span> <span class="k">val</span> <span class="n">interp</span> <span class="k">=</span> <span class="nc">Interpreter</span><span class="o">[</span><span class="kt">IO</span><span class="o">]</span>
-  
+  <span class="k">implicit</span> <span class="k">val</span> <span class="n">interpreter</span> <span class="k">=</span> <span class="nc">Interpreter</span><span class="o">[</span><span class="kt">IO</span><span class="o">]</span>
+
   <span class="k">val</span> <span class="n">response</span> <span class="k">=</span> <span class="nc">Hammock</span>
-    <span class="o">.</span><span class="n">getWithOpts</span><span class="o">(</span><span class="nc">Uri</span><span class="o">.</span><span class="n">unsafeParse</span><span class="o">(</span><span class="s">"https://api.fidesmo.com/apps"</span><span class="o">),</span> <span class="nc">Opts</span><span class="o">.</span><span class="n">empty</span><span class="o">)</span>
+    <span class="o">.</span><span class="n">request</span><span class="o">(</span><span class="nc">Method</span><span class="o">.</span><span class="nc">GET</span><span class="o">,</span> <span class="n">uri</span><span class="s">"https://api.fidesmo.com/apps"</span><span class="o">,</span> <span class="nc">Map</span><span class="o">())</span> <span class="c1">// In the `request` method, you describe your HTTP request
+</span>    <span class="o">.</span><span class="n">as</span><span class="o">[</span><span class="kt">List</span><span class="o">[</span><span class="kt">String</span><span class="o">]]</span>
     <span class="o">.</span><span class="n">exec</span><span class="o">[</span><span class="kt">IO</span><span class="o">]</span>
-    <span class="o">.</span><span class="n">as</span><span class="o">[</span><span class="kt">List</span><span class="o">[</span><span class="kt">String</span><span class="o">]]</span>
 <span class="o">}</span>
 </code></pre>
 </div>
 
-<div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="n">scala</span><span class="o">&gt;</span> <span class="nc">HttpClient</span><span class="o">.</span><span class="n">response</span><span class="o">.</span><span class="n">unsafeRunSync</span>
-<span class="n">res2</span><span class="k">:</span> <span class="kt">List</span><span class="o">[</span><span class="kt">String</span><span class="o">]</span> <span class="k">=</span> <span class="nc">List</span><span class="o">(</span><span class="mi">0</span><span class="n">cdc651e</span><span class="o">,</span> <span class="mf">42286d</span><span class="mi">75</span><span class="o">,</span> <span class="mf">4f</span><span class="mi">97</span><span class="n">a2e9</span><span class="o">,</span> <span class="mi">54</span><span class="n">bf6aa9</span><span class="o">,</span> <span class="mi">61</span><span class="n">b4b03d</span><span class="o">,</span> <span class="mf">61f</span><span class="n">c54d5</span><span class="o">,</span> <span class="mi">94</span><span class="n">c3cd60</span><span class="o">,</span> <span class="n">dd69cf53</span><span class="o">,</span> <span class="n">fc6de645</span><span class="o">)</span>
-</code></pre>
-</div>
+<h2 id="code-of-conduct">Code of conduct</h2>
 
-<h2 id="target-monad">Target Monad</h2>
+<p>People are expected to follow the <a href="http://typelevel.org/conduct.html">Typelevel Code of Conduct</a> when discussing Hammock on the Github page, Gitter channel, or other venues.</p>
 
-<p>Hammock uses cats-effect’s <code class="highlighter-rouge">Sync</code> under the hood to provide a safe way
-of capturing effects when interpreting your programs.</p>
-
-<p>You can use as a target monad any type <code class="highlighter-rouge">F</code> that has an instance of
-<code class="highlighter-rouge">Sync</code>.  There are already several types you can
-use out of the box, for example:</p>
-
-<ul>
-  <li><code class="highlighter-rouge">cats.effect.IO</code>: An <code class="highlighter-rouge">IO</code> type for the cats ecosystem.</li>
-  <li><code class="highlighter-rouge">scala.concurrent.Future</code>: There are lots of applications out there that express
-their <code class="highlighter-rouge">IO</code> effects with <code class="highlighter-rouge">Future</code>, you can still use it!</li>
-  <li><code class="highlighter-rouge">scala.util.Try</code>: You don’t care of blocking current thread? go ahead, use it!</li>
-  <li><code class="highlighter-rouge">monix/Task</code>: Great implementation of a concurrency monad.  You can
-learn more about it <a href="https://monix.io/">here</a></li>
-</ul>
 </div></div></section><section class="technologies"><div class="container"><div class="row"></div></div></section></main><footer id="site-footer"><div class="container"><div class="row"><div class="col-xs-6"><p>Hammock is designed and developed by <a href="" target="_blank">com.pepegar</a></p></div><div class="col-xs-6"><p class="text-right"><a href="https://github.com/pepegar/hammock"><span class="fa fa-github"></span>View on GitHub</a></p></div></div><div class="row"><div class="col-xs-6"><p>Website built with <a href="https://47deg.github.io/sbt-microsites/" target="_blank">Sbt-microsites</a> - © 2016 <a href="https://www.47deg.com/" target="_blank">47 Degrees</a></p></div></div></div></footer><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script><script src="/hammock/highlight/highlight.pack.js"></script><script>hljs.configure({
 languages:['scala','java','bash']
 });
 hljs.initHighlighting();
-             </script><script src="/hammock/js/automenu.js"></script><script>((window.gitter = {}).chat = {}).options = {
+             </script><script>((window.gitter = {}).chat = {}).options = {
 room: 'pepegar/hammock'};</script><script src="https://sidecar.gitter.im/dist/sidecar.v1.js"></script><script src="/hammock/js/kazari.js"></script><script>
 $(document).ready(function() {
 	kazari.KazariPlugin().decorateCode('https://scala-evaluator-212.herokuapp.com/eval', 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.S2F6YXJp.Jl2eqMfw8IakJF93PjxTbrf-8YUJgX5OoOfy5JHE8Yw', '', 'monokai')

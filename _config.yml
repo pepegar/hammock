@@ -1,0 +1,11 @@
+name: Hammock
+baseurl: /hammock
+description: Purely functional HTTP client
+highlighter: rouge
+docs: true
+collections:
+  tut:
+    output: true
+version: 0.8.1-SNAPSHOT
+org: com.pepegar
+markdown: kramdown
