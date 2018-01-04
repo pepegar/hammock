@@ -1,3 +1,8 @@
+# 0.8.1
+
+- Bump version of cats-effect to 0.8 [#88](https://github.com/pepegar/hammock/pull/88)
+- Bump version of httpclient to 4.5.4 [#88](https://github.com/pepegar/hammock/pull/88)
+
 # 0.8.0
 
 - Created a changelog [#86](https://github.com/pepegar/hammock/pull/86)
