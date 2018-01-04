@@ -8,7 +8,7 @@ val Versions = Map(
   "monocle"        -> "1.5.0-cats",
   "atto"           -> "0.6.1",
   "cats"           -> "1.0.1",
-  "cats-effect"    -> "0.7",
+  "cats-effect"    -> "0.8",
   "simulacrum"     -> "0.11.0",
   "scalatest"      -> "3.0.4",
   "scalacheck"     -> "1.13.5",
