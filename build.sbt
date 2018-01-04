@@ -181,7 +181,7 @@ lazy val core = crossProject(JSPlatform, JVMPlatform)
   )
   .jvmSettings(
     libraryDependencies ++= Seq(
-      "org.apache.httpcomponents" % "httpclient"  % "4.5.2",
+      "org.apache.httpcomponents" % "httpclient"  % "4.5.4",
       "org.mockito"               % "mockito-all" % "1.10.18" % "test"
     )
   )
