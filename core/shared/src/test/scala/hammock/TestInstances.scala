@@ -4,11 +4,19 @@ import org.scalacheck._
 import hammock.hi._
 import cats._
 import cats.implicits._
+import java.util.Date
 
 object TestInstances {
   import Cookie._
   import Auth._
   import Uri._
+
+  val nonEmptyString: Gen[String] = Gen.alphaNumStr.suchThat(!_.isEmpty)
+
+  val nonEmptyStringPair: Gen[(String, String)] = for {
+    k <- nonEmptyString
+    v <- nonEmptyString
+  } yield (k, v)
 
   val octet: Gen[Int] = Gen.choose(0, 255)
 
@@ -41,13 +49,6 @@ object TestInstances {
 
   implicit val hostArbitrary: Arbitrary[Host] = Arbitrary(Gen.oneOf(ipv4Gen, ipv6Gen, otherGen, localHostGen))
 
-  val nonEmptyString: Gen[String] = Gen.alphaNumStr.suchThat(!_.isEmpty)
-
-  val nonEmptyStringPair: Gen[(String, String)] = for {
-    k <- nonEmptyString
-    v <- nonEmptyString
-  } yield (k, v)
-
   implicit val authorityArbitrary: Arbitrary[Authority] = Arbitrary(for {
     user <- Gen.option(nonEmptyString)
     host <- hostArbitrary.arbitrary
@@ -61,6 +62,8 @@ object TestInstances {
     query <- Gen.mapOf(nonEmptyStringPair)
     fragment <- Gen.option(nonEmptyString)
   } yield Uri(scheme, authority, path, query, fragment))
+
+  implicit val dateCogen: Cogen[Date] = Cogen[Long].contramap(d => d.getTime())
 
   implicit val genApplicative: Applicative[Gen] = new Applicative[Gen] {
     def pure[A](a: A): Gen[A] = Gen.const(a)

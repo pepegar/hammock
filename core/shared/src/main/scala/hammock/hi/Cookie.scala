@@ -94,16 +94,39 @@ object Cookie {
     case object Strict extends SameSite
     case object Lax    extends SameSite
 
-    implicit val show = new Show[SameSite] {
+    implicit val sameSiteShow = new Show[SameSite] {
       def show(s: SameSite): String = s match {
         case Strict => "Strict"
         case Lax    => "Lax"
       }
     }
+
+    implicit val sameSiteEq = new Eq[SameSite] {
+      def eqv(a: SameSite, b: SameSite): Boolean = (a, b) match {
+        case (Strict, Strict) => true
+        case (Lax, Lax) => true
+        case _ => false
+      }
+    }
   }
 
-  implicit val showCookie = new Show[Cookie] {
+  implicit val cookieShow = new Show[Cookie] {
     def show(cookie: Cookie): String = render(cookie)
+  }
+
+  implicit val cookieEq: Eq[Cookie] = new Eq[Cookie] {
+    def eqv(a: Cookie, b: Cookie): Boolean = {
+    a.name === b.name &&
+    a.value === b.value &&
+    a.expires.equals(b.expires) &&
+    a.maxAge === b.maxAge &&
+    a.domain === b.domain &&
+    a.path === b.path &&
+    a.secure === b.secure &&
+    a.httpOnly === b.httpOnly &&
+    a.sameSite === b.sameSite &&
+    a.custom === b.custom
+    }
   }
 
   /**
