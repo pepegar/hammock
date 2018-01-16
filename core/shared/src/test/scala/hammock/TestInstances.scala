@@ -115,9 +115,9 @@ object TestInstances {
 
   implicit val optsArbitrary: Arbitrary[Opts] = Arbitrary(
     for {
-      auth <- Gen.some(authArbitrary.arbitrary)
-      headers <- Gen.mapOfN(5, nonEmptyStringPair)
-      cookies <- Gen.some(Gen.listOf(cookieArbitrary.arbitrary))
+      auth <- Gen.option(authArbitrary.arbitrary)
+      headers <- Gen.mapOf(nonEmptyStringPair)
+      cookies <- Gen.option(Gen.listOf(cookieArbitrary.arbitrary))
     } yield Opts(auth, headers, cookies)
   )
 

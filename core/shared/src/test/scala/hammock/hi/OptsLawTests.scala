@@ -9,9 +9,9 @@ class OptsLawTests extends CatsSuite {
   import TestInstances._
 
   checkAll("Opts.auth", LensTests(Opts.auth))
-  // checkAll("authOpt", OptionalTests(Opts.authOpt))
+  checkAll("Opts.authOpt", OptionalTests(Opts.authOpt))
   checkAll("Opts.headers", LensTests(Opts.headers))
   checkAll("Opts.cookies", LensTests(Opts.cookies))
-  // checkAll("cookiesOpt", OptionalTests(Opts.cookiesOpt))
+  checkAll("Opts.cookiesOpt", OptionalTests(Opts.cookiesOpt))
 
 }
