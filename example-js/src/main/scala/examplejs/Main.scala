@@ -19,7 +19,7 @@ object Main extends JSApp {
 
     implicit val interpTrans = Interpreter[IO]
 
-    case class Resp(json: String)
+    case class Resp(headers: Map[String, String], origin: String, url: String)
     case class Req(name: String, number: Int)
 
     val uri = uri"http://httpbin.org/post"
