@@ -1,3 +1,8 @@
+# 0.8.2
+
+- Make ExampleJS project compile and link correctly [#92](https://github.com/pepegar/hammock/pull/92)
+- Fix a `MatchError` bug in the JS interpreter. We introduced it in [#69](https://github.com/pepegar/hammock/pull/92). [#92](https://github.com/pepegar/hammock/pull/92)
+
 # 0.8.1
 
 - Bump version of cats-effect to 0.8 [#88](https://github.com/pepegar/hammock/pull/88)
