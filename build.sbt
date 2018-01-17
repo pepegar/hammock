@@ -143,7 +143,7 @@ val commonDependencies = Seq(
     "org.typelevel"              %%% "cats-laws"      % Versions("cats"),
     "org.typelevel"              %%% "alleycats-core" % Versions("cats"),
     "com.propensive"             %%% "contextual"     % Versions("contextual"),
-    "org.typelevel"              %% "cats-effect"     % Versions("cats-effect"),
+    "org.typelevel"              %%% "cats-effect"    % Versions("cats-effect"),
     "com.github.mpilquist"       %%% "simulacrum"     % Versions("simulacrum"),
     "com.github.julien-truffaut" %%% "monocle-core"   % Versions("monocle"),
     "com.github.julien-truffaut" %%% "monocle-macro"  % Versions("monocle"),

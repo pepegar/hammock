@@ -2,57 +2,63 @@ package hammock
 package js
 
 import cats._
-import cats.effect.Sync
-import cats.syntax.show._
-import org.scalajs.dom
+import cats.effect.{Async, IO, Sync}
+import cats.implicits._
+import org.scalajs.dom.ext.Ajax
+import org.scalajs.dom.ext.Ajax.InputData
+import scala.concurrent.ExecutionContext
+import java.nio.ByteBuffer
 
-class Interpreter[F[_]] extends InterpTrans[F] {
+class Interpreter[F[_]: Async](implicit ec: ExecutionContext) extends InterpTrans[F] {
 
   import Uri._
 
   override def trans(implicit S: Sync[F]): HttpF ~> F =
     λ[HttpF ~> F] {
-      case req: Options => doReq(req, Method.OPTIONS)
-      case req: Get     => doReq(req, Method.GET)
-      case req: Head    => doReq(req, Method.HEAD)
-      case req: Post    => doReq(req, Method.POST)
-      case req: Put     => doReq(req, Method.PUT)
-      case req: Delete  => doReq(req, Method.DELETE)
-      case req: Trace   => doReq(req, Method.TRACE)
+      case req @ (Options(_) | Get(_) | Head(_) | Post(_) | Put(_) | Delete(_) | Trace(_)) => doReq(req)
     }
 
-  private def doReq(reqF: HttpF[HttpResponse], method: Method)(implicit S: Sync[F]): F[HttpResponse] = S.delay {
-    val xhr   = new dom.XMLHttpRequest()
-    val async = true // async = false is deprecated in JS
+  private def doReq(reqF: HttpF[HttpResponse])(implicit F: Sync[F]): F[HttpResponse] = {
+    val timeout = 0
+    val headers = reqF.req.headers
+    val data: InputData = reqF.req.entity.fold(InputData.str2ajax(""))(
+      _.cata(
+        string => InputData.str2ajax(string.content),
+        bytes => InputData.byteBuffer2ajax(ByteBuffer.wrap(bytes.content))))
+    val method = toMethod(reqF)
 
-    xhr.open(method.name, reqF.req.uri.show, async)
-    reqF.req.headers foreach {
-      case (k, v) => xhr.setRequestHeader(k, v)
-    }
-    val data = reqF.req match {
-      case HttpRequest(_, _, Some(Entity.StringEntity(data, _))) =>
-        data
-      case _ =>
-        ""
-    }
-    xhr.send(data)
-
-    val status          = Status.get(xhr.status)
-    val responseHeaders = parseHeaders(xhr.getAllResponseHeaders)
-    val body            = xhr.responseText
-
-    HttpResponse(status, responseHeaders, Entity.StringEntity(body))
+    for {
+      responseFutureIO <- F.pure(IO(Ajax(method.name, reqF.req.uri.show, data, timeout, headers, false, "")))
+      response         <- IO.fromFuture(responseFutureIO).to[F]
+      responseHeaders  <- parseHeaders(response.getAllResponseHeaders)
+      status = Status.get(response.status)
+      body   = response.responseText
+    } yield HttpResponse(status, responseHeaders, Entity.StringEntity(body))
   }
 
-  private def parseHeaders(str: String): Map[String, String] =
-    str
-      .split("\n")
-      .map { line =>
-        val Array(k, v) = line.split(": ")
-      (k, v)
-    } toMap
+  private def toMethod(reqF: HttpF[HttpResponse]): Method = reqF match {
+    case Options(_) => Method.OPTIONS
+    case Get(_)     => Method.GET
+    case Head(_)    => Method.HEAD
+    case Post(_)    => Method.POST
+    case Put(_)     => Method.PUT
+    case Delete(_)  => Method.DELETE
+    case Trace(_)   => Method.TRACE
+  }
+
+  private def parseHeaders(str: String)(implicit F: Sync[F]): F[Map[String, String]] = str match {
+    case null => Map.empty[String, String].pure[F]
+    case string =>
+      F.delay(
+        string
+          .split("\r\n")
+          .map { line =>
+            val splitted = line.split(": ")
+            (splitted.head, splitted.tail.mkString("").trim)
+        } toMap)
+  }
 }
 
 object Interpreter {
-  def apply[F[_]]: Interpreter[F] = new Interpreter[F]
+  def apply[F[_]: Async](implicit ec: ExecutionContext): Interpreter[F] = new Interpreter[F]
 }
