@@ -10,7 +10,7 @@ class CirceCodecSpec extends WordSpec with Matchers {
   import implicits._
 
   val dummyValue = Dummy(1, "patata")
-  val json       = Entity.StringEntity("""{"a":1,"b":"patata"}""")
+  val json       = Entity.StringEntity("""{"a":1,"b":"patata"}""", ContentType.`application/json`)
 
   "Codec.encode" should {
     "return the string representation of a type" in {
