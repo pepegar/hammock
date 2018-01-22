@@ -8,7 +8,7 @@ trait ContentType {
 
 object ContentType {
   val notUsed: ContentType = fromName("")
-  val `application/json`: ContentType = fromName("application/json")
+  val `application/json`: ContentType = fromName("application/json; charset=utf-8")
   val `application/octet-stream`: ContentType= fromName("application/octet-stream")
   val `text/plain`: ContentType = fromName("application/json")
 
