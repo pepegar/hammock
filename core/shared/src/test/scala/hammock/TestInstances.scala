@@ -17,9 +17,13 @@ object TestInstances {
       ('0' to '9') ++ ('A' to 'Z') ++ ('a' to 'z')
   }).map(_.mkString)
 
+  val nonEmptyAlphanumString: Gen[String] = Gen.nonEmptyListOf(Gen.oneOf {
+    ('0' to '9') ++ ('a' to 'z') ++ ('A' to 'Z')
+  }).map(_.mkString)
+
   val nonEmptyStringPair: Gen[(String, String)] = for {
-    k <- nonEmptyString
-    v <- nonEmptyString
+    k <- nonEmptyAlphanumString
+    v <- nonEmptyAlphanumString
   } yield (k, v)
 
   val octet: Gen[Int] = Gen.choose(0, 255).label("Octet")
@@ -47,14 +51,14 @@ object TestInstances {
     h <- ipv6GroupGen
   } yield Host.IPv6(a, b, c, d, e, f, g, h)
 
-  val otherGen = nonEmptyString.map(Host.Other).label("Other")
+  val otherGen = nonEmptyAlphanumString.map(Host.Other).label("Other")
 
   val localHostGen = Gen.const(Host.Localhost).label("Localhost")
 
   implicit val hostArbitrary: Arbitrary[Host] = Arbitrary(Gen.oneOf(ipv4Gen, ipv6Gen, otherGen, localHostGen).label("Host"))
 
   implicit val authorityArbitrary: Arbitrary[Authority] = Arbitrary((for {
-    user <- Gen.option(nonEmptyString)
+    user <- Gen.option(nonEmptyAlphanumString)
     host <- hostArbitrary.arbitrary
     port <- Gen.option(Gen.choose(0L, 65536L))
   } yield Authority(user, host, port)).label("Authority"))
@@ -64,7 +68,7 @@ object TestInstances {
     authority <- Gen.some(authorityArbitrary.arbitrary)
     path <- Gen.alphaNumStr.map(_.mkString("/", "/", ""))
     query <- Gen.mapOf(nonEmptyStringPair)
-    fragment <- Gen.option(nonEmptyString)
+    fragment <- Gen.option(nonEmptyAlphanumString)
   } yield Uri(scheme, authority, path, query, fragment)).label("Uri"))
 
   implicit val uriCogen: Cogen[Uri] =

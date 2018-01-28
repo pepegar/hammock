@@ -3,16 +3,16 @@ package hammock
 import atto._
 import Atto._
 import cats._
+import cats.implicits._
 import Uri._
 import Function.const
-import cats.syntax.show._
 
 /**
   * Represents a [[HttpRequest]] URI.
   *
-  *  You have several different options for constructing [[Uri]]:
+  * You have several different options for constructing [[Uri]]:
   *
-  *  {{{
+  * {{{
   * scala> val uri1 = uri"http://google.com"
   * uri1: hammock.Uri = Uri(Some(http),None,google.com,Map(),None)
   *
@@ -44,7 +44,9 @@ case class Uri(
 }
 
 object Uri {
+
   sealed trait Host
+
   object Host {
     case class IPv4(a: Int, b: Int, c: Int, d: Int) extends Host
     case class IPv6(a: IPv6Group, b: IPv6Group, c: IPv6Group, d: IPv6Group, e: IPv6Group, f: IPv6Group, g: IPv6Group, h: IPv6Group) extends Host
@@ -53,12 +55,12 @@ object Uri {
 
     case class IPv6Group(bytes: Vector[Byte])
 
-    implicit val showIpv6Group: Show[IPv6Group] = new Show[IPv6Group] {
-      def show(group: IPv6Group): String = group.bytes.map("%02X" format _).mkString
-    }
-
     object IPv6Group {
       val empty = IPv6Group(Vector.empty[Byte])
+
+      implicit val showIpv6Group: Show[IPv6Group] = new Show[IPv6Group] {
+        def show(group: IPv6Group): String = group.bytes.map("%02X" format _).mkString
+      }
     }
 
     def ipv6Group: Parser[IPv6Group] = many(hexDigit).map { chars =>
@@ -68,6 +70,30 @@ object Uri {
           .toVector.map(Integer.parseInt(_, 16).toByte)
       )
     }
+
+    implicit val showHost: Show[Host] = new Show[Host] {
+      def show(host: Host): String = host match {
+        case Host.IPv4(a,b,c,d) => s"$a.$b.$c.$d"
+        case Host.IPv6(a,b,c,d,e,f,g,h) =>
+          val reprLastGroups: String =
+            if (
+              e.bytes.isEmpty &&
+              f.bytes.isEmpty &&
+              g.bytes.isEmpty &&
+              h.bytes.isEmpty) ":" // just append another colon
+            else
+              e.show ++ ":" ++
+              f.show ++ ":" ++
+              g.show ++ ":" ++
+              h.show
+
+          "[" ++ a.show ++ ":" ++ b.show ++ ":" ++ c.show ++ ":" ++ d.show  ++ ":" ++ reprLastGroups ++ "]"
+        case Host.Localhost => "localhost"
+        case Host.Other(repr) => repr
+      }
+    }
+
+    implicit val eqHost: Eq[Host] = Eq.fromUniversalEquals
 
     /**
       * Adapted from http://tpolecat.github.io/atto/docs/next-steps.html
@@ -110,34 +136,7 @@ object Uri {
       many1(noneOf(":/?")).map(chars => Other(chars.toList.mkString))
   }
 
-    implicit val showHost: Show[Host] = new Show[Host] {
-      def show(host: Host): String = host match {
-        case Host.IPv4(a,b,c,d) => s"$a.$b.$c.$d"
-        case Host.IPv6(a,b,c,d,e,f,g,h) =>
-          def reprLastGroups: String =
-            if (
-              e.bytes.isEmpty &&
-              f.bytes.isEmpty &&
-              g.bytes.isEmpty &&
-              h.bytes.isEmpty) ":" // just append another colon
-            else
-              e.show ++ ":" ++
-              f.show ++ ":" ++
-              g.show ++ ":" ++
-              h.show
-
-          "[" ++ a.show ++ ":" ++ b.show ++ ":" ++ c.show ++ ":" ++ d.show  ++ ":" ++ reprLastGroups ++ "]"
-        case Host.Localhost => "localhost"
-        case Host.Other(repr) => repr
-      }
-    }
-
   final case class Authority(user: Option[String], host: Host, port: Option[Long])
-
-  implicit val showAuthority: Show[Authority] = new Show[Authority] {
-    def show(auth: Authority): String =
-      auth.user.fold("")(_ ++ "@") ++ auth.host.show ++ auth.port.fold("")(p => s":${p.toString}")
-  }
 
   object Authority {
     def userParser: Parser[String] =
@@ -148,12 +147,22 @@ object Uri {
       host <- Host.parseHost
       port <- opt(char(':') ~> long)
     } yield Authority(user, host, port)
+
+    implicit val showAuthority: Show[Authority] = new Show[Authority] {
+      def show(auth: Authority): String =
+        auth.user.fold("")(_ ++ "@") ++ auth.host.show ++ auth.port.fold("")(p => s":${p.toString}")
+    }
+
+    implicit val eqAuthority: Eq[Authority] = new Eq[Authority] {
+      def eqv(a: Authority, b: Authority): Boolean =
+        a.user === b.user && a.host === b.host && a.port === b.port
+    }
   }
 
   type Scheme    = String
   type Fragment  = String
 
-  implicit val show = new Show[Uri] {
+  implicit val showUri = new Show[Uri] {
     override def show(u: Uri): String = {
       val queryString = if (u.query.isEmpty) {
         ""
@@ -165,6 +174,8 @@ object Uri {
         "#" ++ _)
     }
   }
+
+  implicit val eqUri: Eq[Uri] = Eq.fromUniversalEquals
 
   def queryParamParser: Parser[(String, String)] =
     (stringOf(notChar('=')) <~ char('=')) ~ takeWhile(x => x != '&' && x != '#')
