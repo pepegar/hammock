@@ -1,12 +1,12 @@
 options:
   - title: Interpreters
-    url: docs/interpreters.html
+    url: interpreters.html
 
   - title: Algebras
-    url: docs/algebras.html
+    url: algebras.html
 
   - title: Marshalling
-    url: docs/marshalling.html
+    url: marshalling.html
 
   - title: High level DSL
-    url: docs/dsl.html
+    url: dsl.html
