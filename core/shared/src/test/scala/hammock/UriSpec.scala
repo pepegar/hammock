@@ -5,13 +5,16 @@ import cats.implicits._
 import atto._
 import Atto._
 
+
 class UriSpec extends WordSpec with Matchers {
+
   import Uri._
+
 
   val ipv4 = "192.168.1.1"
   val ipv6 = "[2001:0db8:0000:0042:0000:8a2e:0370:7334]"
   def others = "google.com" :: "test" :: "test.google.com.asdf.qwer" :: Nil
-  val users = "pepe" :: "pepe:pass" :: Nil
+  val users             = "pepe" :: "pepe:pass" :: Nil
   val ports: List[Long] = List(1L, 65536L)
 
   def group(str: String): Host.IPv6Group =
@@ -19,13 +22,13 @@ class UriSpec extends WordSpec with Matchers {
 
   val ipv6Host = Host.IPv6(group("2001"), group("0db8"), group("0000"), group("0042"), group("0000"), group("8a2e"), group("0370"), group("7334"))
 
-  val `potato.com` = Authority(None, Host.Other("potato.com"), None)
+  val `potato.com`               = Authority(None, Host.Other("potato.com"), None)
   val `user:pass@potato.com:443` = Authority("user:pass".some, Host.Other("potato.com"), 443L.some)
-  val `user:pass@potato.com` = Authority("user:pass".some, Host.Other("potato.com"), None)
+  val `user:pass@potato.com`     = Authority("user:pass".some, Host.Other("potato.com"), None)
 
   "Host" should {
     "parse ipv4 correctly" in {
-      Host.parseHost.parseOnly(ipv4).either.right.get shouldEqual Host.IPv4(192, 168, 1,1)
+      Host.parseHost.parseOnly(ipv4).either.right.get shouldEqual Host.IPv4(192, 168, 1, 1)
     }
 
     "parse ipv6 correctly" in {
@@ -46,7 +49,7 @@ class UriSpec extends WordSpec with Matchers {
   "Authority" should {
     "parse authorities without user nor port correctly" in {
       (Authority.authorityParser.parseOnly(ipv6).either.right.get shouldEqual Authority(None, ipv6Host, None))
-      (Authority.authorityParser.parseOnly(ipv4).either.right.get shouldEqual Authority(None, Host.IPv4(192, 168, 1,1), None))
+      (Authority.authorityParser.parseOnly(ipv4).either.right.get shouldEqual Authority(None, Host.IPv4(192, 168, 1, 1), None))
       (Authority.authorityParser.parseOnly("localhost").either.right.get shouldEqual Authority(None, Host.Localhost, None))
 
       others foreach { t =>
@@ -58,7 +61,7 @@ class UriSpec extends WordSpec with Matchers {
 
       users foreach { user =>
         (Authority.authorityParser.parseOnly(s"$user@$ipv6").either.right.get shouldEqual Authority(user.some, ipv6Host, none))
-        (Authority.authorityParser.parseOnly(s"$user@$ipv4").either.right.get shouldEqual Authority(user.some, Host.IPv4(192, 168, 1,1), None))
+        (Authority.authorityParser.parseOnly(s"$user@$ipv4").either.right.get shouldEqual Authority(user.some, Host.IPv4(192, 168, 1, 1), None))
         (Authority.authorityParser.parseOnly(s"$user@localhost").either.right.get shouldEqual Authority(user.some, Host.Localhost, None))
 
         others foreach { t =>
@@ -71,7 +74,7 @@ class UriSpec extends WordSpec with Matchers {
       ports foreach { port =>
         users foreach { user =>
           (Authority.authorityParser.parseOnly(s"$user@$ipv6:$port").either.right.get shouldEqual Authority(user.some, ipv6Host, port.some))
-          (Authority.authorityParser.parseOnly(s"$user@$ipv4:$port").either.right.get shouldEqual Authority(user.some, Host.IPv4(192, 168, 1,1), port.some))
+          (Authority.authorityParser.parseOnly(s"$user@$ipv4:$port").either.right.get shouldEqual Authority(user.some, Host.IPv4(192, 168, 1, 1), port.some))
           (Authority.authorityParser.parseOnly(s"$user@localhost:$port").either.right.get shouldEqual Authority(user.some, Host.Localhost, port.some))
 
           others foreach { t =>
@@ -159,6 +162,20 @@ class UriSpec extends WordSpec with Matchers {
       Uri(path = "") / "segment" shouldEqual Uri(path = "/segment")
       Uri(path = "/nonemptypath") / "segment" shouldEqual Uri(path = "/nonemptypath/segment")
     }
-  }
 
+    "param method appends parameter to the query" in {
+      Uri(path = "example.com").param("a", "b") shouldEqual Uri(path = "example.com", query = Map("a" → "b"))
+    }
+
+    "params method appends multiple parameters to the query" in {
+      Uri(path = "example.com").params("a" → "b", "c" → "d") shouldEqual
+        Uri(path = "example.com", query = Map("a" → "b", "c" → "d"))
+    }
+
+    "? method should do the same as 'params'" in {
+      val uri = Uri(path = "example.com")
+      val result = uri ? (("a" → "b") & ("c" → "d") & ("e" → "f"))
+      result shouldEqual Uri(path = "example.com", query = Map("a" → "b", "c" → "d", "e" → "f"))
+    }
+  }
 }
