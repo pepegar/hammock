@@ -11,7 +11,7 @@ object UriProps extends Properties("Uri") {
   import TestInstances._
 
   property("authority roudtrip") = forAll(authorityArbitrary.arbitrary) { auth: Authority =>
-    Uri.Authority.authorityParser.parseOnly(auth.show).either === Right(auth)
+    Uri.Authority.parse.parseOnly(auth.show).either === Right(auth)
   }
 
   property("uri roudtrip") = forAll(uriArbitrary.arbitrary) { uri: Uri =>

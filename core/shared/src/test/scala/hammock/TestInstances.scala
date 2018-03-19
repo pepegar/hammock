@@ -1,7 +1,5 @@
 package hammock
 
-import java.util.Date
-
 import cats._
 import cats.implicits._
 import hammock.hi._
@@ -11,6 +9,7 @@ object TestInstances {
   import Auth._
   import Cookie._
   import Uri._
+  import Host._
 
   val nonEmptyString: Gen[String] = Gen.nonEmptyListOf(Gen.oneOf {
     Seq('!', '#', '$', '%', '&', '\'', '*', '+', '-', '.', '^', '_', '`', '|', '~') ++
@@ -35,10 +34,7 @@ object TestInstances {
     d <- octet
   } yield Host.IPv4(a, b, c, d)).label("IPV4")
 
-  val ipv6GroupGen = (for {
-    a <- octet
-    b <- octet
-  } yield Host.IPv6Group(Vector(a.toByte, b.toByte))).label("IPV6")
+  val ipv6GroupGen = Gen.choose[Short](0, Short.MaxValue).map(x => IPv6Group(x)).label("IPV6Group")
 
   val ipv6Gen = for {
     a <- ipv6GroupGen
@@ -51,7 +47,7 @@ object TestInstances {
     h <- ipv6GroupGen
   } yield Host.IPv6(a, b, c, d, e, f, g, h)
 
-  val otherGen = nonEmptyAlphanumString.map(Host.Other).label("Other")
+  val otherGen = nonEmptyAlphanumString.map(Host.Other.apply).label("Other")
 
   val localHostGen = Gen.const(Host.Localhost).label("Localhost")
 
@@ -73,10 +69,6 @@ object TestInstances {
 
   implicit val uriCogen: Cogen[Uri] =
     Cogen[String].contramap(_.show)
-
-  implicit val dateArbitrary: Arbitrary[Date] = Arbitrary(Arbitrary.arbitrary[Long].map(epoch => new Date(epoch)).label("Date"))
-
-  implicit val dateCogen: Cogen[Date] = Cogen[Long].contramap(d => d.getTime())
 
   implicit val genApplicative: Applicative[Gen] = new Applicative[Gen] {
     def pure[A](a: A): Gen[A] = Gen.const(a)
@@ -110,10 +102,9 @@ object TestInstances {
   )
 
   implicit val cookieCogen: Cogen[Cookie] =
-    Cogen.tuple10[
+    Cogen.tuple9[
     String,
     String,
-    Option[Date],
     Option[Int],
     Option[String],
     Option[String],
@@ -121,25 +112,22 @@ object TestInstances {
     Option[Boolean],
     Option[SameSite],
       Option[Map[String, String]]].contramap[Cookie] { c =>
-      (c.name, c.value, c.expires, c.maxAge, c.domain, c.path, c.secure, c.httpOnly, c.sameSite, c.custom)
+      (c.name, c.value, c.maxAge, c.domain, c.path, c.secure, c.httpOnly, c.sameSite, c.custom)
     }
-
-
-
-    Cogen[String].contramap[Cookie](_.show)
 
   // TODO: we should add generator for custom too, but I cannot make it work correctly
   implicit val cookieArbitrary: Arbitrary[Cookie] = Arbitrary(
     (for {
       name <- nonEmptyString
       value <- nonEmptyString
-      expires <- Gen.option(dateArbitrary.arbitrary)
+      expires <- Gen.const(None)
       maxAge <- Gen.option(Gen.choose(0, Int.MaxValue))
       domain <- Gen.option(nonEmptyString)
       path <- Gen.option(nonEmptyString)
       secure <- Gen.option(Gen.oneOf(true, false))
       httpOnly <- Gen.option(Gen.oneOf(true, false))
       sameSite <- Gen.option(sameSiteArbitrary.arbitrary)
+      custom <- Gen.option(Gen.mapOf(nonEmptyString, nonEmptyString))
     } yield Cookie(name, value, expires, maxAge, domain, path, secure, httpOnly, sameSite)).label("Cookie")
   )
 
