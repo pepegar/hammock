@@ -4,6 +4,7 @@ import atto._
 import Atto._
 import cats._
 import Uri._
+import cats.data.NonEmptyList
 import Function.const
 import cats.syntax.show._
 
@@ -50,7 +51,7 @@ case class Uri(
     * @param value - the value
     * @return updated [[Uri]]
     **/
-  def param(key: String, value: String): Uri = copy(query = this.query + (key → value))
+  def param(key: String, value: String): Uri = copy(query = this.query + (key -> value))
 
   /**
     * Appends multiple query parameters to [[query]]
@@ -59,8 +60,8 @@ case class Uri(
     * @return updated [[Uri]]
     **/
   def params(ps: (String, String)*): Uri = ps match {
-    case Seq() ⇒ this
-    case _     ⇒ ps.foldLeft(this) { case (uri, (k, v)) ⇒ uri.copy(query = uri.query + (k → v)) }
+    case Seq() => this
+    case _     => ps.foldLeft(this) { case (uri, (k, v)) => uri.copy(query = uri.query + (k -> v)) }
   }
 
   /**
@@ -68,13 +69,13 @@ case class Uri(
     * but provides syntax as you are writing URI query in browser
     * Usage example:
     * {{{
-    *   uri"example.com" ? (("a" → "b") & ("c" → "d") & ("e" → "f"))
+    *   uri"example.com" ? (("a" -> "b") & ("c" -> "d") & ("e" -> "f"))
     * }}}
     *
     * @param ps - parameters
     * @return updated [[Uri]]
     **/
-  def ?(ps: Seq[(String, String)]): Uri = params(ps: _*)
+  def ?(ps: NonEmptyList[(String, String)]): Uri = params(ps.toList: _*)
 }
 
 object Uri {

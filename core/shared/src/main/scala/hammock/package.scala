@@ -1,6 +1,5 @@
-import scala.language.higherKinds
 import cats._
-import cats.data.EitherK
+import cats.data.{EitherK, NonEmptyList}
 import cats.free.Free
 import cats.effect.Sync
 import contextual._
@@ -78,10 +77,10 @@ package object hammock {
     * Methods providing URI query parameters building syntax
     * Used in [[Uri.?]] method
     **/
-  implicit class UriQueryParamsBuilder(val self: Seq[(String, String)]) extends AnyVal {
-    def &(param: (String, String)): Seq[(String, String)] = self :+ param
+  implicit class UriQueryParamsBuilder(val self: NonEmptyList[(String, String)]) extends AnyVal {
+    def &(param: (String, String)): NonEmptyList[(String, String)] = param :: self
   }
   implicit class UriQueryInitBuilder(val self: (String, String)) extends AnyVal {
-    def &(param: (String, String)): Seq[(String, String)] = Seq(self, param)
+    def &(param: (String, String)): NonEmptyList[(String, String)] = NonEmptyList(self, param :: Nil)
   }
 }

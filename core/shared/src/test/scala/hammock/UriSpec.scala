@@ -164,18 +164,18 @@ class UriSpec extends WordSpec with Matchers {
     }
 
     "param method appends parameter to the query" in {
-      Uri(path = "example.com").param("a", "b") shouldEqual Uri(path = "example.com", query = Map("a" → "b"))
+      Uri(path = "example.com").param("a", "b") shouldEqual Uri(path = "example.com", query = Map("a" -> "b"))
     }
 
     "params method appends multiple parameters to the query" in {
-      Uri(path = "example.com").params("a" → "b", "c" → "d") shouldEqual
-        Uri(path = "example.com", query = Map("a" → "b", "c" → "d"))
+      Uri(path = "example.com").params("a" -> "b", "c" -> "d") shouldEqual
+        Uri(path = "example.com", query = Map("a" -> "b", "c" -> "d"))
     }
 
     "? method should do the same as 'params'" in {
       val uri = Uri(path = "example.com")
-      val result = uri ? (("a" → "b") & ("c" → "d") & ("e" → "f"))
-      result shouldEqual Uri(path = "example.com", query = Map("a" → "b", "c" → "d", "e" → "f"))
+      val result = uri ? (("a" -> "b") & ("c" -> "d") & ("e" -> "f"))
+      result shouldEqual Uri(path = "example.com", query = Map("a" -> "b", "c" -> "d", "e" -> "f"))
     }
   }
 }
