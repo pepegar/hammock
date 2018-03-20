@@ -1,6 +1,8 @@
 package hammock
 package hi
 
+import cats.Eq
+import cats.implicits._
 import alleycats.Empty
 
 import monocle.{Lens, Optional}
@@ -34,9 +36,16 @@ object Opts {
     }
   }
 
-  implicit val emptyOptions = new Empty[Opts] {
+  implicit val optsEmpty = new Empty[Opts] {
     def empty = Opts(None, Map(), None)
   }
 
-  val empty = emptyOptions.empty
+  implicit val optsEq = new Eq[Opts] {
+    def eqv(a: Opts, b: Opts): Boolean =
+      a.auth === b.auth &&
+    a.headers === b.headers &&
+    a.cookies === b.cookies
+  }
+
+  val empty = optsEmpty.empty
 }

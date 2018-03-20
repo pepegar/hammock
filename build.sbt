@@ -140,7 +140,6 @@ val commonDependencies = Seq(
   libraryDependencies ++= Seq(
     "org.typelevel"              %%% "cats-core"      % Versions("cats"),
     "org.typelevel"              %%% "cats-free"      % Versions("cats"),
-    "org.typelevel"              %%% "cats-laws"      % Versions("cats"),
     "org.typelevel"              %%% "alleycats-core" % Versions("cats"),
     "com.propensive"             %%% "contextual"     % Versions("contextual"),
     "org.typelevel"              %%% "cats-effect"    % Versions("cats-effect"),
@@ -148,6 +147,9 @@ val commonDependencies = Seq(
     "com.github.julien-truffaut" %%% "monocle-core"   % Versions("monocle"),
     "com.github.julien-truffaut" %%% "monocle-macro"  % Versions("monocle"),
     "org.tpolecat"               %%% "atto-core"      % Versions("atto"),
+    "com.github.julien-truffaut" %%% "monocle-law"    % Versions("monocle") % "test",
+    "org.typelevel"              %%% "cats-laws"      % Versions("cats") % "test",
+    "org.typelevel"              %%% "cats-testkit"   % Versions("cats") % "test",
     "org.scalatest"              %%% "scalatest"      % Versions("scalatest") % "test",
     "org.scalacheck"             %%% "scalacheck"     % Versions("scalacheck") % "test",
     "org.typelevel"              %%% "discipline"     % Versions("discipline") % "test"
