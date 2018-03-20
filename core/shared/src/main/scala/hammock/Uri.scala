@@ -4,15 +4,17 @@ import atto._
 import Atto._
 import cats._
 import Uri._
+import cats.data.NonEmptyList
 import Function.const
 import cats.syntax.show._
+
 
 /**
   * Represents a [[HttpRequest]] URI.
   *
-  *  You have several different options for constructing [[Uri]]:
+  * You have several different options for constructing [[Uri]]:
   *
-  *  {{{
+  * {{{
   * scala> val uri1 = uri"http://google.com"
   * uri1: hammock.Uri = Uri(Some(http),None,google.com,Map(),None)
   *
@@ -30,17 +32,50 @@ import cats.syntax.show._
   * @param fragment  fragment of the uri. For example #header1
   */
 case class Uri(
-    scheme: Option[Scheme] = None,
-    authority: Option[Authority] = None,
-    path: String = "",
-    query: Map[String, String] = Map(),
-  fragment: Option[Fragment] = None) {
+                scheme: Option[Scheme] = None,
+                authority: Option[Authority] = None,
+                path: String = "",
+                query: Map[String, String] = Map(),
+                fragment: Option[Fragment] = None) {
 
   /** Append a string to the path of the [[Uri]]
     */
   def /(str: String): Uri = {
     copy(path = s"$path/$str")
   }
+
+  /**
+    * Append query parameter to [[query]]
+    *
+    * @param key   - parameter name
+    * @param value - the value
+    * @return updated [[Uri]]
+    **/
+  def param(key: String, value: String): Uri = copy(query = this.query + (key -> value))
+
+  /**
+    * Appends multiple query parameters to [[query]]
+    *
+    * @param ps - parameters
+    * @return updated [[Uri]]
+    **/
+  def params(ps: (String, String)*): Uri = ps match {
+    case Seq() => this
+    case _     => ps.foldLeft(this) { case (uri, (k, v)) => uri.copy(query = uri.query + (k -> v)) }
+  }
+
+  /**
+    * Produces the same result as [[params]]
+    * but provides syntax as you are writing URI query in browser
+    * Usage example:
+    * {{{
+    *   uri"example.com" ? (("a" -> "b") & ("c" -> "d") & ("e" -> "f"))
+    * }}}
+    *
+    * @param ps - parameters
+    * @return updated [[Uri]]
+    **/
+  def ?(ps: NonEmptyList[(String, String)]): Uri = params(ps.toList: _*)
 }
 
 object Uri {
@@ -64,7 +99,7 @@ object Uri {
     def ipv6Group: Parser[IPv6Group] = many(hexDigit).map { chars =>
       IPv6Group(
         chars.mkString
-          .sliding(2,2)
+          .sliding(2, 2)
           .toVector.map(Integer.parseInt(_, 16).toByte)
       )
     }
@@ -74,7 +109,7 @@ object Uri {
       */
     val ubyte: Parser[Int] = {
       int.filter(n => n >= 0 && n < 256) // ensure value is in [0 .. 256)
-         .namedOpaque("UByte")           // give our parser a name
+        .namedOpaque("UByte") // give our parser a name
     }
 
     def ipv4: Parser[Host] = for {
@@ -85,7 +120,7 @@ object Uri {
     } yield IPv4(a, b, c, d)
 
     def noMoreGroups: Parser[(IPv6Group, IPv6Group, IPv6Group, IPv6Group)] = char(':')
-      .map(const((IPv6Group.empty,IPv6Group.empty,IPv6Group.empty,IPv6Group.empty)))
+      .map(const((IPv6Group.empty, IPv6Group.empty, IPv6Group.empty, IPv6Group.empty)))
 
     def fourMoreGroups: Parser[(IPv6Group, IPv6Group, IPv6Group, IPv6Group)] = for {
       e <- ipv6Group <~ char(':')
@@ -102,7 +137,7 @@ object Uri {
       c <- ipv6Group <~ char(':')
       d <- ipv6Group <~ char(':')
       m <- moreGroups
-    } yield IPv6(a,b,c,d,m._1,m._2,m._3,m._4)
+    } yield IPv6(a, b, c, d, m._1, m._2, m._3, m._4)
 
     def parseHost: Parser[Host] = ipv4 |
       squareBrackets(ipv6) |
@@ -110,27 +145,27 @@ object Uri {
       many1(noneOf(":/?")).map(chars => Other(chars.toList.mkString))
   }
 
-    implicit val showHost: Show[Host] = new Show[Host] {
-      def show(host: Host): String = host match {
-        case Host.IPv4(a,b,c,d) => s"$a.$b.$c.$d"
-        case Host.IPv6(a,b,c,d,e,f,g,h) =>
-          def reprLastGroups: String =
-            if (
-              e.bytes.isEmpty &&
+  implicit val showHost: Show[Host] = new Show[Host] {
+    def show(host: Host): String = host match {
+      case Host.IPv4(a, b, c, d)             => s"$a.$b.$c.$d"
+      case Host.IPv6(a, b, c, d, e, f, g, h) =>
+        def reprLastGroups: String =
+          if (
+            e.bytes.isEmpty &&
               f.bytes.isEmpty &&
               g.bytes.isEmpty &&
               h.bytes.isEmpty) ":" // just append another colon
-            else
-              e.show ++ ":" ++
+          else
+            e.show ++ ":" ++
               f.show ++ ":" ++
               g.show ++ ":" ++
               h.show
 
-          "[" ++ a.show ++ ":" ++ b.show ++ ":" ++ c.show ++ ":" ++ d.show  ++ ":" ++ reprLastGroups ++ "]"
-        case Host.Localhost => "localhost"
-        case Host.Other(repr) => repr
-      }
+        "[" ++ a.show ++ ":" ++ b.show ++ ":" ++ c.show ++ ":" ++ d.show ++ ":" ++ reprLastGroups ++ "]"
+      case Host.Localhost                    => "localhost"
+      case Host.Other(repr)                  => repr
     }
+  }
 
   final case class Authority(user: Option[String], host: Host, port: Option[Long])
 
@@ -150,8 +185,8 @@ object Uri {
     } yield Authority(user, host, port)
   }
 
-  type Scheme    = String
-  type Fragment  = String
+  type Scheme = String
+  type Fragment = String
 
   implicit val show = new Show[Uri] {
     override def show(u: Uri): String = {
@@ -173,15 +208,15 @@ object Uri {
 
   def schemeParser: Parser[String] = takeWhile(_ != ':') <~ char(':') <~ opt(string("//"))
 
-  def path: Parser[String] = char('/') ~> takeWhile(x => x != '?' && x != '#') map(p => "/" ++ p)
+  def path: Parser[String] = char('/') ~> takeWhile(x => x != '?' && x != '#') map (p => "/" ++ p)
 
   def parser: Parser[Uri] =
     for {
-      scheme      <- opt(schemeParser)
-      authority   <- opt(Authority.authorityParser)
-      path        <- path | ok("")
+      scheme <- opt(schemeParser)
+      authority <- opt(Authority.authorityParser)
+      path <- path | ok("")
       queryParams <- opt(char('?') ~> queryParamsParser)
-      fragment    <- opt(char('#') ~> stringOf(anyChar))
+      fragment <- opt(char('#') ~> stringOf(anyChar))
     } yield Uri(scheme, authority, path, queryParams.getOrElse(Map()), fragment)
 
   def fromString(str: String): Either[String, Uri] = (parser parseOnly str).either
