@@ -10,6 +10,7 @@ trait Implicits {
     Encoder[A].encode(a) match {
       case Entity.StringEntity(body, _)    => Marshalling.Opaque(() => HttpEntity(body))
       case Entity.ByteArrayEntity(body, _) => Marshalling.Opaque(() => HttpEntity(body))
+      case Entity.EmptyEntity              => Marshalling.Opaque(() => HttpEntity.Empty)
     }
   }
 

@@ -40,7 +40,7 @@ class AsyncHttpClientInterpreter[F[_]: Async](client: AsyncHttpClient = new Defa
       req <- getBuilder(reqF).pure[F]
       _   <- putHeaders(req, reqF.req.headers)
       _ = reqF.req.entity
-        .foreach(_.cata(str => req.setBody(str.content), bytes => req.setBody(bytes.content)))
+        .foreach(_.cata(str => req.setBody(str.content), bytes => req.setBody(bytes.content), Function.const(())))
     } yield req
 
   def transK: HttpF ~> Kleisli[F, AsyncHttpClient, ?] =
@@ -60,16 +60,16 @@ class AsyncHttpClientInterpreter[F[_]: Async](client: AsyncHttpClient = new Defa
   def trans(implicit S: Sync[F]): HttpF ~> F =
     transK andThen λ[Kleisli[F, AsyncHttpClient, ?] ~> F](_.run(client))
 
-  def createEntity(contentType: String, body: String): Entity = contentType match {
-    case "application/octet-stream" => Entity.ByteArrayEntity(body.toCharArray.map(_.toByte))
-    case _                          => Entity.StringEntity(body)
+  def createEntity(r: Response): Entity = r.getContentType match {
+    case "application/octet-stream" => Entity.ByteArrayEntity(r.getResponseBodyAsBytes)
+    case _                          => Entity.StringEntity(r.getResponseBody)
   }
 
   def mapResponse(ahcResponse: Response): F[HttpResponse] = {
     HttpResponse(
       Status.Statuses(ahcResponse.getStatusCode),
       ahcResponse.getHeaders.names.asScala.map(name => (name, ahcResponse.getHeaders.get(name))).toMap,
-      createEntity(ahcResponse.getContentType, ahcResponse.getResponseBody)
+      createEntity(ahcResponse)
     ).pure[F]
   }
 }

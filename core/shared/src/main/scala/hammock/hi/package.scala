@@ -18,7 +18,7 @@ package object hi {
   def header(header: (String, String)): Opts => Opts        = Opts.headers.modify(_ + header)
 
   implicit class opts2OptsSyntax(a: Opts => Opts) {
-    @deprecated("use cats' <<< or >>> instead")
+    @deprecated("use cats' <<< or >>> instead", "0.7.0")
     def &>(b: Opts => Opts): Opts => Opts = a compose b
   }
 }
