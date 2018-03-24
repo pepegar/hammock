@@ -3,20 +3,20 @@ import ReleaseTransformations._
 import sbtcrossproject.{crossProject, CrossType}
 
 val Versions = Map(
-  "contextual"     -> "1.0.1",
-  "circe"          -> "0.9.0",
-  "monocle"        -> "1.5.0-cats",
+  "contextual"     -> "1.1.0",
+  "circe"          -> "0.9.2",
+  "monocle"        -> "1.5.1-cats",
   "atto"           -> "0.6.1",
-  "cats"           -> "1.0.1",
-  "cats-effect"    -> "0.8",
-  "simulacrum"     -> "0.11.0",
-  "scalatest"      -> "3.0.4",
+  "cats"           -> "1.1.0",
+  "cats-effect"    -> "0.10",
+  "simulacrum"     -> "0.12.0",
+  "scalatest"      -> "3.0.5",
   "scalacheck"     -> "1.13.5",
-  "discipline"     -> "0.8",
+  "discipline"     -> "0.9.0",
   "macro-paradise" -> "2.1.1",
   "kind-projector" -> "0.9.5",
   "akka-http"      -> "10.0.9",
-  "ahc"            -> "2.1.0-RC2"
+  "ahc"            -> "2.1.2"
 )
 
 publishTo in ThisBuild := {
@@ -73,7 +73,7 @@ val publishSettings = Seq(
 
 val buildSettings = Seq(
   organization := "com.pepegar",
-  scalaVersion := "2.12.4",
+  scalaVersion := "2.12.5",
   licenses := Seq(("MIT", url("http://opensource.org/licenses/MIT"))),
   crossScalaVersions := Seq("2.11.12", scalaVersion.value),
   scalacOptions ++= Seq(
@@ -179,12 +179,12 @@ lazy val core = crossProject(JSPlatform, JVMPlatform)
   .settings(compilerPlugins)
   .settings(publishSettings)
   .jsSettings(
-    libraryDependencies += "org.scala-js" %%% "scalajs-dom" % "0.9.1"
+    libraryDependencies += "org.scala-js" %%% "scalajs-dom" % "0.9.5"
   )
   .jvmSettings(
     libraryDependencies ++= Seq(
       "org.apache.httpcomponents" % "httpclient"  % "4.5.4",
-      "org.mockito"               % "mockito-all" % "1.10.18" % "test"
+      "org.mockito"               % "mockito-all" % "1.10.18" % Test
     )
   )
 
