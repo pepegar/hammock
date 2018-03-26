@@ -15,14 +15,26 @@ sealed trait Entity {
 
   def cata[X](
     onStringEntity: Entity.StringEntity => X,
-    onByteArrayEntity: Entity.ByteArrayEntity => X
+    onByteArrayEntity: Entity.ByteArrayEntity => X,
+    onEmptyEntity: Entity.EmptyEntity.type => X
   ): X = this match {
     case e: Entity.StringEntity => onStringEntity(e)
     case e: Entity.ByteArrayEntity => onByteArrayEntity(e)
+    case Entity.EmptyEntity => onEmptyEntity(Entity.EmptyEntity)
   }
 }
 
 object Entity {
+  case object EmptyEntity extends Entity {
+    type Content = Unit
+    def content = ()
+    def contentType = ContentType.notUsed
+    def contentLength = 0
+    def chunked = false
+    def repeatable = true
+    def streaming = false
+  }
+
   case class StringEntity(body: String, contentType: ContentType = ContentType.`text/plain`) extends Entity {
     type Content = String
     def content = body

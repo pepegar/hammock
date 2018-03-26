@@ -127,7 +127,7 @@ object TestInstances {
       secure <- Gen.option(Gen.oneOf(true, false))
       httpOnly <- Gen.option(Gen.oneOf(true, false))
       sameSite <- Gen.option(sameSiteArbitrary.arbitrary)
-      custom <- Gen.option(Gen.mapOf(nonEmptyString, nonEmptyString))
+      custom <- Gen.option(Gen.mapOf(nonEmptyStringPair))
     } yield Cookie(name, value, expires, maxAge, domain, path, secure, httpOnly, sameSite)).label("Cookie")
   )
 

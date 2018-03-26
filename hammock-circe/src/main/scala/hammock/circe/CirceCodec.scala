@@ -17,6 +17,8 @@ class HammockDecoderForCirce[A: CirceDecoder] extends Decoder[A] {
       circeDecode[A](str).left.map(err => CodecException.withMessageAndException(err.getMessage, err))
     case _: Entity.ByteArrayEntity =>
       CodecException.withMessage("unable to decode a ByteArrayEntity. Only StringEntity is supported").asLeft
+    case Entity.EmptyEntity =>
+      CodecException.withMessage("unable to decode an EmptyEntity. Only StringEntity is supported").asLeft
   }
 }
 

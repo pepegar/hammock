@@ -24,7 +24,9 @@ class Interpreter[F[_]: Async](implicit ec: ExecutionContext) extends InterpTran
     val data: InputData = reqF.req.entity.fold(InputData.str2ajax(""))(
       _.cata(
         string => InputData.str2ajax(string.content),
-        bytes => InputData.byteBuffer2ajax(ByteBuffer.wrap(bytes.content))))
+        bytes => InputData.byteBuffer2ajax(ByteBuffer.wrap(bytes.content)),
+        Function.const(InputData.str2ajax("")))
+    )
     val method = toMethod(reqF)
 
     for {
@@ -52,10 +54,11 @@ class Interpreter[F[_]: Async](implicit ec: ExecutionContext) extends InterpTran
       F.delay(
         string
           .split("\r\n")
-          .map { line =>
+          .map({ line =>
             val splitted = line.split(": ")
             (splitted.head, splitted.tail.mkString("").trim)
-        } toMap)
+          })
+          .toMap)
   }
 }
 

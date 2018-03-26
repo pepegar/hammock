@@ -1,6 +1,6 @@
 package examplejs
 
-import scala.scalajs.js.JSApp
+import scala.scalajs.js.annotation.JSExportTopLevel
 import scala.util._
 import scala.concurrent.ExecutionContext.Implicits.global
 import org.scalajs.jquery.jQuery
@@ -14,7 +14,9 @@ import hammock.circe.implicits._
 
 import io.circe.generic.auto._
 
-object Main extends JSApp {
+object Main {
+
+  @JSExportTopLevel("examplejs.Main.main")
   def main(): Unit = {
 
     implicit val interpTrans = Interpreter[IO]
