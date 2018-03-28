@@ -60,7 +60,7 @@ class AsyncHttpClientInterpreterTest extends WordSpec with Matchers {
         def getResponseBody(): String                              = body
         def getResponseBody(x$1: java.nio.charset.Charset): String = ???
         def getResponseBodyAsByteBuffer(): java.nio.ByteBuffer     = ???
-        def getResponseBodyAsBytes(): Array[Byte]                  = ???
+        def getResponseBodyAsBytes(): Array[Byte]                  = body.toCharArray.map(_.toByte)
         def getResponseBodyAsStream(): java.io.InputStream         = ???
         def getStatusCode(): Int                                   = statusCode
         def getStatusText(): String                                = ???
@@ -110,12 +110,13 @@ class AsyncHttpClientInterpreterTest extends WordSpec with Matchers {
             case (HttpResponse(s1, h1, e1), HttpResponse(s2, h2, e2)) =>
               s1 shouldEqual s2
               h1 shouldEqual h2
-              e1.cata(showStr, showByt) shouldEqual e2.cata(showStr, showByt)
+              e1.cata(showStr, showByt, showEmpty) shouldEqual e2.cata(showStr, showByt, showEmpty)
           }
       }
     }
   }
 
-  def showStr(s: Entity.StringEntity)    = s.content
-  def showByt(b: Entity.ByteArrayEntity) = b.content.mkString("[", ",", "]")
+  def showStr(s: Entity.StringEntity)       = s.content
+  def showByt(b: Entity.ByteArrayEntity)    = b.content.mkString("[", ",", "]")
+  val showEmpty = (_: Entity.EmptyEntity.type) => ""
 }

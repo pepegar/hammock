@@ -23,6 +23,14 @@ class InterpreterSpec extends WordSpec with MockitoSugar with BeforeAndAfter {
 
   val client = mock[HttpClient]
   val interp = new Interpreter[IO](client)
+  val httpResponse: ApacheHttpResponse = {
+    val resp   = new BasicHttpResponse(new BasicStatusLine(new ProtocolVersion("HTTP", 1, 1), 200, null))
+    val entity = new StringEntity("content")
+
+    resp.setEntity(entity)
+
+    resp
+  }
 
   after {
     reset(client)
@@ -88,15 +96,16 @@ class InterpreterSpec extends WordSpec with MockitoSugar with BeforeAndAfter {
       assert(result.entity.content == "content")
     }
 
-  }
+    "create a correct response when Apache's HttpResponse.getEntity is null" in {
+      val resp = new BasicHttpResponse(new BasicStatusLine(new ProtocolVersion("HTTP", 1, 1), 204, null))
+      when(client.execute(any[HttpUriRequest])).thenReturn(resp)
 
-  val httpResponse: ApacheHttpResponse = {
-    val resp   = new BasicHttpResponse(new BasicStatusLine(new ProtocolVersion("HTTP", 1, 1), 200, null))
-    val entity = new StringEntity("content")
+      val op = Ops.get(Uri(path = ""), Map())
 
-    resp.setEntity(entity)
-
-    resp
+      val result = (op foldMap interp.trans).unsafeRunSync
+      assert(result.status == Status.NoContent)
+      assert(result.entity == Entity.EmptyEntity)
+    }
   }
 
 }

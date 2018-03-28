@@ -6,9 +6,9 @@ import cats.implicits._
 import cats.data._
 import cats.effect.Sync
 
-import java.io.{BufferedReader, InputStream, InputStreamReader}
+import java.io.{BufferedReader, InputStreamReader}
 
-import org.apache.http.{Header, HttpEntity}
+import org.apache.http.{Header, HttpEntity, HttpResponse => ApacheResponse}
 import org.apache.http.client.HttpClient
 import org.apache.http.client.methods._
 import org.apache.http.{entity => apache}
@@ -38,11 +38,11 @@ class Interpreter[F[_]](client: HttpClient) extends InterpTrans[F] {
       for {
         req             <- getApacheRequest(reqF)
         resp            <- F.delay(client.execute(req))
-        body            <- F.delay(responseContentToString(resp.getEntity.getContent))
+        entity          <- responseToEntity(resp)
         status          <- Status.get(resp.getStatusLine.getStatusCode).pure[F]
         responseHeaders <- resp.getAllHeaders.map(h => h.getName -> h.getValue).toMap.pure[F]
         _               <- F.delay(EntityUtils.consume(resp.getEntity))
-      } yield HttpResponse(status, responseHeaders, new Entity.StringEntity(body))
+      } yield HttpResponse(status, responseHeaders, entity)
     }
 
   def getApacheRequest(f: HttpF[HttpResponse])(implicit F: Sync[F]): F[HttpUriRequest] = f match {
@@ -111,20 +111,27 @@ class Interpreter[F[_]](client: HttpClient) extends InterpTrans[F] {
       mapContentType(contentType) map { parsedContentType =>
         new apache.ByteArrayEntity(body, parsedContentType)
       }
+    case Entity.EmptyEntity =>
+      F.delay(new apache.BasicHttpEntity())
   }
 
   private def mapContentType(contentType: ContentType)(implicit F: Sync[F]): F[apache.ContentType] =
     F.delay(apache.ContentType.parse(contentType.name))
 
   private def prepareHeaders(headers: Map[String, String]): Array[Header] =
-    headers map {
-      case (k, v) => new BasicHeader(k, v)
-    } toArray
+    headers
+      .map({
+        case (k, v) => new BasicHeader(k, v)
+      })
+      .toArray
 
-  private def responseContentToString(content: InputStream): String = {
-    val rd = new BufferedReader(new InputStreamReader(content))
-
-    Stream.continually(rd.readLine()).takeWhile(_ != null).mkString("")
+  private def responseToEntity(response: ApacheResponse)(implicit F: Sync[F]): F[Entity] = F.delay {
+    Option(response.getEntity) // getEntity can return null
+      .map(_.getContent)
+      .map { content =>
+        val rd = new BufferedReader(new InputStreamReader(content))
+        Entity.StringEntity(Stream.continually(rd.readLine()).takeWhile(_ != null).mkString(""))
+      } getOrElse Entity.EmptyEntity
   }
 }
 
