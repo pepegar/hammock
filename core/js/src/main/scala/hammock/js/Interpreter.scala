@@ -6,10 +6,9 @@ import cats.effect.{Async, IO, Sync}
 import cats.implicits._
 import org.scalajs.dom.ext.Ajax
 import org.scalajs.dom.ext.Ajax.InputData
-import scala.concurrent.ExecutionContext
 import java.nio.ByteBuffer
 
-class Interpreter[F[_]: Async](implicit ec: ExecutionContext) extends InterpTrans[F] {
+class Interpreter[F[_]: Async] extends InterpTrans[F] {
 
   import Uri._
 
@@ -63,5 +62,5 @@ class Interpreter[F[_]: Async](implicit ec: ExecutionContext) extends InterpTran
 }
 
 object Interpreter {
-  def apply[F[_]: Async](implicit ec: ExecutionContext): Interpreter[F] = new Interpreter[F]
+  def apply[F[_]: Async]: Interpreter[F] = new Interpreter[F]
 }
