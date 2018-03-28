@@ -77,6 +77,7 @@ val buildSettings = Seq(
   licenses := Seq(("MIT", url("http://opensource.org/licenses/MIT"))),
   crossScalaVersions := Seq("2.11.12", scalaVersion.value),
   scalacOptions in (Compile, console) ~= filterConsoleScalacOptions,
+  scalacOptions in (Compile, doc) ~= filterConsoleScalacOptions,
   scalafmtOnCompile in ThisBuild := true
 )
 
