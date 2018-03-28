@@ -116,7 +116,7 @@ class AsyncHttpClientInterpreterTest extends WordSpec with Matchers {
     }
   }
 
-  def showStr(s: Entity.StringEntity)       = s.content
-  def showByt(b: Entity.ByteArrayEntity)    = b.content.mkString("[", ",", "]")
-  val showEmpty = (_: Entity.EmptyEntity.type) => ""
+  def showStr(s: Entity.StringEntity)    = s.content
+  def showByt(b: Entity.ByteArrayEntity) = b.content.mkString("[", ",", "]")
+  val showEmpty                          = (_: Entity.EmptyEntity.type) => ""
 }
