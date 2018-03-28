@@ -7,7 +7,6 @@ import contextual._
 
 package object hammock {
 
-  import Uri._
   import hammock.marshalling._
   import hammock.InterpTrans
 
@@ -42,15 +41,13 @@ package object hammock {
 
   object UriInterpolator extends Interpolator {
     type Output = Uri
-    type Context = UriContext.type
+    type ContextType = UriContext.type
     type Input = String
     def contextualize(interpolation: StaticInterpolation) = {
-      val lit@Literal(_, uriString) = interpolation.parts.head
-
-      if (!isValid(uriString))
-        interpolation.abort(lit, 0, "not a valid URL")
-
-      Nil
+      interpolation.parts.foldLeft(List.empty[ContextType]) {
+        case (contexts, Hole(_, _)) => UriContext :: contexts
+        case (contexts, _) => contexts
+      }
     }
 
     def evaluate(interpolation: RuntimeInterpolation): Uri =
