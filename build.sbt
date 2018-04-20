@@ -124,7 +124,10 @@ lazy val core = crossProject(JSPlatform, JVMPlatform)
   .settings(compilerPlugins)
   .settings(publishSettings)
   .jsSettings(
-    libraryDependencies += "org.scala-js" %%% "scalajs-dom" % "0.9.5"
+    libraryDependencies ++= Seq(
+      "org.scala-js"   %%% "scalajs-dom" % "0.9.5",
+      "io.scalajs.npm" %%% "node-fetch"  % "0.4.2"
+    )
   )
   .jvmSettings(
     libraryDependencies ++= Seq(
