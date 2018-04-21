@@ -24,7 +24,7 @@ class Interpreter[F[_]: Async] extends InterpTrans[F] {
       }
       http match {
         case Get(_) | Options(_) | Delete(_) | Head(_) | Options(_) | Trace(_) | Post(_) | Put(_) =>
-          val hammrockResponse = for {
+          val hammockResponse = for {
             response <- IO.fromFuture(IO {
               val headers = http.req.headers.toJSDictionary
               NodeFetch(
@@ -46,7 +46,7 @@ class Interpreter[F[_]: Async] extends InterpTrans[F] {
             })
             entity <- IO.fromFuture(IO(response.text().asInstanceOf[Promise[String]].toFuture))
           } yield HttpResponse(Status.Statuses(response.status), response.headers.toMap, Entity.StringEntity(entity))
-          hammrockResponse.to[F]
+          hammockResponse.to[F]
       }
     }
   }
