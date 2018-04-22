@@ -4,7 +4,7 @@ import cats.effect.IO
 import org.scalatest.{AsyncFlatSpec, Matchers}
 
 class InterpreterSpec extends AsyncFlatSpec with Matchers {
-  behavior of "Interpreter.trans"
+  behavior of "node.Interpreter.trans"
   implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.queue
   Seq(
     ("Options", (uri: Uri, headers: Map[String, String]) => Ops.options(uri, headers)),
