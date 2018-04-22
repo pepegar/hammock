@@ -123,7 +123,6 @@ lazy val core = crossProject(JSPlatform, JVMPlatform)
   .settings(commonDependencies)
   .settings(compilerPlugins)
   .settings(publishSettings)
-  .enablePlugins(ScalaJSBundlerPlugin)
   .jsSettings(
     libraryDependencies ++= Seq(
       "org.scala-js"   %%% "scalajs-dom" % "0.9.5",
@@ -140,7 +139,7 @@ lazy val core = crossProject(JSPlatform, JVMPlatform)
   )
 
 lazy val coreJVM = core.jvm
-lazy val coreJS  = core.js
+lazy val coreJS  = core.js.enablePlugins(ScalaJSBundlerPlugin)
 
 lazy val circe = crossProject(JSPlatform, JVMPlatform)
   .crossType(CrossType.Pure)
