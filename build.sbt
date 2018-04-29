@@ -256,11 +256,7 @@ lazy val exampleNode = project
   .settings(compilerPlugins)
   .settings(
     scalaJSModuleKind := ModuleKind.CommonJSModule,
-    scalaJSUseMainModuleInitializer := true,
-    libraryDependencies ++= Seq(
-      "io.scalajs"     %%% "nodejs"     % "0.4.2",
-      "io.scalajs.npm" %%% "node-fetch" % "0.4.2"
-    )
+    scalaJSUseMainModuleInitializer := true
   )
   .dependsOn(coreJS, circeJS)
 

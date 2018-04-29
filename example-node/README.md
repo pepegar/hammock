@@ -17,6 +17,5 @@ lazy val exampleNode = project
     scalaJSModuleKind := ModuleKind.CommonJSModule, // <- enable commonjs module system
     scalaJSUseMainModuleInitializer := true,        // <- use main function `def main(args: Array[String]): Unit`
   )
-  .dependsOn(coreJS, circeJS)
 ```
 ## 
