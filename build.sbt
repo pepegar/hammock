@@ -248,6 +248,22 @@ lazy val exampleJS = project
   .settings(jsDependencies += "org.webjars" % "jquery" % "2.1.3" / "2.1.3/jquery.js")
   .dependsOn(coreJS, circeJS)
 
+lazy val exampleNode = project
+  .in(file("example-node"))
+  .enablePlugins(ScalaJSPlugin)
+  .settings(buildSettings)
+  .settings(noPublishSettings)
+  .settings(compilerPlugins)
+  .settings(
+    scalaJSModuleKind := ModuleKind.CommonJSModule,
+    scalaJSUseMainModuleInitializer := true,
+    libraryDependencies ++= Seq(
+      "io.scalajs"     %%% "nodejs"     % "0.4.2",
+      "io.scalajs.npm" %%% "node-fetch" % "0.4.2"
+    )
+  )
+  .dependsOn(coreJS, circeJS)
+
 addCommandAlias("formatAll", ";sbt:scalafmt;test:scalafmt;compile:scalafmt")
 addCommandAlias("validateScalafmt", ";sbt:scalafmt::test;test:scalafmt::test;compile:scalafmt::test")
 addCommandAlias("validateDoc", ";docs/tut;readme/tut")

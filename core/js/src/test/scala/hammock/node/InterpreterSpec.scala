@@ -1,5 +1,6 @@
 package hammock
 package node
+
 import cats.effect.IO
 import org.scalatest.{AsyncFlatSpec, Matchers}
 

@@ -32,3 +32,6 @@ project/plugins/project/
 .worksheet
 .ensime
 .idea
+
+### Node ###
+node_modules/
