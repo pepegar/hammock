@@ -1,3 +1,14 @@
+# 0.8.4
+
+- add interpreter for NodeJS! [#105](https://github.com/pepegar/hammock/pull/105)
+
+# 0.8.3
+
+- update dependencies in [#103](https://github.com/pepegar/hammock/pull/103)
+- implementing query parameters building methods [#99](https://github.com/pepegar/hammock/pull/99)
+- fix nullpointer in jvm.Interpreter [#102](https://github.com/pepegar/hammock/pull/102)
+- make default charset utf-8 for `application/json` content type [#94](https://github.com/pepegar/hammock/pull/94)
+
 # 0.8.2
 
 - Make ExampleJS project compile and link correctly [#92](https://github.com/pepegar/hammock/pull/92)
