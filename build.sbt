@@ -255,6 +255,7 @@ lazy val exampleNode = project
   .settings(noPublishSettings)
   .settings(compilerPlugins)
   .settings(
+    scalacOptions ~= (_ filterNot Set("-Xfatal-warnings", "-Ywarn-unused-import", "-Xlint").contains),
     scalaJSModuleKind := ModuleKind.CommonJSModule,
     scalaJSUseMainModuleInitializer := true
   )
