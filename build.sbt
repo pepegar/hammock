@@ -124,7 +124,11 @@ lazy val core = crossProject(JSPlatform, JVMPlatform)
   .settings(compilerPlugins)
   .settings(publishSettings)
   .jsSettings(
-    libraryDependencies += "org.scala-js" %%% "scalajs-dom" % "0.9.5"
+    libraryDependencies ++= Seq(
+      "org.scala-js"   %%% "scalajs-dom" % "0.9.5",
+      "io.scalajs.npm" %%% "node-fetch"  % "0.4.2"
+    ),
+    npmDependencies in Test += "node-fetch" -> "2.1.2"
   )
   .jvmSettings(
     libraryDependencies ++= Seq(
@@ -134,7 +138,7 @@ lazy val core = crossProject(JSPlatform, JVMPlatform)
   )
 
 lazy val coreJVM = core.jvm
-lazy val coreJS  = core.js
+lazy val coreJS  = core.js.enablePlugins(ScalaJSBundlerPlugin)
 
 lazy val circe = crossProject(JSPlatform, JVMPlatform)
   .crossType(CrossType.Pure)
@@ -242,6 +246,19 @@ lazy val exampleJS = project
   .settings(compilerPlugins)
   .settings(libraryDependencies += "be.doeraene" %%% "scalajs-jquery" % "0.9.2")
   .settings(jsDependencies += "org.webjars" % "jquery" % "2.1.3" / "2.1.3/jquery.js")
+  .dependsOn(coreJS, circeJS)
+
+lazy val exampleNode = project
+  .in(file("example-node"))
+  .enablePlugins(ScalaJSPlugin)
+  .settings(buildSettings)
+  .settings(noPublishSettings)
+  .settings(compilerPlugins)
+  .settings(
+    scalacOptions ~= (_ filterNot Set("-Xfatal-warnings", "-Ywarn-unused-import", "-Xlint").contains),
+    scalaJSModuleKind := ModuleKind.CommonJSModule,
+    scalaJSUseMainModuleInitializer := true
+  )
   .dependsOn(coreJS, circeJS)
 
 addCommandAlias("formatAll", ";sbt:scalafmt;test:scalafmt;compile:scalafmt")

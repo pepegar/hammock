@@ -32,6 +32,7 @@ Currently we have interpreters for several HTTP clients:
 | ----------- | -------- | -------- | -------- |
 | [apache HttpCommons][httpcommons] | `hammock.jvm.Interpreter` | `hammock-core` | JVM |
 | [XmlHttpRequest][xhr] | `hammock.js.Interpreter` | `hammock-core` | JavaScript |
+| [Node Fetch][node-fetch] | `hammock.node.Interpreter` | `hammock-core` | Node |
 | [Akka HTTP][akka-http] | `hammock.akka.AkkaInterpreter` | `hammock-akka-http` | JVM |
 | [AsyncHttpClient][asynchttpclient] | `hammock.asynchttpclient.AsyncHttpClientInterpreter` | `hammock-asynchttpclient` | JVM |
 
@@ -61,6 +62,10 @@ httpReq foldMap Interpreter[IO].trans unsafeRunSync
 ```
 
 ## XmlHttpRequest
+
+## Node Fetch
+
+https://github.com/pepegar/hammock/tree/master/example-node
 
 ## Akka HTTP
 
@@ -105,3 +110,4 @@ client.close()
 [akka-http]: https://doc.akka.io/docs/akka-http/current/client-side/index.html
 [asynchttpclient]: https://github.com/AsyncHttpClient/async-http-client/
 [free-monad]: https://typelevel.org/cats/datatypes/freemonad.html
+[node-fetch]: https://www.npmjs.com/package/node-fetch
