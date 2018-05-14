@@ -14,7 +14,8 @@ class InterpreterSpec extends AsyncFlatSpec with Matchers {
     ("Post", (uri: Uri, headers: Map[String, String]) => Ops.post(uri, headers, None)),
     ("Put", (uri: Uri, headers: Map[String, String]) => Ops.put(uri, headers, None)),
     ("Delete", (uri: Uri, headers: Map[String, String]) => Ops.delete(uri, headers)),
-    ("Trace", (uri: Uri, headers: Map[String, String]) => Ops.trace(uri, headers))
+    ("Trace", (uri: Uri, headers: Map[String, String]) => Ops.trace(uri, headers)),
+    ("Patch", (uri: Uri, headers: Map[String, String]) => Ops.patch(uri, headers, None))
   ) map {
     case (method, operation) =>
       it should s"get response from mocky with $method requests" in {

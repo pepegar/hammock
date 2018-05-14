@@ -6,7 +6,7 @@ import cats._
 import hi.{Cookie, Opts}
 
 class HammockSpec extends WordSpec with Matchers {
-  val methods = Seq(Method.OPTIONS, Method.GET, Method.HEAD, Method.POST, Method.PUT, Method.DELETE, Method.TRACE)
+  val methods = Seq(Method.OPTIONS, Method.GET, Method.HEAD, Method.POST, Method.PUT, Method.DELETE, Method.TRACE, Method.PATCH)
 
   implicit val stringCodec = new Codec[String] {
     def decode(a: hammock.Entity): Either[hammock.CodecException,String] = a match {

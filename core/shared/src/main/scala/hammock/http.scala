@@ -14,6 +14,7 @@ final case class Post(req: HttpRequest)    extends HttpF[HttpResponse]
 final case class Put(req: HttpRequest)     extends HttpF[HttpResponse]
 final case class Delete(req: HttpRequest)  extends HttpF[HttpResponse]
 final case class Trace(req: HttpRequest)   extends HttpF[HttpResponse]
+final case class Patch(req: HttpRequest)   extends HttpF[HttpResponse]
 
 object Ops {
   def options(uri: Uri, headers: Map[String, String]): Free[HttpF, HttpResponse] =
@@ -30,6 +31,8 @@ object Ops {
     Free.liftF(Delete(HttpRequest(uri, headers, None)))
   def trace(uri: Uri, headers: Map[String, String]): Free[HttpF, HttpResponse] =
     Free.liftF(Trace(HttpRequest(uri, headers, None)))
+  def patch(uri: Uri, headers: Map[String, String], entity: Option[Entity]): Free[HttpF, HttpResponse] =
+    Free.liftF(Patch(HttpRequest(uri, headers, entity)))
 }
 
 class HttpRequestC[F[_]](implicit I: InjectK[HttpF, F]) {
@@ -47,6 +50,8 @@ class HttpRequestC[F[_]](implicit I: InjectK[HttpF, F]) {
     Free.inject(Delete(HttpRequest(uri, headers, None)))
   def trace(uri: Uri, headers: Map[String, String]): Free[F, HttpResponse] =
     Free.inject(Trace(HttpRequest(uri, headers, None)))
+  def patch(uri: Uri, headers: Map[String, String], entity: Option[Entity]): Free[F, HttpResponse] =
+    Free.inject(Patch(HttpRequest(uri, headers, entity)))
 }
 
 object HttpRequestC {

@@ -14,7 +14,7 @@ class Interpreter[F[_]: Async] extends InterpTrans[F] {
 
   override def trans(implicit S: Sync[F]): HttpF ~> F =
     λ[HttpF ~> F] {
-      case req @ (Options(_) | Get(_) | Head(_) | Post(_) | Put(_) | Delete(_) | Trace(_)) => doReq(req)
+      case req @ (Options(_) | Get(_) | Head(_) | Post(_) | Put(_) | Delete(_) | Trace(_) | Patch(_)) => doReq(req)
     }
 
   private def doReq(reqF: HttpF[HttpResponse])(implicit F: Sync[F]): F[HttpResponse] = {
@@ -45,6 +45,7 @@ class Interpreter[F[_]: Async] extends InterpTrans[F] {
     case Put(_)     => Method.PUT
     case Delete(_)  => Method.DELETE
     case Trace(_)   => Method.TRACE
+    case Patch(_)   => Method.PATCH
   }
 
   private def parseHeaders(str: String)(implicit F: Sync[F]): F[Map[String, String]] = str match {

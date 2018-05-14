@@ -44,7 +44,8 @@ class InterpreterSpec extends WordSpec with MockitoSugar with BeforeAndAfter {
       ("Post", (uri: Uri, headers: Map[String, String]) => Ops.post(uri, headers, None)),
       ("Put", (uri: Uri, headers: Map[String, String]) => Ops.put(uri, headers, None)),
       ("Delete", (uri: Uri, headers: Map[String, String]) => Ops.delete(uri, headers)),
-      ("Trace", (uri: Uri, headers: Map[String, String]) => Ops.trace(uri, headers))
+      ("Trace", (uri: Uri, headers: Map[String, String]) => Ops.trace(uri, headers)),
+      ("Patch", (uri: Uri, headers: Map[String, String]) => Ops.patch(uri, headers, None))
     ) map {
       case (method, operation) =>
         s"have the same result as transK.run(client) with $method requests" in {

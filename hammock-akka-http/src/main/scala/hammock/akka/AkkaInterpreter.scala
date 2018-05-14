@@ -30,7 +30,7 @@ class AkkaInterpreter[F[_]: Async](client: HttpExt)(
 
   def transK: HttpF ~> Kleisli[F, HttpExt, ?] =
     λ[HttpF ~> Kleisli[F, HttpExt, ?]] {
-      case req @ (Options(_) | Get(_) | Head(_) | Post(_) | Put(_) | Delete(_) | Trace(_)) => doReq(req)
+      case req @ (Options(_) | Get(_) | Head(_) | Post(_) | Put(_) | Delete(_) | Trace(_) | Patch(_)) => doReq(req)
     }
 
   def doReq(req: HttpF[HttpResponse]): Kleisli[F, HttpExt, HttpResponse] = Kleisli { http =>
@@ -72,6 +72,7 @@ class AkkaInterpreter[F[_]: Async](client: HttpExt)(
       case Put(_)     => HttpMethods.PUT
       case Delete(_)  => HttpMethods.DELETE
       case Trace(_)   => HttpMethods.TRACE
+      case Patch(_)   => HttpMethods.PATCH
     }).pure[F]
 
   def mapContentType(ct: ContentType)(implicit F: Sync[F]): F[AkkaContentType] =
