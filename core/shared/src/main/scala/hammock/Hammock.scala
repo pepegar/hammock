@@ -51,7 +51,6 @@ object Hammock {
    * import hammock._
    * import hammock.jvm.Interpreter
    * import hammock.hi._
-   * import hammock.hi._
    * import cats._
    * import cats.implicits._
    * import scala.util.Try
@@ -83,7 +82,6 @@ object Hammock {
    * import hammock._
    * import hammock.jvm.Interpreter
    * import hammock.hi._
-   * import hammock.hi._
    * import cats._
    * import cats.implicits._
    * import scala.util.Try
@@ -105,7 +103,6 @@ object Hammock {
    * import hammock._
    * import hammock.jvm.Interpreter
    * import hammock.hi._
-   * import hammock.hi._
    * import cats._
    * import cats.implicits._
    * import scala.util.Try
@@ -126,7 +123,6 @@ object Hammock {
    * import hammock._
    * import hammock.jvm.Interpreter
    * import hammock.hi._
-   * import hammock.hi._
    * import cats._
    * import cats.implicits._
    * import scala.util.Try
@@ -146,7 +142,6 @@ object Hammock {
    * {{{
    * import hammock._
    * import hammock.jvm.Interpreter
-   * import hammock.hi._
    * import hammock.hi._
    * import cats._
    * import cats.implicits._
@@ -172,7 +167,6 @@ object Hammock {
    * {{{
    * import hammock._
    * import hammock.jvm.Interpreter
-   * import hammock.hi._
    * import hammock.hi._
    * import cats._
    * import cats.implicits._
