@@ -21,9 +21,10 @@ class Interpreter[F[_]: Async] extends InterpTrans[F] {
         case Post(_)    => Method.POST
         case Put(_)     => Method.PUT
         case Trace(_)   => Method.TRACE
+        case Patch(_)   => Method.PATCH
       }
       http match {
-        case Get(_) | Options(_) | Delete(_) | Head(_) | Options(_) | Trace(_) | Post(_) | Put(_) =>
+        case Get(_) | Options(_) | Delete(_) | Head(_) | Options(_) | Trace(_) | Post(_) | Put(_) | Patch(_) =>
           val hammockResponse = for {
             response <- IO.fromFuture(IO {
               val headers = http.req.headers.toJSDictionary

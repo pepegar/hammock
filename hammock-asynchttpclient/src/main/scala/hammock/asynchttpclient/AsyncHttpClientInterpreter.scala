@@ -28,6 +28,7 @@ class AsyncHttpClientInterpreter[F[_]: Async](client: AsyncHttpClient = new Defa
     case Post(_)    => client.preparePost(reqF.req.uri.show)
     case Put(_)     => client.preparePut(reqF.req.uri.show)
     case Trace(_)   => client.prepareTrace(reqF.req.uri.show)
+    case Patch(_)   => client.preparePatch(reqF.req.uri.show)
   }
 
   def putHeaders(req: BoundRequestBuilder, headers: Map[String, String]): F[Unit] = Async[F].delay {
@@ -46,7 +47,7 @@ class AsyncHttpClientInterpreter[F[_]: Async](client: AsyncHttpClient = new Defa
   def transK: HttpF ~> Kleisli[F, AsyncHttpClient, ?] =
     λ[HttpF ~> Kleisli[F, AsyncHttpClient, ?]] { reqF =>
       reqF match {
-        case Get(_) | Options(_) | Delete(_) | Head(_) | Options(_) | Trace(_) | Post(_) | Put(_) =>
+        case Get(_) | Options(_) | Delete(_) | Head(_) | Options(_) | Trace(_) | Post(_) | Put(_) | Patch(_) =>
           Kleisli { client =>
             for {
               req             <- mapRequest(reqF)

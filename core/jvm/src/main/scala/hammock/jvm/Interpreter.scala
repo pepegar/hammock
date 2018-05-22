@@ -31,6 +31,7 @@ class Interpreter[F[_]](client: HttpClient) extends InterpTrans[F] {
       case req: Put     => doReq(req)
       case req: Delete  => doReq(req)
       case req: Trace   => doReq(req)
+      case req: Patch   => doReq(req)
     }
 
   private def doReq(reqF: HttpF[HttpResponse])(implicit F: Sync[F]): Kleisli[F, HttpClient, HttpResponse] =
@@ -100,6 +101,18 @@ class Interpreter[F[_]](client: HttpClient) extends InterpTrans[F] {
         req.setHeaders(prepareHeaders(headers))
         req
       }
+    case Patch(HttpRequest(uri, headers, entity)) =>
+      for {
+        req <- new HttpPatch(uri.show).pure[F]
+        _   <- F.delay(req.setHeaders(prepareHeaders(headers)))
+        _ <- if (entity.isDefined) {
+          mapEntity(entity.get) >>= { apacheEntity =>
+            F.delay(req.setEntity(apacheEntity))
+          }
+        } else {
+          ().pure[F]
+        }
+      } yield req
   }
 
   private def mapEntity(entity: Entity)(implicit F: Sync[F]): F[HttpEntity] = entity match {

@@ -29,4 +29,7 @@ object Method {
   case object CONNECT extends Method {
     def name: String = "CONNECT"
   }
+  case object PATCH extends Method {
+    def name: String = "PATCH"
+  }
 }

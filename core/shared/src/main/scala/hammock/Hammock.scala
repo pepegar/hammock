@@ -20,6 +20,7 @@ object Hammock {
     case Method.PUT     => Ops.put(uri, headers, None)
     case Method.DELETE  => Ops.delete(uri, headers)
     case Method.TRACE   => Ops.trace(uri, headers)
+    case Method.PATCH   => Ops.patch(uri, headers, None)
   }
 
   /** similar to [[request]], but you can pass it a
@@ -38,6 +39,7 @@ object Hammock {
     case Method.PUT     => Ops.put(uri, headers, body.map(x => x.encode))
     case Method.DELETE  => Ops.delete(uri, headers)
     case Method.TRACE   => Ops.trace(uri, headers)
+    case Method.PATCH   => Ops.patch(uri, headers, body.map(x => x.encode))
   }
 
   /** Creates a request value given a [[Method method]], [[Uri uri]], and [[hi.Opts opts]], and suspends it into a [[cats.free.Free]].
@@ -48,7 +50,6 @@ object Hammock {
    * scala> import hammock._, hammock.jvm.Interpreter, hammock.hi._, hammock.hi._, cats._, cats.implicits._, scala.util.Try
    * import hammock._
    * import hammock.jvm.Interpreter
-   * import hammock.hi._
    * import hammock.hi._
    * import cats._
    * import cats.implicits._
@@ -81,7 +82,6 @@ object Hammock {
    * import hammock._
    * import hammock.jvm.Interpreter
    * import hammock.hi._
-   * import hammock.hi._
    * import cats._
    * import cats.implicits._
    * import scala.util.Try
@@ -103,7 +103,6 @@ object Hammock {
    * import hammock._
    * import hammock.jvm.Interpreter
    * import hammock.hi._
-   * import hammock.hi._
    * import cats._
    * import cats.implicits._
    * import scala.util.Try
@@ -124,7 +123,6 @@ object Hammock {
    * import hammock._
    * import hammock.jvm.Interpreter
    * import hammock.hi._
-   * import hammock.hi._
    * import cats._
    * import cats.implicits._
    * import scala.util.Try
@@ -144,7 +142,6 @@ object Hammock {
    * {{{
    * import hammock._
    * import hammock.jvm.Interpreter
-   * import hammock.hi._
    * import hammock.hi._
    * import cats._
    * import cats.implicits._
@@ -169,7 +166,6 @@ object Hammock {
    * {{{
    * import hammock._
    * import hammock.jvm.Interpreter
-   * import hammock.hi._
    * import hammock.hi._
    * import cats._
    * import cats.implicits._
@@ -209,6 +205,32 @@ object Hammock {
    *
    */
   def traceWithOpts(uri: Uri, opts: Opts): Free[HttpF, HttpResponse] = withOpts(Method.TRACE, uri, opts)
+
+  /** Creates a PATCH request to the given [[Uri uri]] and [[hi.Opts opts]].
+    * It also has an optional body parameter that can be
+    * used.
+    *
+    * {{{
+    * import hammock._
+    * import hammock.jvm.Interpreter
+    * import hammock.hi._
+    * import cats._
+    * import cats.implicits._
+    * import scala.util.Try
+    *
+    * val opts = (header("X-Test" -> "works!") >>> auth(Auth.BasicAuth("user", "pass")) >>> cookie(Cookie("key", "value")))(Opts.empty)
+    *
+    * implicit val stringCodec = new Codec[String] {
+    *    def encode(s: String) = s
+    *    def decode(s: String) = Right(s)
+    * }
+    *
+    * Hammock.patchWithOpts(uri"http://httpbin.org/patch", opts, Some("""{"body": true}"""))
+    * }}}
+    *
+    */
+  def patchWithOpts[A: Codec](uri: Uri, opts: Opts, body: Option[A] = None): Free[HttpF, HttpResponse] =
+    withOpts(Method.PATCH, uri, opts, body)
 
   private def constructHeaders(opts: Opts) =
     opts.headers ++
