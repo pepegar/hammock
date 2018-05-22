@@ -4,7 +4,7 @@ import cats.syntax.show._
 import cats.free.Free
 
 import hi.Opts
-import Codec.ops._
+import Encoder.ops._
 
 object Hammock {
 
@@ -23,10 +23,10 @@ object Hammock {
   }
 
   /** similar to [[request]], but you can pass it a
-   * body when it exists an instance for the [[Codec]]
+   * body when it exists an instance for the [[Encoder]]
    * typeclass for the given type [[A]]
    */
-  def request[A: Codec](
+  def request[A: Encoder](
       method: Method,
       uri: Uri,
       headers: Map[String, String],
@@ -66,12 +66,12 @@ object Hammock {
     request(method, uri, constructHeaders(opts))
 
   /** Variant of [[withOpts]] methods that also takes an optional body
-   * of a request. There should be a Codec instance for the body type
+   * of a request. There should be a Encoder instance for the body type
    * for this to work.
    *
    * @see Hammock.withOpts
    */
-  def withOpts[A: Codec](method: Method, uri: Uri, opts: Opts, body: Option[A]): Free[HttpF, HttpResponse] =
+  def withOpts[A: Encoder](method: Method, uri: Uri, opts: Opts, body: Option[A]): Free[HttpF, HttpResponse] =
     request(method, uri, constructHeaders(opts), body)
 
   /** Creates an OPTIONS request to the given [[Uri uri]] and [[hi.Opts opts]].
@@ -152,15 +152,14 @@ object Hammock {
    *
    * val opts = (header("X-Test" -> "works!") >>> auth(Auth.BasicAuth("user", "pass")) >>> cookie(Cookie("key", "value")))(Opts.empty)
    *
-   * implicit val stringCodec = new Codec[String] {
+   * implicit val stringEncoder = new Encoder[String] {
    *    def encode(s: String) = s
-   *    def decode(s: String) = Right(s)
    * }
    *
    * Hammock.postWithOpts(uri"http://httpbin.org/get", opts, Some("""{"body": true}"""))
    * }}}
    */
-  def postWithOpts[A: Codec](uri: Uri, opts: Opts, body: Option[A] = None): Free[HttpF, HttpResponse] =
+  def postWithOpts[A: Encoder](uri: Uri, opts: Opts, body: Option[A] = None): Free[HttpF, HttpResponse] =
     withOpts(Method.POST, uri, opts, body)
 
   /** Creates a PUT request to the given [[Uri uri]] and [[hi.Opts opts]].
@@ -178,16 +177,15 @@ object Hammock {
    *
    * val opts = (header("X-Test" -> "works!") >>> auth(Auth.BasicAuth("user", "pass")) >>> cookie(Cookie("key", "value")))(Opts.empty)
    *
-   * implicit val stringCodec = new Codec[String] {
+   * implicit val stringEncoder = new Encoder[String] {
    *    def encode(s: String) = s
-   *    def decode(s: String) = Right(s)
    * }
    *
    * Hammock.postWithOpts(uri"http://httpbin.org/get", opts, Some("""{"body": true}"""))
    * }}}
    *
    */
-  def putWithOpts[A: Codec](uri: Uri, opts: Opts, body: Option[A] = None): Free[HttpF, HttpResponse] =
+  def putWithOpts[A: Encoder](uri: Uri, opts: Opts, body: Option[A] = None): Free[HttpF, HttpResponse] =
     withOpts(Method.PUT, uri, opts, body)
 
   /** Creates a DELETE request to the given [[Uri uri]] and [[hi.Opts opts]].
