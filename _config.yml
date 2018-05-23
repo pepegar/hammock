@@ -6,6 +6,6 @@ docs: true
 collections:
   tut:
     output: true
-version: 0.8.3-SNAPSHOT
+version: 0.8.5-SNAPSHOT
 org: com.pepegar
 markdown: kramdown
