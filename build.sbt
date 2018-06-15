@@ -214,7 +214,8 @@ lazy val docs = project
         Map("title" -> "changelog", "section" -> "changelog", "position" -> "99")
       )
     ),
-    scalacOptions in Tut ~= filterConsoleScalacOptions
+    scalacOptions in Tut ~= filterConsoleScalacOptions,
+    scalacOptions in Tut += "-language:postfixOps"
   )
   .enablePlugins(MicrositesPlugin)
 
