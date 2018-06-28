@@ -16,10 +16,10 @@ Add the following to your `build.sbt`.
 
 ```scala
 // For Scala 2.10, 2.11, or 2.12
-libraryDependencies += "com.pepegar" %% "hammock-core" % "0.8.4"
+libraryDependencies += "com.pepegar" %% "hammock-core" % "0.8.5"
 
 // For ScalaJS
-libraryDependencies += "com.pepegar" %%% "hammock-core" % "0.8.4"
+libraryDependencies += "com.pepegar" %%% "hammock-core" % "0.8.5"
 ```
 
 
@@ -43,10 +43,10 @@ libraryDependencies += "com.pepegar" %%% "hammock-core" % "0.8.4"
 
 | Module name          | Description                                | Version |
 | -------------------- | ------------------------------------------ | ------- |
-| `hammock-core`      | the core functionality of hammock, using [Apache HTTP commons][httpcommons] for HTTP in JVM and [XHR][xhr] in JS | `0.8.4` |
-| `hammock-circe`      | encode and decode HTTP entities with [Circe][circe] | `0.8.4` |
-| `hammock-akka-http`  | run your HTTP requests with [akka-http][akka-http] | `0.8.4` |
-| `hammock-asynchttpclient`  | run your HTTP requests with [AsyncHttpClient][async-http-client] | `0.8.4` |
+| `hammock-core`      | the core functionality of hammock, using [Apache HTTP commons][httpcommons] for HTTP in JVM and [XHR][xhr] in JS | `0.8.5` |
+| `hammock-circe`      | encode and decode HTTP entities with [Circe][circe] | `0.8.5` |
+| `hammock-akka-http`  | run your HTTP requests with [akka-http][akka-http] | `0.8.5` |
+| `hammock-asynchttpclient`  | run your HTTP requests with [AsyncHttpClient][async-http-client] | `0.8.5` |
 
 
 ## How does Hammock look in action?
