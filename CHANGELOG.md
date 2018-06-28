@@ -4,8 +4,6 @@
 - Add support for PATCH method [#106](https://github.com/pepegar/hammock/pull/106)
 - Replace Codec requirement for requests that include a body by an Encode requirement [#107](https://github.com/pepegar/hammock/pull/107)
 
-…der requirement
-
 # 0.8.4
 
 - add interpreter for NodeJS! [#105](https://github.com/pepegar/hammock/pull/105)
