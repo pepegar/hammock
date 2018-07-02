@@ -2,7 +2,13 @@ package hammock
 
 import monocle.macros.Lenses
 
-@Lenses case class Status(code: Int, text: String, description: String)
+@Lenses case class Status(code: Int, text: String, description: String) {
+  def isInformational: Boolean = this.code / 100 == 1
+  def isSuccess: Boolean = this.code / 100 == 2
+  def isRedirection: Boolean = this.code / 100 == 3
+  def isClientError: Boolean = this.code / 100 == 4
+  def isServerError: Boolean = this.code / 100 == 5
+}
 
 object Status {
   val Continue = Status(
