@@ -1,8 +1,8 @@
 package hammock
 package hi
 
-import java.util.Date
+import java.time.ZonedDateTime
 
 trait DateFormatter {
-  def format(date: Date): String
+  def format(date: ZonedDateTime): String
 }
