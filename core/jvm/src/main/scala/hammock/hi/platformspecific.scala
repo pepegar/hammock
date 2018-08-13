@@ -1,12 +1,12 @@
 package hammock
 package hi
 
-import java.text.SimpleDateFormat
-import java.util.Date
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
 
 object platformspecific {
   implicit object JVMDateFormatter extends DateFormatter {
-    private val fmt                = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss Z")
-    def format(date: Date): String = fmt.format(date)
+    private val fmt                         = DateTimeFormatter.ofPattern("EEE, dd MMM yyyy HH:mm:ss O")
+    def format(date: ZonedDateTime): String = date.format(fmt)
   }
 }

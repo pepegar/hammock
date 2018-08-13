@@ -1,15 +1,15 @@
 package hammock
 package hi
 
-import java.util.{Date => JavaDate}
+import java.time.ZonedDateTime
 import scalajs.js.{Date => JsDate}
 
 object platformspecific {
-  def convert(d: JavaDate): JsDate = new JsDate(d.getTime().toDouble)
+  def convert(d: ZonedDateTime): JsDate = new JsDate(d.toInstant.toEpochMilli.toDouble)
 
   implicit object JSDateFormatter extends DateFormatter {
-    def format(date: JavaDate): String = fmt(convert(date))
+    def format(date: ZonedDateTime): String = fmt(convert(date))
 
-    def fmt(date: JsDate): String = date.toString
+    def fmt(date: JsDate): String = date.toUTCString
   }
 }

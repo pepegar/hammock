@@ -1,7 +1,7 @@
 package hammock
 package hi
 
-import java.util.Date
+import java.time.ZonedDateTime
 
 import cats._
 import cats.implicits._
@@ -13,7 +13,7 @@ import monocle.macros.Lenses
 @Lenses case class Cookie(
     name: String,
     value: String,
-    expires: Option[Date] = None,
+    expires: Option[ZonedDateTime] = None,
     maxAge: Option[Int] = None,
     domain: Option[String] = None,
     path: Option[String] = None,
@@ -24,7 +24,7 @@ import monocle.macros.Lenses
 )
 
 object Cookie {
-  val expiresOpt: Optional[Cookie, Date] = Optional[Cookie, Date] {
+  val expiresOpt: Optional[Cookie, ZonedDateTime] = Optional[Cookie, ZonedDateTime] {
     _.expires
   } { date =>
     {
@@ -134,7 +134,7 @@ object Cookie {
    */
   def render(cookie: Cookie)(implicit fmt: DateFormatter): String = {
     def renderPair[S: Show](k: String)(v: S)              = k ++ "=" ++ Show[S].show(v)
-    def maybeShowDate(date: Option[Date]): Option[String] = date map (date => fmt.format(date))
+    def maybeShowDate(date: Option[ZonedDateTime]): Option[String] = date map (date => fmt.format(date))
     def expires                                           = maybeShowDate(cookie.expires) map renderPair("Expires")
     def maxAge                                            = cookie.maxAge map renderPair("MaxAge")
     def domain                                            = cookie.domain map renderPair("Domain")

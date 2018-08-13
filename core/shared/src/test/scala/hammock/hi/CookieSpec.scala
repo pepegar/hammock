@@ -1,9 +1,10 @@
 package hammock
 package hi
 
-import org.scalatest.{Matchers, WordSpec}
-import java.util.Date
+import java.time.ZonedDateTime
+
 import cats._
+import org.scalatest.{Matchers, WordSpec}
 
 class CookieSpec extends WordSpec with Matchers {
 
@@ -14,11 +15,11 @@ class CookieSpec extends WordSpec with Matchers {
       Show[Cookie].show(cookie) shouldEqual "name=value"
     }
 
-    "render a complex cookie in the correct format" ignore {
+    "render a complex cookie in the correct format" in {
       val cookie = Cookie(
         "name",
         "value",
-        Some(new Date(234234234)),
+        Some(ZonedDateTime.parse("2020-01-04T17:03:54.000Z")),
         Some(123),
         Some("pepegar.com"),
         Some("/blog"),
@@ -26,7 +27,7 @@ class CookieSpec extends WordSpec with Matchers {
         Some(true),
         Some(Cookie.SameSite.Strict))
 
-      Show[Cookie].show(cookie) shouldEqual "name=value; Expires=Sat, 03 Jan 1970 17:03:54 +0000; MaxAge=123; Domain=pepegar.com; Path=/blog; Secure=false; HttpOnly=true; SameSite=Strict"
+      Show[Cookie].show(cookie) shouldEqual "name=value; Expires=Sat, 04 Jan 2020 17:03:54 GMT; MaxAge=123; Domain=pepegar.com; Path=/blog; Secure=false; HttpOnly=true; SameSite=Strict"
     }
 
     "render a cookie with custom values in the correct format" in {
