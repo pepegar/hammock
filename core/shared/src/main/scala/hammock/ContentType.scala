@@ -10,6 +10,7 @@ object ContentType {
   val notUsed: ContentType = fromName("")
   val `application/json`: ContentType = fromName("application/json; charset=utf-8")
   val `application/octet-stream`: ContentType= fromName("application/octet-stream")
+  val `multipart/form-data`: ContentType= fromName("multipart/form-data")
   val `text/plain`: ContentType = fromName("application/json")
 
   def fromName(givenName: String): ContentType = new ContentType {

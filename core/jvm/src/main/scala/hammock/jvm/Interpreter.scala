@@ -13,6 +13,7 @@ import org.apache.http.client.HttpClient
 import org.apache.http.client.methods._
 import org.apache.http.{entity => apache}
 import org.apache.http.impl.client.HttpClientBuilder
+import org.apache.http.entity.mime.MultipartEntityBuilder
 import org.apache.http.message.BasicHeader
 import org.apache.http.util.EntityUtils
 
@@ -123,6 +124,12 @@ class Interpreter[F[_]](client: HttpClient) extends InterpTrans[F] {
     case Entity.ByteArrayEntity(body, contentType) =>
       mapContentType(contentType) map { parsedContentType =>
         new apache.ByteArrayEntity(body, parsedContentType)
+      }
+    case Entity.MultipartEntity(body, contentType) =>
+      mapContentType(contentType) map { parsedContentType =>
+        val builder = MultipartEntityBuilder.create()
+
+        body.foldLeft(builder)()
       }
     case Entity.EmptyEntity =>
       F.delay(new apache.BasicHttpEntity())

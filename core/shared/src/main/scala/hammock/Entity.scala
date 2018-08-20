@@ -16,10 +16,12 @@ sealed trait Entity {
   def cata[X](
     onStringEntity: Entity.StringEntity => X,
     onByteArrayEntity: Entity.ByteArrayEntity => X,
+    onMultipartEntity: Entity.MultipartEntity => X,
     onEmptyEntity: Entity.EmptyEntity.type => X
   ): X = this match {
     case e: Entity.StringEntity => onStringEntity(e)
     case e: Entity.ByteArrayEntity => onByteArrayEntity(e)
+    case e: Entity.MultipartEntity => onMultipartEntity(e)
     case Entity.EmptyEntity => onEmptyEntity(Entity.EmptyEntity)
   }
 }
@@ -48,6 +50,15 @@ object Entity {
     type Content = Array[Byte]
     def chunked: Boolean = false
     def content: Array[Byte] = body
+    def contentLength: Long = body.length.toLong
+    def repeatable: Boolean = true
+    def streaming: Boolean = false
+  }
+
+  case class MultipartEntity(body: List[Entity], contentType: ContentType = ContentType.`multipart/form-data`) extends Entity {
+    type Content = List[Entity]
+    def chunked: Boolean = false
+    def content: List[Entity] = body
     def contentLength: Long = body.length.toLong
     def repeatable: Boolean = true
     def streaming: Boolean = false
