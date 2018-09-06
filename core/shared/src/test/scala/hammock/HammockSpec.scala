@@ -3,7 +3,7 @@ package hammock
 
 import org.scalatest._
 import cats._
-import hi.{Cookie, Opts}
+import hi.{Cookie, Opts, Auth}
 
 class HammockSpec extends WordSpec with Matchers {
   val methods = Seq(Method.OPTIONS, Method.GET, Method.HEAD, Method.POST, Method.PUT, Method.DELETE, Method.TRACE, Method.PATCH)
@@ -57,6 +57,21 @@ class HammockSpec extends WordSpec with Matchers {
           Hammock.getWithOpts(uri, opts) foldMap test { r =>
             r.req.uri shouldEqual Uri.fromString("http://pepegar.com").right.get
             r.req.headers shouldEqual Map("header" -> "3", "Set-Cookie" -> "thisisacookie=thisisthevalue")
+          }
+        case Left(err) => fail(s"failed with $err")
+      }
+    }
+
+    "construct the correct headers" in {
+      val basicAuth = Auth.BasicAuth("user", "p4ssw0rd")
+      val opts = Opts(Option(basicAuth), Map.empty, Option.empty)
+      val shown = Show[Auth].show(basicAuth)
+
+      Uri.fromString("http://pepegar.com") match {
+        case Right(uri) =>
+          Hammock.getWithOpts(uri, opts) foldMap test { r =>
+            r.req.uri shouldEqual Uri.fromString("http://pepegar.com").right.get
+            r.req.headers shouldEqual Map("Authorization" -> shown)
           }
         case Left(err) => fail(s"failed with $err")
       }
