@@ -30,6 +30,13 @@ object UriProps extends Properties("Uri") {
     query.contains(key) && query(key) === value
   }
 
+  property("string interpolation") = forAll(nonEmptyAlphanumString, nonEmptyAlphanumString, nonEmptyAlphanumString, nonEmptyAlphanumString, nonEmptyAlphanumString) { (url: String, key1: String, value1: String, key2: String, value2: String) =>
+    val substituedUri = uri"https://${url}?${key1}=${value1}&${key2}=${value2}&other=query"
+    substituedUri.query.contains(key1) && substituedUri.query(key1) === value1
+    substituedUri.query.contains(key2) && substituedUri.query(key2) === value2
+    substituedUri.show == s"https://${url}?${key1}=${value1}&${key2}=${value2}&other=query"
+  }
+
   property("params method appends multiple parameters to the query") = forAll(uriArbitrary.arbitrary, Gen.listOf(nonEmptyStringPair)) { (uri, pairs) =>
     val query = uri.params(pairs: _*).query
     Foldable[List].foldLeft(pairs.map(pair => query.contains(pair._1)), true)(_ && _)
