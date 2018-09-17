@@ -51,10 +51,10 @@ package object hammock {
     }
 
     def evaluate(interpolation: RuntimeInterpolation): Uri ={
-      val substitued = interpolation.literals
+      val substituted = interpolation.literals
         .zipAll(interpolation.substitutions, "", "")
-        .map(x=>List(x._1, x._2)).flatten.mkString("")
-      Uri.fromString(substitued).right.get
+        .flatMap(x=>List(x._1, x._2)).mkString("")
+      Uri.fromString(substituted).right.get
     }
 
   }
