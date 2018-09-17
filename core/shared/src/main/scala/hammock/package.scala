@@ -50,8 +50,13 @@ package object hammock {
       }
     }
 
-    def evaluate(interpolation: RuntimeInterpolation): Uri =
-      Uri.fromString(interpolation.literals.head).right.get
+    def evaluate(interpolation: RuntimeInterpolation): Uri ={
+      val substituted = interpolation.literals
+        .zipAll(interpolation.substitutions, "", "")
+        .flatMap(x=>List(x._1, x._2)).mkString("")
+      Uri.fromString(substituted).right.get
+    }
+
   }
 
   implicit val embedString = UriInterpolator.embed[String](Case(UriContext, UriContext) { x => x })
