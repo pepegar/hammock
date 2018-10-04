@@ -6,7 +6,7 @@ val Versions = Map(
   "contextual"     -> "1.1.0",
   "circe"          -> "0.9.2",
   "monocle"        -> "1.5.1-cats",
-  "atto"           -> "0.6.1",
+  "atto"           -> "0.6.3",
   "cats"           -> "1.1.0",
   "cats-effect"    -> "0.10",
   "simulacrum"     -> "0.12.0",
