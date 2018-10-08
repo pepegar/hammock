@@ -6,20 +6,32 @@ scala:
 jdk:
 - oraclejdk8
 
-before_install:
-- export PATH=${PATH}:./vendor/bundle
-
 install:
 - rvm use 2.2.8 --install --fuzzy
 - gem update --system
 - gem install sass
 - gem install jekyll -v 3.2.1
 
-script:
-- sbt ++$TRAVIS_SCALA_VERSION clean coverage +coreJVM/test +akka/test +circeJVM/test +asynchttpclient/test coverageReport
-- sbt ++$TRAVIS_SCALA_VERSION validateJS
-- sbt validateDoc validateScalafmt
-- sbt example/compile exampleJS/compile
+stages:
+- name: test
+- name: docs
+- name: formatting
+- name: release
+  if: (branch = master AND type = push) OR (tag IS present)
+
+jobs:
+  include:
+  - stage: test
+    env: TEST="compile"
+    script: scripts/test.sh
+  - stage: docs
+    env: TEST="docs"
+    script: sbt validateDoc
+  - stage: formatting
+    env: TEST="scalafmt"
+    script: sbt validateScalafmt
+  - stage: release
+    script: sbt ci-release
 
 after_success:
 - bash <(curl -s https://codecov.io/bash)
@@ -28,7 +40,21 @@ after_success:
 - if [ "$TRAVIS_PULL_REQUEST" = "true" ]; then echo "Not in master branch, skipping
   deploy and release"; fi
 
+cache:
+  directories:
+  - $HOME/.sbt/1.0/dependency
+  - $HOME/.sbt/boot/scala*
+  - $HOME/.sbt/launchers
+  - $HOME/.ivy2/cache
+  - $HOME/.coursier
 
-env:
-  matrix:
-    secure: gyBEbHIX6LddN9nUN/gSNoDp9/kyWtpg7qaFIAxusbsmefAM59CmpcSsdQkzrhTBG1ozz5o5kB8x++LHGk4NI3Ae/NEYEKLOx2sb9ChTCHpfK0srQq/Pn/LKl5+noo6dLJdsj2eBVfl/CoDkxag+0sjHrDBkYs6PBBEmBOxtMtJ5fKiFkTgC/dvYo6FYgvhg3rbxuLPy9r4/XuDrzwKoFTyrcPxvd8lsvSHkOMKmB/rR3GPSodKQiF5aOJCsdJDTSspnvNidJHfU1Pu3SqrU8xFgCDIPBZPUVdfMaAdjhArRJU8BlV4WuuytdceHZvZ7nagfsD/aa/f/K16bQkzlKa+3pOzNYV0pknMtsonsOCsr7apO5kSKiYERjyYUtqNLPrDxYrvHWgKPNOBcAuB4A8INVIN+V3xyL7bn32PgfcxFvhKVM8GpaB4G0byf8kGJf6vurTxxmy3fkiAJ7WQAkVy77uTxdrucyud2c31zKM8Ye+isVPZqfLy8E0/fR6CcAtec1XTTCab7qopPlUcNSUGBTNajuNF9oMnOQy3jxTSahV6idaBjtKICCsFLZtOv14yCu3puivZ8v/qV/w6TLw0fCHM8dCIny6d9F7Ep6YH2RZPc22ySxPiNTipGJxzsIQkxUGH7e2VN8Zqr0OkP2jTkiQWXHpouspSiVr8s0T0=
+before_cache:
+- du -h -d 1 $HOME/.ivy2/cache
+- du -h -d 2 $HOME/.sbt/
+- find $HOME/.sbt -name "*.lock" -type f -delete
+- find $HOME/.ivy2/cache -name "ivydata-*.properties" -type f -delete
+- rm -rf $HOME/.ivy2/local
+
+before_install:
+- export PATH=${PATH}:./vendor/bundle
+- git fetch --tags
