@@ -256,5 +256,5 @@ addCommandAlias("validateDoc", ";docs/tut;readme/tut")
 addCommandAlias(
   "validateJVM",
   ";validateScalafmt;coreJVM/test;circeJVM/test;akka/test;asynchttpclient/test;validateDoc")
-addCommandAlias("validateJS", ";validateScalafmt;coreJS/test;circeJS/test")
+addCommandAlias("validateJS", ";coreJS/test;circeJS/test")
 addCommandAlias("validate", ";clean;validateScalafmt;validateJS;validateJVM;validateDoc")
