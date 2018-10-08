@@ -19,14 +19,6 @@ val Versions = Map(
   "ahc"            -> "2.1.2"
 )
 
-publishTo in ThisBuild := {
-  val nexus = "https://oss.sonatype.org/"
-  if (isSnapshot.value)
-    Some("snapshots" at nexus + "content/repositories/snapshots")
-  else
-    Some("releases" at nexus + "service/local/staging/deploy/maven2")
-}
-
 val noPublishSettings = Seq(
   publish := {},
   publishLocal := {},
@@ -35,23 +27,18 @@ val noPublishSettings = Seq(
 )
 
 val publishSettings = Seq(
-  publishMavenStyle := true,
   publishArtifact in Test := false,
   useGpg := true,
   homepage := Some(url("https://github.com/pepegar/hammock")),
   pomIncludeRepository := Function.const(false),
-  pomExtra :=
-    <scm>
-      <url>https://github.com/pepegar/hammock</url>
-      <connection>scm:git:git@github.com:pepegar/hammock.git</connection>
-    </scm>
-    <developers>
-      <developer>
-        <id>pepegar</id>
-        <name>Pepe García</name>
-        <url>http://pepegar.com</url>
-      </developer>
-    </developers>,
+  developers := List(
+    Developer(
+      "pepegar",
+      "Pepe García",
+      "pepe@pepegar.com",
+      url("http://pepegar.com")
+    )
+  ),
   releaseCrossBuild := true,
   releasePublishArtifactsAction := PgpKeys.publishSigned.value,
   releaseProcess := Seq[ReleaseStep](
@@ -269,5 +256,5 @@ addCommandAlias("validateDoc", ";docs/tut;readme/tut")
 addCommandAlias(
   "validateJVM",
   ";validateScalafmt;coreJVM/test;circeJVM/test;akka/test;asynchttpclient/test;validateDoc")
-addCommandAlias("validateJS", ";validateScalafmt;coreJS/test;circeJS/test")
+addCommandAlias("validateJS", ";coreJS/test;circeJS/test")
 addCommandAlias("validate", ";clean;validateScalafmt;validateJS;validateJVM;validateDoc")
