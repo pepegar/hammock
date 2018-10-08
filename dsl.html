@@ -30,13 +30,13 @@ your requests.</p>
 <span class="c1">// import cats.effect.IO
 </span>
 <span class="k">implicit</span> <span class="k">val</span> <span class="n">interp</span> <span class="k">=</span> <span class="nc">Interpreter</span><span class="o">[</span><span class="kt">IO</span><span class="o">]</span>
-<span class="c1">// interp: hammock.jvm.Interpreter[cats.effect.IO] = hammock.jvm.Interpreter@133744d
+<span class="c1">// interp: hammock.jvm.Interpreter[cats.effect.IO] = hammock.jvm.Interpreter@590f00b0
 </span>
 <span class="k">val</span> <span class="n">opts</span> <span class="k">=</span> <span class="o">(</span><span class="n">header</span><span class="o">(</span><span class="s">"user"</span> <span class="o">-&gt;</span> <span class="s">"pepegar"</span><span class="o">)</span> <span class="o">&gt;&gt;&gt;</span> <span class="n">cookie</span><span class="o">(</span><span class="nc">Cookie</span><span class="o">(</span><span class="s">"track"</span><span class="o">,</span> <span class="s">"a lot"</span><span class="o">)))(</span><span class="nc">Opts</span><span class="o">.</span><span class="n">empty</span><span class="o">)</span>
 <span class="c1">// opts: hammock.hi.Opts = Opts(None,Map(user -&gt; pepegar),Some(List(Cookie(track,a lot,None,None,None,None,None,None,None,None))))
 </span>
 <span class="k">val</span> <span class="n">response</span> <span class="k">=</span> <span class="nc">Hammock</span><span class="o">.</span><span class="n">getWithOpts</span><span class="o">(</span><span class="n">uri</span><span class="s">"http://httpbin.org/get"</span><span class="o">,</span> <span class="n">opts</span><span class="o">).</span><span class="n">exec</span><span class="o">[</span><span class="kt">IO</span><span class="o">]</span>
-<span class="c1">// response: cats.effect.IO[hammock.HttpResponse] = IO$1532303442
+<span class="c1">// response: cats.effect.IO[hammock.HttpResponse] = IO$177477054
 </span></code></pre>
 </div>
 
@@ -107,7 +107,7 @@ plain <code class="highlighter-rouge">Function1[Opts, Opts]</code>, for which th
     <span class="n">cookie</span><span class="o">(</span><span class="nc">Cookie</span><span class="o">(</span><span class="s">"track"</span><span class="o">,</span> <span class="s">"A lot"</span><span class="o">))</span> <span class="o">&gt;&gt;&gt;</span>
     <span class="n">header</span><span class="o">(</span><span class="s">"user"</span> <span class="o">-&gt;</span> <span class="s">"potatoman"</span><span class="o">)</span>
 <span class="o">}</span>
-<span class="c1">// req: hammock.hi.Opts =&gt; hammock.hi.Opts = scala.Function1$$Lambda$7820/466427755@6fc2415c
+<span class="c1">// req: hammock.hi.Opts =&gt; hammock.hi.Opts = scala.Function1$$Lambda$9056/1812866164@7af5ff5f
 </span></code></pre>
 </div>
 
@@ -138,11 +138,11 @@ in <a href="https://github.com/julientruffaut/monocle"><code class="highlighter-
 // cookie list, for example:
 </span>
 <span class="n">cookiesOpt</span> <span class="n">composeOptional</span> <span class="n">index</span><span class="o">(</span><span class="mi">0</span><span class="o">)</span> <span class="n">composeLens</span> <span class="n">value</span>
-<span class="c1">// res6: monocle.POptional[hammock.hi.Opts,hammock.hi.Opts,String,String] = monocle.POptional$$anon$2@c3c592d
+<span class="c1">// res6: monocle.POptional[hammock.hi.Opts,hammock.hi.Opts,String,String] = monocle.POptional$$anon$2@52aed730
 </span>
 <span class="c1">// also you can use the symbolic operators for that :D
 </span><span class="n">cookiesOpt</span> <span class="o">^|-?</span> <span class="n">index</span><span class="o">(</span><span class="mi">0</span><span class="o">)</span> <span class="o">^|-&gt;</span> <span class="n">value</span>
-<span class="c1">// res8: monocle.POptional[hammock.hi.Opts,hammock.hi.Opts,String,String] = monocle.POptional$$anon$2@68e2acfc
+<span class="c1">// res8: monocle.POptional[hammock.hi.Opts,hammock.hi.Opts,String,String] = monocle.POptional$$anon$2@29639845
 </span>
 <span class="c1">// and then, use the optics machinery at your will, for example for getting the focus
 </span><span class="o">(</span><span class="n">cookiesOpt</span> <span class="o">^|-?</span> <span class="n">index</span><span class="o">(</span><span class="mi">0</span><span class="o">)</span> <span class="o">^|-&gt;</span> <span class="n">value</span><span class="o">).</span><span class="n">getOption</span><span class="o">(</span><span class="n">opts</span><span class="o">)</span>
