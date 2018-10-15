@@ -1,5 +1,5 @@
 addSbtPlugin("org.scoverage"             % "sbt-scoverage"            % "1.5.1")
-addSbtPlugin("com.47deg"                 % "sbt-microsites"           % "0.7.9")
+addSbtPlugin("com.47deg"                 % "sbt-microsites"           % "0.7.23")
 addSbtPlugin("com.github.gseitz"         % "sbt-release"              % "1.0.8")
 addSbtPlugin("org.scala-js"              % "sbt-scalajs"              % "0.6.22")
 addSbtPlugin("org.portable-scala"        % "sbt-crossproject"         % "0.3.1")
