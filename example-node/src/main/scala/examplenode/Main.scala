@@ -1,7 +1,7 @@
 package examplenode
 
 import hammock._
-import hammock.node._
+import hammock.fetch._
 import hammock.marshalling._
 import hammock.circe.implicits._
 import io.circe.generic.auto._
