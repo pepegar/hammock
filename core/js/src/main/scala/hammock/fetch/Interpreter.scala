@@ -1,5 +1,5 @@
 package hammock
-package node
+package fetch
 
 import cats.effect._
 import cats._
@@ -10,7 +10,7 @@ import scala.scalajs.js.Promise
 import cats.syntax.show._
 import scala.scalajs.js.JSConverters._
 
-class Interpreter[F[_]: Async] extends InterpTrans[F] {
+class Interpreter[F[_]: Async](nodeFetch: NodeFetch) extends InterpTrans[F] {
   override def trans(implicit S: Sync[F]): HttpF ~> F = new (HttpF ~> F) {
     def apply[A](http: HttpF[A]): F[A] = {
       val method = http match {
@@ -28,7 +28,7 @@ class Interpreter[F[_]: Async] extends InterpTrans[F] {
           val hammockResponse = for {
             response <- IO.fromFuture(IO {
               val headers = http.req.headers.toJSDictionary
-              NodeFetch(
+              nodeFetch(
                 http.req.uri.show,
                 http.req.entity
                   .flatMap(
@@ -54,5 +54,10 @@ class Interpreter[F[_]: Async] extends InterpTrans[F] {
 }
 
 object Interpreter {
-  def apply[F[_]: Async]: Interpreter[F] = new Interpreter[F]
+  def apply[F[_]: Async](nodeFetch: NodeFetch): Interpreter[F] = new Interpreter[F](nodeFetch)
+  def apply[F[_]: Async]: Interpreter[F]                       = apply(NodeFetch)
+
+  //Select either the node dependency or the browser one
+  lazy val BrowserFetch: NodeFetch = scalajs.js.Dynamic.global.window.fetch.asInstanceOf[NodeFetch]
+  lazy val NodeFetch: NodeFetch    = io.scalajs.npm.nodefetch.NodeFetch
 }
