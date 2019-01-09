@@ -14,7 +14,7 @@ val Versions = Map(
   "scalacheck"     -> "1.13.5",
   "discipline"     -> "0.9.0",
   "macro-paradise" -> "2.1.1",
-  "kind-projector" -> "0.9.5",
+  "kind-projector" -> "0.9.9",
   "akka-http"      -> "10.0.9",
   "ahc"            -> "2.1.2"
 )
