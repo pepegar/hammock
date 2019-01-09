@@ -11,7 +11,7 @@ val Versions = Map(
   "cats-effect"    -> "1.0.0",
   "simulacrum"     -> "0.12.0",
   "scalatest"      -> "3.0.5",
-  "scalacheck"     -> "1.13.5",
+  "scalacheck"     -> "1.14.0",
   "discipline"     -> "0.9.0",
   "macro-paradise" -> "2.1.1",
   "kind-projector" -> "0.9.5",
