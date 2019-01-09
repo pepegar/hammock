@@ -134,7 +134,7 @@ lazy val core = crossProject(JSPlatform, JVMPlatform)
   .jvmSettings(
     libraryDependencies ++= Seq(
       "org.apache.httpcomponents" % "httpclient"  % "4.5.4",
-      "org.mockito"               % "mockito-all" % "1.10.18" % Test
+      "org.mockito"               % "mockito-all" % "1.10.19" % Test
     )
   )
 
@@ -168,7 +168,7 @@ lazy val akka = project
   .settings(
     libraryDependencies += "com.typesafe.akka" %% "akka-http" % Versions("akka-http")
   )
-  .settings(libraryDependencies += "org.mockito" % "mockito-all" % "1.10.18" % "test")
+  .settings(libraryDependencies += "org.mockito" % "mockito-all" % "1.10.19" % "test")
   .dependsOn(coreJVM)
 
 lazy val asynchttpclient = project
