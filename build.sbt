@@ -12,7 +12,7 @@ val Versions = Map(
   "simulacrum"     -> "0.12.0",
   "scalatest"      -> "3.0.5",
   "scalacheck"     -> "1.13.5",
-  "discipline"     -> "0.9.0",
+  "discipline"     -> "0.10.0",
   "macro-paradise" -> "2.1.1",
   "kind-projector" -> "0.9.5",
   "akka-http"      -> "10.0.9",
