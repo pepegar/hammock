@@ -7,6 +7,7 @@ jdk:
 - oraclejdk8
 
 before_install:
+- git fetch --tags
 - export PATH=${PATH}:./vendor/bundle
 
 install:
@@ -15,11 +16,27 @@ install:
 - gem install sass
 - gem install jekyll -v 3.8.3
 
-script:
-- sbt ++$TRAVIS_SCALA_VERSION clean coverage +coreJVM/test +akka/test +circeJVM/test +asynchttpclient/test coverageReport
-- sbt ++$TRAVIS_SCALA_VERSION validateJS
-- sbt validateDoc validateScalafmt
-- sbt example/compile exampleJS/compile
+stages:
+  - name: format
+  - name: test
+  - name: release
+    if: (branch = master AND type = push) OR (tag IS present)
+
+
+jobs:
+  include:
+    - stage: format
+      script: sbt scalafmt::test
+    - stage: test
+      script:
+        - sbt ++$TRAVIS_SCALA_VERSION clean coverage +coreJVM/test +akka/test +circeJVM/test +asynchttpclient/test coverageReport
+        - sbt ++$TRAVIS_SCALA_VERSION validateJS
+        - sbt validateDoc validateScalafmt
+        - sbt example/compile exampleJS/compile
+    - stage: release
+      script: sbt ci-release
+
+
 
 after_success:
 - bash <(curl -s https://codecov.io/bash)
