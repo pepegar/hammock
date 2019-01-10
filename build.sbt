@@ -15,7 +15,7 @@ val Versions = Map(
   "discipline"     -> "0.10.0",
   "macro-paradise" -> "2.1.1",
   "kind-projector" -> "0.9.9",
-  "akka-http"      -> "10.0.9",
+  "akka-http"      -> "10.0.15",
   "ahc"            -> "2.1.2"
 )
 
