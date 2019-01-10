@@ -4,18 +4,18 @@ import sbtcrossproject.{crossProject, CrossType}
 
 val Versions = Map(
   "contextual"     -> "1.1.0",
-  "circe"          -> "0.10.0",
+  "circe"          -> "0.10.1",
   "monocle"        -> "1.5.1-cats",
   "atto"           -> "0.6.3",
-  "cats"           -> "1.4.0",
-  "cats-effect"    -> "1.0.0",
+  "cats"           -> "1.5.0",
+  "cats-effect"    -> "1.1.0",
   "simulacrum"     -> "0.12.0",
   "scalatest"      -> "3.0.5",
-  "scalacheck"     -> "1.13.5",
-  "discipline"     -> "0.9.0",
+  "scalacheck"     -> "1.14.0",
+  "discipline"     -> "0.10.0",
   "macro-paradise" -> "2.1.1",
-  "kind-projector" -> "0.9.5",
-  "akka-http"      -> "10.0.9",
+  "kind-projector" -> "0.9.9",
+  "akka-http"      -> "10.0.15",
   "ahc"            -> "2.1.2"
 )
 
@@ -125,16 +125,16 @@ lazy val core = crossProject(JSPlatform, JVMPlatform)
   .settings(publishSettings)
   .jsSettings(
     libraryDependencies ++= Seq(
-      "org.scala-js"      %%% "scalajs-dom"     % "0.9.5",
+      "org.scala-js"      %%% "scalajs-dom"     % "0.9.6",
       "io.scalajs.npm"    %%% "node-fetch"      % "0.4.2",
-      "io.github.cquiroz" %%% "scala-java-time" % "2.0.0-M13"
+      "io.github.cquiroz" %%% "scala-java-time" % "2.0.0-RC1"
     ),
     npmDependencies in Test += "node-fetch" -> "2.1.2"
   )
   .jvmSettings(
     libraryDependencies ++= Seq(
       "org.apache.httpcomponents" % "httpclient"  % "4.5.6",
-      "org.mockito"               % "mockito-all" % "1.10.18" % Test
+      "org.mockito"               % "mockito-all" % "1.10.19" % Test
     )
   )
 
@@ -168,7 +168,7 @@ lazy val akka = project
   .settings(
     libraryDependencies += "com.typesafe.akka" %% "akka-http" % Versions("akka-http")
   )
-  .settings(libraryDependencies += "org.mockito" % "mockito-all" % "1.10.18" % "test")
+  .settings(libraryDependencies += "org.mockito" % "mockito-all" % "1.10.19" % "test")
   .dependsOn(coreJVM)
 
 lazy val asynchttpclient = project
