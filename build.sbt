@@ -2,6 +2,21 @@ import microsites._
 import ReleaseTransformations._
 import sbtcrossproject.{crossProject, CrossType}
 
+inThisBuild(
+  List(
+    organization := "com.pepegar",
+    homepage := Some(url("https://github.com/pepegar/hammock")),
+    licenses := List("Apache-2.0" -> url("https://opensource.org/licenses/MIT")),
+    developers := List(
+      Developer(
+        "pepegar",
+        "Pepe García",
+        "pepe@pepegar.com",
+        url("https://pepegar.com")
+      )
+    )
+  ))
+
 val Versions = Map(
   "contextual"     -> "1.1.0",
   "circe"          -> "0.10.1",
@@ -19,56 +34,11 @@ val Versions = Map(
   "ahc"            -> "2.1.2"
 )
 
-publishTo in ThisBuild := {
-  val nexus = "https://oss.sonatype.org/"
-  if (isSnapshot.value)
-    Some("snapshots" at nexus + "content/repositories/snapshots")
-  else
-    Some("releases" at nexus + "service/local/staging/deploy/maven2")
-}
-
 val noPublishSettings = Seq(
   publish := {},
   publishLocal := {},
   publishArtifact := false,
   skip in publish := true
-)
-
-val publishSettings = Seq(
-  publishMavenStyle := true,
-  publishArtifact in Test := false,
-  useGpg := true,
-  homepage := Some(url("https://github.com/pepegar/hammock")),
-  pomIncludeRepository := Function.const(false),
-  pomExtra :=
-    <scm>
-      <url>https://github.com/pepegar/hammock</url>
-      <connection>scm:git:git@github.com:pepegar/hammock.git</connection>
-    </scm>
-    <developers>
-      <developer>
-        <id>pepegar</id>
-        <name>Pepe García</name>
-        <url>http://pepegar.com</url>
-      </developer>
-    </developers>,
-  releaseCrossBuild := true,
-  releasePublishArtifactsAction := PgpKeys.publishSigned.value,
-  releaseProcess := Seq[ReleaseStep](
-    checkSnapshotDependencies,
-    inquireVersions,
-    runClean,
-    runTest,
-    setReleaseVersion,
-    commitReleaseVersion,
-    tagRelease,
-    releaseStepCommand("publishSigned"),
-    setNextVersion,
-    commitNextVersion,
-    releaseStepCommand("sonatypeReleaseAll"),
-    releaseStepCommand("docs/publishMicrosite"),
-    pushChanges
-  )
 )
 
 val buildSettings = Seq(
@@ -122,7 +92,6 @@ lazy val core = crossProject(JSPlatform, JVMPlatform)
   .settings(buildSettings)
   .settings(commonDependencies)
   .settings(compilerPlugins)
-  .settings(publishSettings)
   .jsSettings(
     libraryDependencies ++= Seq(
       "org.scala-js"      %%% "scalajs-dom"     % "0.9.6",
@@ -146,13 +115,13 @@ lazy val circe = crossProject(JSPlatform, JVMPlatform)
   .in(file("hammock-circe"))
   .settings(moduleName := "hammock-circe")
   .settings(buildSettings)
-  .settings(publishSettings)
   .settings(commonDependencies)
   .settings(compilerPlugins)
-  .settings(libraryDependencies ++= Seq(
-    "io.circe" %%% "circe-core"    % Versions("circe"),
-    "io.circe" %%% "circe-generic" % Versions("circe"),
-    "io.circe" %%% "circe-parser"  % Versions("circe")))
+  .settings(
+    libraryDependencies ++= Seq(
+      "io.circe" %%% "circe-core"    % Versions("circe"),
+      "io.circe" %%% "circe-generic" % Versions("circe"),
+      "io.circe" %%% "circe-parser"  % Versions("circe")))
   .dependsOn(core)
 
 lazy val circeJVM = circe.jvm
@@ -164,7 +133,6 @@ lazy val akka = project
   .settings(buildSettings)
   .settings(commonDependencies)
   .settings(compilerPlugins)
-  .settings(publishSettings)
   .settings(
     libraryDependencies += "com.typesafe.akka" %% "akka-http" % Versions("akka-http")
   )
@@ -177,7 +145,6 @@ lazy val asynchttpclient = project
   .settings(buildSettings)
   .settings(commonDependencies)
   .settings(compilerPlugins)
-  .settings(publishSettings)
   .settings(
     libraryDependencies += "org.asynchttpclient" % "async-http-client" % Versions("ahc")
   )
