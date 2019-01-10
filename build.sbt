@@ -7,14 +7,14 @@ val Versions = Map(
   "circe"          -> "0.10.0",
   "monocle"        -> "1.5.1-cats",
   "atto"           -> "0.6.3",
-  "cats"           -> "1.4.0",
-  "cats-effect"    -> "1.0.0",
+  "cats"           -> "1.5.0",
+  "cats-effect"    -> "1.1.0",
   "simulacrum"     -> "0.12.0",
   "scalatest"      -> "3.0.5",
   "scalacheck"     -> "1.14.0",
-  "discipline"     -> "0.9.0",
+  "discipline"     -> "0.10.0",
   "macro-paradise" -> "2.1.1",
-  "kind-projector" -> "0.9.5",
+  "kind-projector" -> "0.9.9",
   "akka-http"      -> "10.0.9",
   "ahc"            -> "2.1.2"
 )
