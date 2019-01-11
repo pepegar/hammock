@@ -100,12 +100,6 @@ lazy val core = crossProject(JSPlatform, JVMPlatform)
     ),
     npmDependencies in Test += "node-fetch" -> "2.1.2"
   )
-  .jvmSettings(
-    libraryDependencies ++= Seq(
-      "org.apache.httpcomponents" % "httpclient"  % "4.5.6",
-      "org.mockito"               % "mockito-all" % "1.10.19" % Test
-    )
-  )
 
 lazy val coreJVM = core.jvm
 lazy val coreJS  = core.js.enablePlugins(ScalaJSBundlerPlugin)
@@ -126,6 +120,20 @@ lazy val circe = crossProject(JSPlatform, JVMPlatform)
 
 lazy val circeJVM = circe.jvm
 lazy val circeJS  = circe.js
+
+lazy val apache = project
+  .in(file("hammock-apache-http"))
+  .settings(moduleName := "hammock-apache-http")
+  .settings(buildSettings)
+  .settings(commonDependencies)
+  .settings(compilerPlugins)
+  .settings(
+    libraryDependencies ++= Seq(
+      "org.apache.httpcomponents" % "httpclient" % "4.5.4"
+    )
+  )
+  .settings(libraryDependencies += "org.mockito" % "mockito-all" % "1.10.18" % "test")
+  .dependsOn(coreJVM)
 
 lazy val akka = project
   .in(file("hammock-akka-http"))
