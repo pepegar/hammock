@@ -2,73 +2,43 @@ import microsites._
 import ReleaseTransformations._
 import sbtcrossproject.{crossProject, CrossType}
 
+inThisBuild(
+  List(
+    organization := "com.pepegar",
+    homepage := Some(url("https://github.com/pepegar/hammock")),
+    licenses := List("Apache-2.0" -> url("https://opensource.org/licenses/MIT")),
+    developers := List(
+      Developer(
+        "pepegar",
+        "Pepe García",
+        "pepe@pepegar.com",
+        url("https://pepegar.com")
+      )
+    )
+  ))
+
 val Versions = Map(
   "contextual"     -> "1.1.0",
-  "circe"          -> "0.10.0",
+  "circe"          -> "0.11.0",
   "monocle"        -> "1.5.1-cats",
   "atto"           -> "0.6.3",
-  "cats"           -> "1.4.0",
-  "cats-effect"    -> "1.0.0",
+  "cats"           -> "1.5.0",
+  "cats-effect"    -> "1.1.0",
   "simulacrum"     -> "0.12.0",
   "scalatest"      -> "3.0.5",
-  "scalacheck"     -> "1.13.5",
-  "discipline"     -> "0.9.0",
+  "scalacheck"     -> "1.14.0",
+  "discipline"     -> "0.10.0",
   "macro-paradise" -> "2.1.1",
-  "kind-projector" -> "0.9.5",
-  "akka-http"      -> "10.0.9",
+  "kind-projector" -> "0.9.9",
+  "akka-http"      -> "10.0.15",
   "ahc"            -> "2.1.2"
 )
-
-publishTo in ThisBuild := {
-  val nexus = "https://oss.sonatype.org/"
-  if (isSnapshot.value)
-    Some("snapshots" at nexus + "content/repositories/snapshots")
-  else
-    Some("releases" at nexus + "service/local/staging/deploy/maven2")
-}
 
 val noPublishSettings = Seq(
   publish := {},
   publishLocal := {},
   publishArtifact := false,
   skip in publish := true
-)
-
-val publishSettings = Seq(
-  publishMavenStyle := true,
-  publishArtifact in Test := false,
-  useGpg := true,
-  homepage := Some(url("https://github.com/pepegar/hammock")),
-  pomIncludeRepository := Function.const(false),
-  pomExtra :=
-    <scm>
-      <url>https://github.com/pepegar/hammock</url>
-      <connection>scm:git:git@github.com:pepegar/hammock.git</connection>
-    </scm>
-    <developers>
-      <developer>
-        <id>pepegar</id>
-        <name>Pepe García</name>
-        <url>http://pepegar.com</url>
-      </developer>
-    </developers>,
-  releaseCrossBuild := true,
-  releasePublishArtifactsAction := PgpKeys.publishSigned.value,
-  releaseProcess := Seq[ReleaseStep](
-    checkSnapshotDependencies,
-    inquireVersions,
-    runClean,
-    runTest,
-    setReleaseVersion,
-    commitReleaseVersion,
-    tagRelease,
-    releaseStepCommand("publishSigned"),
-    setNextVersion,
-    commitNextVersion,
-    releaseStepCommand("sonatypeReleaseAll"),
-    releaseStepCommand("docs/publishMicrosite"),
-    pushChanges
-  )
 )
 
 val buildSettings = Seq(
@@ -122,12 +92,11 @@ lazy val core = crossProject(JSPlatform, JVMPlatform)
   .settings(buildSettings)
   .settings(commonDependencies)
   .settings(compilerPlugins)
-  .settings(publishSettings)
   .jsSettings(
     libraryDependencies ++= Seq(
-      "org.scala-js"      %%% "scalajs-dom"     % "0.9.5",
+      "org.scala-js"      %%% "scalajs-dom"     % "0.9.6",
       "io.scalajs.npm"    %%% "node-fetch"      % "0.4.2",
-      "io.github.cquiroz" %%% "scala-java-time" % "2.0.0-M13"
+      "io.github.cquiroz" %%% "scala-java-time" % "2.0.0-RC1"
     ),
     npmDependencies in Test += "node-fetch" -> "2.1.2"
   )
@@ -140,13 +109,13 @@ lazy val circe = crossProject(JSPlatform, JVMPlatform)
   .in(file("hammock-circe"))
   .settings(moduleName := "hammock-circe")
   .settings(buildSettings)
-  .settings(publishSettings)
   .settings(commonDependencies)
   .settings(compilerPlugins)
-  .settings(libraryDependencies ++= Seq(
-    "io.circe" %%% "circe-core"    % Versions("circe"),
-    "io.circe" %%% "circe-generic" % Versions("circe"),
-    "io.circe" %%% "circe-parser"  % Versions("circe")))
+  .settings(
+    libraryDependencies ++= Seq(
+      "io.circe" %%% "circe-core"    % Versions("circe"),
+      "io.circe" %%% "circe-generic" % Versions("circe"),
+      "io.circe" %%% "circe-parser"  % Versions("circe")))
   .dependsOn(core)
 
 lazy val circeJVM = circe.jvm
@@ -161,10 +130,10 @@ lazy val apache = project
   .settings(publishSettings)
   .settings(
     libraryDependencies ++= Seq(
-      "org.apache.httpcomponents" % "httpclient" % "4.5.4"
+      "org.apache.httpcomponents" % "httpclient" % "4.5.6"
     )
   )
-  .settings(libraryDependencies += "org.mockito" % "mockito-all" % "1.10.18" % "test")
+  .settings(libraryDependencies += "org.mockito" % "mockito-all" % "1.10.19" % "test")
   .dependsOn(coreJVM)
 
 lazy val akka = project
@@ -173,11 +142,10 @@ lazy val akka = project
   .settings(buildSettings)
   .settings(commonDependencies)
   .settings(compilerPlugins)
-  .settings(publishSettings)
   .settings(
     libraryDependencies += "com.typesafe.akka" %% "akka-http" % Versions("akka-http")
   )
-  .settings(libraryDependencies += "org.mockito" % "mockito-all" % "1.10.18" % "test")
+  .settings(libraryDependencies += "org.mockito" % "mockito-all" % "1.10.19" % "test")
   .dependsOn(coreJVM)
 
 lazy val asynchttpclient = project
@@ -186,7 +154,6 @@ lazy val asynchttpclient = project
   .settings(buildSettings)
   .settings(commonDependencies)
   .settings(compilerPlugins)
-  .settings(publishSettings)
   .settings(
     libraryDependencies += "org.asynchttpclient" % "async-http-client" % Versions("ahc")
   )
