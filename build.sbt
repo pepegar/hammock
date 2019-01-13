@@ -129,10 +129,10 @@ lazy val apache = project
   .settings(compilerPlugins)
   .settings(
     libraryDependencies ++= Seq(
-      "org.apache.httpcomponents" % "httpclient" % "4.5.4"
+      "org.apache.httpcomponents" % "httpclient" % "4.5.6"
     )
   )
-  .settings(libraryDependencies += "org.mockito" % "mockito-all" % "1.10.18" % "test")
+  .settings(libraryDependencies += "org.mockito" % "mockito-all" % "1.10.19" % "test")
   .dependsOn(coreJVM)
 
 lazy val akka = project
