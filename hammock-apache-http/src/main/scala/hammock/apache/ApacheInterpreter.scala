@@ -1,5 +1,5 @@
 package hammock
-package jvm
+package apache
 
 import cats._
 import cats.implicits._
@@ -16,7 +16,7 @@ import org.apache.http.impl.client.HttpClientBuilder
 import org.apache.http.message.BasicHeader
 import org.apache.http.util.EntityUtils
 
-class Interpreter[F[_]](client: HttpClient) extends InterpTrans[F] {
+class ApacheInterpreter[F[_]](client: HttpClient) extends InterpTrans[F] {
 
   import Uri._
 
@@ -148,8 +148,8 @@ class Interpreter[F[_]](client: HttpClient) extends InterpTrans[F] {
   }
 }
 
-object Interpreter {
+object ApacheInterpreter {
   implicit val client = HttpClientBuilder.create().build()
 
-  def apply[F[_]]: Interpreter[F] = new Interpreter[F](client)
+  def apply[F[_]]: ApacheInterpreter[F] = new ApacheInterpreter[F](client)
 }
