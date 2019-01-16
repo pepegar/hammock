@@ -82,8 +82,8 @@ lazy val hammock = project
   .in(file("."))
   .settings(buildSettings)
   .settings(noPublishSettings)
-  .dependsOn(coreJVM, coreJS, circeJVM, circeJS, akka, asynchttpclient)
-  .aggregate(coreJVM, coreJS, circeJVM, circeJS, akka, asynchttpclient)
+  .dependsOn(coreJVM, coreJS, circeJVM, circeJS, apache, akka, asynchttpclient)
+  .aggregate(coreJVM, coreJS, circeJVM, circeJS, apache, akka, asynchttpclient)
 
 lazy val core = crossProject(JSPlatform, JVMPlatform)
   .crossType(CrossType.Full)
@@ -162,7 +162,7 @@ lazy val javadocIoUrl = settingKey[String]("the url of hammock documentation in 
 
 lazy val docs = project
   .in(file("docs"))
-  .dependsOn(coreJVM, circeJVM, akka, asynchttpclient)
+  .dependsOn(coreJVM, circeJVM, apache, akka, asynchttpclient)
   .settings(moduleName := "hammock-docs")
   .settings(buildSettings)
   .settings(compilerPlugins)
@@ -197,7 +197,7 @@ lazy val docs = project
 
 lazy val readme = (project in file("tut"))
   .settings(moduleName := "hammock-readme")
-  .dependsOn(coreJVM, circeJVM)
+  .dependsOn(coreJVM, circeJVM, apache)
   .settings(buildSettings)
   .settings(noPublishSettings)
   .settings(
@@ -213,7 +213,7 @@ lazy val example = project
   .settings(buildSettings)
   .settings(noPublishSettings)
   .settings(compilerPlugins)
-  .dependsOn(coreJVM, circeJVM)
+  .dependsOn(coreJVM, circeJVM, apache)
 
 lazy val exampleJS = project
   .in(file("example-js"))

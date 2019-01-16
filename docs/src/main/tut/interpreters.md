@@ -49,16 +49,13 @@ val httpReq = Hammock.getWithOpts(
 ```
 
 
-## HttpCommons
-
-HttpCommons interpreter is included in the `hammock-core` artifact.
-For using it use the `Interpreter` included in `hammock-core`:
+## Apache HTTP
 
 ```tut
 import cats.effect.IO
-import hammock.jvm.Interpreter
+import hammock.apache.ApacheInterpreter
 
-httpReq foldMap Interpreter[IO].trans unsafeRunSync
+httpReq foldMap ApacheInterpreter[IO].trans unsafeRunSync
 ```
 
 ## XmlHttpRequest

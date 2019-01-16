@@ -17,15 +17,14 @@ your requests.
 
 ```tut:book
 import hammock._
-import hammock.jvm.Interpreter
-import hammock.hi._
+import hammock.apache.ApacheInterpreter
 import hammock.hi._
 
 import cats._
 import cats.implicits._
 import cats.effect.IO
 
-implicit val interp = Interpreter[IO]
+implicit val interp = ApacheInterpreter[IO]
 
 val opts = (header("user" -> "pepegar") >>> cookie(Cookie("track", "a lot")))(Opts.empty)
 
@@ -81,7 +80,7 @@ in [`Monocle`](https://github.com/julientruffaut/monocle):
 
 ```tut:book
 // import stuff
-import hammock.hi._, hammock.hi._ , monocle._, monocle.function.all._
+import hammock._, hammock.hi._, monocle._, monocle.function.all._
 
 // imagine that we have the following Opts value
 val opts = (auth(Auth.BasicAuth("pepe", "password")) >>> headers(Map("X-Correlation-Id" -> "234")) >>> cookies(List(Cookie("a", "b"))))(Opts.empty)

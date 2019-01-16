@@ -20,7 +20,7 @@ libraryDependencies ++= Seq(
   "com.pepegar" %% "hammock-core" % "0.8.6",
   
   // Hammock for standard Scala doesn't ship with a standard implementation
-  "com.pepegar" %% "hammock-apache" % "0.8.6"
+  "com.pepegar" %% "hammock-apache-http" % "0.8.6"
 )
 
 // For ScalaJS

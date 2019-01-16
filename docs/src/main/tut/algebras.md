@@ -147,7 +147,7 @@ object App {
   import cats.effect.IO
   import hammock._
   import hammock.marshalling._
-  import hammock.jvm._
+  import hammock.apache._
 
   type Eff1[A] = EitherK[LogF, IOF, A]
   type Eff2[A] = EitherK[HttpF, Eff1, A]
@@ -171,7 +171,7 @@ object App {
   } yield response
 
   def interp1[F[_]: Sync]: Eff1 ~> F = Log.interp or IOEff.interp
-  def interp2[F[_]: Sync]: Eff2 ~> F = Interpreter[F].trans or interp1 // interpret HttpF's effects
+  def interp2[F[_]: Sync]: Eff2 ~> F = ApacheInterpreter[F].trans or interp1 // interpret HttpF's effects
   def interp[F[_]: Sync]: Eff ~> F = marshallNT[F] or interp2[F] // interpret MarshallF's effects
 }
 ```
