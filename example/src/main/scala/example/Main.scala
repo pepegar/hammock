@@ -3,14 +3,14 @@ package example
 import cats.effect._
 
 import hammock._
-import hammock.jvm._
+import hammock.apache._
 import hammock.marshalling._
 import hammock.circe.implicits._
 
 import io.circe.generic.auto._
 
 object Main extends App {
-  implicit val interpTrans = Interpreter[IO]
+  implicit val interpTrans = ApacheInterpreter[IO]
 
   case class Resp(data: String)
   case class Req(name: String, number: Int)
