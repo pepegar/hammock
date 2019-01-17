@@ -1,5 +1,5 @@
 package hammock
-package jvm
+package apache
 
 import java.net.URI
 
@@ -16,13 +16,13 @@ import org.mockito.{Matchers => MM}
 import org.scalatest._
 import org.scalatest.mockito._
 
-class InterpreterSpec extends WordSpec with MockitoSugar with BeforeAndAfter {
+class ApacheInterpreterSpec extends WordSpec with MockitoSugar with BeforeAndAfter {
   import Uri._
   import HttpResponse._
   import MM._
 
   val client = mock[HttpClient]
-  val interp = new Interpreter[IO](client)
+  val interp = new ApacheInterpreter[IO](client)
   val httpResponse: ApacheHttpResponse = {
     val resp   = new BasicHttpResponse(new BasicStatusLine(new ProtocolVersion("HTTP", 1, 1), 200, null))
     val entity = new StringEntity("content")

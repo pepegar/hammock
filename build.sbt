@@ -82,8 +82,8 @@ lazy val hammock = project
   .in(file("."))
   .settings(buildSettings)
   .settings(noPublishSettings)
-  .dependsOn(coreJVM, coreJS, circeJVM, circeJS, akka, asynchttpclient)
-  .aggregate(coreJVM, coreJS, circeJVM, circeJS, akka, asynchttpclient)
+  .dependsOn(coreJVM, coreJS, circeJVM, circeJS, apache, akka, asynchttpclient)
+  .aggregate(coreJVM, coreJS, circeJVM, circeJS, apache, akka, asynchttpclient)
 
 lazy val core = crossProject(JSPlatform, JVMPlatform)
   .crossType(CrossType.Full)
@@ -99,12 +99,6 @@ lazy val core = crossProject(JSPlatform, JVMPlatform)
       "io.github.cquiroz" %%% "scala-java-time" % "2.0.0-RC1"
     ),
     npmDependencies in Test += "node-fetch" -> "2.1.2"
-  )
-  .jvmSettings(
-    libraryDependencies ++= Seq(
-      "org.apache.httpcomponents" % "httpclient"  % "4.5.6",
-      "org.mockito"               % "mockito-all" % "1.10.19" % Test
-    )
   )
 
 lazy val coreJVM = core.jvm
@@ -126,6 +120,20 @@ lazy val circe = crossProject(JSPlatform, JVMPlatform)
 
 lazy val circeJVM = circe.jvm
 lazy val circeJS  = circe.js
+
+lazy val apache = project
+  .in(file("hammock-apache-http"))
+  .settings(moduleName := "hammock-apache-http")
+  .settings(buildSettings)
+  .settings(commonDependencies)
+  .settings(compilerPlugins)
+  .settings(
+    libraryDependencies ++= Seq(
+      "org.apache.httpcomponents" % "httpclient" % "4.5.6"
+    )
+  )
+  .settings(libraryDependencies += "org.mockito" % "mockito-all" % "1.10.19" % "test")
+  .dependsOn(coreJVM)
 
 lazy val akka = project
   .in(file("hammock-akka-http"))
@@ -154,7 +162,7 @@ lazy val javadocIoUrl = settingKey[String]("the url of hammock documentation in 
 
 lazy val docs = project
   .in(file("docs"))
-  .dependsOn(coreJVM, circeJVM, akka, asynchttpclient)
+  .dependsOn(coreJVM, circeJVM, apache, akka, asynchttpclient)
   .settings(moduleName := "hammock-docs")
   .settings(buildSettings)
   .settings(compilerPlugins)
@@ -189,7 +197,7 @@ lazy val docs = project
 
 lazy val readme = (project in file("tut"))
   .settings(moduleName := "hammock-readme")
-  .dependsOn(coreJVM, circeJVM)
+  .dependsOn(coreJVM, circeJVM, apache)
   .settings(buildSettings)
   .settings(noPublishSettings)
   .settings(
@@ -205,7 +213,7 @@ lazy val example = project
   .settings(buildSettings)
   .settings(noPublishSettings)
   .settings(compilerPlugins)
-  .dependsOn(coreJVM, circeJVM)
+  .dependsOn(coreJVM, circeJVM, apache)
 
 lazy val exampleJS = project
   .in(file("example-js"))

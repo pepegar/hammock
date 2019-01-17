@@ -16,7 +16,12 @@ Add the following to your `build.sbt`.
 
 ```scala
 // For Scala 2.10, 2.11, or 2.12
-libraryDependencies += "com.pepegar" %% "hammock-core" % "0.8.6"
+libraryDependencies ++= Seq(
+  "com.pepegar" %% "hammock-core" % "0.8.6",
+  
+  // Hammock for standard Scala doesn't ship with a standard implementation
+  "com.pepegar" %% "hammock-apache-http" % "0.8.6"
+)
 
 // For ScalaJS
 libraryDependencies += "com.pepegar" %%% "hammock-core" % "0.8.6"
@@ -43,8 +48,9 @@ libraryDependencies += "com.pepegar" %%% "hammock-core" % "0.8.6"
 
 | Module name          | Description                                | Version |
 | -------------------- | ------------------------------------------ | ------- |
-| `hammock-core`      | the core functionality of hammock, using [Apache HTTP commons][httpcommons] for HTTP in JVM and [XHR][xhr] in JS | `0.8.6` |
+| `hammock-core`      | the core functionality of hammock, using [XHR][xhr] in JS | `0.8.6` |
 | `hammock-circe`      | encode and decode HTTP entities with [Circe][circe] | `0.8.6` |
+| `hammock-apache`      | run your HTTP requests with [Apache HTTP commons][httpcommons] | `0.8.6` |
 | `hammock-akka-http`  | run your HTTP requests with [akka-http][akka-http] | `0.8.6` |
 | `hammock-asynchttpclient`  | run your HTTP requests with [AsyncHttpClient][async-http-client] | `0.8.6` |
 
@@ -56,11 +62,12 @@ import cats.effect.IO
 import io.circe.generic.auto._
 import hammock._
 import hammock.marshalling._
-import hammock.jvm.Interpreter
+import hammock.apache.ApacheInterpreter
 import hammock.circe.implicits._
 
 object HttpClient {
-  implicit val interpreter = Interpreter[IO]
+  // Using the Apache HTTP commons interpreter
+  implicit val interpreter = ApacheInterpreter[IO]
 
   val response = Hammock
     .request(Method.GET, uri"https://api.fidesmo.com/apps", Map()) // In the `request` method, you describe your HTTP request
