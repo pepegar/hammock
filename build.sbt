@@ -24,7 +24,7 @@ val Versions = Map(
   "atto"           -> "0.6.3",
   "cats"           -> "1.5.0",
   "cats-effect"    -> "1.1.0",
-  "simulacrum"     -> "0.14.0",
+  "simulacrum"     -> "0.15.0",
   "scalatest"      -> "3.0.5",
   "scalacheck"     -> "1.14.0",
   "discipline"     -> "0.10.0",
