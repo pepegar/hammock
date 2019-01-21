@@ -57,7 +57,7 @@ libraryDependencies += "com.pepegar" %%% "hammock-core" % "0.9.0"
 
 ## How does Hammock look in action?
 
-```scala
+```tut:silent
 import cats.effect.IO
 import io.circe.generic.auto._
 import hammock._
