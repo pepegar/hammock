@@ -5,7 +5,6 @@ import cats._
 import cats.implicits._
 import cats.data.Kleisli
 import cats.effect._
-
 import org.asynchttpclient._
 import java.util.{concurrent => jc}
 import scala.util._

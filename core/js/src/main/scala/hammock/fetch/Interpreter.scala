@@ -3,14 +3,13 @@ package fetch
 
 import cats.effect._
 import cats._
-
 import io.scalajs.npm.nodefetch._
-import java.lang.String
 import scala.scalajs.js.Promise
 import cats.syntax.show._
 import scala.scalajs.js.JSConverters._
 
 class Interpreter[F[_]: Async](nodeFetch: NodeFetch) extends InterpTrans[F] {
+
   override def trans: HttpF ~> F = new (HttpF ~> F) {
     def apply[A](http: HttpF[A]): F[A] = {
       val method = http match {

@@ -2,7 +2,7 @@ package hammock
 package js
 
 import cats._
-import cats.effect.{Async, IO, Sync}
+import cats.effect.{Async, IO}
 import cats.implicits._
 import org.scalajs.dom.ext.Ajax
 import org.scalajs.dom.ext.Ajax.InputData

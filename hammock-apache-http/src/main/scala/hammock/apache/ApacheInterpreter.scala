@@ -6,7 +6,6 @@ import cats.implicits._
 import cats.data._
 import cats.effect.Sync
 import java.io.{BufferedReader, InputStreamReader}
-
 import org.apache.http.{Header, HttpEntity, HttpResponse => ApacheResponse}
 import org.apache.http.client.HttpClient
 import org.apache.http.client.methods._
