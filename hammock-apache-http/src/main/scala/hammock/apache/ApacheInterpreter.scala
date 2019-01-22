@@ -5,24 +5,23 @@ import cats._
 import cats.implicits._
 import cats.data._
 import cats.effect.Sync
-
 import java.io.{BufferedReader, InputStreamReader}
 
 import org.apache.http.{Header, HttpEntity, HttpResponse => ApacheResponse}
 import org.apache.http.client.HttpClient
 import org.apache.http.client.methods._
 import org.apache.http.{entity => apache}
-import org.apache.http.impl.client.HttpClientBuilder
+import org.apache.http.impl.client.{CloseableHttpClient, HttpClientBuilder}
 import org.apache.http.message.BasicHeader
 import org.apache.http.util.EntityUtils
 
-class ApacheInterpreter[F[_]](client: HttpClient) extends InterpTrans[F] {
+class ApacheInterpreter[F[_]: Sync](client: HttpClient) extends InterpTrans[F] {
 
   import Uri._
 
-  override def trans(implicit S: Sync[F]) = transK andThen λ[Kleisli[F, HttpClient, ?] ~> F](_.run(client))
+  override def trans: ~>[HttpF, F] = transK andThen λ[Kleisli[F, HttpClient, ?] ~> F](_.run(client))
 
-  def transK(implicit S: Sync[F]): HttpF ~> Kleisli[F, HttpClient, ?] =
+  def transK: HttpF ~> Kleisli[F, HttpClient, ?] =
     λ[HttpF ~> Kleisli[F, HttpClient, ?]] {
       case req: Options => doReq(req)
       case req: Get     => doReq(req)
@@ -34,33 +33,33 @@ class ApacheInterpreter[F[_]](client: HttpClient) extends InterpTrans[F] {
       case req: Patch   => doReq(req)
     }
 
-  private def doReq(reqF: HttpF[HttpResponse])(implicit F: Sync[F]): Kleisli[F, HttpClient, HttpResponse] =
+  private def doReq(reqF: HttpF[HttpResponse]): Kleisli[F, HttpClient, HttpResponse] =
     Kleisli { client =>
       for {
         req             <- getApacheRequest(reqF)
-        resp            <- F.delay(client.execute(req))
+        resp            <- Sync[F].delay(client.execute(req))
         entity          <- responseToEntity(resp)
         status          <- Status.get(resp.getStatusLine.getStatusCode).pure[F]
         responseHeaders <- resp.getAllHeaders.map(h => h.getName -> h.getValue).toMap.pure[F]
-        _               <- F.delay(EntityUtils.consume(resp.getEntity))
+        _               <- Sync[F].delay(EntityUtils.consume(resp.getEntity))
       } yield HttpResponse(status, responseHeaders, entity)
     }
 
-  def getApacheRequest(f: HttpF[HttpResponse])(implicit F: Sync[F]): F[HttpUriRequest] = f match {
+  def getApacheRequest(f: HttpF[HttpResponse]): F[HttpUriRequest] = f match {
     case Get(HttpRequest(uri, headers, _)) =>
-      F.delay {
+      Sync[F].delay {
         val req = new HttpGet(uri.show)
         req.setHeaders(prepareHeaders(headers))
         req
       }
     case Options(HttpRequest(uri, headers, _)) =>
-      F.delay {
+      Sync[F].delay {
         val req = new HttpOptions(uri.show)
         req.setHeaders(prepareHeaders(headers))
         req
       }
     case Head(HttpRequest(uri, headers, _)) =>
-      F.delay {
+      Sync[F].delay {
         val req = new HttpHead(uri.show)
         req.setHeaders(prepareHeaders(headers))
         req
@@ -68,10 +67,10 @@ class ApacheInterpreter[F[_]](client: HttpClient) extends InterpTrans[F] {
     case Post(HttpRequest(uri, headers, entity)) =>
       for {
         req <- new HttpPost(uri.show).pure[F]
-        _   <- F.delay(req.setHeaders(prepareHeaders(headers)))
+        _   <- Sync[F].delay(req.setHeaders(prepareHeaders(headers)))
         _ <- if (entity.isDefined) {
           mapEntity(entity.get) >>= { apacheEntity =>
-            F.delay(req.setEntity(apacheEntity))
+            Sync[F].delay(req.setEntity(apacheEntity))
           }
         } else {
           ().pure[F]
@@ -80,23 +79,23 @@ class ApacheInterpreter[F[_]](client: HttpClient) extends InterpTrans[F] {
     case Put(HttpRequest(uri, headers, entity)) =>
       for {
         req <- new HttpPut(uri.show).pure[F]
-        _   <- F.delay(req.setHeaders(prepareHeaders(headers)))
+        _   <- Sync[F].delay(req.setHeaders(prepareHeaders(headers)))
         _ <- if (entity.isDefined) {
           mapEntity(entity.get) >>= { apacheEntity =>
-            F.delay(req.setEntity(apacheEntity))
+            Sync[F].delay(req.setEntity(apacheEntity))
           }
         } else {
           ().pure[F]
         }
       } yield req
     case Delete(HttpRequest(uri, headers, _)) =>
-      F.delay {
+      Sync[F].delay {
         val req = new HttpDelete(uri.show)
         req.setHeaders(prepareHeaders(headers))
         req
       }
     case Trace(HttpRequest(uri, headers, _)) =>
-      F.delay {
+      Sync[F].delay {
         val req = new HttpTrace(uri.show)
         req.setHeaders(prepareHeaders(headers))
         req
@@ -104,10 +103,10 @@ class ApacheInterpreter[F[_]](client: HttpClient) extends InterpTrans[F] {
     case Patch(HttpRequest(uri, headers, entity)) =>
       for {
         req <- new HttpPatch(uri.show).pure[F]
-        _   <- F.delay(req.setHeaders(prepareHeaders(headers)))
+        _   <- Sync[F].delay(req.setHeaders(prepareHeaders(headers)))
         _ <- if (entity.isDefined) {
           mapEntity(entity.get) >>= { apacheEntity =>
-            F.delay(req.setEntity(apacheEntity))
+            Sync[F].delay(req.setEntity(apacheEntity))
           }
         } else {
           ().pure[F]
@@ -115,7 +114,7 @@ class ApacheInterpreter[F[_]](client: HttpClient) extends InterpTrans[F] {
       } yield req
   }
 
-  private def mapEntity(entity: Entity)(implicit F: Sync[F]): F[HttpEntity] = entity match {
+  private def mapEntity(entity: Entity): F[HttpEntity] = entity match {
     case Entity.StringEntity(body, contentType) =>
       mapContentType(contentType) map { parsedContentType =>
         new apache.StringEntity(body, parsedContentType)
@@ -125,11 +124,11 @@ class ApacheInterpreter[F[_]](client: HttpClient) extends InterpTrans[F] {
         new apache.ByteArrayEntity(body, parsedContentType)
       }
     case Entity.EmptyEntity =>
-      F.delay(new apache.BasicHttpEntity())
+      Sync[F].delay(new apache.BasicHttpEntity())
   }
 
-  private def mapContentType(contentType: ContentType)(implicit F: Sync[F]): F[apache.ContentType] =
-    F.delay(apache.ContentType.parse(contentType.name))
+  private def mapContentType(contentType: ContentType): F[apache.ContentType] =
+    Sync[F].delay(apache.ContentType.parse(contentType.name))
 
   private def prepareHeaders(headers: Map[String, String]): Array[Header] =
     headers
@@ -138,7 +137,7 @@ class ApacheInterpreter[F[_]](client: HttpClient) extends InterpTrans[F] {
       })
       .toArray
 
-  private def responseToEntity(response: ApacheResponse)(implicit F: Sync[F]): F[Entity] = F.delay {
+  private def responseToEntity(response: ApacheResponse): F[Entity] = Sync[F].delay {
     Option(response.getEntity) // getEntity can return null
       .map(_.getContent)
       .map { content =>
@@ -149,7 +148,7 @@ class ApacheInterpreter[F[_]](client: HttpClient) extends InterpTrans[F] {
 }
 
 object ApacheInterpreter {
-  implicit val client = HttpClientBuilder.create().build()
+  implicit val client: CloseableHttpClient = HttpClientBuilder.create().build()
 
-  def apply[F[_]]: ApacheInterpreter[F] = new ApacheInterpreter[F](client)
+  def apply[F[_]: Sync]: ApacheInterpreter[F] = new ApacheInterpreter[F](client)
 }

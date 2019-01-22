@@ -58,7 +58,7 @@ class AsyncHttpClientInterpreter[F[_]: Async](client: AsyncHttpClient = new Defa
       }
     }
 
-  def trans(implicit S: Sync[F]): HttpF ~> F =
+  def trans: HttpF ~> F =
     transK andThen λ[Kleisli[F, AsyncHttpClient, ?] ~> F](_.run(client))
 
   def createEntity(r: Response): Entity = r.getContentType match {

@@ -12,12 +12,12 @@ class Interpreter[F[_]: Async] extends InterpTrans[F] {
 
   import Uri._
 
-  override def trans(implicit S: Sync[F]): HttpF ~> F =
+  override def trans: HttpF ~> F =
     λ[HttpF ~> F] {
       case req @ (Options(_) | Get(_) | Head(_) | Post(_) | Put(_) | Delete(_) | Trace(_) | Patch(_)) => doReq(req)
     }
 
-  private def doReq(reqF: HttpF[HttpResponse])(implicit F: Sync[F]): F[HttpResponse] = {
+  private def doReq(reqF: HttpF[HttpResponse]): F[HttpResponse] = {
     val timeout = 0
     val headers = reqF.req.headers
     val data: InputData = reqF.req.entity.fold(InputData.str2ajax(""))(
@@ -29,7 +29,7 @@ class Interpreter[F[_]: Async] extends InterpTrans[F] {
     val method = toMethod(reqF)
 
     for {
-      responseFutureIO <- F.pure(IO(Ajax(method.name, reqF.req.uri.show, data, timeout, headers, false, "")))
+      responseFutureIO <- Async[F].pure(IO(Ajax(method.name, reqF.req.uri.show, data, timeout, headers, false, "")))
       response         <- IO.fromFuture(responseFutureIO).to[F]
       responseHeaders  <- parseHeaders(response.getAllResponseHeaders)
       status = Status.get(response.status)
@@ -48,10 +48,10 @@ class Interpreter[F[_]: Async] extends InterpTrans[F] {
     case Patch(_)   => Method.PATCH
   }
 
-  private def parseHeaders(str: String)(implicit F: Sync[F]): F[Map[String, String]] = str match {
+  private def parseHeaders(str: String): F[Map[String, String]] = str match {
     case null => Map.empty[String, String].pure[F]
     case string =>
-      F.delay(
+      Async[F].delay(
         string
           .split("\r\n")
           .map({ line =>

@@ -11,7 +11,7 @@ import cats.syntax.show._
 import scala.scalajs.js.JSConverters._
 
 class Interpreter[F[_]: Async](nodeFetch: NodeFetch) extends InterpTrans[F] {
-  override def trans(implicit S: Sync[F]): HttpF ~> F = new (HttpF ~> F) {
+  override def trans: HttpF ~> F = new (HttpF ~> F) {
     def apply[A](http: HttpF[A]): F[A] = {
       val method = http match {
         case Get(_)     => Method.GET
