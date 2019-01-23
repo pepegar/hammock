@@ -18,7 +18,7 @@ class ApacheInterpreter[F[_]: Sync](client: HttpClient) extends InterpTrans[F] {
 
   import Uri._
 
-  override def trans: ~>[HttpF, F] = transK andThen λ[Kleisli[F, HttpClient, ?] ~> F](_.run(client))
+  override def trans: HttpF ~> F = transK andThen λ[Kleisli[F, HttpClient, ?] ~> F](_.run(client))
 
   def transK: HttpF ~> Kleisli[F, HttpClient, ?] =
     λ[HttpF ~> Kleisli[F, HttpClient, ?]] {
