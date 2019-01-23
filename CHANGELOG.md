@@ -1,3 +1,29 @@
+# 0.9.0
+
+- bump a lot of dependencies (thanks to @scala-steward)
+
+	update sbt-tpolecat-0.1.4 [#138](https://github.com/pepegar/hammock/pull/138)
+	update simulacrum-0.14.0 [#133](https://github.com/pepegar/hammock/pull/133)
+	update sbt-crossproject-0.6.0 [#141](https://github.com/pepegar/hammock/pull/141)
+	update circe-core-0.11.1 [#159](https://github.com/pepegar/hammock/pull/159)
+	update circe-core-0.11.0 [#154](https://github.com/pepegar/hammock/pull/154)
+	update httpclient-4.5.6 [#139](https://github.com/pepegar/hammock/pull/139)
+	update akka-http-10.0.15 [#135](https://github.com/pepegar/hammock/pull/135)
+	update circe-core-0.10.1 [#136](https://github.com/pepegar/hammock/pull/136)
+	update scala-java-time-2.0.0-RC1 [#137](https://github.com/pepegar/hammock/pull/137)
+	update mockito-all-1.10.19 [#140](https://github.com/pepegar/hammock/pull/140)
+	update scalajs-dom-0.9.6 [#143](https://github.com/pepegar/hammock/pull/143)
+	update scalacheck-1.14.0 [#144](https://github.com/pepegar/hammock/pull/144)
+	update kind-projector-0.9.9 [#145](https://github.com/pepegar/hammock/pull/145)
+	update discipline-0.10.0 [#149](https://github.com/pepegar/hammock/pull/149)
+	update tut-plugin-0.6.10 [#146](https://github.com/pepegar/hammock/pull/146)
+	update alleycats-core-1.5.0 [#147](https://github.com/pepegar/hammock/pull/147)
+
+- split hammock-core [#156](https://github.com/pepegar/hammock/pull/156) thanks to @ipsq
+- add automatic releasing from travis with sbt-ci-release
+- Support fetch api from browser, not just node [#127](https://github.com/pepegar/hammock/pull/127) thanks to @triggerNZ
+
+
 # 0.8.5
 
 - Enable posfix operators for docs [#109](https://github.com/pepegar/hammock/pull/109)
