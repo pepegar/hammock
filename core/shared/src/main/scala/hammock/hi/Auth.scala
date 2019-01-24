@@ -15,7 +15,7 @@ object Auth {
     def show(a: Auth): String = a match {
       case BasicAuth(user, pass) =>
         val toEncode = s"$user:$pass".getBytes
-        val encoded  = Base64.getEncoder().encode(toEncode)
+        val encoded  = Base64.getEncoder.encode(toEncode)
         s"Basic ${new String(encoded)}"
       case OAuth2Bearer(token) => s"Bearer $token"
       case OAuth2Token(token)  => s"token $token"

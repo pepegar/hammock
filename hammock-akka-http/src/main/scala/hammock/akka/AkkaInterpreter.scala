@@ -26,7 +26,7 @@ class AkkaInterpreter[F[_]: Async](client: HttpExt)(
     executionContext: ExecutionContext)
     extends InterpTrans[F] {
 
-  def trans(implicit S: Sync[F]): HttpF ~> F = transK andThen λ[Kleisli[F, HttpExt, ?] ~> F](_.run(client))
+  def trans: HttpF ~> F = transK andThen λ[Kleisli[F, HttpExt, ?] ~> F](_.run(client))
 
   def transK: HttpF ~> Kleisli[F, HttpExt, ?] =
     λ[HttpF ~> Kleisli[F, HttpExt, ?]] {
@@ -75,13 +75,13 @@ class AkkaInterpreter[F[_]: Async](client: HttpExt)(
       case Patch(_)   => HttpMethods.PATCH
     }).pure[F]
 
-  def mapContentType(ct: ContentType)(implicit F: Sync[F]): F[AkkaContentType] =
+  def mapContentType(ct: ContentType): F[AkkaContentType] =
     for {
       parsed <- AkkaContentType.parse(ct.name) match {
         case Left(errors) =>
-          F.raiseError(new Exception(s"unable to parse content type ${ct.name}, $errors"))
+          Async[F].raiseError(new Exception(s"unable to parse content type ${ct.name}, $errors"))
         case Right(contentType) =>
-          F.pure(contentType)
+          Async[F].pure(contentType)
       }
     } yield parsed
 

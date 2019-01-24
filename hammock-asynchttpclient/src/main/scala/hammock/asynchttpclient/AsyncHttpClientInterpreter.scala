@@ -5,7 +5,6 @@ import cats._
 import cats.implicits._
 import cats.data.Kleisli
 import cats.effect._
-
 import org.asynchttpclient._
 import java.util.{concurrent => jc}
 import scala.util._
@@ -58,7 +57,7 @@ class AsyncHttpClientInterpreter[F[_]: Async](client: AsyncHttpClient = new Defa
       }
     }
 
-  def trans(implicit S: Sync[F]): HttpF ~> F =
+  def trans: HttpF ~> F =
     transK andThen λ[Kleisli[F, AsyncHttpClient, ?] ~> F](_.run(client))
 
   def createEntity(r: Response): Entity = r.getContentType match {
