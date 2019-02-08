@@ -6,11 +6,10 @@ import hammock._
 import hammock.apache._
 import hammock.marshalling._
 import hammock.circe.implicits._
-
 import io.circe.generic.auto._
+import ApacheInterpreter._
 
 object Main extends App {
-  implicit val interpTrans = ApacheInterpreter[IO]
 
   case class Resp(data: String)
   case class Req(name: String, number: Int)

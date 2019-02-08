@@ -15,14 +15,14 @@ import org.mockito.Mockito._
 import org.mockito.{Matchers => MM}
 import org.scalatest._
 import org.scalatest.mockito._
+import ApacheInterpreter._
 
 class ApacheInterpreterSpec extends WordSpec with MockitoSugar with BeforeAndAfter {
-  import Uri._
   import HttpResponse._
   import MM._
 
-  val client = mock[HttpClient]
-  val interp = new ApacheInterpreter[IO](client)
+  implicit val client: HttpClient = mock[HttpClient]
+//  val interp =  ApacheInterpreter.instance[IO]
   val httpResponse: ApacheHttpResponse = {
     val resp   = new BasicHttpResponse(new BasicStatusLine(new ProtocolVersion("HTTP", 1, 1), 200, null))
     val entity = new StringEntity("content")
