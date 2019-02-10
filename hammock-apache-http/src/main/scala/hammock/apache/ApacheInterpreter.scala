@@ -15,31 +15,36 @@ import org.apache.http.message.BasicHeader
 import org.apache.http.util.EntityUtils
 import Uri._
 
-trait ApacheInterpreter[F[_]] extends InterpTrans[F] {
-  def getApacheRequest(f: HttpF[HttpResponse]): F[HttpUriRequest] //TODO: refactoring test
-  def transK: HttpF ~> Kleisli[F, HttpClient, ?]
-}
+//trait ApacheInterpreter[F[_]] extends InterpTrans[F] {
+//  def getApacheRequest(f: HttpF[HttpResponse]): F[HttpUriRequest] //TODO: refactoring test
+//  def transK: HttpF ~> Kleisli[F, HttpClient, ?]
+//}
+
+trait ApacheKleisliInterTrans[F[_]] extends InterpTrans[Kleisli[F, HttpClient, ?]] {}
 
 object ApacheInterpreter {
 
   def apply[F[_]](implicit F: InterpTrans[F]): InterpTrans[F] = F
 
-  implicit def instance[F[_]: Sync](implicit client: HttpClient = HttpClientBuilder.create().build()): ApacheInterpreter[F] =
-    new ApacheInterpreter[F] {
+  implicit def instance[F[_]: Sync](implicit client: HttpClient = HttpClientBuilder.create().build()): InterpTrans[F] =
+    new InterpTrans[F] {
 
-    override def trans: ~>[HttpF, F] = transK andThen λ[Kleisli[F, HttpClient, ?] ~> F](_.run(client))
+      override def trans: HttpF ~> F = instanceK.trans andThen λ[Kleisli[F, HttpClient, ?] ~> F](_.run(client))
 
-    override def transK: HttpF ~> Kleisli[F, HttpClient, ?] =
-      λ[HttpF ~> Kleisli[F, HttpClient, ?]] {
-        case req: Options => doReq(req)
-        case req: Get     => doReq(req)
-        case req: Head    => doReq(req)
-        case req: Post    => doReq(req)
-        case req: Put     => doReq(req)
-        case req: Delete  => doReq(req)
-        case req: Trace   => doReq(req)
-        case req: Patch   => doReq(req)
-      }
+    }
+
+  implicit def instanceK[F[_]: Sync]: ApacheKleisliInterTrans[F] = new ApacheKleisliInterTrans[F] {
+
+    override def trans: HttpF ~> Kleisli[F, HttpClient, ?] = λ[HttpF ~> Kleisli[F, HttpClient, ?]] {
+      case req: Options => doReq(req)
+      case req: Get     => doReq(req)
+      case req: Head    => doReq(req)
+      case req: Post    => doReq(req)
+      case req: Put     => doReq(req)
+      case req: Delete  => doReq(req)
+      case req: Trace   => doReq(req)
+      case req: Patch   => doReq(req)
+    }
 
     private def doReq(reqF: HttpF[HttpResponse]): Kleisli[F, HttpClient, HttpResponse] =
       Kleisli { client =>
@@ -53,7 +58,7 @@ object ApacheInterpreter {
         } yield HttpResponse(status, responseHeaders, entity)
       }
 
-    override def getApacheRequest(f: HttpF[HttpResponse]): F[HttpUriRequest] = f match {
+    private def getApacheRequest(f: HttpF[HttpResponse]): F[HttpUriRequest] = f match {
       case Get(HttpRequest(uri, headers, _)) =>
         Sync[F].delay {
           val req = new HttpGet(uri.show)
@@ -80,9 +85,7 @@ object ApacheInterpreter {
             mapEntity(entity.get) >>= { apacheEntity =>
               Sync[F].delay(req.setEntity(apacheEntity))
             }
-          } else {
-            ().pure[F]
-          }
+          } else ().pure[F]
         } yield req
       case Put(HttpRequest(uri, headers, entity)) =>
         for {
@@ -122,6 +125,15 @@ object ApacheInterpreter {
         } yield req
     }
 
+    private def responseToEntity(response: ApacheResponse): F[Entity] = Sync[F].delay {
+      Option(response.getEntity) // getEntity can return null
+        .map(_.getContent)
+        .map { content =>
+          val rd = new BufferedReader(new InputStreamReader(content))
+          Entity.StringEntity(Stream.continually(rd.readLine()).takeWhile(_ != null).mkString(""))
+        } getOrElse Entity.EmptyEntity
+    }
+
     private def mapEntity(entity: Entity): F[HttpEntity] = entity match {
       case Entity.StringEntity(body, contentType) =>
         mapContentType(contentType) map { parsedContentType =>
@@ -139,19 +151,6 @@ object ApacheInterpreter {
       Sync[F].delay(apache.ContentType.parse(contentType.name))
 
     private def prepareHeaders(headers: Map[String, String]): Array[Header] =
-      headers
-        .map({
-          case (k, v) => new BasicHeader(k, v)
-        })
-        .toArray
-
-    private def responseToEntity(response: ApacheResponse): F[Entity] = Sync[F].delay {
-      Option(response.getEntity) // getEntity can return null
-        .map(_.getContent)
-        .map { content =>
-          val rd = new BufferedReader(new InputStreamReader(content))
-          Entity.StringEntity(Stream.continually(rd.readLine()).takeWhile(_ != null).mkString(""))
-        } getOrElse Entity.EmptyEntity
-    }
+      headers.map { case (k, v) => new BasicHeader(k, v) }.toArray
   }
 }
