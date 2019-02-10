@@ -22,7 +22,7 @@ val Versions = Map(
   "circe"          -> "0.11.1",
   "monocle"        -> "1.5.1-cats",
   "atto"           -> "0.6.5",
-  "cats"           -> "1.5.0",
+  "cats"           -> "1.6.0",
   "cats-effect"    -> "1.2.0",
   "simulacrum"     -> "0.15.0",
   "scalatest"      -> "3.0.5",
@@ -129,7 +129,7 @@ lazy val apache = project
   .settings(compilerPlugins)
   .settings(
     libraryDependencies ++= Seq(
-      "org.apache.httpcomponents" % "httpclient" % "4.5.6"
+      "org.apache.httpcomponents" % "httpclient" % "4.5.7"
     )
   )
   .settings(libraryDependencies += "org.mockito" % "mockito-all" % "1.10.19" % "test")
