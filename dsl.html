@@ -1,4 +1,4 @@
-<html><head><title>Hammock: DSL</title><meta charset="utf-8" /><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" /><meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="com.pepegar" /><meta name="description" content="Purely functional HTTP client" /><meta name="og:image" content="/hammock/img/poster.png" /><meta name="og:title" content="Hammock: DSL" /><meta name="og:site_name" content="Hammock" /><meta name="og:url" content="" /><meta name="og:type" content="website" /><meta name="og:description" content="Purely functional HTTP client" /><link rel="icon" type="image/png" href="/hammock/img/favicon.png" /><meta name="twitter:title" content="Hammock: DSL" /><meta name="twitter:image" content="img/poster.png" /><meta name="twitter:description" content="Purely functional HTTP client" /><meta name="twitter:card" content="summary_large_image" /><link rel="icon" type="image/png" sizes="16x16" href="/hammock/img/favicon16x16.png" /><link rel="icon" type="image/png" sizes="24x24" href="/hammock/img/favicon24x24.png" /><link rel="icon" type="image/png" sizes="32x32" href="/hammock/img/favicon32x32.png" /><link rel="icon" type="image/png" sizes="48x48" href="/hammock/img/favicon48x48.png" /><link rel="icon" type="image/png" sizes="57x57" href="/hammock/img/favicon57x57.png" /><link rel="icon" type="image/png" sizes="60x60" href="/hammock/img/favicon60x60.png" /><link rel="icon" type="image/png" sizes="64x64" href="/hammock/img/favicon64x64.png" /><link rel="icon" type="image/png" sizes="70x70" href="/hammock/img/favicon70x70.png" /><link rel="icon" type="image/png" sizes="72x72" href="/hammock/img/favicon72x72.png" /><link rel="icon" type="image/png" sizes="76x76" href="/hammock/img/favicon76x76.png" /><link rel="icon" type="image/png" sizes="96x96" href="/hammock/img/favicon96x96.png" /><link rel="icon" type="image/png" sizes="114x114" href="/hammock/img/favicon114x114.png" /><link rel="icon" type="image/png" sizes="120x120" href="/hammock/img/favicon120x120.png" /><link rel="icon" type="image/png" sizes="128x128" href="/hammock/img/favicon128x128.png" /><link rel="icon" type="image/png" sizes="144x144" href="/hammock/img/favicon144x144.png" /><link rel="icon" type="image/png" sizes="150x150" href="/hammock/img/favicon150x150.png" /><link rel="icon" type="image/png" sizes="152x152" href="/hammock/img/favicon152x152.png" /><link rel="icon" type="image/png" sizes="196x196" href="/hammock/img/favicon196x196.png" /><link rel="icon" type="image/png" sizes="310x310" href="/hammock/img/favicon310x310.png" /><link rel="icon" type="image/png" sizes="310x150" href="/hammock/img/favicon310x150.png" /><link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" /><link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" /><link rel="stylesheet" href="/hammock/highlight/styles/tomorrow.css" /><link rel="stylesheet" href="/hammock/css/style.css" /><link rel="stylesheet" href="/hammock/css/palette.css" /><link rel="stylesheet" href="/hammock/css/codemirror.css" /></head><body class="docs"><div id="wrapper"><div id="sidebar-wrapper"><ul id="sidebar" class="sidebar-nav"><li class="sidebar-brand"><a href="/hammock/" class="brand"><div class="brand-wrapper"><span>Hammock</span></div></a></li> <li><a href="/hammock/interpreters.html" class="">Interpreters</a></li> <li><a href="/hammock/algebras.html" class="">Algebras</a></li> <li><a href="/hammock/marshalling.html" class="">Marshalling</a></li> <li><a href="/hammock/dsl.html" class="">High level DSL</a></li></ul></div><div id="page-content-wrapper"><div class="nav"><div class="container-fluid"><div class="row"><div class="col-lg-12"><div class="action-menu pull-left clearfix"><a href="#menu-toggle" id="menu-toggle"><i class="fa fa-bars" aria-hidden="true"></i></a></div><ul class="pull-right"><li id="gh-eyes-item" class="hidden-xs"><a href="https://github.com/pepegar/hammock"><i class="fa fa-eye"></i><span>WATCH<span id="eyes" class="label label-default">--</span></span></a></li><li id="gh-stars-item" class="hidden-xs"><a href="https://github.com/pepegar/hammock"><i class="fa fa-star-o"></i><span>STARS<span id="stars" class="label label-default">--</span></span></a></li><li><a href="#" onclick="shareSiteTwitter('Hammock Purely functional HTTP client');"><i class="fa fa-twitter"></i></a></li><li><a href="#" onclick="shareSiteFacebook('Hammock Purely functional HTTP client');"><i class="fa fa-facebook"></i></a></li><li><a href="#" onclick="shareSiteGoogle();"><i class="fa fa-google-plus"></i></a></li></ul></div></div></div></div><div id="content" data-github-owner="pepegar" data-github-repo="hammock"><div class="content-wrapper"><section><h1 id="high-level-dsl">High level DSL</h1>
+<html><head><title>Hammock: DSL</title><meta charset="utf-8" /><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" /><meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="com.pepegar" /><meta name="description" content="Purely functional HTTP client" /><meta name="og:image" content="/hammock/img/poster.png" /><meta name="image" property="og:image" content="/hammock/img/poster.png" /><meta name="og:title" content="Hammock: DSL" /><meta name="title" property="og:title" content="Hammock: DSL" /><meta name="og:site_name" content="Hammock" /><meta name="og:url" content="https://github.com/pepegar/hammock" /><meta name="og:type" content="website" /><meta name="og:description" content="Purely functional HTTP client" /><link rel="icon" type="image/png" href="/hammock/img/favicon.png" /><meta name="twitter:title" content="Hammock: DSL" /><meta name="twitter:image" content="/hammock/img/poster.png" /><meta name="twitter:description" content="Purely functional HTTP client" /><meta name="twitter:card" content="summary_large_image" /><link rel="icon" type="image/png" sizes="16x16" href="/hammock/img/favicon16x16.png" /><link rel="icon" type="image/png" sizes="24x24" href="/hammock/img/favicon24x24.png" /><link rel="icon" type="image/png" sizes="32x32" href="/hammock/img/favicon32x32.png" /><link rel="icon" type="image/png" sizes="48x48" href="/hammock/img/favicon48x48.png" /><link rel="icon" type="image/png" sizes="57x57" href="/hammock/img/favicon57x57.png" /><link rel="icon" type="image/png" sizes="60x60" href="/hammock/img/favicon60x60.png" /><link rel="icon" type="image/png" sizes="64x64" href="/hammock/img/favicon64x64.png" /><link rel="icon" type="image/png" sizes="70x70" href="/hammock/img/favicon70x70.png" /><link rel="icon" type="image/png" sizes="72x72" href="/hammock/img/favicon72x72.png" /><link rel="icon" type="image/png" sizes="76x76" href="/hammock/img/favicon76x76.png" /><link rel="icon" type="image/png" sizes="96x96" href="/hammock/img/favicon96x96.png" /><link rel="icon" type="image/png" sizes="114x114" href="/hammock/img/favicon114x114.png" /><link rel="icon" type="image/png" sizes="120x120" href="/hammock/img/favicon120x120.png" /><link rel="icon" type="image/png" sizes="128x128" href="/hammock/img/favicon128x128.png" /><link rel="icon" type="image/png" sizes="144x144" href="/hammock/img/favicon144x144.png" /><link rel="icon" type="image/png" sizes="150x150" href="/hammock/img/favicon150x150.png" /><link rel="icon" type="image/png" sizes="152x152" href="/hammock/img/favicon152x152.png" /><link rel="icon" type="image/png" sizes="196x196" href="/hammock/img/favicon196x196.png" /><link rel="icon" type="image/png" sizes="310x310" href="/hammock/img/favicon310x310.png" /><link rel="icon" type="image/png" sizes="310x150" href="/hammock/img/favicon310x150.png" /><link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" /><link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" /><link rel="stylesheet" href="/hammock/highlight/styles/tomorrow.css" /><link rel="stylesheet" href="/hammock/css/style.css" /><link rel="stylesheet" href="/hammock/css/palette.css" /><link rel="stylesheet" href="/hammock/css/codemirror.css" /></head><body class="docs"><div id="wrapper"><div id="sidebar-wrapper"><ul id="sidebar" class="sidebar-nav"><li class="sidebar-brand"><a href="/hammock/" class="brand"><div class="brand-wrapper"><span>Hammock</span></div></a></li> <li><a href="/hammock/interpreters.html" class="">Interpreters</a></li> <li><a href="/hammock/algebras.html" class="">Algebras</a></li> <li><a href="/hammock/marshalling.html" class="">Marshalling</a></li> <li><a href="/hammock/dsl.html" class="">High level DSL</a></li></ul></div><div id="page-content-wrapper"><div class="nav"><div class="container-fluid"><div class="row"><div class="col-lg-12"><div class="action-menu pull-left clearfix"><a href="#menu-toggle" id="menu-toggle"><i class="fa fa-bars" aria-hidden="true"></i></a></div><ul class="pull-right"><li id="gh-eyes-item" class="hidden-xs"><a href="https://github.com/pepegar/hammock"><i class="fa fa-eye"></i><span>WATCH<span id="eyes" class="label label-default">--</span></span></a></li><li id="gh-stars-item" class="hidden-xs"><a href="https://github.com/pepegar/hammock"><i class="fa fa-star-o"></i><span>STARS<span id="stars" class="label label-default">--</span></span></a></li><li><a href="#" onclick="shareSiteTwitter('Hammock Purely functional HTTP client');"><i class="fa fa-twitter"></i></a></li><li><a href="#" onclick="shareSiteFacebook('Hammock Purely functional HTTP client');"><i class="fa fa-facebook"></i></a></li><li><a href="#" onclick="shareSiteGoogle();"><i class="fa fa-google-plus"></i></a></li></ul></div></div></div></div><div id="content" data-github-owner="pepegar" data-github-repo="hammock"><div class="content-wrapper"><section><h1 id="high-level-dsl">High level DSL</h1>
 
 <p>This package provides a high level DSL to use Hammock without the
 hassle of dealing with Free monads, interpreters, and so on.</p>
@@ -8,14 +8,11 @@ your requests.</p>
 
 <h2 id="example-of-use">Example of use</h2>
 
-<div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="k">import</span> <span class="nn">hammock._</span>
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="nn">hammock._</span>
 <span class="c1">// import hammock._
 </span>
-<span class="k">import</span> <span class="nn">hammock.jvm.Interpreter</span>
-<span class="c1">// import hammock.jvm.Interpreter
-</span>
-<span class="k">import</span> <span class="nn">hammock.hi._</span>
-<span class="c1">// import hammock.hi._
+<span class="k">import</span> <span class="nn">hammock.apache.ApacheInterpreter</span>
+<span class="c1">// import hammock.apache.ApacheInterpreter
 </span>
 <span class="k">import</span> <span class="nn">hammock.hi._</span>
 <span class="c1">// import hammock.hi._
@@ -29,16 +26,15 @@ your requests.</p>
 <span class="k">import</span> <span class="nn">cats.effect.IO</span>
 <span class="c1">// import cats.effect.IO
 </span>
-<span class="k">implicit</span> <span class="k">val</span> <span class="n">interp</span> <span class="k">=</span> <span class="nc">Interpreter</span><span class="o">[</span><span class="kt">IO</span><span class="o">]</span>
-<span class="c1">// interp: hammock.jvm.Interpreter[cats.effect.IO] = hammock.jvm.Interpreter@2c4f717e
+<span class="k">implicit</span> <span class="k">val</span> <span class="n">interp</span> <span class="k">=</span> <span class="nc">ApacheInterpreter</span><span class="o">[</span><span class="kt">IO</span><span class="o">]</span>
+<span class="c1">// interp: hammock.apache.ApacheInterpreter[cats.effect.IO] = hammock.apache.ApacheInterpreter@7ab4fb47
 </span>
 <span class="k">val</span> <span class="n">opts</span> <span class="k">=</span> <span class="o">(</span><span class="n">header</span><span class="o">(</span><span class="s">"user"</span> <span class="o">-&gt;</span> <span class="s">"pepegar"</span><span class="o">)</span> <span class="o">&gt;&gt;&gt;</span> <span class="n">cookie</span><span class="o">(</span><span class="nc">Cookie</span><span class="o">(</span><span class="s">"track"</span><span class="o">,</span> <span class="s">"a lot"</span><span class="o">)))(</span><span class="nc">Opts</span><span class="o">.</span><span class="n">empty</span><span class="o">)</span>
 <span class="c1">// opts: hammock.hi.Opts = Opts(None,Map(user -&gt; pepegar),Some(List(Cookie(track,a lot,None,None,None,None,None,None,None,None))))
 </span>
 <span class="k">val</span> <span class="n">response</span> <span class="k">=</span> <span class="nc">Hammock</span><span class="o">.</span><span class="n">getWithOpts</span><span class="o">(</span><span class="n">uri</span><span class="s">"http://httpbin.org/get"</span><span class="o">,</span> <span class="n">opts</span><span class="o">).</span><span class="n">exec</span><span class="o">[</span><span class="kt">IO</span><span class="o">]</span>
-<span class="c1">// response: cats.effect.IO[hammock.HttpResponse] = IO$915364317
-</span></code></pre>
-</div>
+<span class="c1">// response: cats.effect.IO[hammock.HttpResponse] = IO$506319702
+</span></code></pre></div></div>
 
 <h2 id="opts">Opts</h2>
 
@@ -46,12 +42,11 @@ your requests.</p>
 This <code class="highlighter-rouge">Opts</code> type is later compiled by the <code class="highlighter-rouge">withOpts</code> methods to the
 <code class="highlighter-rouge">Free</code> representation of the request.</p>
 
-<div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="k">case</span> <span class="k">class</span> <span class="nc">Opts</span><span class="o">(</span>
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">case</span> <span class="k">class</span> <span class="nc">Opts</span><span class="o">(</span>
   <span class="n">auth</span><span class="k">:</span> <span class="kt">Option</span><span class="o">[</span><span class="kt">Auth</span><span class="o">],</span>
   <span class="n">headers</span><span class="k">:</span> <span class="kt">Map</span><span class="o">[</span><span class="kt">String</span>, <span class="kt">String</span><span class="o">],</span>
   <span class="n">cookies</span><span class="k">:</span> <span class="kt">Option</span><span class="o">[</span><span class="kt">List</span><span class="o">[</span><span class="kt">Cookie</span><span class="o">]])</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>All the combinators for manipulating the <code class="highlighter-rouge">Opts</code> type return a value of
 the type <code class="highlighter-rouge">Opts =&gt; Opts</code>, so you can combine directly via the <code class="highlighter-rouge">andThen</code>
@@ -102,23 +97,22 @@ plain <code class="highlighter-rouge">Function1[Opts, Opts]</code>, for which th
 
 <p>Here’s an example of how can you use the high level DSL:</p>
 
-<div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="k">val</span> <span class="n">req</span> <span class="k">=</span> <span class="o">{</span>
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">val</span> <span class="n">req</span> <span class="k">=</span> <span class="o">{</span>
   <span class="n">auth</span><span class="o">(</span><span class="nc">Auth</span><span class="o">.</span><span class="nc">BasicAuth</span><span class="o">(</span><span class="s">"pepegar"</span><span class="o">,</span> <span class="s">"p4ssw0rd"</span><span class="o">))</span> <span class="o">&gt;&gt;&gt;</span>
     <span class="n">cookie</span><span class="o">(</span><span class="nc">Cookie</span><span class="o">(</span><span class="s">"track"</span><span class="o">,</span> <span class="s">"A lot"</span><span class="o">))</span> <span class="o">&gt;&gt;&gt;</span>
     <span class="n">header</span><span class="o">(</span><span class="s">"user"</span> <span class="o">-&gt;</span> <span class="s">"potatoman"</span><span class="o">)</span>
 <span class="o">}</span>
-<span class="c1">// req: hammock.hi.Opts =&gt; hammock.hi.Opts = scala.Function1$$Lambda$10680/721177091@77cf526e
-</span></code></pre>
-</div>
+<span class="c1">// req: hammock.hi.Opts =&gt; hammock.hi.Opts = scala.Function1$$Lambda$7941/1254789884@39ff18fd
+</span></code></pre></div></div>
 
 <p>You can also use <a href="https://github.com/julientruffaut/monocle"><code class="highlighter-rouge">Monocle</code></a>’s optics to describe and modify your
 requests.  Most datatypes in Hammock provide sensible optics that will
 work out of the box, and you can combine them with the ones provided
 in <a href="https://github.com/julientruffaut/monocle"><code class="highlighter-rouge">Monocle</code></a>:</p>
 
-<div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="c1">// import stuff
-</span><span class="k">import</span> <span class="nn">hammock.hi._</span><span class="o">,</span> <span class="n">hammock</span><span class="o">.</span><span class="n">hi</span><span class="o">.</span><span class="k">_</span> <span class="o">,</span> <span class="n">monocle</span><span class="o">.</span><span class="k">_</span><span class="o">,</span> <span class="n">monocle</span><span class="o">.</span><span class="n">function</span><span class="o">.</span><span class="n">all</span><span class="o">.</span><span class="k">_</span>
-<span class="c1">// import hammock.hi._
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// import stuff
+</span><span class="k">import</span> <span class="nn">hammock._</span><span class="o">,</span> <span class="n">hammock</span><span class="o">.</span><span class="n">hi</span><span class="o">.</span><span class="k">_</span><span class="o">,</span> <span class="n">monocle</span><span class="o">.</span><span class="k">_</span><span class="o">,</span> <span class="n">monocle</span><span class="o">.</span><span class="n">function</span><span class="o">.</span><span class="n">all</span><span class="o">.</span><span class="k">_</span>
+<span class="c1">// import hammock._
 // import hammock.hi._
 // import monocle._
 // import monocle.function.all._
@@ -138,11 +132,11 @@ in <a href="https://github.com/julientruffaut/monocle"><code class="highlighter-
 // cookie list, for example:
 </span>
 <span class="n">cookiesOpt</span> <span class="n">composeOptional</span> <span class="n">index</span><span class="o">(</span><span class="mi">0</span><span class="o">)</span> <span class="n">composeLens</span> <span class="n">value</span>
-<span class="c1">// res6: monocle.POptional[hammock.hi.Opts,hammock.hi.Opts,String,String] = monocle.POptional$$anon$2@71d65128
+<span class="c1">// res6: monocle.POptional[hammock.hi.Opts,hammock.hi.Opts,String,String] = monocle.POptional$$anon$2@34dda86f
 </span>
 <span class="c1">// also you can use the symbolic operators for that :D
 </span><span class="n">cookiesOpt</span> <span class="o">^|-?</span> <span class="n">index</span><span class="o">(</span><span class="mi">0</span><span class="o">)</span> <span class="o">^|-&gt;</span> <span class="n">value</span>
-<span class="c1">// res8: monocle.POptional[hammock.hi.Opts,hammock.hi.Opts,String,String] = monocle.POptional$$anon$2@1c201add
+<span class="c1">// res8: monocle.POptional[hammock.hi.Opts,hammock.hi.Opts,String,String] = monocle.POptional$$anon$2@423a5aa1
 </span>
 <span class="c1">// and then, use the optics machinery at your will, for example for getting the focus
 </span><span class="o">(</span><span class="n">cookiesOpt</span> <span class="o">^|-?</span> <span class="n">index</span><span class="o">(</span><span class="mi">0</span><span class="o">)</span> <span class="o">^|-&gt;</span> <span class="n">value</span><span class="o">).</span><span class="n">getOption</span><span class="o">(</span><span class="n">opts</span><span class="o">)</span>
@@ -151,8 +145,7 @@ in <a href="https://github.com/julientruffaut/monocle"><code class="highlighter-
 <span class="c1">// or modifying it!
 </span><span class="o">(</span><span class="n">cookiesOpt</span> <span class="o">^|-?</span> <span class="n">index</span><span class="o">(</span><span class="mi">0</span><span class="o">)</span> <span class="o">^|-&gt;</span> <span class="n">value</span><span class="o">).</span><span class="n">set</span><span class="o">(</span><span class="s">"newValue"</span><span class="o">)(</span><span class="n">opts</span><span class="o">)</span>
 <span class="c1">// res12: hammock.hi.Opts = Opts(Some(BasicAuth(pepe,password)),Map(X-Correlation-Id -&gt; 234),Some(List(Cookie(a,newValue,None,None,None,None,None,None,None,None))))
-</span></code></pre>
-</div>
+</span></code></pre></div></div>
 
 <h4 id="authentication">Authentication</h4>
 
@@ -171,7 +164,7 @@ Will be treated by services as user/password.</li>
 
 <p>Cookies in Hammock are represented by the <code class="highlighter-rouge">Cookie</code> data type:</p>
 
-<div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="k">case</span> <span class="k">class</span> <span class="nc">Cookie</span><span class="o">(</span>
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">case</span> <span class="k">class</span> <span class="nc">Cookie</span><span class="o">(</span>
   <span class="n">name</span><span class="k">:</span> <span class="kt">String</span><span class="o">,</span>
   <span class="n">value</span><span class="k">:</span> <span class="kt">String</span><span class="o">,</span>
   <span class="n">expires</span><span class="k">:</span> <span class="kt">Option</span><span class="o">[</span><span class="kt">Date</span><span class="o">]</span> <span class="k">=</span> <span class="nc">None</span><span class="o">,</span>
@@ -182,8 +175,7 @@ Will be treated by services as user/password.</li>
   <span class="n">httpOnly</span><span class="k">:</span> <span class="kt">Option</span><span class="o">[</span><span class="kt">Boolean</span><span class="o">]</span> <span class="k">=</span> <span class="nc">None</span><span class="o">,</span>
   <span class="n">sameSite</span><span class="k">:</span> <span class="kt">Option</span><span class="o">[</span><span class="kt">SameSite</span><span class="o">]</span> <span class="k">=</span> <span class="nc">None</span><span class="o">,</span>
   <span class="n">custom</span><span class="k">:</span> <span class="kt">Option</span><span class="o">[</span><span class="kt">Map</span><span class="o">[</span><span class="kt">String</span>, <span class="kt">String</span><span class="o">]]</span> <span class="k">=</span> <span class="nc">None</span><span class="o">)</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>In its companion object there are optics for all the
 fields. <code class="highlighter-rouge">Cookie.name</code> and <code class="highlighter-rouge">Cookie.value</code> are <code class="highlighter-rouge">Lens</code>es that allow to
@@ -193,13 +185,12 @@ focus on one particular field of the structure.</p>
 the type itself.  For example, adding a <code class="highlighter-rouge">MaxAge</code> setting to a cookie
 is just matter of doing:</p>
 
-<div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="k">val</span> <span class="n">cookie</span> <span class="k">=</span> <span class="nc">Cookie</span><span class="o">(</span><span class="s">"_ga"</span><span class="o">,</span> <span class="s">"werwer"</span><span class="o">)</span>
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">val</span> <span class="n">cookie</span> <span class="k">=</span> <span class="nc">Cookie</span><span class="o">(</span><span class="s">"_ga"</span><span class="o">,</span> <span class="s">"werwer"</span><span class="o">)</span>
 <span class="c1">// cookie: hammock.hi.Cookie = Cookie(_ga,werwer,None,None,None,None,None,None,None,None)
 </span>
 <span class="nc">Cookie</span><span class="o">.</span><span class="n">maxAge</span><span class="o">.</span><span class="n">set</span><span class="o">(</span><span class="nc">Some</span><span class="o">(</span><span class="mi">234</span><span class="o">))(</span><span class="n">cookie</span><span class="o">)</span>
 <span class="c1">// res13: hammock.hi.Cookie = Cookie(_ga,werwer,None,Some(234),None,None,None,None,None,None)
-</span></code></pre>
-</div>
+</span></code></pre></div></div>
 
 <h4 id="headers">Headers</h4>
 
