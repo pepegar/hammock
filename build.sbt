@@ -213,7 +213,7 @@ lazy val example = project
   .settings(buildSettings)
   .settings(noPublishSettings)
   .settings(compilerPlugins)
-  .dependsOn(coreJVM, circeJVM, apache)
+  .dependsOn(coreJVM, circeJVM, apache, akka)
 
 lazy val exampleJS = project
   .in(file("example-js"))
