@@ -1,24 +1,14 @@
 package example
 
 import cats.effect._
-import example.repr._
+import example.repr.{GetResp, GetRespWithQueryString, Req, Resp}
 import hammock._
+import hammock.asynchttpclient.AsyncHttpClientInterpreter._
 import hammock.circe.implicits._
 import hammock.marshalling._
 import io.circe.generic.auto._
-import hammock.akka.AkkaInterpreter
-import _root_.akka.stream.ActorMaterializer
-import _root_.akka.http.scaladsl.{Http, HttpExt}
-import _root_.akka.actor.ActorSystem
-import scala.concurrent.ExecutionContext
 
-object AkkaInterpExampleMain extends App {
-
-  implicit val actorSystem: ActorSystem        = ActorSystem()
-  implicit val materializer: ActorMaterializer = ActorMaterializer()
-  implicit val ec: ExecutionContext            = ExecutionContext.Implicits.global
-  val client: HttpExt                          = Http(actorSystem)
-  implicit val interpTrans: InterpTrans[IO]    = new AkkaInterpreter[IO](client)
+object AsyncHttpClientInterpExampleMain extends App {
 
   //GET
   val getResp = Hammock

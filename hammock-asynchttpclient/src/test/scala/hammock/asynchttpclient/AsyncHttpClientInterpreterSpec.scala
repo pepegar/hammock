@@ -10,9 +10,9 @@ import io.netty.handler.codec.http.cookie.Cookie
 
 import scala.collection.JavaConverters._
 
-class AsyncHttpClientInterpreterTest extends WordSpec with Matchers {
+class AsyncHttpClientInterpreterSpec extends WordSpec with Matchers {
 
-  val interpreter = new AsyncHttpClientInterpreter[IO]
+  val interpreter =  AsyncHttpClientInterpreter.instance[IO]
 
   "asynchttpclient" should {
 

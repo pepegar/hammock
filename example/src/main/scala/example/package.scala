@@ -2,7 +2,7 @@ package object example {
 
   import hammock._
 
-  val baseUri               = "http://httpbin.org"
+  val baseUri = "http://httpbin.org"
 
   val postUri               = uri"$baseUri/post"
   val putUri                = uri"$baseUri/put"
