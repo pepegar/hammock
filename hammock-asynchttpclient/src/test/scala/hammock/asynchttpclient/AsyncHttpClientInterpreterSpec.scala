@@ -7,28 +7,30 @@ import org.scalatest._
 import org.asynchttpclient._
 import io.netty.handler.codec.http.{DefaultHttpHeaders, HttpHeaders}
 import io.netty.handler.codec.http.cookie.Cookie
-
+import org.scalatest.mockito._
+import AsyncHttpClientInterpreter._
 import scala.collection.JavaConverters._
 
-class AsyncHttpClientInterpreterSpec extends WordSpec with Matchers {
+class AsyncHttpClientInterpreterSpec extends WordSpec with Matchers  with MockitoSugar {
 
-  val interpreter =  AsyncHttpClientInterpreter.instance[IO]
+  implicit val client: AsyncHttpClient = new DefaultAsyncHttpClient() //mock[AsyncHttpClient]
+  val interpreter: InterpTrans[IO] =  AsyncHttpClientInterpreter.instance[IO]
 
   "asynchttpclient" should {
 
     "map requests correctly" in {
       val hreq1 = Get(HttpRequest(uri"http://google.com", Map.empty[String, String], None))
-      val req1  = interpreter.mapRequest(hreq1).unsafeRunSync.build()
+      val req1  = mapRequest[IO](hreq1).unsafeRunSync.build()
 
       val hreq2 = Post(HttpRequest(uri"http://google.com", Map("header1" -> "value1"), None))
-      val req2  = interpreter.mapRequest(hreq2).unsafeRunSync.build()
+      val req2  = mapRequest[IO](hreq2).unsafeRunSync.build()
 
       val hreq3 = Put(
         HttpRequest(
           uri"http://google.com",
           Map("header1" -> "value1", "header2" -> "value2"),
           Some(Entity.StringEntity("the body"))))
-      val req3 = interpreter.mapRequest(hreq3).unsafeRunSync.build()
+      val req3 = mapRequest[IO](hreq3).unsafeRunSync.build()
 
       req1.getUrl shouldEqual hreq1.req.uri.show
       req1.getMethod shouldEqual "GET"
@@ -102,11 +104,7 @@ class AsyncHttpClientInterpreterSpec extends WordSpec with Matchers {
 
       tests foreach {
         case (a, h) =>
-          (
-            interpreter
-              .mapResponse(a)
-              .unsafeRunSync,
-            h) match {
+          (mapResponse[IO](a).unsafeRunSync, h) match {
             case (HttpResponse(s1, h1, e1), HttpResponse(s2, h2, e2)) =>
               s1 shouldEqual s2
               h1 shouldEqual h2

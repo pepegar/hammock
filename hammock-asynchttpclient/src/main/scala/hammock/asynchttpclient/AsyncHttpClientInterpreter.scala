@@ -11,6 +11,7 @@ import scala.util._
 import scala.collection.JavaConverters._
 
 object AsyncHttpClientInterpreter {
+
   def apply[F[_]](implicit F: InterpTrans[F]): InterpTrans[F] = F
 
   implicit def instance[F[_]: Async](
@@ -27,7 +28,26 @@ object AsyncHttpClientInterpreter {
         case Success(a)   => Right(a)
       }))
 
-    def getBuilder(reqF: HttpF[HttpResponse], client: AsyncHttpClient): BoundRequestBuilder = reqF match {
+    λ[HttpF ~> Kleisli[F, AsyncHttpClient, ?]] {
+      case reqF @ (Get(_) | Options(_) | Delete(_) | Head(_) | Options(_) | Trace(_) | Post(_) | Put(_) | Patch(_)) =>
+        Kleisli { implicit client =>
+          for {
+            req             <- mapRequest[F](reqF)
+            ahcResponse     <- toF(req.execute())
+            hammockResponse <- mapResponse[F](ahcResponse)
+          } yield hammockResponse
+        }
+    }
+  }
+
+  def mapRequest[F[_]: Async](reqF: HttpF[HttpResponse])(implicit client: AsyncHttpClient): F[BoundRequestBuilder] = {
+
+    def putHeaders(req: BoundRequestBuilder, headers: Map[String, String]): F[Unit] =
+      Async[F].delay {
+      req.setSingleHeaders(headers.map(kv => kv._1.asInstanceOf[CharSequence] -> kv._2).asJava)
+    } *> ().pure[F]
+
+    def getBuilder(reqF: HttpF[HttpResponse]): BoundRequestBuilder = reqF match {
       case Get(_)     => client.prepareGet(reqF.req.uri.show)
       case Delete(_)  => client.prepareDelete(reqF.req.uri.show)
       case Head(_)    => client.prepareHead(reqF.req.uri.show)
@@ -38,107 +58,26 @@ object AsyncHttpClientInterpreter {
       case Patch(_)   => client.preparePatch(reqF.req.uri.show)
     }
 
-    def putHeaders(req: BoundRequestBuilder, headers: Map[String, String]): F[Unit] = Async[F].delay {
-      req.setSingleHeaders(headers.map(kv => kv._1.asInstanceOf[CharSequence] -> kv._2).asJava)
-      ()
-    }
+    for {
+      req <- getBuilder(reqF).pure[F]
+      _   <- putHeaders(req, reqF.req.headers)
+      _   = reqF.req.entity
+              .foreach(_.cata(str => req.setBody(str.content), bytes => req.setBody(bytes.content), Function.const(())))
+    } yield req
+  }
+
+  def mapResponse[F[_]: Applicative](ahcResponse: Response): F[HttpResponse] = {
 
     def createEntity(r: Response): Entity = r.getContentType match {
-      case "application/octet-stream" => Entity.ByteArrayEntity(r.getResponseBodyAsBytes)
+      case AsyncHttpClientContentType.`application/octet-stream` => Entity.ByteArrayEntity(r.getResponseBodyAsBytes)
       case _                          => Entity.StringEntity(r.getResponseBody)
     }
 
-    def mapResponse(ahcResponse: Response): F[HttpResponse] = {
-      HttpResponse(
-        Status.Statuses(ahcResponse.getStatusCode),
-        ahcResponse.getHeaders.names.asScala.map(name => (name, ahcResponse.getHeaders.get(name))).toMap,
-        createEntity(ahcResponse)
-      ).pure[F]
-    }
-
-    def mapRequest(reqF: HttpF[HttpResponse], client: AsyncHttpClient): F[BoundRequestBuilder] =
-      for {
-        req <- getBuilder(reqF, client).pure[F]
-        _   <- putHeaders(req, reqF.req.headers)
-        _ = reqF.req.entity
-          .foreach(_.cata(str => req.setBody(str.content), bytes => req.setBody(bytes.content), Function.const(())))
-      } yield req
-
-    λ[HttpF ~> Kleisli[F, AsyncHttpClient, ?]] { reqF =>
-      reqF match {
-        case Get(_) | Options(_) | Delete(_) | Head(_) | Options(_) | Trace(_) | Post(_) | Put(_) | Patch(_) =>
-          Kleisli { client =>
-            for {
-              req             <- mapRequest(reqF, client)
-              ahcResponse     <- toF(req.execute())
-              hammockResponse <- mapResponse(ahcResponse)
-            } yield hammockResponse
-          }
-      }
-    }
+    HttpResponse(
+      Status.Statuses(ahcResponse.getStatusCode),
+      ahcResponse.getHeaders.names.asScala.map(name => (name, ahcResponse.getHeaders.get(name))).toMap,
+      createEntity(ahcResponse)
+    ).pure[F]
   }
-}
 
-//class AsyncHttpClientInterpreter[F[_]: Async](client: AsyncHttpClient = new DefaultAsyncHttpClient())
-//    extends InterpTrans[F] {
-//
-//  def toF[A](future: jc.Future[A]): F[A] =
-//    Async[F].async(_(Try(future.get) match {
-//      case Failure(err) => Left(err)
-//      case Success(a)   => Right(a)
-//    }))
-//
-//  def getBuilder(reqF: HttpF[HttpResponse]): BoundRequestBuilder = reqF match {
-//    case Get(_)     => client.prepareGet(reqF.req.uri.show)
-//    case Delete(_)  => client.prepareDelete(reqF.req.uri.show)
-//    case Head(_)    => client.prepareHead(reqF.req.uri.show)
-//    case Options(_) => client.prepareOptions(reqF.req.uri.show)
-//    case Post(_)    => client.preparePost(reqF.req.uri.show)
-//    case Put(_)     => client.preparePut(reqF.req.uri.show)
-//    case Trace(_)   => client.prepareTrace(reqF.req.uri.show)
-//    case Patch(_)   => client.preparePatch(reqF.req.uri.show)
-//  }
-//
-//  def putHeaders(req: BoundRequestBuilder, headers: Map[String, String]): F[Unit] = Async[F].delay {
-//    req.setSingleHeaders(headers.map(kv => kv._1.asInstanceOf[CharSequence] -> kv._2).asJava)
-//    ()
-//  }
-//
-//  def mapRequest(reqF: HttpF[HttpResponse]): F[BoundRequestBuilder] =
-//    for {
-//      req <- getBuilder(reqF).pure[F]
-//      _   <- putHeaders(req, reqF.req.headers)
-//      _ = reqF.req.entity
-//        .foreach(_.cata(str => req.setBody(str.content), bytes => req.setBody(bytes.content), Function.const(())))
-//    } yield req
-//
-//  def transK: HttpF ~> Kleisli[F, AsyncHttpClient, ?] =
-//    λ[HttpF ~> Kleisli[F, AsyncHttpClient, ?]] { reqF =>
-//      reqF match {
-//        case Get(_) | Options(_) | Delete(_) | Head(_) | Options(_) | Trace(_) | Post(_) | Put(_) | Patch(_) =>
-//          Kleisli { client =>
-//            for {
-//              req             <- mapRequest(reqF)
-//              ahcResponse     <- toF(req.execute())
-//              hammockResponse <- mapResponse(ahcResponse)
-//            } yield hammockResponse
-//          }
-//      }
-//    }
-//
-//  def trans: HttpF ~> F =
-//    transK andThen λ[Kleisli[F, AsyncHttpClient, ?] ~> F](_.run(client))
-//
-//  def createEntity(r: Response): Entity = r.getContentType match {
-//    case "application/octet-stream" => Entity.ByteArrayEntity(r.getResponseBodyAsBytes)
-//    case _                          => Entity.StringEntity(r.getResponseBody)
-//  }
-//
-//  def mapResponse(ahcResponse: Response): F[HttpResponse] = {
-//    HttpResponse(
-//      Status.Statuses(ahcResponse.getStatusCode),
-//      ahcResponse.getHeaders.names.asScala.map(name => (name, ahcResponse.getHeaders.get(name))).toMap,
-//      createEntity(ahcResponse)
-//    ).pure[F]
-//  }
-//}
+}

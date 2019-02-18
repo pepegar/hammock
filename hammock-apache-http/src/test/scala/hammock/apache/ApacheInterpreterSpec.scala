@@ -66,7 +66,7 @@ class ApacheInterpreterSpec extends WordSpec with MockitoSugar with BeforeAndAft
           ),
           None))
 
-      val apacheReq = getApacheRequest[IO](req).unsafeRunSync
+      val apacheReq = mapRequest[IO](req).unsafeRunSync
       assert(apacheReq.getURI == new URI("http://localhost:8080"))
       assert(apacheReq.getAllHeaders.length == 2)
       assert(

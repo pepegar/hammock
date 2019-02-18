@@ -39,7 +39,7 @@ object ApacheInterpreter {
 
     def doReq(reqF: HttpF[HttpResponse]): Kleisli[F, HttpClient, HttpResponse] = Kleisli { client =>
       for {
-        req             <- getApacheRequest(reqF)
+        req             <- mapRequest(reqF)
         resp            <- Sync[F].delay(client.execute(req))
         entity          <- responseToEntity(resp)
         status          <- Status.get(resp.getStatusLine.getStatusCode).pure[F]
@@ -61,7 +61,7 @@ object ApacheInterpreter {
 
   }
 
-  def getApacheRequest[F[_]: Sync](f: HttpF[HttpResponse]): F[HttpUriRequest] = {
+  def mapRequest[F[_]: Sync](f: HttpF[HttpResponse]): F[HttpUriRequest] = {
 
     def mapContentType(contentType: ContentType): F[apache.ContentType] =
       Sync[F].delay(apache.ContentType.parse(contentType.name))
