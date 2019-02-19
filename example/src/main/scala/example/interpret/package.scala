@@ -1,4 +1,6 @@
-package object example {
+package example
+
+package object interpret {
 
   import hammock._
 
@@ -9,5 +11,4 @@ package object example {
   val deleteUri             = uri"$baseUri/delete"
   val getUri                = uri"$baseUri/get"
   val getUriWithQueryString = uri"$baseUri/get?age=4&name=name"
-
 }

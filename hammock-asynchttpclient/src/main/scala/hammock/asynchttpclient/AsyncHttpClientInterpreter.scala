@@ -44,8 +44,8 @@ object AsyncHttpClientInterpreter {
 
     def putHeaders(req: BoundRequestBuilder, headers: Map[String, String]): F[Unit] =
       Async[F].delay {
-      req.setSingleHeaders(headers.map(kv => kv._1.asInstanceOf[CharSequence] -> kv._2).asJava)
-    } *> ().pure[F]
+        req.setSingleHeaders(headers.map(kv => kv._1.asInstanceOf[CharSequence] -> kv._2).asJava)
+      } *> ().pure[F]
 
     def getBuilder(reqF: HttpF[HttpResponse]): BoundRequestBuilder = reqF match {
       case Get(_)     => client.prepareGet(reqF.req.uri.show)
@@ -61,8 +61,8 @@ object AsyncHttpClientInterpreter {
     for {
       req <- getBuilder(reqF).pure[F]
       _   <- putHeaders(req, reqF.req.headers)
-      _   = reqF.req.entity
-              .foreach(_.cata(str => req.setBody(str.content), bytes => req.setBody(bytes.content), Function.const(())))
+      _ = reqF.req.entity
+        .foreach(_.cata(str => req.setBody(str.content), bytes => req.setBody(bytes.content), Function.const(())))
     } yield req
   }
 
@@ -70,7 +70,7 @@ object AsyncHttpClientInterpreter {
 
     def createEntity(r: Response): Entity = r.getContentType match {
       case AsyncHttpClientContentType.`application/octet-stream` => Entity.ByteArrayEntity(r.getResponseBodyAsBytes)
-      case _                          => Entity.StringEntity(r.getResponseBody)
+      case _                                                     => Entity.StringEntity(r.getResponseBody)
     }
 
     HttpResponse(

@@ -1,12 +1,11 @@
-package example
-
-import cats.effect._
+package example.interpret
+import cats.effect.IO
 import example.repr.{GetResp, GetRespWithQueryString, Req, Resp}
-import hammock._
-import hammock.asynchttpclient.AsyncHttpClientInterpreter._
-import hammock.circe.implicits._
+import hammock.{Hammock, Method}
 import hammock.marshalling._
+import hammock.circe.implicits._
 import io.circe.generic.auto._
+import hammock.asynchttpclient.AsyncHttpClientInterpreter._
 
 object AsyncHttpClientInterpExampleMain extends App {
 

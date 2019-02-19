@@ -1,15 +1,15 @@
-package example
-
-import cats.effect._
-import example.repr._
-import hammock._
-import hammock.circe.implicits._
+package example.interpret
+import akka.actor.ActorSystem
+import akka.http.scaladsl.{Http, HttpExt}
+import akka.stream.ActorMaterializer
+import cats.effect.IO
+import example.repr.{GetResp, GetRespWithQueryString, Req, Resp}
+import hammock.{Hammock, Method}
 import hammock.marshalling._
+import hammock.circe.implicits._
 import io.circe.generic.auto._
 import hammock.akka.AkkaInterpreter._
-import _root_.akka.stream.ActorMaterializer
-import _root_.akka.http.scaladsl.{Http, HttpExt}
-import _root_.akka.actor.ActorSystem
+
 import scala.concurrent.ExecutionContext
 
 object AkkaInterpExampleMain extends App {

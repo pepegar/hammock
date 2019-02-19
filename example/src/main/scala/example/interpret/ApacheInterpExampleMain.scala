@@ -1,13 +1,12 @@
-package example
+package example.interpret
 
-import cats.effect._
-import hammock._
-import hammock.apache._
-import repr._
+import cats.effect.IO
+import example.repr.{GetResp, GetRespWithQueryString, Req, Resp}
+import hammock.{Hammock, Method}
 import hammock.marshalling._
 import hammock.circe.implicits._
 import io.circe.generic.auto._
-import ApacheInterpreter._
+import hammock.apache.ApacheInterpreter._
 
 object ApacheInterpExampleMain extends App {
 

@@ -24,21 +24,20 @@ object AkkaInterpreter {
 
   def apply[F[_]](implicit F: InterpTrans[F]): InterpTrans[F] = F
 
-  implicit def instance[F[_]: Async]
-  (implicit client: HttpExt,
-    transK: HttpF ~> Kleisli[F, HttpExt, ?]) = new InterpTrans[F] {
-    override def trans: HttpF ~> F = transK andThen λ[Kleisli[F, HttpExt, ?] ~> F](_.run(client))
-  }
+  implicit def instance[F[_]: Async](implicit client: HttpExt, transK: HttpF ~> Kleisli[F, HttpExt, ?]) =
+    new InterpTrans[F] {
+      override def trans: HttpF ~> F = transK andThen λ[Kleisli[F, HttpExt, ?] ~> F](_.run(client))
+    }
 
-  implicit def instanceK[F[_]: Async]
-  (implicit materializer: ActorMaterializer,
-    executionContext: ExecutionContext): HttpF ~> Kleisli[F, HttpExt, ?] = {
+  implicit def instanceK[F[_]: Async](
+      implicit materializer: ActorMaterializer,
+      executionContext: ExecutionContext): HttpF ~> Kleisli[F, HttpExt, ?] = {
 
     def doReq(req: HttpF[HttpResponse]): Kleisli[F, HttpExt, HttpResponse] = Kleisli { http =>
       for {
-        akkaRequest     <- mapRequest(req)
-        responseFuture  <- Sync[F].delay(http.singleRequest(akkaRequest).flatMap(mapResponse))
-        responseF       <- IO.fromFuture(IO(responseFuture)).to[F]
+        akkaRequest    <- mapRequest(req)
+        responseFuture <- Sync[F].delay(http.singleRequest(akkaRequest).flatMap(mapResponse))
+        responseF      <- IO.fromFuture(IO(responseFuture)).to[F]
       } yield responseF
     }
 
@@ -133,13 +132,14 @@ object AkkaInterpreter {
   def mapRequest[F[_]: Async](reqF: HttpF[HttpResponse]): F[AkkaRequest] = {
 
     def mapContentType(ct: ContentType): F[AkkaContentType] = AkkaContentType.parse(ct.name) match {
-      case Left(errors) => Async[F].raiseError(new Exception(s"Unable to parse content type ${ct.name}, $errors"))
+      case Left(errors)       => Async[F].raiseError(new Exception(s"Unable to parse content type ${ct.name}, $errors"))
       case Right(contentType) => Async[F].pure(contentType)
     }
 
     def mapHeaders: F[List[RawHeader]] = reqF.req.headers.map { case (k, v) => RawHeader(k, v) }.toList.pure[F]
 
-    def mapMethod(reqF: HttpF[HttpResponse]): F[HttpMethod] = (reqF match {
+    def mapMethod(reqF: HttpF[HttpResponse]): F[HttpMethod] =
+      (reqF match {
         case Options(_) => HttpMethods.OPTIONS
         case Get(_)     => HttpMethods.GET
         case Head(_)    => HttpMethods.HEAD
