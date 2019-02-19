@@ -6,7 +6,7 @@ import hammock._
 import hammock.circe.implicits._
 import hammock.marshalling._
 import io.circe.generic.auto._
-import hammock.akka.AkkaInterpreter
+import hammock.akka.AkkaInterpreter._
 import _root_.akka.stream.ActorMaterializer
 import _root_.akka.http.scaladsl.{Http, HttpExt}
 import _root_.akka.actor.ActorSystem
@@ -17,8 +17,7 @@ object AkkaInterpExampleMain extends App {
   implicit val actorSystem: ActorSystem        = ActorSystem()
   implicit val materializer: ActorMaterializer = ActorMaterializer()
   implicit val ec: ExecutionContext            = ExecutionContext.Implicits.global
-  val client: HttpExt                          = Http(actorSystem)
-  implicit val interpTrans: InterpTrans[IO]    = new AkkaInterpreter[IO](client)
+  implicit val client: HttpExt                 = Http(actorSystem)
 
   //GET
   val getResp = Hammock
