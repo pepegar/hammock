@@ -27,8 +27,7 @@ class AkkaInterpreterSpec extends WordSpec with MockitoSugar with Matchers with 
   implicit val system: ActorSystem    = ActorSystem("test")
   implicit val mat: ActorMaterializer = ActorMaterializer()
   implicit val ec: ExecutionContext   = ExecutionContext.Implicits.global
-  implicit val client = mock[HttpExt]
-  val interp =  AkkaInterpreter[IO]
+  implicit val client : HttpExt= mock[HttpExt]
 
   after {
     reset(client)
@@ -111,7 +110,7 @@ class AkkaInterpreterSpec extends WordSpec with MockitoSugar with Matchers with 
           RawHeader("header2", "value2")
         ))
       when(client.singleRequest(akkaReq)).thenReturn(Future.successful(httpResponse))
-      val result = (Free.liftF(hammockReq) foldMap interp.trans).unsafeRunSync
+      val result = (Free.liftF(hammockReq) foldMap AkkaInterpreter[IO].trans).unsafeRunSync
 
       result shouldEqual HttpResponse(Status.OK, Map(), Entity.StringEntity(""))
     }
@@ -133,7 +132,7 @@ class AkkaInterpreterSpec extends WordSpec with MockitoSugar with Matchers with 
           ))
         .withEntity(HttpEntity.Strict(ContentTypes.`application/json`, ByteString.fromString("potato")))
       when(client.singleRequest(akkaReq)).thenReturn(Future.successful(httpResponse))
-      val result = (Free.liftF(hammockReq) foldMap interp.trans).unsafeRunSync
+      val result = (Free.liftF(hammockReq) foldMap AkkaInterpreter[IO].trans).unsafeRunSync
 
       result shouldEqual HttpResponse(Status.OK, Map(), Entity.StringEntity(""))
     }
@@ -155,7 +154,7 @@ class AkkaInterpreterSpec extends WordSpec with MockitoSugar with Matchers with 
           ))
         .withEntity(HttpEntity.Strict(ContentTypes.`application/octet-stream`, ByteString(Array[Byte](11, 12, 13, 14))))
       when(client.singleRequest(akkaReq)).thenReturn(Future.successful(httpResponse))
-      val result = (Free.liftF(hammockReq) foldMap interp.trans).unsafeRunSync
+      val result = (Free.liftF(hammockReq) foldMap AkkaInterpreter[IO].trans).unsafeRunSync
 
       result shouldEqual HttpResponse(Status.OK, Map(), Entity.StringEntity(""))
     }
