@@ -148,6 +148,8 @@ object App {
   import hammock._
   import hammock.marshalling._
   import hammock.apache._
+  import hammock.apache.ApacheInterpreter
+  import hammock.apache.ApacheInterpreter._
 
   type Eff1[A] = EitherK[LogF, IOF, A]
   type Eff2[A] = EitherK[HttpF, Eff1, A]

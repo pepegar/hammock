@@ -54,6 +54,7 @@ val httpReq = Hammock.getWithOpts(
 ```tut
 import cats.effect.IO
 import hammock.apache.ApacheInterpreter
+import hammock.apache.ApacheInterpreter._
 
 httpReq foldMap ApacheInterpreter[IO].trans unsafeRunSync
 ```
@@ -70,17 +71,16 @@ https://github.com/pepegar/hammock/tree/master/example-node
 import _root_.akka.actor.ActorSystem
 import _root_.akka.http.scaladsl._
 import _root_.akka.stream.ActorMaterializer
-
 import cats.effect.IO
 import hammock.akka.AkkaInterpreter
+import hammock.akka.AkkaInterpreter._
 
 implicit val system = ActorSystem("hammock-actor-system")
 implicit val mat = ActorMaterializer()
 implicit val ec = system.dispatcher
-val httpExt: HttpExt = Http()
-implicit val interp = new AkkaInterpreter[IO](httpExt)
+implicit val httpExt: HttpExt = Http()
 
-httpReq foldMap interp.trans unsafeRunSync
+httpReq foldMap AkkaInterpreter[IO].trans unsafeRunSync
 
 system.shutdown()
 ```
@@ -91,12 +91,11 @@ system.shutdown()
 import org.asynchttpclient._
 import cats.effect.IO
 import hammock.asynchttpclient.AsyncHttpClientInterpreter
+import hammock.asynchttpclient.AsyncHttpClientInterpreter._
 
 val client: AsyncHttpClient = new DefaultAsyncHttpClient()
 
-implicit val interp = new AsyncHttpClientInterpreter[IO](client)
-
-httpReq foldMap interp.trans unsafeRunSync
+httpReq foldMap AsyncHttpClientInterpreter[IO].trans unsafeRunSync
 
 client.close()
 ```

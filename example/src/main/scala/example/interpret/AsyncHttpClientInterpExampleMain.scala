@@ -6,8 +6,11 @@ import hammock.marshalling._
 import hammock.circe.implicits._
 import io.circe.generic.auto._
 import hammock.asynchttpclient.AsyncHttpClientInterpreter._
+import org.asynchttpclient.{AsyncHttpClient, DefaultAsyncHttpClient}
 
 object AsyncHttpClientInterpExampleMain extends App {
+
+  implicit val client: AsyncHttpClient = new DefaultAsyncHttpClient()
 
   //GET
   val getResp = Hammock
@@ -52,5 +55,7 @@ object AsyncHttpClientInterpExampleMain extends App {
     .unsafeRunSync
 
   println(s"DELETE::Response = $deleteResp")
+
+  client.close()
 
 }

@@ -9,7 +9,6 @@ import hammock.marshalling._
 import hammock.circe.implicits._
 import io.circe.generic.auto._
 import hammock.akka.AkkaInterpreter._
-
 import scala.concurrent.ExecutionContext
 
 object AkkaInterpExampleMain extends App {
@@ -63,4 +62,5 @@ object AkkaInterpExampleMain extends App {
 
   println(s"DELETE::Response = $deleteResp")
 
+  actorSystem.terminate()
 }

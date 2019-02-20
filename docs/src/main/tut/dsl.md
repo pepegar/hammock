@@ -23,8 +23,7 @@ import hammock.hi._
 import cats._
 import cats.implicits._
 import cats.effect.IO
-
-implicit val interp = ApacheInterpreter[IO]
+import hammock.apache.ApacheInterpreter._
 
 val opts = (header("user" -> "pepegar") >>> cookie(Cookie("track", "a lot")))(Opts.empty)
 
