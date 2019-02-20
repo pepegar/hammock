@@ -27,7 +27,7 @@ class AkkaInterpreterSpec extends WordSpec with MockitoSugar with Matchers with 
   implicit val system: ActorSystem    = ActorSystem("test")
   implicit val mat: ActorMaterializer = ActorMaterializer()
   implicit val ec: ExecutionContext   = ExecutionContext.Implicits.global
-  implicit val client : HttpExt= mock[HttpExt]
+  implicit val client: HttpExt        = mock[HttpExt]
 
   after {
     reset(client)
@@ -70,7 +70,7 @@ class AkkaInterpreterSpec extends WordSpec with MockitoSugar with Matchers with 
 
       val akkaReq = AkkaRequest(method = HttpMethods.POST, uri = AkkaUri("http://localhost:8080"))
 
-     mapRequest[IO](hammockReq).unsafeRunSync shouldEqual akkaReq
+      mapRequest[IO](hammockReq).unsafeRunSync shouldEqual akkaReq
 
     }
 

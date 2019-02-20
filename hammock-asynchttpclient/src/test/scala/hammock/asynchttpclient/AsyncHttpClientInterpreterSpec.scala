@@ -11,7 +11,7 @@ import org.scalatest.mockito._
 import AsyncHttpClientInterpreter._
 import scala.collection.JavaConverters._
 
-class AsyncHttpClientInterpreterSpec extends WordSpec with Matchers  with MockitoSugar {
+class AsyncHttpClientInterpreterSpec extends WordSpec with Matchers with MockitoSugar {
 
   implicit val client: AsyncHttpClient = new DefaultAsyncHttpClient()
 

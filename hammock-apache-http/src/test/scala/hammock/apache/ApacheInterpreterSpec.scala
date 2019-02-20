@@ -33,23 +33,23 @@ class ApacheInterpreterSpec extends WordSpec with MockitoSugar with BeforeAndAft
 
   "Interpreter.trans" should {
     Seq(
-      ("Options", (uri: Uri, headers: Map[String, String])  => Ops.options(uri, headers)),
-      ("Get", (uri: Uri, headers: Map[String, String])      => Ops.get(uri, headers)),
-      ("Head", (uri: Uri, headers: Map[String, String])     => Ops.head(uri, headers)),
-      ("Post", (uri: Uri, headers: Map[String, String])     => Ops.post(uri, headers, None)),
-      ("Put", (uri: Uri, headers: Map[String, String])      => Ops.put(uri, headers, None)),
-      ("Delete", (uri: Uri, headers: Map[String, String])   => Ops.delete(uri, headers)),
-      ("Trace", (uri: Uri, headers: Map[String, String])    => Ops.trace(uri, headers)),
-      ("Patch", (uri: Uri, headers: Map[String, String])    => Ops.patch(uri, headers, None))
+      ("Options", (uri: Uri, headers: Map[String, String]) => Ops.options(uri, headers)),
+      ("Get", (uri: Uri, headers: Map[String, String]) => Ops.get(uri, headers)),
+      ("Head", (uri: Uri, headers: Map[String, String]) => Ops.head(uri, headers)),
+      ("Post", (uri: Uri, headers: Map[String, String]) => Ops.post(uri, headers, None)),
+      ("Put", (uri: Uri, headers: Map[String, String]) => Ops.put(uri, headers, None)),
+      ("Delete", (uri: Uri, headers: Map[String, String]) => Ops.delete(uri, headers)),
+      ("Trace", (uri: Uri, headers: Map[String, String]) => Ops.trace(uri, headers)),
+      ("Patch", (uri: Uri, headers: Map[String, String]) => Ops.patch(uri, headers, None))
     ) foreach {
       case (method, operation) =>
         s"have the same result as instanceK.run(client) with $method requests" in {
           when(client.execute(any[HttpUriRequest])).thenReturn(httpResponse)
 
-          val op = operation(Uri(), Map())
-          val k = op.foldMap[Kleisli[IO, HttpClient, ?]](instanceK)
+          val op              = operation(Uri(), Map())
+          val k               = op.foldMap[Kleisli[IO, HttpClient, ?]](instanceK)
           val instanceKResult = k.run(client).unsafeRunSync
-          val transResult  = (op foldMap ApacheInterpreter[IO].trans).unsafeRunSync
+          val transResult     = (op foldMap ApacheInterpreter[IO].trans).unsafeRunSync
 
           assert(Eq[HttpResponse].eqv(instanceKResult, transResult))
         }
@@ -81,7 +81,7 @@ class ApacheInterpreterSpec extends WordSpec with MockitoSugar with BeforeAndAft
     "create a correct HttpResponse from Apache's HTTP response" in {
       when(client.execute(any[HttpUriRequest])).thenReturn(httpResponse)
 
-      val op = Ops.get(Uri(), Map())
+      val op     = Ops.get(Uri(), Map())
       val result = (op foldMap ApacheInterpreter[IO].trans).unsafeRunSync
 
       assert(result.status == Status.OK)
@@ -93,7 +93,7 @@ class ApacheInterpreterSpec extends WordSpec with MockitoSugar with BeforeAndAft
       val resp = new BasicHttpResponse(new BasicStatusLine(new ProtocolVersion("HTTP", 1, 1), 204, null))
       when(client.execute(any[HttpUriRequest])).thenReturn(resp)
 
-      val op = Ops.get(Uri(), Map())
+      val op     = Ops.get(Uri(), Map())
       val result = (op foldMap ApacheInterpreter[IO].trans).unsafeRunSync
 
       assert(result.status == Status.NoContent)
