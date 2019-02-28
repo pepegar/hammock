@@ -91,8 +91,8 @@ sealed trait IOF[A]
   }
 
   def interp[F[_]: Sync]: IOF ~> F = new (IOF ~> F) {
-	// this could be implemented using scala.io.StdIn, for example
-	def readline: String = "line read!"
+    // this could be implemented using scala.io.StdIn, for example
+    def readline: String = "line read!"
 
     def apply[A](ioF: IOF[A]): F[A] = ioF match {
       case Read => Sync[F].delay(readline)
@@ -161,13 +161,13 @@ object App {
     Log: LogC[Eff],
     IO: IOC[Eff],
     Hammock: HttpRequestC[Eff],
-	Marshall: MarshallC[Eff]
+    Marshall: MarshallC[Eff]
   ) = for {
     _ <- IO.write("What's the ID?")
     id = "4" // for the sake of docs, lets hardcode this... It should be `id <- IO.read`
     _ <- Log.info(s"id was $id")
     response <- Hammock.get(uri"https://jsonplaceholder.typicode.com/users?id=${id.toString}", Map())
-	parsed <- Marshall.unmarshall[String](response.entity)
+    parsed <- Marshall.unmarshall[String](response.entity)
   } yield response
 
   def interp1[F[_]: Sync]: Eff1 ~> F = Log.interp or IOEff.interp
