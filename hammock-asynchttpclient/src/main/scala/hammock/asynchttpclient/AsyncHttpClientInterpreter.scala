@@ -15,7 +15,7 @@ object AsyncHttpClientInterpreter {
   def apply[F[_]](implicit F: InterpTrans[F]): InterpTrans[F] = F
 
   implicit def instance[F[_]: Async](
-      implicit client: AsyncHttpClient = new DefaultAsyncHttpClient(),
+      implicit client: AsyncHttpClient = new DefaultAsyncHttpClient()
   ): InterpTrans[F] = new InterpTrans[F] {
     override def trans: HttpF ~> F = transK andThen λ[Kleisli[F, AsyncHttpClient, ?] ~> F](_.run(client))
   }
