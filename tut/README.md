@@ -46,18 +46,18 @@ libraryDependencies += "com.pepegar" %%% "hammock-core" % "0.9.0"
 
 ## Modules
 
-| Module name          | Description                                | Version |
-| -------------------- | ------------------------------------------ | ------- |
-| `hammock-core`      | the core functionality of hammock, using [XHR][xhr] in JS | `0.9.0` |
-| `hammock-circe`      | encode and decode HTTP entities with [Circe][circe] | `0.9.0` |
-| `hammock-apache-http` | run your HTTP requests with [Apache HTTP commons][httpcommons] | `0.9.0` |
-| `hammock-akka-http`  | run your HTTP requests with [akka-http][akka-http] | `0.9.0` |
-| `hammock-asynchttpclient`  | run your HTTP requests with [AsyncHttpClient][async-http-client] | `0.9.0` |
+| Module name               | Description                                                      | Version |
+| --------------------      | ------------------------------------------                       | ------- |
+| `hammock-core`            | the core functionality of hammock, using [XHR][xhr] in JS        | `0.9.0` |
+| `hammock-circe`           | encode and decode HTTP entities with [Circe][circe]              | `0.9.0` |
+| `hammock-apache-http`     | run your HTTP requests with [Apache HTTP commons][httpcommons]   | `0.9.0` |
+| `hammock-akka-http`       | run your HTTP requests with [akka-http][akka-http]               | `0.9.0` |
+| `hammock-asynchttpclient` | run your HTTP requests with [AsyncHttpClient][async-http-client] | `0.9.0` |
 
 
 ## How does Hammock look in action?
 
-```tut:silent
+```scala mdoc:silent
 import cats.effect.IO
 import io.circe.generic.auto._
 import hammock._

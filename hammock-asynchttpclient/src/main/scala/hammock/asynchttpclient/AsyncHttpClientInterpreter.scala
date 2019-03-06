@@ -16,11 +16,11 @@ object AsyncHttpClientInterpreter {
 
   implicit def instance[F[_]: Async](
       implicit client: AsyncHttpClient = new DefaultAsyncHttpClient(),
-      transK: HttpF ~> Kleisli[F, AsyncHttpClient, ?]) = new InterpTrans[F] {
+  ): InterpTrans[F] = new InterpTrans[F] {
     override def trans: HttpF ~> F = transK andThen λ[Kleisli[F, AsyncHttpClient, ?] ~> F](_.run(client))
   }
 
-  implicit def instanceK[F[_]: Async]: HttpF ~> Kleisli[F, AsyncHttpClient, ?] = {
+  def transK[F[_]: Async]: HttpF ~> Kleisli[F, AsyncHttpClient, ?] = {
 
     def toF[A](future: jc.Future[A]): F[A] =
       Async[F].async(_(Try(future.get) match {

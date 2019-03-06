@@ -24,12 +24,16 @@ object AkkaInterpreter {
 
   def apply[F[_]](implicit F: InterpTrans[F]): InterpTrans[F] = F
 
-  implicit def instance[F[_]: Async](implicit client: HttpExt, transK: HttpF ~> Kleisli[F, HttpExt, ?]) =
+  implicit def instance[F[_]: Async](
+      implicit
+      client: HttpExt,
+      materializer: ActorMaterializer,
+      executionContext: ExecutionContext) =
     new InterpTrans[F] {
       override def trans: HttpF ~> F = transK andThen λ[Kleisli[F, HttpExt, ?] ~> F](_.run(client))
     }
 
-  implicit def instanceK[F[_]: Async](
+  def transK[F[_]: Async](
       implicit materializer: ActorMaterializer,
       executionContext: ExecutionContext): HttpF ~> Kleisli[F, HttpExt, ?] = {
 
