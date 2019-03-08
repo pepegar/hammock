@@ -183,8 +183,7 @@ lazy val docs = project
     micrositeExtraMdFiles := Map(
       file("README.md") -> ExtraMdFileConfig(
         "index.md",
-        "home",
-        Map("title" -> "Home", "section" -> "home", "position" -> "0")
+        "home"
       ),
       file("CHANGELOG.md") -> ExtraMdFileConfig(
         "changelog.md",
@@ -199,18 +198,17 @@ lazy val docs = project
   )
   .enablePlugins(MicrositesPlugin)
 
-lazy val readme = (project in file("tut"))
+lazy val readme = (project in file("readme"))
   .settings(moduleName := "hammock-readme")
   .dependsOn(coreJVM, circeJVM, apache)
   .settings(buildSettings)
   .settings(noPublishSettings)
   .settings(
-    tutSourceDirectory := baseDirectory.value,
-    tutTargetDirectory := baseDirectory.value.getParentFile,
-    tutNameFilter := """README.md""".r,
+    mdocIn := baseDirectory.value / "docs",
+    mdocOut := baseDirectory.value.getParentFile,
     scalacOptions ~= (_ filterNot Set("-Xfatal-warnings", "-Ywarn-unused-import", "-Xlint").contains)
   )
-  .enablePlugins(TutPlugin)
+  .enablePlugins(MdocPlugin)
 
 lazy val example = project
   .in(file("example"))
@@ -244,7 +242,7 @@ lazy val exampleNode = project
 
 addCommandAlias("formatAll", ";sbt:scalafmt;test:scalafmt;compile:scalafmt")
 addCommandAlias("validateScalafmt", ";sbt:scalafmt::test;test:scalafmt::test;compile:scalafmt::test")
-addCommandAlias("validateDoc", ";docs/tut;readme/tut")
+addCommandAlias("validateDoc", ";docs/mdoc;readme/mdoc")
 addCommandAlias(
   "validateJVM",
   ";validateScalafmt;coreJVM/test;circeJVM/test;akka/test;asynchttpclient/test;validateDoc")
