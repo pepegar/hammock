@@ -28,9 +28,8 @@ import hammock.apache.ApacheInterpreter._
 import monocle._
 import monocle.function.all._
 
-//val opts1 = (header("user" -> "pepegar") >>> cookie(Cookie("track", "a lot")))(Opts.empty)
-//
-//val response = Hammock.getWithOpts(uri"http://httpbin.org/get", opts1).exec[IO]
+val opts1 = (header("user" -> "pepegar") >>> cookie(Cookie("track", "a lot")))(Opts.empty)
+val response = Hammock.getWithOpts(uri"http://httpbin.org/get", opts1).exec[IO]
 ```
 
 ## Opts
@@ -127,9 +126,9 @@ the type itself.  For example, adding a `MaxAge` setting to a cookie
 is just matter of doing:
 
 ```scala mdoc
-val cookie = Cookie("_ga", "werwer")
+val c = Cookie("_ga", "werwer")
 
-Cookie.maxAge.set(Some(234))(cookie)
+Cookie.maxAge.set(Some(234))(c)
 ```
 
 #### Headers

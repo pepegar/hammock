@@ -20,13 +20,13 @@ object ApacheInterpreter {
   def apply[F[_]](implicit F: InterpTrans[F]): InterpTrans[F] = F
 
   implicit def instance[F[_]: Sync](
-      implicit client: HttpClient = HttpClientBuilder.create().build(),
-      transK: HttpF ~> Kleisli[F, HttpClient, ?]): InterpTrans[F] =
+      implicit
+      client: HttpClient = HttpClientBuilder.create().build()): InterpTrans[F] =
     new InterpTrans[F] {
       def trans: HttpF ~> F = transK andThen λ[Kleisli[F, HttpClient, ?] ~> F](_.run(client))
     }
 
-  implicit def instanceK[F[_]: Sync]: HttpF ~> Kleisli[F, HttpClient, ?] = {
+  def transK[F[_]: Sync]: HttpF ~> Kleisli[F, HttpClient, ?] = {
 
     def responseToEntity(response: ApacheResponse): F[Entity] = Sync[F].delay {
       Option(response.getEntity) // getEntity can return null
