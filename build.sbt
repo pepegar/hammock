@@ -31,7 +31,8 @@ val Versions = Map(
   "macro-paradise" -> "2.1.1",
   "kind-projector" -> "0.9.9",
   "akka-http"      -> "10.0.15",
-  "ahc"            -> "2.1.2"
+  "ahc"            -> "2.1.2",
+  "mockito"        -> "1.10.19"
 )
 
 val noPublishSettings = Seq(
@@ -62,12 +63,12 @@ val commonDependencies = Seq(
     "com.github.julien-truffaut" %%% "monocle-core"   % Versions("monocle"),
     "com.github.julien-truffaut" %%% "monocle-macro"  % Versions("monocle"),
     "org.tpolecat"               %%% "atto-core"      % Versions("atto"),
-    "com.github.julien-truffaut" %%% "monocle-law"    % Versions("monocle") % "test",
-    "org.typelevel"              %%% "cats-laws"      % Versions("cats") % "test",
-    "org.typelevel"              %%% "cats-testkit"   % Versions("cats") % "test",
-    "org.scalatest"              %%% "scalatest"      % Versions("scalatest") % "test",
-    "org.scalacheck"             %%% "scalacheck"     % Versions("scalacheck") % "test",
-    "org.typelevel"              %%% "discipline"     % Versions("discipline") % "test"
+    "com.github.julien-truffaut" %%% "monocle-law"    % Versions("monocle") % Test,
+    "org.typelevel"              %%% "cats-laws"      % Versions("cats") % Test,
+    "org.typelevel"              %%% "cats-testkit"   % Versions("cats") % Test,
+    "org.scalatest"              %%% "scalatest"      % Versions("scalatest") % Test,
+    "org.scalacheck"             %%% "scalacheck"     % Versions("scalacheck") % Test,
+    "org.typelevel"              %%% "discipline"     % Versions("discipline") % Test
   )
 )
 
@@ -132,7 +133,7 @@ lazy val apache = project
       "org.apache.httpcomponents" % "httpclient" % "4.5.7"
     )
   )
-  .settings(libraryDependencies += "org.mockito" % "mockito-all" % "1.10.19" % "test")
+  .settings(libraryDependencies += "org.mockito" % "mockito-all" % Versions("mockito") % Test)
   .dependsOn(coreJVM)
 
 lazy val akka = project
@@ -144,7 +145,7 @@ lazy val akka = project
   .settings(
     libraryDependencies += "com.typesafe.akka" %% "akka-http" % Versions("akka-http")
   )
-  .settings(libraryDependencies += "org.mockito" % "mockito-all" % "1.10.19" % "test")
+  .settings(libraryDependencies += "org.mockito" % "mockito-all" % Versions("mockito") % Test)
   .dependsOn(coreJVM)
 
 lazy val asynchttpclient = project
@@ -156,6 +157,7 @@ lazy val asynchttpclient = project
   .settings(
     libraryDependencies += "org.asynchttpclient" % "async-http-client" % Versions("ahc")
   )
+  .settings(libraryDependencies += "org.mockito" % "mockito-all" % Versions("mockito") % Test)
   .dependsOn(coreJVM)
 
 lazy val javadocIoUrl = settingKey[String]("the url of hammock documentation in http://javadoc.io")
@@ -181,8 +183,7 @@ lazy val docs = project
     micrositeExtraMdFiles := Map(
       file("README.md") -> ExtraMdFileConfig(
         "index.md",
-        "home",
-        Map("title" -> "Home", "section" -> "home", "position" -> "0")
+        "home"
       ),
       file("CHANGELOG.md") -> ExtraMdFileConfig(
         "changelog.md",
@@ -190,30 +191,31 @@ lazy val docs = project
         Map("title" -> "changelog", "section" -> "changelog", "position" -> "99")
       )
     ),
-    scalacOptions in Tut ~= filterConsoleScalacOptions,
-    scalacOptions in Tut += "-language:postfixOps"
+    micrositeCompilingDocsTool := WithMdoc,
+    mdocIn := tutSourceDirectory.value,
+    scalacOptions ~= filterConsoleScalacOptions,
+    scalacOptions += "-language:postfixOps"
   )
   .enablePlugins(MicrositesPlugin)
 
-lazy val readme = (project in file("tut"))
+lazy val readme = (project in file("readme"))
   .settings(moduleName := "hammock-readme")
   .dependsOn(coreJVM, circeJVM, apache)
   .settings(buildSettings)
   .settings(noPublishSettings)
   .settings(
-    tutSourceDirectory := baseDirectory.value,
-    tutTargetDirectory := baseDirectory.value.getParentFile,
-    tutNameFilter := """README.md""".r,
+    mdocIn := baseDirectory.value / "docs",
+    mdocOut := baseDirectory.value.getParentFile,
     scalacOptions ~= (_ filterNot Set("-Xfatal-warnings", "-Ywarn-unused-import", "-Xlint").contains)
   )
-  .enablePlugins(TutPlugin)
+  .enablePlugins(MdocPlugin)
 
 lazy val example = project
   .in(file("example"))
   .settings(buildSettings)
   .settings(noPublishSettings)
   .settings(compilerPlugins)
-  .dependsOn(coreJVM, circeJVM, apache)
+  .dependsOn(coreJVM, circeJVM, apache, akka, asynchttpclient)
 
 lazy val exampleJS = project
   .in(file("example-js"))
@@ -240,7 +242,7 @@ lazy val exampleNode = project
 
 addCommandAlias("formatAll", ";sbt:scalafmt;test:scalafmt;compile:scalafmt")
 addCommandAlias("validateScalafmt", ";sbt:scalafmt::test;test:scalafmt::test;compile:scalafmt::test")
-addCommandAlias("validateDoc", ";docs/tut;readme/tut")
+addCommandAlias("validateDoc", ";docs/mdoc;readme/mdoc")
 addCommandAlias(
   "validateJVM",
   ";validateScalafmt;coreJVM/test;circeJVM/test;akka/test;asynchttpclient/test;validateDoc")

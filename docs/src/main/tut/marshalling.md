@@ -7,7 +7,7 @@ position: 4
 # Marshalling
 
 Hammock has the notion of marshalling at several levels.  First, it
-provides the [`Codec` typeclass](#Codecs), for low level operations,
+provides the [`Codec` typeclass](#codecs), for low level operations,
 and the [`MarshallF` algebra](#marshalling-algebra) for unmarshalling
 operations suspended in `Free`.
 
@@ -36,7 +36,7 @@ designed to be non-intrusive, since a simple import of `import
 hammock.circe.implicits._` will give you all the funcionality you
 need.  For example:
 
-```tut
+```scala mdoc
 import hammock.{Encoder => HammockEncoder, Decoder => HammockDecoder, _}
 import hammock.circe.implicits._
 import io.circe.{Encoder => CirceEncoder, Decoder => CirceDecoder}

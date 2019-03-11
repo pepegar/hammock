@@ -2,25 +2,52 @@ package hammock
 package apache
 
 import cats._
-import cats.implicits._
 import cats.data._
+import cats.implicits._
 import cats.effect.Sync
 import java.io.{BufferedReader, InputStreamReader}
 import org.apache.http.{Header, HttpEntity, HttpResponse => ApacheResponse}
 import org.apache.http.client.HttpClient
 import org.apache.http.client.methods._
 import org.apache.http.{entity => apache}
-import org.apache.http.impl.client.{CloseableHttpClient, HttpClientBuilder}
+import org.apache.http.impl.client.HttpClientBuilder
 import org.apache.http.message.BasicHeader
 import org.apache.http.util.EntityUtils
+import Uri._
 
-class ApacheInterpreter[F[_]: Sync](client: HttpClient) extends InterpTrans[F] {
+object ApacheInterpreter {
 
-  import Uri._
+  def apply[F[_]](implicit F: InterpTrans[F]): InterpTrans[F] = F
 
-  override def trans: HttpF ~> F = transK andThen λ[Kleisli[F, HttpClient, ?] ~> F](_.run(client))
+  implicit def instance[F[_]: Sync](
+      implicit
+      client: HttpClient = HttpClientBuilder.create().build()): InterpTrans[F] =
+    new InterpTrans[F] {
+      def trans: HttpF ~> F = transK andThen λ[Kleisli[F, HttpClient, ?] ~> F](_.run(client))
+    }
 
-  def transK: HttpF ~> Kleisli[F, HttpClient, ?] =
+  def transK[F[_]: Sync]: HttpF ~> Kleisli[F, HttpClient, ?] = {
+
+    def responseToEntity(response: ApacheResponse): F[Entity] = Sync[F].delay {
+      Option(response.getEntity) // getEntity can return null
+        .map(_.getContent)
+        .map { content =>
+          val rd = new BufferedReader(new InputStreamReader(content))
+          Entity.StringEntity(Stream.continually(rd.readLine()).takeWhile(_ != null).mkString(""))
+        } getOrElse Entity.EmptyEntity
+    }
+
+    def doReq(reqF: HttpF[HttpResponse]): Kleisli[F, HttpClient, HttpResponse] = Kleisli { client =>
+      for {
+        req             <- mapRequest(reqF)
+        resp            <- Sync[F].delay(client.execute(req))
+        entity          <- responseToEntity(resp)
+        status          <- Status.get(resp.getStatusLine.getStatusCode).pure[F]
+        responseHeaders <- resp.getAllHeaders.map(h => h.getName -> h.getValue).toMap.pure[F]
+        _               <- Sync[F].delay(EntityUtils.consume(resp.getEntity))
+      } yield HttpResponse(status, responseHeaders, entity)
+    }
+
     λ[HttpF ~> Kleisli[F, HttpClient, ?]] {
       case req: Options => doReq(req)
       case req: Get     => doReq(req)
@@ -32,122 +59,79 @@ class ApacheInterpreter[F[_]: Sync](client: HttpClient) extends InterpTrans[F] {
       case req: Patch   => doReq(req)
     }
 
-  private def doReq(reqF: HttpF[HttpResponse]): Kleisli[F, HttpClient, HttpResponse] =
-    Kleisli { client =>
-      for {
-        req             <- getApacheRequest(reqF)
-        resp            <- Sync[F].delay(client.execute(req))
-        entity          <- responseToEntity(resp)
-        status          <- Status.get(resp.getStatusLine.getStatusCode).pure[F]
-        responseHeaders <- resp.getAllHeaders.map(h => h.getName -> h.getValue).toMap.pure[F]
-        _               <- Sync[F].delay(EntityUtils.consume(resp.getEntity))
-      } yield HttpResponse(status, responseHeaders, entity)
+  }
+
+  def mapRequest[F[_]: Sync](f: HttpF[HttpResponse]): F[HttpUriRequest] = {
+
+    def mapContentType(contentType: ContentType): F[apache.ContentType] =
+      Sync[F].delay(apache.ContentType.parse(contentType.name))
+
+    def mapEntity(entity: Entity): F[HttpEntity] = entity match {
+      case Entity.StringEntity(body, contentType) =>
+        mapContentType(contentType) map (parsedContentType => new apache.StringEntity(body, parsedContentType))
+      case Entity.ByteArrayEntity(body, contentType) =>
+        mapContentType(contentType) map (parsedContentType => new apache.ByteArrayEntity(body, parsedContentType))
+      case Entity.EmptyEntity => Sync[F].delay(new apache.BasicHttpEntity())
     }
 
-  def getApacheRequest(f: HttpF[HttpResponse]): F[HttpUriRequest] = f match {
-    case Get(HttpRequest(uri, headers, _)) =>
-      Sync[F].delay {
-        val req = new HttpGet(uri.show)
-        req.setHeaders(prepareHeaders(headers))
-        req
-      }
-    case Options(HttpRequest(uri, headers, _)) =>
-      Sync[F].delay {
-        val req = new HttpOptions(uri.show)
-        req.setHeaders(prepareHeaders(headers))
-        req
-      }
-    case Head(HttpRequest(uri, headers, _)) =>
-      Sync[F].delay {
-        val req = new HttpHead(uri.show)
-        req.setHeaders(prepareHeaders(headers))
-        req
-      }
-    case Post(HttpRequest(uri, headers, entity)) =>
-      for {
-        req <- new HttpPost(uri.show).pure[F]
-        _   <- Sync[F].delay(req.setHeaders(prepareHeaders(headers)))
-        _ <- if (entity.isDefined) {
-          mapEntity(entity.get) >>= { apacheEntity =>
-            Sync[F].delay(req.setEntity(apacheEntity))
-          }
-        } else {
-          ().pure[F]
+    def prepareHeaders(headers: Map[String, String]): Array[Header] =
+      headers.map { case (k, v) => new BasicHeader(k, v) }.toArray
+
+    f match {
+      case Get(HttpRequest(uri, headers, _)) =>
+        Sync[F].delay {
+          val req = new HttpGet(uri.show)
+          req.setHeaders(prepareHeaders(headers))
+          req
         }
-      } yield req
-    case Put(HttpRequest(uri, headers, entity)) =>
-      for {
-        req <- new HttpPut(uri.show).pure[F]
-        _   <- Sync[F].delay(req.setHeaders(prepareHeaders(headers)))
-        _ <- if (entity.isDefined) {
-          mapEntity(entity.get) >>= { apacheEntity =>
-            Sync[F].delay(req.setEntity(apacheEntity))
-          }
-        } else {
-          ().pure[F]
+      case Options(HttpRequest(uri, headers, _)) =>
+        Sync[F].delay {
+          val req = new HttpOptions(uri.show)
+          req.setHeaders(prepareHeaders(headers))
+          req
         }
-      } yield req
-    case Delete(HttpRequest(uri, headers, _)) =>
-      Sync[F].delay {
-        val req = new HttpDelete(uri.show)
-        req.setHeaders(prepareHeaders(headers))
-        req
-      }
-    case Trace(HttpRequest(uri, headers, _)) =>
-      Sync[F].delay {
-        val req = new HttpTrace(uri.show)
-        req.setHeaders(prepareHeaders(headers))
-        req
-      }
-    case Patch(HttpRequest(uri, headers, entity)) =>
-      for {
-        req <- new HttpPatch(uri.show).pure[F]
-        _   <- Sync[F].delay(req.setHeaders(prepareHeaders(headers)))
-        _ <- if (entity.isDefined) {
-          mapEntity(entity.get) >>= { apacheEntity =>
-            Sync[F].delay(req.setEntity(apacheEntity))
-          }
-        } else {
-          ().pure[F]
+      case Head(HttpRequest(uri, headers, _)) =>
+        Sync[F].delay {
+          val req = new HttpHead(uri.show)
+          req.setHeaders(prepareHeaders(headers))
+          req
         }
-      } yield req
+      case Post(HttpRequest(uri, headers, entity)) =>
+        for {
+          req <- Sync[F].delay(new HttpPost(uri.show))
+          _   <- Sync[F].delay(req.setHeaders(prepareHeaders(headers)))
+          _ <- if (entity.isDefined) {
+            mapEntity(entity.get) >>= (apacheEntity => Sync[F].delay(req.setEntity(apacheEntity)))
+          } else ().pure[F]
+        } yield req
+      case Put(HttpRequest(uri, headers, maybeEntity)) =>
+        for {
+          req <- Sync[F].delay(new HttpPut(uri.show))
+          _   <- Sync[F].delay(req.setHeaders(prepareHeaders(headers)))
+          _ <- if (maybeEntity.isDefined) {
+            mapEntity(maybeEntity.get) >>= (apacheEntity => Sync[F].delay(req.setEntity(apacheEntity)))
+          } else ().pure[F]
+        } yield req
+      case Delete(HttpRequest(uri, headers, _)) =>
+        Sync[F].delay {
+          val req = new HttpDelete(uri.show)
+          req.setHeaders(prepareHeaders(headers))
+          req
+        }
+      case Trace(HttpRequest(uri, headers, _)) =>
+        Sync[F].delay {
+          val req = new HttpTrace(uri.show)
+          req.setHeaders(prepareHeaders(headers))
+          req
+        }
+      case Patch(HttpRequest(uri, headers, entity)) =>
+        for {
+          req <- Sync[F].delay(new HttpPatch(uri.show))
+          _   <- Sync[F].delay(req.setHeaders(prepareHeaders(headers)))
+          _ <- if (entity.isDefined) {
+            mapEntity(entity.get) >>= (apacheEntity => Sync[F].delay(req.setEntity(apacheEntity)))
+          } else ().pure[F]
+        } yield req
+    }
   }
-
-  private def mapEntity(entity: Entity): F[HttpEntity] = entity match {
-    case Entity.StringEntity(body, contentType) =>
-      mapContentType(contentType) map { parsedContentType =>
-        new apache.StringEntity(body, parsedContentType)
-      }
-    case Entity.ByteArrayEntity(body, contentType) =>
-      mapContentType(contentType) map { parsedContentType =>
-        new apache.ByteArrayEntity(body, parsedContentType)
-      }
-    case Entity.EmptyEntity =>
-      Sync[F].delay(new apache.BasicHttpEntity())
-  }
-
-  private def mapContentType(contentType: ContentType): F[apache.ContentType] =
-    Sync[F].delay(apache.ContentType.parse(contentType.name))
-
-  private def prepareHeaders(headers: Map[String, String]): Array[Header] =
-    headers
-      .map({
-        case (k, v) => new BasicHeader(k, v)
-      })
-      .toArray
-
-  private def responseToEntity(response: ApacheResponse): F[Entity] = Sync[F].delay {
-    Option(response.getEntity) // getEntity can return null
-      .map(_.getContent)
-      .map { content =>
-        val rd = new BufferedReader(new InputStreamReader(content))
-        Entity.StringEntity(Stream.continually(rd.readLine()).takeWhile(_ != null).mkString(""))
-      } getOrElse Entity.EmptyEntity
-  }
-}
-
-object ApacheInterpreter {
-  implicit val client: CloseableHttpClient = HttpClientBuilder.create().build()
-
-  def apply[F[_]: Sync]: ApacheInterpreter[F] = new ApacheInterpreter[F](client)
 }

@@ -15,7 +15,7 @@ your requests.
 ## Example of use
 
 
-```tut:book
+```scala mdoc
 import hammock._
 import hammock.apache.ApacheInterpreter
 import hammock.hi._
@@ -23,12 +23,13 @@ import hammock.hi._
 import cats._
 import cats.implicits._
 import cats.effect.IO
+import hammock.apache.ApacheInterpreter._
 
-implicit val interp = ApacheInterpreter[IO]
+import monocle._
+import monocle.function.all._
 
-val opts = (header("user" -> "pepegar") >>> cookie(Cookie("track", "a lot")))(Opts.empty)
-
-val response = Hammock.getWithOpts(uri"http://httpbin.org/get", opts).exec[IO]
+val opts1 = (header("user" -> "pepegar") >>> cookie(Cookie("track", "a lot")))(Opts.empty)
+val response = Hammock.getWithOpts(uri"http://httpbin.org/get", opts1).exec[IO]
 ```
 
 ## Opts
@@ -37,7 +38,7 @@ The high level DSL uses a `Opts` datatype for describing the request.
 This `Opts` type is later compiled by the `withOpts` methods to the
 `Free` representation of the request.
 
-```tut:silent
+```scala
 case class Opts(
   auth: Option[Auth],
   headers: Map[String, String],
@@ -62,46 +63,29 @@ plain `Function1[Opts, Opts]`, for which there's an instance of
 | `headers(headers: Map[String, String]): Opts => Opts`   | Appends the given `headers` to the former ones.                              |
 | `header(header: (String, String)): Opts => Opts`        | Appends current `header` (a `(String, String)` value) to the headers map.    |
 
-Here's an example of how can you use the high level DSL:
-
-
-```tut:book
-val req = {
-  auth(Auth.BasicAuth("pepegar", "p4ssw0rd")) >>>
-    cookie(Cookie("track", "A lot")) >>>
-    header("user" -> "potatoman")
-}
-```
-
 You can also use [`Monocle`](https://github.com/julientruffaut/monocle)'s optics to describe and modify your
 requests.  Most datatypes in Hammock provide sensible optics that will
 work out of the box, and you can combine them with the ones provided
 in [`Monocle`](https://github.com/julientruffaut/monocle):
 
-```tut:book
-// import stuff
-import hammock._, hammock.hi._, monocle._, monocle.function.all._
-
+```scala mdoc
 // imagine that we have the following Opts value
-val opts = (auth(Auth.BasicAuth("pepe", "password")) >>> headers(Map("X-Correlation-Id" -> "234")) >>> cookies(List(Cookie("a", "b"))))(Opts.empty)
-
-import Opts._
-import Cookie._
+val myOpts = (auth(Auth.BasicAuth("pepe", "password")) >>> headers(Map("X-Correlation-Id" -> "234")) >>> cookies(List(Cookie("a", "b"))))(Opts.empty)
 
 // Since optics compose nicely, we can focus on
 // the first value of the first cookie found in the
 // cookie list, for example:
 
-cookiesOpt composeOptional index(0) composeLens value
+Opts.cookiesOpt composeOptional index(0) composeLens Cookie.value
 
 // also you can use the symbolic operators for that :D
-cookiesOpt ^|-? index(0) ^|-> value
+Opts.cookiesOpt ^|-? index(0) ^|-> Cookie.value
 
 // and then, use the optics machinery at your will, for example for getting the focus
-(cookiesOpt ^|-? index(0) ^|-> value).getOption(opts)
+(Opts.cookiesOpt ^|-? index(0) ^|-> Cookie.value).getOption(myOpts)
 
 // or modifying it!
-(cookiesOpt ^|-? index(0) ^|-> value).set("newValue")(opts)
+(Opts.cookiesOpt ^|-? index(0) ^|-> Cookie.value).set("newValue")(myOpts)
 ```
 
 #### Authentication
@@ -141,10 +125,10 @@ As you can see most of the behaviour of the cookie can be handled by
 the type itself.  For example, adding a `MaxAge` setting to a cookie
 is just matter of doing:
 
-```tut:book
-val cookie = Cookie("_ga", "werwer")
+```scala mdoc
+val c = Cookie("_ga", "werwer")
 
-Cookie.maxAge.set(Some(234))(cookie)
+Cookie.maxAge.set(Some(234))(c)
 ```
 
 #### Headers

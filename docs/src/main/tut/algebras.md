@@ -34,7 +34,7 @@ application:
 
 As always, start with some imports
 
-```tut:silent
+```scala mdoc:silent
 import cats._
 import cats.free._
 import cats.data._
@@ -46,7 +46,7 @@ related to logging
 
 ### Log
 
-```tut:book
+```scala mdoc
 object Log {
   sealed trait LogF[A]
   case class Info(msg: String) extends LogF[Unit]
@@ -74,7 +74,7 @@ object Log {
 
 And this one does IO.
 
-```tut:silent
+```scala mdoc:silent
 object IOEff {
 
 sealed trait IOF[A]
@@ -109,7 +109,7 @@ purpose, we will need a `EitherK`. This datatype basically tells the
 typesystem about our effects, saying that our `Eff` type can be either
 a `Log` or a `IOF` value.
 
-```tut:silent
+```scala mdoc:silent
 object App {
   import IOEff._
   import Log._
@@ -130,15 +130,15 @@ object App {
 
 You could use this as follows:
 
-```tut
+```scala mdoc
 import cats.effect.IO
 App.program foldMap App.interp[IO]
 ```
 
 ### Interleaving Hammock algebras in a Free program
 
-```tut:silent
-object App {
+```scala mdoc:silent
+object AppWithFree {
   import hammock.Uri
   import IOEff._
   import Log._
@@ -148,6 +148,8 @@ object App {
   import hammock._
   import hammock.marshalling._
   import hammock.apache._
+  import hammock.apache.ApacheInterpreter
+  import hammock.apache.ApacheInterpreter._
 
   type Eff1[A] = EitherK[LogF, IOF, A]
   type Eff2[A] = EitherK[HttpF, Eff1, A]
@@ -178,8 +180,8 @@ object App {
 
 ### Result
 
-```tut
-val result = App.program foldMap App.interp[IO]
+```scala mdoc
+val result = AppWithFree.program foldMap AppWithFree.interp[IO]
 
 result.unsafeRunSync
 ```

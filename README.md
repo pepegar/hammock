@@ -46,20 +46,19 @@ libraryDependencies += "com.pepegar" %%% "hammock-core" % "0.9.0"
 
 ## Modules
 
-| Module name          | Description                                | Version |
-| -------------------- | ------------------------------------------ | ------- |
-| `hammock-core`      | the core functionality of hammock, using [XHR][xhr] in JS | `0.9.0` |
-| `hammock-circe`      | encode and decode HTTP entities with [Circe][circe] | `0.9.0` |
-| `hammock-apache-http` | run your HTTP requests with [Apache HTTP commons][httpcommons] | `0.9.0` |
-| `hammock-akka-http`  | run your HTTP requests with [akka-http][akka-http] | `0.9.0` |
-| `hammock-asynchttpclient`  | run your HTTP requests with [AsyncHttpClient][async-http-client] | `0.9.0` |
+|        Module name        |                           Description                            | Version |
+|---------------------------|------------------------------------------------------------------|---------|
+| `hammock-core`            | the core functionality of hammock, using [XHR][xhr] in JS        | `0.9.0` |
+| `hammock-circe`           | encode and decode HTTP entities with [Circe][circe]              | `0.9.0` |
+| `hammock-apache-http`     | run your HTTP requests with [Apache HTTP commons][httpcommons]   | `0.9.0` |
+| `hammock-akka-http`       | run your HTTP requests with [akka-http][akka-http]               | `0.9.0` |
+| `hammock-asynchttpclient` | run your HTTP requests with [AsyncHttpClient][async-http-client] | `0.9.0` |
 
 
 ## How does Hammock look in action?
 
 ```scala
 import cats.effect.IO
-import io.circe.generic.auto._
 import hammock._
 import hammock.marshalling._
 import hammock.apache.ApacheInterpreter
@@ -67,7 +66,7 @@ import hammock.circe.implicits._
 
 object HttpClient {
   // Using the Apache HTTP commons interpreter
-  implicit val interpreter = ApacheInterpreter[IO]
+  implicit val interpreter = ApacheInterpreter.instance[IO]
 
   val response = Hammock
     .request(Method.GET, uri"https://api.fidesmo.com/apps", Map()) // In the `request` method, you describe your HTTP request

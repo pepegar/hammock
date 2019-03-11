@@ -38,22 +38,23 @@ Currently we have interpreters for several HTTP clients:
 
 For demonstrating all the interpreters we'll use the same HTTP request:
 
-```tut:silent
+```scala mdoc:silent
 import cats.free.Free
 import hammock._
 import hammock.hi._
 
 val httpReq = Hammock.getWithOpts(
   uri"http://httpbin.org/get",
-  (header("header1", "value1"))(Opts.empty))
+  (header(("header1", "value1")))(Opts.empty))
 ```
 
 
 ## Apache HTTP
 
-```tut
+```scala mdoc
 import cats.effect.IO
 import hammock.apache.ApacheInterpreter
+import hammock.apache.ApacheInterpreter._
 
 httpReq foldMap ApacheInterpreter[IO].trans unsafeRunSync
 ```
@@ -66,35 +67,36 @@ https://github.com/pepegar/hammock/tree/master/example-node
 
 ## Akka HTTP
 
-```tut
+```scala mdoc
 import _root_.akka.actor.ActorSystem
-import _root_.akka.http.scaladsl._
+import _root_.akka.http.scaladsl.{client => _, _}
 import _root_.akka.stream.ActorMaterializer
-
 import cats.effect.IO
 import hammock.akka.AkkaInterpreter
+import hammock.akka.AkkaInterpreter._
 
 implicit val system = ActorSystem("hammock-actor-system")
 implicit val mat = ActorMaterializer()
 implicit val ec = system.dispatcher
-val httpExt: HttpExt = Http()
-implicit val interp = new AkkaInterpreter[IO](httpExt)
+implicit val httpExt: HttpExt = Http()
 
-httpReq foldMap interp.trans unsafeRunSync
+val akkaInterp: InterpTrans[IO] = AkkaInterpreter.instance[IO]
 
-system.shutdown()
+httpReq foldMap akkaInterp.trans unsafeRunSync
+
+system.terminate()
 ```
 
 ## AsyncHttpClient
 
-```tut
+```scala mdoc
 import org.asynchttpclient._
 import cats.effect.IO
 import hammock.asynchttpclient.AsyncHttpClientInterpreter
+import hammock.asynchttpclient.AsyncHttpClientInterpreter._
 
-val client: AsyncHttpClient = new DefaultAsyncHttpClient()
-
-implicit val interp = new AsyncHttpClientInterpreter[IO](client)
+implicit val client: AsyncHttpClient = new DefaultAsyncHttpClient()
+val interp: InterpTrans[IO] = AsyncHttpClientInterpreter.instance[IO]
 
 httpReq foldMap interp.trans unsafeRunSync
 

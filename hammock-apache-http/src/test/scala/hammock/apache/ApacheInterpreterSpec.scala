@@ -2,7 +2,6 @@ package hammock
 package apache
 
 import java.net.URI
-
 import cats._
 import cats.data.Kleisli
 import cats.effect._
@@ -15,20 +14,16 @@ import org.mockito.Mockito._
 import org.mockito.{Matchers => MM}
 import org.scalatest._
 import org.scalatest.mockito._
+import ApacheInterpreter._
 
 class ApacheInterpreterSpec extends WordSpec with MockitoSugar with BeforeAndAfter {
-  import Uri._
-  import HttpResponse._
   import MM._
 
-  val client = mock[HttpClient]
-  val interp = new ApacheInterpreter[IO](client)
+  implicit val client: HttpClient = mock[HttpClient]
   val httpResponse: ApacheHttpResponse = {
     val resp   = new BasicHttpResponse(new BasicStatusLine(new ProtocolVersion("HTTP", 1, 1), 200, null))
     val entity = new StringEntity("content")
-
     resp.setEntity(entity)
-
     resp
   }
 
@@ -46,19 +41,17 @@ class ApacheInterpreterSpec extends WordSpec with MockitoSugar with BeforeAndAft
       ("Delete", (uri: Uri, headers: Map[String, String]) => Ops.delete(uri, headers)),
       ("Trace", (uri: Uri, headers: Map[String, String]) => Ops.trace(uri, headers)),
       ("Patch", (uri: Uri, headers: Map[String, String]) => Ops.patch(uri, headers, None))
-    ) map {
+    ) foreach {
       case (method, operation) =>
-        s"have the same result as transK.run(client) with $method requests" in {
+        s"have the same result as instanceK.run(client) with $method requests" in {
           when(client.execute(any[HttpUriRequest])).thenReturn(httpResponse)
 
-          val op = operation(Uri(path = ""), Map())
+          val op              = operation(Uri(), Map())
+          val k               = op.foldMap[Kleisli[IO, HttpClient, ?]](instanceK)
+          val instanceKResult = k.run(client).unsafeRunSync
+          val transResult     = (op foldMap ApacheInterpreter[IO].trans).unsafeRunSync
 
-          val k = op.foldMap[Kleisli[IO, HttpClient, ?]](interp.transK)
-
-          val transkResult = k.run(client).unsafeRunSync
-          val transResult  = (op foldMap interp.trans).unsafeRunSync
-
-          assert(Eq[HttpResponse].eqv(transkResult, transResult))
+          assert(Eq[HttpResponse].eqv(instanceKResult, transResult))
         }
     }
 
@@ -72,9 +65,9 @@ class ApacheInterpreterSpec extends WordSpec with MockitoSugar with BeforeAndAft
           ),
           None))
 
-      val apacheReq = interp.getApacheRequest(req).unsafeRunSync
-      assert(apacheReq.getURI() == new URI("http://localhost:8080"))
-      assert(apacheReq.getAllHeaders().length == 2)
+      val apacheReq = mapRequest[IO](req).unsafeRunSync
+      assert(apacheReq.getURI == new URI("http://localhost:8080"))
+      assert(apacheReq.getAllHeaders.length == 2)
       assert(
         apacheReq
           .getHeaders("header1")(0)
@@ -88,9 +81,8 @@ class ApacheInterpreterSpec extends WordSpec with MockitoSugar with BeforeAndAft
     "create a correct HttpResponse from Apache's HTTP response" in {
       when(client.execute(any[HttpUriRequest])).thenReturn(httpResponse)
 
-      val op = Ops.get(Uri(path = ""), Map())
-
-      val result = (op foldMap interp.trans).unsafeRunSync
+      val op     = Ops.get(Uri(), Map())
+      val result = (op foldMap ApacheInterpreter[IO].trans).unsafeRunSync
 
       assert(result.status == Status.OK)
       assert(result.headers == Map())
@@ -101,9 +93,9 @@ class ApacheInterpreterSpec extends WordSpec with MockitoSugar with BeforeAndAft
       val resp = new BasicHttpResponse(new BasicStatusLine(new ProtocolVersion("HTTP", 1, 1), 204, null))
       when(client.execute(any[HttpUriRequest])).thenReturn(resp)
 
-      val op = Ops.get(Uri(path = ""), Map())
+      val op     = Ops.get(Uri(), Map())
+      val result = (op foldMap ApacheInterpreter[IO].trans).unsafeRunSync
 
-      val result = (op foldMap interp.trans).unsafeRunSync
       assert(result.status == Status.NoContent)
       assert(result.entity == Entity.EmptyEntity)
     }
