@@ -77,7 +77,7 @@ And this one does IO.
 ```scala mdoc:silent
 object IOEff {
 
-sealed trait IOF[A]
+  sealed trait IOF[A]
   case object Read extends IOF[String]
   case class Write(msg: String) extends IOF[Unit]
 
