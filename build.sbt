@@ -130,7 +130,7 @@ lazy val apache = project
   .settings(compilerPlugins)
   .settings(
     libraryDependencies ++= Seq(
-      "org.apache.httpcomponents" % "httpclient" % "4.5.7"
+      "org.apache.httpcomponents" % "httpclient" % "4.5.8"
     )
   )
   .settings(libraryDependencies += "org.mockito" % "mockito-all" % Versions("mockito") % Test)
