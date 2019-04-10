@@ -24,9 +24,11 @@ package object hammock {
   }
 
 
-  implicit class AsSyntaxOnHttpF[A](fa: Free[HttpF, HttpResponse]) {
-    def as[B](implicit D: Decoder[B], M: MarshallC[HammockF]): Free[HammockF, B] =
-      fa.inject[HammockF] flatMap { response =>
+  implicit class AsSyntaxOnHttpF[F[_], A](fa: Free[F, HttpResponse])(implicit
+    H: InjectK[HttpF, F]
+  ) {
+    def as[B](implicit D: Decoder[B], M: MarshallC[EitherK[F, MarshallF, ?]]): Free[EitherK[F, MarshallF, ?], B] =
+      fa.inject[EitherK[F, MarshallF, ?]] flatMap { response =>
         M.unmarshall(response.entity)
       }
   }
