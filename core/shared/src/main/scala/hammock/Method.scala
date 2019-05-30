@@ -1,5 +1,9 @@
 package hammock
 
+import cats.{Show, Eq}
+import cats.instances.string._
+import cats.syntax.contravariant._
+
 trait Method {
   def name: String
 }
@@ -32,4 +36,7 @@ object Method {
   case object PATCH extends Method {
     def name: String = "PATCH"
   }
+
+  implicit val show: Show[Method] = Show[String].contramap(_.name)
+  implicit val eq: Eq[Method] = Eq.fromUniversalEquals
 }
