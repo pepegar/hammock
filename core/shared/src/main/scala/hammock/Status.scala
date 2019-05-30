@@ -1,5 +1,8 @@
 package hammock
 
+import cats.{Eq, Show}
+import cats.instances.int._
+import cats.syntax.contravariant._
 import monocle.macros.Lenses
 
 @Lenses case class Status(code: Int, text: String, description: String) {
@@ -240,4 +243,7 @@ object Status {
   )
 
   def get(code: Int): Status = Statuses.getOrElse(code, Status(code, "Undefined", "Undefined StatusCode"))
+
+  implicit val show: Show[Status] = Show[Int].contramap(_.code)
+  implicit val eq: Eq[Status] = Eq.fromUniversalEquals
 }
