@@ -23,7 +23,7 @@ val Versions = Map(
   "monocle"        -> "1.5.1-cats",
   "atto"           -> "0.6.5",
   "cats"           -> "1.6.0",
-  "cats-effect"    -> "1.3.0",
+  "cats-effect"    -> "1.3.1",
   "simulacrum"     -> "0.17.0",
   "scalatest"      -> "3.0.5",
   "scalacheck"     -> "1.14.0",
