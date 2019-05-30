@@ -1,7 +1,7 @@
 package hammock
 package hi
 
-import cats.Eq
+import cats.{Eq, Show}
 import cats.implicits._
 import alleycats.Empty
 
@@ -46,6 +46,8 @@ object Opts {
     a.headers === b.headers &&
     a.cookies === b.cookies
   }
+
+  implicit val optsShow: Show[Opts] = Show.fromToString
 
   val empty = optsEmpty.empty
 }
