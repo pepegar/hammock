@@ -29,7 +29,7 @@ val Versions = Map(
   "scalacheck"     -> "1.14.0",
   "discipline"     -> "0.11.1",
   "macro-paradise" -> "2.1.1",
-  "kind-projector" -> "0.9.10",
+  "kind-projector" -> "0.10.0",
   "akka-http"      -> "10.0.15",
   "ahc"            -> "2.1.2",
   "mockito"        -> "1.10.19"
@@ -75,7 +75,7 @@ val commonDependencies = Seq(
 val compilerPlugins = Seq(
   libraryDependencies ++= Seq(
     compilerPlugin("org.scalamacros" %% "paradise"       % Versions("macro-paradise") cross CrossVersion.full),
-    compilerPlugin("org.spire-math"  %% "kind-projector" % Versions("kind-projector"))
+    compilerPlugin("org.typelevel"  %% "kind-projector" % Versions("kind-projector"))
   )
 )
 
