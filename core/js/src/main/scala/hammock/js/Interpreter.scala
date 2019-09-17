@@ -2,8 +2,11 @@ package hammock
 package js
 
 import cats._
-import cats.effect.{Async, IO}
-import cats.implicits._
+import cats.effect.{Async, ContextShift}
+import cats.syntax.applicative._
+import cats.syntax.flatMap._
+import cats.syntax.functor._
+import cats.syntax.show._
 import org.scalajs.dom.ext.Ajax
 import org.scalajs.dom.ext.Ajax.InputData
 import java.nio.ByteBuffer
@@ -12,7 +15,7 @@ object Interpreter {
 
   def apply[F[_]](implicit F: InterpTrans[F]): InterpTrans[F] = F
 
-  implicit def instance[F[_]: Async]: InterpTrans[F] = new InterpTrans[F] {
+  implicit def instance[F[_]: Async: ContextShift]: InterpTrans[F] = new InterpTrans[F] {
     def trans: HttpF ~> F = {
 
       def doReq(reqF: HttpF[HttpResponse]): F[HttpResponse] = {
@@ -27,9 +30,9 @@ object Interpreter {
         val method = toMethod(reqF)
 
         for {
-          responseFutureIO <- Async[F].pure(IO(Ajax(method.name, reqF.req.uri.show, data, timeout, headers, false, "")))
-          response         <- IO.fromFuture(responseFutureIO).to[F]
-          responseHeaders  <- parseHeaders(response.getAllResponseHeaders)
+          response <- Async.fromFuture(
+            Async[F].delay(Ajax(method.name, reqF.req.uri.show, data, timeout, headers, false, "")))
+          responseHeaders <- parseHeaders(response.getAllResponseHeaders)
           status = Status.get(response.status)
           body   = response.responseText
         } yield HttpResponse(status, responseHeaders, Entity.StringEntity(body))

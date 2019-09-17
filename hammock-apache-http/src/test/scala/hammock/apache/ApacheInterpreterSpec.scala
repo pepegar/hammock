@@ -12,11 +12,12 @@ import org.apache.http.message.{BasicHttpResponse, BasicStatusLine}
 import org.apache.http.{ProtocolVersion, HttpResponse => ApacheHttpResponse}
 import org.mockito.Mockito._
 import org.mockito.{Matchers => MM}
-import org.scalatest._
-import org.scalatest.mockito._
+import org.scalatest.BeforeAndAfter
+import org.scalatest.wordspec.AnyWordSpec
+import org.scalatestplus.mockito._
 import ApacheInterpreter._
 
-class ApacheInterpreterSpec extends WordSpec with MockitoSugar with BeforeAndAfter {
+class ApacheInterpreterSpec extends AnyWordSpec with MockitoSugar with BeforeAndAfter {
   import MM._
 
   implicit val client: HttpClient = mock[HttpClient]
@@ -43,15 +44,15 @@ class ApacheInterpreterSpec extends WordSpec with MockitoSugar with BeforeAndAft
       ("Patch", (uri: Uri, headers: Map[String, String]) => Ops.patch(uri, headers, None))
     ) foreach {
       case (method, operation) =>
-        s"have the same result as instanceK.run(client) with $method requests" in {
+        s"have the same result as transK.run(client) with $method requests" in {
           when(client.execute(any[HttpUriRequest])).thenReturn(httpResponse)
 
-          val op              = operation(Uri(), Map())
-          val k               = op.foldMap[Kleisli[IO, HttpClient, ?]](instanceK)
-          val instanceKResult = k.run(client).unsafeRunSync
-          val transResult     = (op foldMap ApacheInterpreter[IO].trans).unsafeRunSync
+          val op           = operation(Uri(), Map())
+          val k            = op.foldMap[Kleisli[IO, HttpClient, ?]](transK)
+          val transKResult = k.run(client).unsafeRunSync
+          val transResult  = (op foldMap ApacheInterpreter[IO].trans).unsafeRunSync
 
-          assert(Eq[HttpResponse].eqv(instanceKResult, transResult))
+          assert(Eq[HttpResponse].eqv(transKResult, transResult))
         }
     }
 

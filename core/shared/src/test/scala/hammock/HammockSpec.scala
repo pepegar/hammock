@@ -1,11 +1,12 @@
 package hammock
 
 
-import org.scalatest._
+import org.scalatest.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 import cats._
 import hi.{Cookie, Opts, Auth}
 
-class HammockSpec extends WordSpec with Matchers {
+class HammockSpec extends AnyWordSpec with Matchers {
   val methods = Seq(Method.OPTIONS, Method.GET, Method.HEAD, Method.POST, Method.PUT, Method.DELETE, Method.TRACE, Method.PATCH)
 
   implicit val stringCodec = new Codec[String] {

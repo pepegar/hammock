@@ -4,9 +4,10 @@ package hi
 import java.time.ZonedDateTime
 
 import cats._
-import org.scalatest.{Matchers, WordSpec}
+import org.scalatest.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 
-class CookieSpec extends WordSpec with Matchers {
+class CookieSpec extends AnyWordSpec with Matchers {
 
   "Show[Cookie].show" should {
     "render a simple cookie in the correct format" in {

@@ -2,14 +2,19 @@ package hammock
 package fetch
 
 import cats.effect.IO
-import org.scalatest.{AsyncFlatSpec, Matchers}
+import org.scalatest.Matchers
+import org.scalatest.flatspec.AsyncFlatSpec
 import scala.concurrent.ExecutionContextExecutor
 import Interpreter._
 
 class InterpreterSpec extends AsyncFlatSpec with Matchers {
+
   behavior of "node.Interpreter.trans"
+
   implicit override def executionContext: ExecutionContextExecutor =
     scala.scalajs.concurrent.JSExecutionContext.Implicits.queue
+  implicit val cs = IO.contextShift(executionContext)
+
   Seq(
     ("Options", (uri: Uri, headers: Map[String, String]) => Ops.options(uri, headers)),
     ("Get", (uri: Uri, headers: Map[String, String]) => Ops.get(uri, headers)),
@@ -22,7 +27,12 @@ class InterpreterSpec extends AsyncFlatSpec with Matchers {
   ) foreach {
     case (method, operation) =>
       it should s"get response from mocky with $method requests" in {
-        operation(uri"http://www.mocky.io/v2/5185415ba171ea3a00704eed", Map("mock" -> "header")) foldMap Interpreter[IO].trans unsafeToFuture () map (_.status.code shouldBe 200)
+        operation(uri"http://www.mocky.io/v2/5185415ba171ea3a00704eed", Map("mock" -> "header"))
+          .foldMap(Interpreter[IO].trans)
+          .unsafeToFuture
+          .map { resp =>
+            resp.status.code shouldBe 200
+          }
       }
   }
 }

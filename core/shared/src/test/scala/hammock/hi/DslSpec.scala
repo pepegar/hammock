@@ -2,9 +2,10 @@ package hammock
 package hi
 
 import cats.implicits._
-import org.scalatest._
+import org.scalatest.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 
-class DslSpec extends WordSpec with Matchers {
+class DslSpec extends AnyWordSpec with Matchers {
 
   "`cookies`" should {
     "work when there were no cookies before" in {

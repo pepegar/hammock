@@ -8,7 +8,8 @@ import cats.laws.discipline._
 import cats.syntax.either._
 
 import org.scalacheck.{Arbitrary, Prop}
-import org.scalatest._
+import org.scalatest.Matchers
+import org.scalatest.funsuite.AnyFunSuite
 import org.typelevel.discipline.Laws
 import org.typelevel.discipline.scalatest.Discipline
 
@@ -42,7 +43,7 @@ object CodecTests {
 
 }
 
-class CodecSpec extends FunSuite with Discipline with Matchers {
+class CodecSpec extends AnyFunSuite with Discipline with Matchers {
   import Encoder.ops._
 
   implicit val intCodec = new Codec[Int] {

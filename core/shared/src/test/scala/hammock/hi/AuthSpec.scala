@@ -2,9 +2,10 @@ package hammock
 package hi
 
 import cats._
-import org.scalatest._
+import org.scalatest.wordspec.AnyWordSpec
+import org.scalatest.Matchers
 
-class AuthSpec extends WordSpec with Matchers {
+class AuthSpec extends AnyWordSpec with Matchers {
 
   import Auth._
 

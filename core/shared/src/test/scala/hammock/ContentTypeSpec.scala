@@ -1,8 +1,9 @@
 package hammock
 
-import org.scalatest._
+import org.scalatest.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 
-class ContentTypeSpec extends WordSpec with Matchers {
+class ContentTypeSpec extends AnyWordSpec with Matchers {
 
   "Eq[ContentType]" should {
 

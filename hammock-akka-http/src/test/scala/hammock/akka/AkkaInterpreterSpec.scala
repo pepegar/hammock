@@ -14,19 +14,21 @@ import _root_.akka.http.scaladsl.model.{
 }
 import _root_.akka.stream.ActorMaterializer
 import _root_.akka.http.scaladsl.model.headers.RawHeader
-import cats.effect.IO
+import cats.effect.{ContextShift, IO}
 import cats.free.Free
 import org.mockito.Mockito._
-import org.scalatest._
-import org.scalatest.mockito.MockitoSugar
+import org.scalatest.{BeforeAndAfter, Matchers}
+import org.scalatest.wordspec.AnyWordSpec
+import org.scalatestplus.mockito.MockitoSugar
 import scala.concurrent.{ExecutionContext, Future}
 import AkkaInterpreter._
 
-class AkkaInterpreterSpec extends WordSpec with MockitoSugar with Matchers with BeforeAndAfter {
+class AkkaInterpreterSpec extends AnyWordSpec with MockitoSugar with Matchers with BeforeAndAfter {
 
   implicit val system: ActorSystem    = ActorSystem("test")
   implicit val mat: ActorMaterializer = ActorMaterializer()
   implicit val ec: ExecutionContext   = ExecutionContext.Implicits.global
+  implicit val cs: ContextShift[IO]   = IO.contextShift(ec)
   implicit val client: HttpExt        = mock[HttpExt]
 
   after {

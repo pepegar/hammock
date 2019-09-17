@@ -1,9 +1,10 @@
 package hammock
 
 import hammock.Entity._
-import org.scalatest._
+import org.scalatest.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 
-class EntitySpec extends WordSpec with Matchers {
+class EntitySpec extends AnyWordSpec with Matchers {
 
   "EmptyEntity" should {
 
