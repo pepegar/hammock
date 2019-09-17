@@ -13,12 +13,13 @@ import io.circe.generic.auto._
 import Interpreter._
 
 object Main {
+  implicit val cs = IO.contextShift(global)
+
+  case class Resp(headers: Map[String, String], origin: String, url: String)
+  case class Req(name: String, number: Int)
 
   @JSExportTopLevel("examplejs.Main.main")
   def main(): Unit = {
-
-    case class Resp(headers: Map[String, String], origin: String, url: String)
-    case class Req(name: String, number: Int)
 
     val uri = uri"http://httpbin.org/post"
 
