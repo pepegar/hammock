@@ -2,7 +2,7 @@ package example.interpret
 import akka.actor.ActorSystem
 import akka.http.scaladsl.{Http, HttpExt}
 import akka.stream.ActorMaterializer
-import cats.effect.IO
+import cats.effect.{ContextShift, IO}
 import example.repr.{GetResp, GetRespWithQueryString, Req, Resp}
 import hammock.{Hammock, Method}
 import hammock.marshalling._
@@ -16,6 +16,7 @@ object AkkaInterpExampleMain extends App {
   implicit val actorSystem: ActorSystem        = ActorSystem()
   implicit val materializer: ActorMaterializer = ActorMaterializer()
   implicit val ec: ExecutionContext            = ExecutionContext.Implicits.global
+  implicit val cs: ContextShift[IO]            = IO.contextShift(ec)
   implicit val client: HttpExt                 = Http(actorSystem)
 
   //GET
