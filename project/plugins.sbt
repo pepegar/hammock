@@ -9,4 +9,4 @@ addSbtPlugin("org.tpolecat"              % "tut-plugin"               % "0.6.12"
 addSbtPlugin("io.get-coursier"           % "sbt-coursier"             % "1.0.3")
 addSbtPlugin("io.github.davidgregory084" % "sbt-tpolecat"             % "0.1.7")
 addSbtPlugin("ch.epfl.scala"             % "sbt-scalajs-bundler"      % "0.12.0")
-addSbtPlugin("com.geirsson"              % "sbt-ci-release"           % "1.2.6")
+addSbtPlugin("com.geirsson"              % "sbt-ci-release"           % "1.3.2")
