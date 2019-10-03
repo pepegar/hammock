@@ -7,10 +7,10 @@ import monocle.macros.Lenses
 
 @Lenses case class Status(code: Int, text: String, description: String) {
   def isInformational: Boolean = this.code / 100 == 1
-  def isSuccess: Boolean = this.code / 100 == 2
-  def isRedirection: Boolean = this.code / 100 == 3
-  def isClientError: Boolean = this.code / 100 == 4
-  def isServerError: Boolean = this.code / 100 == 5
+  def isSuccess: Boolean       = this.code / 100 == 2
+  def isRedirection: Boolean   = this.code / 100 == 3
+  def isClientError: Boolean   = this.code / 100 == 4
+  def isServerError: Boolean   = this.code / 100 == 5
 }
 
 object Status {
@@ -118,9 +118,10 @@ object Status {
     422,
     "Unprocessable Entity",
     "The request was well-formed but was unable to be followed due to semantic errors.")
-  val Locked               = Status(423, "Locked", "The resource that is being accessed is locked.")
-  val FailedDependency     = Status(424, "Failed Dependency", "The request failed due to failure of a previous request.")
-  val UnorderedCollection  = Status(425, "Unordered Collection", "The collection is unordered.")
+  val Locked           = Status(423, "Locked", "The resource that is being accessed is locked.")
+  val FailedDependency = Status(424, "Failed Dependency", "The request failed due to failure of a previous request.")
+  val TooEarly =
+    Status(425, "Too Early", "The server is unwilling to risk processing a request that might be replayed.")
   val UpgradeRequired      = Status(426, "Upgrade Required", "The client should switch to a different protocol.")
   val PreconditionRequired = Status(428, "Precondition Required", "The server requires the request to be conditional.")
   val TooManyRequests =
@@ -218,7 +219,7 @@ object Status {
     422 -> UnprocessableEntity,
     423 -> Locked,
     424 -> FailedDependency,
-    425 -> UnorderedCollection,
+    425 -> TooEarly,
     426 -> UpgradeRequired,
     428 -> PreconditionRequired,
     429 -> TooManyRequests,
@@ -245,5 +246,5 @@ object Status {
   def get(code: Int): Status = Statuses.getOrElse(code, Status(code, "Undefined", "Undefined StatusCode"))
 
   implicit val show: Show[Status] = Show[Int].contramap(_.code)
-  implicit val eq: Eq[Status] = Eq.fromUniversalEquals
+  implicit val eq: Eq[Status]     = Eq.fromUniversalEquals
 }

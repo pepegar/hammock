@@ -48,7 +48,7 @@ class ApacheInterpreterSpec extends AnyWordSpec with MockitoSugar with BeforeAnd
           when(client.execute(any[HttpUriRequest])).thenReturn(httpResponse)
 
           val op           = operation(Uri(), Map())
-          val k            = op.foldMap[Kleisli[IO, HttpClient, ?]](transK)
+          val k            = op.foldMap[Kleisli[IO, HttpClient, *]](transK)
           val transKResult = k.run(client).unsafeRunSync
           val transResult  = (op foldMap ApacheInterpreter[IO].trans).unsafeRunSync
 
