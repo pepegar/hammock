@@ -1,6 +1,6 @@
 package examplejs
 
-import scala.scalajs.js.annotation.JSExportTopLevel
+import scala.scalajs.js.annotation.{JSExport, JSExportTopLevel}
 import scala.util._
 import scala.concurrent.ExecutionContext.Implicits.global
 import org.scalajs.jquery.jQuery
@@ -12,13 +12,15 @@ import hammock.circe.implicits._
 import io.circe.generic.auto._
 import Interpreter._
 
+@JSExportTopLevel("Main")
 object Main {
+  implicit val cs = IO.contextShift(global)
 
-  @JSExportTopLevel("examplejs.Main.main")
+  case class Resp(headers: Map[String, String], origin: String, url: String)
+  case class Req(name: String, number: Int)
+
+  @JSExport
   def main(): Unit = {
-
-    case class Resp(headers: Map[String, String], origin: String, url: String)
-    case class Req(name: String, number: Int)
 
     val uri = uri"http://httpbin.org/post"
 

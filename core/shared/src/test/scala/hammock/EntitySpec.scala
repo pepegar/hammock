@@ -1,9 +1,10 @@
 package hammock
 
 import hammock.Entity._
-import org.scalatest._
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 
-class EntitySpec extends WordSpec with Matchers {
+class EntitySpec extends AnyWordSpec with Matchers {
 
   "EmptyEntity" should {
 
@@ -41,7 +42,7 @@ class EntitySpec extends WordSpec with Matchers {
   "Eq[Entity]" should {
 
     "equal instance" in {
-      val body = "body".getBytes
+      val body        = "body".getBytes
       val instanceOne = ByteArrayEntity(body)
       val instanceTwo = ByteArrayEntity(body)
       assert(instanceOne == instanceTwo)

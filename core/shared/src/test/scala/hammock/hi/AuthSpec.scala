@@ -2,9 +2,10 @@ package hammock
 package hi
 
 import cats._
-import org.scalatest._
+import org.scalatest.wordspec.AnyWordSpec
+import org.scalatest.matchers.should.Matchers
 
-class AuthSpec extends WordSpec with Matchers {
+class AuthSpec extends AnyWordSpec with Matchers {
 
   import Auth._
 
@@ -44,7 +45,7 @@ class AuthSpec extends WordSpec with Matchers {
     "not equal BasicAuth instances" in {
 
       val authAladdin = Auth.BasicAuth("Aladdin", "OpenSesame")
-      val authSud = Auth.BasicAuth("Sud", "Sabin")
+      val authSud     = Auth.BasicAuth("Sud", "Sabin")
 
       assert(authAladdin != authSud)
     }
@@ -60,7 +61,7 @@ class AuthSpec extends WordSpec with Matchers {
     "not equal OAuth2Bearer instances" in {
 
       val authAladdin = Auth.OAuth2Bearer("tokenAladdin")
-      val authSud = Auth.OAuth2Bearer("tokenSud")
+      val authSud     = Auth.OAuth2Bearer("tokenSud")
 
       assert(authAladdin != authSud)
     }
@@ -76,7 +77,7 @@ class AuthSpec extends WordSpec with Matchers {
     "not equal OAuth2Token instances" in {
 
       val authAladdin = Auth.OAuth2Token("tokenAladdin")
-      val authSud = Auth.OAuth2Token("tokenSud")
+      val authSud     = Auth.OAuth2Token("tokenSud")
 
       assert(authAladdin != authSud)
     }

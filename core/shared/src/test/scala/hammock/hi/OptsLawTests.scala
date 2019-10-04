@@ -1,10 +1,15 @@
 package hammock
 package hi
 
-import cats.tests.CatsSuite
+import cats.instances.string._
+import cats.instances.map._
+import cats.instances.option._
+import cats.instances.list._
+import org.scalatest.funsuite.AnyFunSuite
+import org.typelevel.discipline.scalatest.Discipline
 import monocle.law.discipline.{LensTests, OptionalTests}
 
-class OptsLawTests extends CatsSuite {
+class OptsLawTests extends AnyFunSuite with Discipline {
 
   import TestInstances._
 

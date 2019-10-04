@@ -18,21 +18,25 @@ inThisBuild(
   ))
 
 val Versions = Map(
-  "contextual"     -> "1.1.0",
-  "circe"          -> "0.11.1",
-  "monocle"        -> "1.5.1-cats",
-  "atto"           -> "0.6.5",
-  "cats"           -> "1.6.1",
-  "cats-effect"    -> "1.3.1",
-  "simulacrum"     -> "0.19.0",
-  "scalatest"      -> "3.0.5",
-  "scalacheck"     -> "1.14.0",
-  "discipline"     -> "0.11.1",
-  "macro-paradise" -> "2.1.1",
-  "kind-projector" -> "0.9.10",
-  "akka-http"      -> "10.0.15",
-  "ahc"            -> "2.1.2",
-  "mockito"        -> "1.10.19"
+  "contextual"              -> "1.2.1",
+  "circe"                   -> "0.12.1",
+  "monocle"                 -> "2.0.0",
+  "atto"                    -> "0.7.1",
+  "cats"                    -> "2.0.0",
+  "cats-effect"             -> "2.0.0",
+  "simulacrum"              -> "1.0.0",
+  "scalatest"               -> "3.2.0-M1",
+  "scalacheck"              -> "1.14.2",
+  "scalatestplusScalaCheck" -> "3.1.0.0-RC2",
+  "scalatestplusMockito"    -> "1.0.0-SNAP5",
+  "discipline"              -> "1.0.1",
+  "macro-paradise"          -> "2.1.1",
+  "kind-projector"          -> "0.10.3",
+  "akka-http"               -> "10.1.10",
+  "akka-stream"             -> "2.5.23",
+  "ahc"                     -> "2.10.3",
+  "apacheHttp"              -> "4.5.10",
+  "mockito"                 -> "1.10.19"
 )
 
 val noPublishSettings = Seq(
@@ -44,9 +48,8 @@ val noPublishSettings = Seq(
 
 val buildSettings = Seq(
   organization := "com.pepegar",
-  scalaVersion := "2.12.5",
+  scalaVersion := "2.12.10",
   licenses := Seq(("MIT", url("http://opensource.org/licenses/MIT"))),
-  crossScalaVersions := Seq("2.11.12", scalaVersion.value),
   scalacOptions in (Compile, console) ~= filterConsoleScalacOptions,
   scalacOptions in (Compile, doc) ~= filterConsoleScalacOptions,
   scalafmtOnCompile in ThisBuild := true
@@ -54,28 +57,29 @@ val buildSettings = Seq(
 
 val commonDependencies = Seq(
   libraryDependencies ++= Seq(
-    "org.typelevel"              %%% "cats-core"      % Versions("cats"),
-    "org.typelevel"              %%% "cats-free"      % Versions("cats"),
-    "org.typelevel"              %%% "alleycats-core" % Versions("cats"),
-    "com.propensive"             %%% "contextual"     % Versions("contextual"),
-    "org.typelevel"              %%% "cats-effect"    % Versions("cats-effect"),
-    "com.github.mpilquist"       %%% "simulacrum"     % Versions("simulacrum"),
-    "com.github.julien-truffaut" %%% "monocle-core"   % Versions("monocle"),
-    "com.github.julien-truffaut" %%% "monocle-macro"  % Versions("monocle"),
-    "org.tpolecat"               %%% "atto-core"      % Versions("atto"),
-    "com.github.julien-truffaut" %%% "monocle-law"    % Versions("monocle") % Test,
-    "org.typelevel"              %%% "cats-laws"      % Versions("cats") % Test,
-    "org.typelevel"              %%% "cats-testkit"   % Versions("cats") % Test,
-    "org.scalatest"              %%% "scalatest"      % Versions("scalatest") % Test,
-    "org.scalacheck"             %%% "scalacheck"     % Versions("scalacheck") % Test,
-    "org.typelevel"              %%% "discipline"     % Versions("discipline") % Test
+    "org.typelevel"              %%% "cats-core"                % Versions("cats"),
+    "org.typelevel"              %%% "cats-free"                % Versions("cats"),
+    "org.typelevel"              %%% "alleycats-core"           % Versions("cats"),
+    "com.propensive"             %%% "contextual"               % Versions("contextual"),
+    "org.typelevel"              %%% "cats-effect"              % Versions("cats-effect"),
+    "org.typelevel"              %%% "simulacrum"               % Versions("simulacrum"),
+    "com.github.julien-truffaut" %%% "monocle-core"             % Versions("monocle"),
+    "com.github.julien-truffaut" %%% "monocle-macro"            % Versions("monocle"),
+    "org.tpolecat"               %%% "atto-core"                % Versions("atto"),
+    "com.github.julien-truffaut" %%% "monocle-law"              % Versions("monocle") % Test,
+    "org.typelevel"              %%% "cats-laws"                % Versions("cats") % Test,
+    "org.typelevel"              %%% "cats-testkit"             % Versions("cats") % Test,
+    "org.scalatest"              %%% "scalatest"                % Versions("scalatest") % Test,
+    "org.scalacheck"             %%% "scalacheck"               % Versions("scalacheck") % Test,
+    "org.scalatestplus"          %%% "scalatestplus-scalacheck" % Versions("scalatestplusScalaCheck") % Test,
+    "org.typelevel"              %%% "discipline-core"          % Versions("discipline") % Test
   )
 )
 
 val compilerPlugins = Seq(
   libraryDependencies ++= Seq(
     compilerPlugin("org.scalamacros" %% "paradise"       % Versions("macro-paradise") cross CrossVersion.full),
-    compilerPlugin("org.spire-math"  %% "kind-projector" % Versions("kind-projector"))
+    compilerPlugin("org.typelevel"   %% "kind-projector" % Versions("kind-projector"))
   )
 )
 
@@ -130,10 +134,11 @@ lazy val apache = project
   .settings(compilerPlugins)
   .settings(
     libraryDependencies ++= Seq(
-      "org.apache.httpcomponents" % "httpclient" % "4.5.9"
+      "org.apache.httpcomponents" % "httpclient"              % Versions("apacheHttp"),
+      "org.scalatestplus"         %%% "scalatestplus-mockito" % Versions("scalatestplusMockito") % Test,
+      "org.mockito"               % "mockito-all"             % Versions("mockito") % Test
     )
   )
-  .settings(libraryDependencies += "org.mockito" % "mockito-all" % Versions("mockito") % Test)
   .dependsOn(coreJVM)
 
 lazy val akka = project
@@ -143,9 +148,13 @@ lazy val akka = project
   .settings(commonDependencies)
   .settings(compilerPlugins)
   .settings(
-    libraryDependencies += "com.typesafe.akka" %% "akka-http" % Versions("akka-http")
+    libraryDependencies ++= Seq(
+      "com.typesafe.akka" %% "akka-http"              % Versions("akka-http"),
+      "com.typesafe.akka" %% "akka-stream"            % Versions("akka-stream"),
+      "org.mockito"       % "mockito-all"             % Versions("mockito") % Test,
+      "org.scalatestplus" %%% "scalatestplus-mockito" % Versions("scalatestplusMockito") % Test
+    )
   )
-  .settings(libraryDependencies += "org.mockito" % "mockito-all" % Versions("mockito") % Test)
   .dependsOn(coreJVM)
 
 lazy val asynchttpclient = project
@@ -155,9 +164,12 @@ lazy val asynchttpclient = project
   .settings(commonDependencies)
   .settings(compilerPlugins)
   .settings(
-    libraryDependencies += "org.asynchttpclient" % "async-http-client" % Versions("ahc")
+    libraryDependencies ++= Seq(
+      "org.asynchttpclient" % "async-http-client"       % Versions("ahc"),
+      "org.scalatestplus"   %%% "scalatestplus-mockito" % Versions("scalatestplusMockito") % Test,
+      "org.mockito"         % "mockito-all"             % Versions("mockito") % Test
+    )
   )
-  .settings(libraryDependencies += "org.mockito" % "mockito-all" % Versions("mockito") % Test)
   .dependsOn(coreJVM)
 
 lazy val javadocIoUrl = settingKey[String]("the url of hammock documentation in http://javadoc.io")

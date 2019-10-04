@@ -1,11 +1,16 @@
 package hammock
 package hi
 
-import cats.tests.CatsSuite
+import cats.instances.int._
+import cats.instances.string._
+import cats.instances.boolean._
+import cats.instances.map._
+import org.scalatest.funsuite.AnyFunSuite
+import org.typelevel.discipline.scalatest.Discipline
 import cats.kernel.laws.discipline.EqTests
 import monocle.law.discipline._
 
-class CookieLawTests extends CatsSuite {
+class CookieLawTests extends AnyFunSuite with Discipline {
 
   import TestInstances._
 

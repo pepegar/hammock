@@ -3,9 +3,10 @@ package circe
 
 import io.circe.generic.auto._
 
-import org.scalatest._
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 
-class CirceCodecSpec extends WordSpec with Matchers {
+class CirceCodecSpec extends AnyWordSpec with Matchers {
   case class Dummy(a: Int, b: String)
   import implicits._
 

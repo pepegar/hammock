@@ -1,32 +1,36 @@
 package hammock
 package akka
 
-import _root_.akka.util.ByteString
 import _root_.akka.actor.ActorSystem
 import _root_.akka.http.scaladsl.HttpExt
+import _root_.akka.http.scaladsl.model.headers.RawHeader
 import _root_.akka.http.scaladsl.model.{
+  ContentTypes,
+  HttpEntity,
+  HttpMethods,
   HttpRequest => AkkaRequest,
   HttpResponse => AkkaResponse,
-  Uri => AkkaUri,
-  HttpEntity,
-  ContentTypes,
-  HttpMethods
+  Uri => AkkaUri
 }
 import _root_.akka.stream.ActorMaterializer
-import _root_.akka.http.scaladsl.model.headers.RawHeader
-import cats.effect.IO
+import _root_.akka.util.ByteString
+import cats.effect.{ContextShift, IO}
 import cats.free.Free
+import hammock.akka.AkkaInterpreter._
 import org.mockito.Mockito._
-import org.scalatest._
-import org.scalatest.mockito.MockitoSugar
-import scala.concurrent.{ExecutionContext, Future}
-import AkkaInterpreter._
+import org.scalatest.BeforeAndAfter
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpec
+import org.scalatestplus.mockito.MockitoSugar
 
-class AkkaInterpreterSpec extends WordSpec with MockitoSugar with Matchers with BeforeAndAfter {
+import scala.concurrent.{ExecutionContext, Future}
+
+class AkkaInterpreterSpec extends AnyWordSpec with MockitoSugar with Matchers with BeforeAndAfter {
 
   implicit val system: ActorSystem    = ActorSystem("test")
   implicit val mat: ActorMaterializer = ActorMaterializer()
   implicit val ec: ExecutionContext   = ExecutionContext.Implicits.global
+  implicit val cs: ContextShift[IO]   = IO.contextShift(ec)
   implicit val client: HttpExt        = mock[HttpExt]
 
   after {

@@ -4,9 +4,10 @@ package hi
 import java.time.ZonedDateTime
 
 import cats._
-import org.scalatest.{Matchers, WordSpec}
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 
-class CookieSpec extends WordSpec with Matchers {
+class CookieSpec extends AnyWordSpec with Matchers {
 
   "Show[Cookie].show" should {
     "render a simple cookie in the correct format" in {
@@ -25,7 +26,8 @@ class CookieSpec extends WordSpec with Matchers {
         Some("/blog"),
         Some(false),
         Some(true),
-        Some(Cookie.SameSite.Strict))
+        Some(Cookie.SameSite.Strict)
+      )
 
       Show[Cookie].show(cookie) shouldEqual "name=value; Expires=Sat, 04 Jan 2020 17:03:54 GMT; MaxAge=123; Domain=pepegar.com; Path=/blog; Secure=false; HttpOnly=true; SameSite=Strict"
     }

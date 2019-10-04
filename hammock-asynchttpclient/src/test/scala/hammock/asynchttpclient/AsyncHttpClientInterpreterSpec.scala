@@ -3,15 +3,16 @@ package asynchttpclient
 
 import cats.implicits._
 import cats.effect._
-import org.scalatest._
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 import org.asynchttpclient._
 import io.netty.handler.codec.http.{DefaultHttpHeaders, HttpHeaders}
 import io.netty.handler.codec.http.cookie.Cookie
-import org.scalatest.mockito._
+import org.scalatestplus.mockito._
 import AsyncHttpClientInterpreter._
 import scala.collection.JavaConverters._
 
-class AsyncHttpClientInterpreterSpec extends WordSpec with Matchers with MockitoSugar {
+class AsyncHttpClientInterpreterSpec extends AnyWordSpec with Matchers with MockitoSugar {
 
   implicit val client: AsyncHttpClient = new DefaultAsyncHttpClient()
 

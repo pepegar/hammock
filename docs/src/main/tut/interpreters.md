@@ -78,6 +78,7 @@ import hammock.akka.AkkaInterpreter._
 implicit val system = ActorSystem("hammock-actor-system")
 implicit val mat = ActorMaterializer()
 implicit val ec = system.dispatcher
+implicit val cs = IO.contextShift(ec)
 implicit val httpExt: HttpExt = Http()
 
 val akkaInterp: InterpTrans[IO] = AkkaInterpreter.instance[IO]

@@ -1,8 +1,9 @@
 package hammock
 
-import org.scalatest._
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 
-class ContentTypeSpec extends WordSpec with Matchers {
+class ContentTypeSpec extends AnyWordSpec with Matchers {
 
   "Eq[ContentType]" should {
 
@@ -15,7 +16,7 @@ class ContentTypeSpec extends WordSpec with Matchers {
 
     "not equal ContentType instances" in {
       val applicationJson = ContentType.`application/json`
-      val textPlain = ContentType.`text/plain`
+      val textPlain       = ContentType.`text/plain`
 
       assert(applicationJson != textPlain)
     }

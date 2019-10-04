@@ -16,7 +16,7 @@ import _root_.akka.stream.ActorMaterializer
 import _root_.akka.util.ByteString
 import cats._
 import cats.data.Kleisli
-import cats.effect.{Async, IO, Sync}
+import cats.effect.{Async, ContextShift, Sync}
 import cats.implicits._
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -24,24 +24,24 @@ object AkkaInterpreter {
 
   def apply[F[_]](implicit F: InterpTrans[F]): InterpTrans[F] = F
 
-  implicit def instance[F[_]: Async](
+  implicit def instance[F[_]: Async: ContextShift](
       implicit
       client: HttpExt,
       materializer: ActorMaterializer,
       executionContext: ExecutionContext) =
     new InterpTrans[F] {
-      override def trans: HttpF ~> F = transK andThen λ[Kleisli[F, HttpExt, ?] ~> F](_.run(client))
+      override def trans: HttpF ~> F = transK andThen λ[Kleisli[F, HttpExt, *] ~> F](_.run(client))
     }
 
-  def transK[F[_]: Async](
+  def transK[F[_]: Async: ContextShift](
       implicit materializer: ActorMaterializer,
-      executionContext: ExecutionContext): HttpF ~> Kleisli[F, HttpExt, ?] = {
+      executionContext: ExecutionContext): HttpF ~> Kleisli[F, HttpExt, *] = {
 
     def doReq(req: HttpF[HttpResponse]): Kleisli[F, HttpExt, HttpResponse] = Kleisli { http =>
       for {
         akkaRequest    <- mapRequest(req)
         responseFuture <- Sync[F].delay(http.singleRequest(akkaRequest).flatMap(mapResponse))
-        responseF      <- IO.fromFuture(IO(responseFuture)).to[F]
+        responseF      <- Async.fromFuture(Async[F].delay(responseFuture))
       } yield responseF
     }
 
@@ -98,7 +98,7 @@ object AkkaInterpreter {
       case StatusCodes.UnprocessableEntity           => Status.UnprocessableEntity
       case StatusCodes.Locked                        => Status.Locked
       case StatusCodes.FailedDependency              => Status.FailedDependency
-      case StatusCodes.UnorderedCollection           => Status.UnorderedCollection
+      case StatusCodes.TooEarly                      => Status.TooEarly
       case StatusCodes.UpgradeRequired               => Status.UpgradeRequired
       case StatusCodes.PreconditionRequired          => Status.PreconditionRequired
       case StatusCodes.TooManyRequests               => Status.TooManyRequests
@@ -128,7 +128,7 @@ object AkkaInterpreter {
       case StatusCodes.Success(x)                    => Status.custom(x)
     }
 
-    λ[HttpF ~> Kleisli[F, HttpExt, ?]] {
+    λ[HttpF ~> Kleisli[F, HttpExt, *]] {
       case req @ (Options(_) | Get(_) | Head(_) | Post(_) | Put(_) | Delete(_) | Trace(_) | Patch(_)) => doReq(req)
     }
   }
