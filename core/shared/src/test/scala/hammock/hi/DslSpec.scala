@@ -2,7 +2,7 @@ package hammock
 package hi
 
 import cats.implicits._
-import org.scalatest.Matchers
+import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 
 class DslSpec extends AnyWordSpec with Matchers {

@@ -1,6 +1,6 @@
 package hammock
 
-import org.scalatest.Matchers
+import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 
 class StatusSpec extends AnyWordSpec with Matchers {

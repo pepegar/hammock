@@ -1,18 +1,18 @@
 package hammock
 
-
-import org.scalatest.Matchers
+import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import cats._
-import hi.{Cookie, Opts, Auth}
+import hi.{Auth, Cookie, Opts}
 
 class HammockSpec extends AnyWordSpec with Matchers {
-  val methods = Seq(Method.OPTIONS, Method.GET, Method.HEAD, Method.POST, Method.PUT, Method.DELETE, Method.TRACE, Method.PATCH)
+  val methods =
+    Seq(Method.OPTIONS, Method.GET, Method.HEAD, Method.POST, Method.PUT, Method.DELETE, Method.TRACE, Method.PATCH)
 
   implicit val stringCodec = new Codec[String] {
-    def decode(a: hammock.Entity): Either[hammock.CodecException,String] = a match {
+    def decode(a: hammock.Entity): Either[hammock.CodecException, String] = a match {
       case Entity.StringEntity(str, _) => Right(str)
-      case _ => Left(CodecException.withMessage("expected string entity"))
+      case _                           => Left(CodecException.withMessage("expected string entity"))
     }
     def encode(a: String): hammock.Entity = Entity.StringEntity(a)
   }
@@ -65,8 +65,8 @@ class HammockSpec extends AnyWordSpec with Matchers {
 
     "construct the correct headers" in {
       val basicAuth = Auth.BasicAuth("user", "p4ssw0rd")
-      val opts = Opts(Option(basicAuth), Map.empty, Option.empty)
-      val shown = Show[Auth].show(basicAuth)
+      val opts      = Opts(Option(basicAuth), Map.empty, Option.empty)
+      val shown     = Show[Auth].show(basicAuth)
 
       Uri.fromString("http://pepegar.com") match {
         case Right(uri) =>
