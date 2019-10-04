@@ -18,23 +18,24 @@ inThisBuild(
   ))
 
 val Versions = Map(
-  "contextual"              -> "1.1.0",
+  "contextual"              -> "1.2.1",
   "circe"                   -> "0.12.1",
   "monocle"                 -> "2.0.0",
-  "atto"                    -> "0.7.0",
+  "atto"                    -> "0.7.1",
   "cats"                    -> "2.0.0",
   "cats-effect"             -> "2.0.0",
-  "simulacrum"              -> "0.19.0",
-  "scalatest"               -> "3.1.0-SNAP13",
-  "scalacheck"              -> "1.14.0",
-  "scalatestplusScalaCheck" -> "1.0.0-SNAP8",
-  "scalatestplusMockito"    -> "1.0.0-M2",
-  "discipline"              -> "1.0.0",
+  "simulacrum"              -> "1.0.0",
+  "scalatest"               -> "3.2.0-M1",
+  "scalacheck"              -> "1.14.2",
+  "scalatestplusScalaCheck" -> "3.1.0.0-RC2",
+  "scalatestplusMockito"    -> "1.0.0-SNAP5",
+  "discipline"              -> "1.0.1",
   "macro-paradise"          -> "2.1.1",
-  "kind-projector"          -> "0.9.10",
-  "akka-http"               -> "10.0.15",
-  "ahc"                     -> "2.1.2",
-  "apacheHttp"              -> "4.5.9",
+  "kind-projector"          -> "0.10.3",
+  "akka-http"               -> "10.1.10",
+  "akka-stream"             -> "2.5.23",
+  "ahc"                     -> "2.10.3",
+  "apacheHttp"              -> "4.5.10",
   "mockito"                 -> "1.10.19"
 )
 
@@ -47,9 +48,8 @@ val noPublishSettings = Seq(
 
 val buildSettings = Seq(
   organization := "com.pepegar",
-  scalaVersion := "2.12.5",
+  scalaVersion := "2.12.10",
   licenses := Seq(("MIT", url("http://opensource.org/licenses/MIT"))),
-  crossScalaVersions := Seq("2.11.12", scalaVersion.value),
   scalacOptions in (Compile, console) ~= filterConsoleScalacOptions,
   scalacOptions in (Compile, doc) ~= filterConsoleScalacOptions,
   scalafmtOnCompile in ThisBuild := true
@@ -62,7 +62,7 @@ val commonDependencies = Seq(
     "org.typelevel"              %%% "alleycats-core"           % Versions("cats"),
     "com.propensive"             %%% "contextual"               % Versions("contextual"),
     "org.typelevel"              %%% "cats-effect"              % Versions("cats-effect"),
-    "com.github.mpilquist"       %%% "simulacrum"               % Versions("simulacrum"),
+    "org.typelevel"              %%% "simulacrum"               % Versions("simulacrum"),
     "com.github.julien-truffaut" %%% "monocle-core"             % Versions("monocle"),
     "com.github.julien-truffaut" %%% "monocle-macro"            % Versions("monocle"),
     "org.tpolecat"               %%% "atto-core"                % Versions("atto"),
@@ -79,7 +79,7 @@ val commonDependencies = Seq(
 val compilerPlugins = Seq(
   libraryDependencies ++= Seq(
     compilerPlugin("org.scalamacros" %% "paradise"       % Versions("macro-paradise") cross CrossVersion.full),
-    compilerPlugin("org.spire-math"  %% "kind-projector" % Versions("kind-projector"))
+    compilerPlugin("org.typelevel"   %% "kind-projector" % Versions("kind-projector"))
   )
 )
 
@@ -150,6 +150,7 @@ lazy val akka = project
   .settings(
     libraryDependencies ++= Seq(
       "com.typesafe.akka" %% "akka-http"              % Versions("akka-http"),
+      "com.typesafe.akka" %% "akka-stream"            % Versions("akka-stream"),
       "org.mockito"       % "mockito-all"             % Versions("mockito") % Test,
       "org.scalatestplus" %%% "scalatestplus-mockito" % Versions("scalatestplusMockito") % Test
     )

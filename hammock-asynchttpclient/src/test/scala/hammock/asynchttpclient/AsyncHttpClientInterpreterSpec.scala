@@ -3,7 +3,7 @@ package asynchttpclient
 
 import cats.implicits._
 import cats.effect._
-import org.scalatest.Matchers
+import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import org.asynchttpclient._
 import io.netty.handler.codec.http.{DefaultHttpHeaders, HttpHeaders}

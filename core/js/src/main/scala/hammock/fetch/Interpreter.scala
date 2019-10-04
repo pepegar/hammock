@@ -41,7 +41,7 @@ object Interpreter {
                       _.cata(
                         string => Some(string.content),
                         bytes => Some(bytes.content.map(_.toChar).mkString),
-                        empty => None
+                        _ => None
                       ))
                     .map(body => new RequestOptions(body = body, headers = headers, method = method.name))
                     .getOrElse(

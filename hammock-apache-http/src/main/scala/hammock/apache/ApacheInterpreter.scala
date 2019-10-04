@@ -23,10 +23,10 @@ object ApacheInterpreter {
       implicit
       client: HttpClient = HttpClientBuilder.create().build()): InterpTrans[F] =
     new InterpTrans[F] {
-      def trans: HttpF ~> F = transK andThen λ[Kleisli[F, HttpClient, ?] ~> F](_.run(client))
+      def trans: HttpF ~> F = transK andThen λ[Kleisli[F, HttpClient, *] ~> F](_.run(client))
     }
 
-  def transK[F[_]: Sync]: HttpF ~> Kleisli[F, HttpClient, ?] = {
+  def transK[F[_]: Sync]: HttpF ~> Kleisli[F, HttpClient, *] = {
 
     def responseToEntity(response: ApacheResponse): F[Entity] = Sync[F].delay {
       Option(response.getEntity) // getEntity can return null
@@ -48,7 +48,7 @@ object ApacheInterpreter {
       } yield HttpResponse(status, responseHeaders, entity)
     }
 
-    λ[HttpF ~> Kleisli[F, HttpClient, ?]] {
+    λ[HttpF ~> Kleisli[F, HttpClient, *]] {
       case req: Options => doReq(req)
       case req: Get     => doReq(req)
       case req: Head    => doReq(req)
