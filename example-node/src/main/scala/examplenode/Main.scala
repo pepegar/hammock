@@ -10,6 +10,8 @@ import scala.scalajs.concurrent.JSExecutionContext.Implicits.queue
 import hammock.fetch.Interpreter._
 
 object Main {
+  implicit val cs = IO.contextShift(queue)
+
   def main(args: Array[String]): Unit = {
 
     val endpoint = uri"http://www.mocky.io/v2/5185415ba171ea3a00704eed"
