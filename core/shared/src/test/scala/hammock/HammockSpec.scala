@@ -32,7 +32,7 @@ class HammockSpec extends AnyWordSpec with Matchers {
 
   "Hammock.request" should {
 
-    methods.map { method =>
+    methods.foreach { method =>
       s"create a valid $method request without a body" in {
         Hammock.request(method, uri, Map()) foldMap test { r =>
           r.req.uri shouldEqual Uri.fromString("http://pepegar.com").right.get
@@ -57,7 +57,7 @@ class HammockSpec extends AnyWordSpec with Matchers {
         case Right(uri) =>
           Hammock.getWithOpts(uri, opts) foldMap test { r =>
             r.req.uri shouldEqual Uri.fromString("http://pepegar.com").right.get
-            r.req.headers shouldEqual Map("header" -> "3", "Set-Cookie" -> "thisisacookie=thisisthevalue")
+            r.req.headers shouldEqual Map("header" -> "3", "Cookie" -> "thisisacookie=thisisthevalue")
           }
         case Left(err) => fail(s"failed with $err")
       }

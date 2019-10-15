@@ -234,6 +234,6 @@ object Hammock {
 
   private def constructHeaders(opts: Opts) =
     opts.headers ++
-      opts.cookies.map(_.map(cookie => "Set-Cookie" -> cookie.show)).getOrElse(Map()) ++
+      opts.cookies.map(_.map(cookie => "Cookie" -> cookie.show)).getOrElse(Map()) ++
       opts.auth.map(auth => Map("Authorization"    -> auth.show)).getOrElse(Map())
 }
