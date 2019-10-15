@@ -28,7 +28,7 @@ val Versions = Map(
   "scalatest"               -> "3.2.0-M1",
   "scalacheck"              -> "1.14.2",
   "scalatestplusScalaCheck" -> "3.1.0.0-RC2",
-  "scalatestplusMockito"    -> "1.0.0-SNAP5",
+  "scalatestplusMockito"    -> "1.0.0-M2",
   "discipline"              -> "1.0.1",
   "macro-paradise"          -> "2.1.1",
   "kind-projector"          -> "0.10.3",
