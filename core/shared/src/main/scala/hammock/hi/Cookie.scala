@@ -130,7 +130,8 @@ object Cookie {
   }
 
   /**
-   * renders a cookie in the Set-Cookie header format
+   * renders a cookie in the Cookie header format
+   * see: https://tools.ietf.org/html/rfc6265#section-5.4
    */
   def render(cookie: Cookie)(implicit fmt: DateFormatter): String = {
     def renderPair[S: Show](k: String)(v: S)              = k ++ "=" ++ Show[S].show(v)
