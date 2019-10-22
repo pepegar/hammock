@@ -19,7 +19,7 @@ inThisBuild(
 
 val Versions = Map(
   "contextual"              -> "1.2.1",
-  "circe"                   -> "0.12.2",
+  "circe"                   -> "0.12.3",
   "monocle"                 -> "2.0.0",
   "atto"                    -> "0.7.1",
   "cats"                    -> "2.0.0",
