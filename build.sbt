@@ -21,7 +21,7 @@ val Versions = Map(
   "contextual"              -> "1.2.1",
   "circe"                   -> "0.12.3",
   "monocle"                 -> "2.0.0",
-  "atto"                    -> "0.7.1",
+  "atto"                    -> "0.7.2",
   "cats"                    -> "2.0.0",
   "cats-effect"             -> "2.0.0",
   "simulacrum"              -> "1.0.0",
@@ -32,8 +32,8 @@ val Versions = Map(
   "discipline"              -> "1.0.1",
   "macro-paradise"          -> "2.1.1",
   "kind-projector"          -> "0.10.3",
-  "akka-http"               -> "10.1.11",
-  "akka-stream"             -> "2.5.26",
+  "akka-http"               -> "10.1.10",
+  "akka-stream"             -> "2.5.27",
   "ahc"                     -> "2.10.3",
   "apacheHttp"              -> "4.5.10",
   "mockito"                 -> "1.10.19"
@@ -99,7 +99,7 @@ lazy val core = crossProject(JSPlatform, JVMPlatform)
   .settings(compilerPlugins)
   .jsSettings(
     libraryDependencies ++= Seq(
-      "org.scala-js"      %%% "scalajs-dom"     % "0.9.7",
+      "org.scala-js"      %%% "scalajs-dom"     % "0.9.8",
       "io.scalajs.npm"    %%% "node-fetch"      % "0.4.2",
       "io.github.cquiroz" %%% "scala-java-time" % "2.0.0-RC3"
     ),
