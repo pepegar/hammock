@@ -26,7 +26,7 @@ val Versions = Map(
   "cats-effect"             -> "2.0.0",
   "simulacrum"              -> "1.0.0",
   "scalatest"               -> "3.2.0-M1",
-  "scalacheck"              -> "1.14.2",
+  "scalacheck"              -> "1.14.3",
   "scalatestplusScalaCheck" -> "3.1.0.0-RC2",
   "scalatestplusMockito"    -> "1.0.0-M2",
   "discipline"              -> "1.0.1",
