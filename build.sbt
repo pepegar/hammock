@@ -20,9 +20,9 @@ inThisBuild(
 val Versions = Map(
   "contextual"              -> "1.2.1",
   "circe"                   -> "0.12.3",
-  "monocle"                 -> "2.0.0",
+  "monocle"                 -> "2.0.1",
   "atto"                    -> "0.7.2",
-  "cats"                    -> "2.1.0",
+  "cats"                    -> "2.0.0",
   "cats-effect"             -> "2.1.0",
   "simulacrum"              -> "1.0.0",
   "scalatest"               -> "3.2.0-M2",
@@ -33,9 +33,9 @@ val Versions = Map(
   "macro-paradise"          -> "2.1.1",
   "kind-projector"          -> "0.10.3",
   "akka-http"               -> "10.1.10",
-  "akka-stream"             -> "2.5.27",
+  "akka-stream"             -> "2.5.29",
   "ahc"                     -> "2.10.3",
-  "apacheHttp"              -> "4.5.10",
+  "apacheHttp"              -> "4.5.11",
   "mockito"                 -> "1.10.19"
 )
 
