@@ -22,7 +22,7 @@ val Versions = Map(
   "circe"                   -> "0.12.3",
   "monocle"                 -> "2.0.1",
   "atto"                    -> "0.7.2",
-  "cats"                    -> "2.0.0",
+  "cats"                    -> "2.1.0",
   "cats-effect"             -> "2.1.0",
   "simulacrum"              -> "1.0.0",
   "scalatest"               -> "3.2.0-M2",
