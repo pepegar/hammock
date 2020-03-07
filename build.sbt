@@ -35,7 +35,7 @@ val Versions = Map(
   "akka-http"               -> "10.1.10",
   "akka-stream"             -> "2.5.29",
   "ahc"                     -> "2.10.3",
-  "apacheHttp"              -> "4.5.11",
+  "apacheHttp"              -> "4.5.12",
   "mockito"                 -> "1.10.19"
 )
 
