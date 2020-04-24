@@ -101,7 +101,7 @@ lazy val core = crossProject(JSPlatform, JVMPlatform)
     libraryDependencies ++= Seq(
       "org.scala-js"      %%% "scalajs-dom"     % "1.0.0",
       "io.scalajs.npm"    %%% "node-fetch"      % "0.4.2",
-      "io.github.cquiroz" %%% "scala-java-time" % "2.0.0-RC3"
+      "io.github.cquiroz" %%% "scala-java-time" % "2.0.0"
     ),
     npmDependencies in Test += "node-fetch" -> "2.1.2"
   )
