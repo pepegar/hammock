@@ -35,6 +35,8 @@ val Versions = Map(
   "akka-http"               -> "10.1.10",
   "akka-stream"             -> "2.5.30",
   "ahc"                     -> "2.10.3",
+  "spring"                  -> "5.2.6.RELEASE",
+  "findbugs"                -> "3.0.2",
   "apacheHttp"              -> "4.5.12",
   "mockito"                 -> "1.10.19"
 )
@@ -87,8 +89,8 @@ lazy val hammock = project
   .in(file("."))
   .settings(buildSettings)
   .settings(noPublishSettings)
-  .dependsOn(coreJVM, coreJS, circeJVM, circeJS, apache, akka, asynchttpclient)
-  .aggregate(coreJVM, coreJS, circeJVM, circeJS, apache, akka, asynchttpclient)
+  .dependsOn(coreJVM, coreJS, circeJVM, circeJS, apache, akka, asynchttpclient, resttemplate)
+  .aggregate(coreJVM, coreJS, circeJVM, circeJS, apache, akka, asynchttpclient, resttemplate)
 
 lazy val core = crossProject(JSPlatform, JVMPlatform)
   .crossType(CrossType.Full)
@@ -172,11 +174,27 @@ lazy val asynchttpclient = project
   )
   .dependsOn(coreJVM)
 
+lazy val resttemplate = project
+  .in(file("hammock-resttemplate"))
+  .settings(moduleName := "hammock-resttemplate")
+  .settings(buildSettings)
+  .settings(commonDependencies)
+  .settings(compilerPlugins)
+  .settings(
+    libraryDependencies ++= Seq(
+      "com.google.code.findbugs" % "jsr305"                  % Versions("findbugs") % Optional,
+      "org.springframework"      % "spring-web"              % Versions("spring"),
+      "org.scalatestplus"        %%% "scalatestplus-mockito" % Versions("scalatestplusMockito") % Test,
+      "org.mockito"              % "mockito-all"             % Versions("mockito") % Test
+    )
+  )
+  .dependsOn(coreJVM)
+
 lazy val javadocIoUrl = settingKey[String]("the url of hammock documentation in http://javadoc.io")
 
 lazy val docs = project
   .in(file("docs"))
-  .dependsOn(coreJVM, circeJVM, apache, akka, asynchttpclient)
+  .dependsOn(coreJVM, circeJVM, apache, akka, asynchttpclient, resttemplate)
   .settings(moduleName := "hammock-docs")
   .settings(buildSettings)
   .settings(compilerPlugins)
@@ -227,7 +245,7 @@ lazy val example = project
   .settings(buildSettings)
   .settings(noPublishSettings)
   .settings(compilerPlugins)
-  .dependsOn(coreJVM, circeJVM, apache, akka, asynchttpclient)
+  .dependsOn(coreJVM, circeJVM, apache, akka, asynchttpclient, resttemplate)
 
 lazy val exampleJS = project
   .in(file("example-js"))
