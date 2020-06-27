@@ -25,7 +25,7 @@ val Versions = Map(
   "cats"                    -> "2.1.1",
   "cats-effect"             -> "2.1.2",
   "simulacrum"              -> "1.0.0",
-  "scalatest"               -> "3.2.0-M4",
+  "scalatest"               -> "3.2.0",
   "scalacheck"              -> "1.14.3",
   "scalatestplusScalaCheck" -> "3.1.0.0-RC2",
   "scalatestplusMockito"    -> "1.0.0-M2",
@@ -35,7 +35,7 @@ val Versions = Map(
   "akka-http"               -> "10.1.10",
   "akka-stream"             -> "2.5.30",
   "ahc"                     -> "2.10.3",
-  "spring"                  -> "5.2.6.RELEASE",
+  "spring"                  -> "5.2.7.RELEASE",
   "findbugs"                -> "3.0.2",
   "apacheHttp"              -> "4.5.12",
   "mockito"                 -> "1.10.19"
