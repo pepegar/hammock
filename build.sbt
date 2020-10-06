@@ -37,7 +37,7 @@ val Versions = Map(
   "ahc"                     -> "2.10.3",
   "spring"                  -> "5.2.9.RELEASE",
   "findbugs"                -> "3.0.2",
-  "apacheHttp"              -> "4.5.12",
+  "apacheHttp"              -> "4.5.13",
   "mockito"                 -> "1.10.19"
 )
 
