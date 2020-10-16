@@ -33,7 +33,7 @@ val Versions = Map(
   "macro-paradise"          -> "2.1.1",
   "kind-projector"          -> "0.10.3",
   "akka-http"               -> "10.1.10",
-  "akka-stream"             -> "2.5.30",
+  "akka-stream"             -> "2.5.32",
   "ahc"                     -> "2.10.3",
   "spring"                  -> "5.2.9.RELEASE",
   "findbugs"                -> "3.0.2",
