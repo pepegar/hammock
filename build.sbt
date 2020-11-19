@@ -29,7 +29,7 @@ val Versions = Map(
   "scalatestplusScalaCheck" -> "3.2.2.0",
   "scalatestplusMockito"    -> "1.0.0-M2",
   "discipline"              -> "1.1.2",
-  "discipline-scalatest"    -> "2.0.0",
+  "discipline-scalatest"    -> "2.0.1",
   "macro-paradise"          -> "2.1.1",
   "kind-projector"          -> "0.10.3",
   "akka-http"               -> "10.1.10",
