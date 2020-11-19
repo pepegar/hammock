@@ -18,7 +18,7 @@ inThisBuild(
 
 val Versions = Map(
   "circe"                   -> "0.13.0",
-  "monocle"                 -> "2.0.4",
+  "monocle"                 -> "2.0.5",
   "collection-compat"       -> "2.2.0",
   "atto"                    -> "0.8.0",
   "cats"                    -> "2.1.1",
