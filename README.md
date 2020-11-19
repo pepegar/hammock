@@ -46,8 +46,8 @@ libraryDependencies += "com.pepegar" %%% "hammock-core" % "0.10.0"
 
 ## Modules
 
-|        Module name        |                           Description                            | Version |
-|---------------------------|------------------------------------------------------------------|---------|
+| Module name               | Description                                                      | Version |
+| --------------------      | ------------------------------------------                       | ------- |
 | `hammock-core`            | the core functionality of hammock, using [XHR][xhr] in JS        | `0.10.0` |
 | `hammock-circe`           | encode and decode HTTP entities with [Circe][circe]              | `0.10.0` |
 | `hammock-apache-http`     | run your HTTP requests with [Apache HTTP commons][httpcommons]   | `0.10.0` |

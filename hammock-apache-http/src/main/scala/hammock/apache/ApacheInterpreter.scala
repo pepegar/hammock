@@ -33,7 +33,7 @@ object ApacheInterpreter {
         .map(_.getContent)
         .map { content =>
           val rd = new BufferedReader(new InputStreamReader(content))
-          Entity.StringEntity(Stream.continually(rd.readLine()).takeWhile(_ != null).mkString(""))
+          Entity.StringEntity(LazyList.continually(rd.readLine()).takeWhile(_ != null).mkString(""))
         } getOrElse Entity.EmptyEntity
     }
 
