@@ -3,7 +3,7 @@ package apache
 
 import cats._
 import cats.data._
-import cats.implicits._
+import cats.syntax.all._
 import cats.effect.Sync
 import java.io.{BufferedReader, InputStreamReader}
 import org.apache.http.{Header, HttpEntity, HttpResponse => ApacheResponse}

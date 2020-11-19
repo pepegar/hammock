@@ -1,7 +1,6 @@
 package hammock
 
 import cats.{Eq, Show}
-import cats.instances.int._
 import cats.syntax.contravariant._
 import monocle.macros.Lenses
 

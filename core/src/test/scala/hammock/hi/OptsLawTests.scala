@@ -1,10 +1,5 @@
 package hammock
 package hi
-
-import cats.instances.string._
-import cats.instances.map._
-import cats.instances.option._
-import cats.instances.list._
 import org.scalatest.prop.Configuration
 import org.scalatest.funsuite.AnyFunSuite
 import org.typelevel.discipline.scalatest.FunSuiteDiscipline

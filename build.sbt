@@ -21,7 +21,7 @@ val Versions = Map(
   "monocle"                 -> "2.0.4",
   "collection-compat"       -> "2.2.0",
   "atto"                    -> "0.8.0",
-  "cats"                    -> "2.1.1",
+  "cats"                    -> "2.2.0",
   "cats-effect"             -> "2.1.2",
   "simulacrum"              -> "1.0.0",
   "scalatest"               -> "3.2.2",

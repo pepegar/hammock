@@ -1,7 +1,7 @@
 package hammock
 package hi
 
-import cats.implicits._
+import cats.syntax.all._
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 

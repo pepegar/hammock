@@ -3,7 +3,7 @@ package hammock
 import atto._
 import Atto._
 import cats._
-import cats.implicits._
+import cats.syntax.all._
 import Uri._
 import cats.data.NonEmptyList
 import Function.const
