@@ -9,7 +9,7 @@ import org.scalatestplus.mockito._
 import RestTemplateInterpreter._
 import org.springframework.http.{HttpHeaders, HttpStatus, ResponseEntity}
 import org.springframework.web.client.RestTemplate
-import scala.collection.JavaConverters._
+import scala.jdk.CollectionConverters._
 
 class RestTemplateInterpreterTest extends AnyWordSpec with Matchers with MockitoSugar {
 
@@ -19,10 +19,10 @@ class RestTemplateInterpreterTest extends AnyWordSpec with Matchers with Mockito
 
     "map requests correctly" in {
       val hreq1 = Get(HttpRequest(uri"http://google.com", Map.empty[String, String], None))
-      val req1  = mapRequest[IO](hreq1).unsafeRunSync
+      val req1  = mapRequest[IO](hreq1).unsafeRunSync()
 
       val hreq2 = Post(HttpRequest(uri"http://google.com", Map("header1" -> "value1"), None))
-      val req2  = mapRequest[IO](hreq2).unsafeRunSync
+      val req2  = mapRequest[IO](hreq2).unsafeRunSync()
 
       val hreq3 = Put(
         HttpRequest(
@@ -31,7 +31,7 @@ class RestTemplateInterpreterTest extends AnyWordSpec with Matchers with Mockito
           Some(Entity.StringEntity("the body"))
         )
       )
-      val req3 = mapRequest[IO](hreq3).unsafeRunSync
+      val req3 = mapRequest[IO](hreq3).unsafeRunSync()
 
       req1.getUrl.toString shouldEqual hreq1.req.uri.show
       req1.getMethod.name shouldEqual "GET"
@@ -93,7 +93,7 @@ class RestTemplateInterpreterTest extends AnyWordSpec with Matchers with Mockito
 
       tests foreach {
         case (a, h) =>
-          (mapResponse[IO](a).unsafeRunSync, h) match {
+          (mapResponse[IO](a).unsafeRunSync(), h) match {
             case (HttpResponse(s1, h1, e1), HttpResponse(s2, h2, e2)) =>
               s1 shouldEqual s2
               h1 shouldEqual h2

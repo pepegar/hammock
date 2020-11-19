@@ -183,7 +183,7 @@ object AppWithFree {
 ```scala mdoc
 val result = AppWithFree.program foldMap AppWithFree.interp[IO]
 
-result.unsafeRunSync
+result.unsafeRunSync()
 ```
 
 

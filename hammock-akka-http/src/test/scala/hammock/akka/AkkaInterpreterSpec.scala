@@ -50,7 +50,7 @@ class AkkaInterpreterSpec extends AnyWordSpec with MockitoSugar with Matchers wi
       val akkaReq = AkkaRequest(method = HttpMethods.POST, uri = AkkaUri("http://localhost:8080"))
         .withEntity(HttpEntity.Strict(ContentTypes.`application/octet-stream`, ByteString(Array[Byte]())))
 
-      mapRequest[IO](hammockReq).unsafeRunSync shouldEqual akkaReq
+      mapRequest[IO](hammockReq).unsafeRunSync() shouldEqual akkaReq
 
     }
 
@@ -65,7 +65,7 @@ class AkkaInterpreterSpec extends AnyWordSpec with MockitoSugar with Matchers wi
       val akkaReq = AkkaRequest(method = HttpMethods.POST, uri = AkkaUri("http://localhost:8080"))
         .withEntity(HttpEntity.Strict(ContentTypes.`application/json`, ByteString.fromString("potato")))
 
-      mapRequest[IO](hammockReq).unsafeRunSync shouldEqual akkaReq
+      mapRequest[IO](hammockReq).unsafeRunSync() shouldEqual akkaReq
 
     }
 
@@ -74,7 +74,7 @@ class AkkaInterpreterSpec extends AnyWordSpec with MockitoSugar with Matchers wi
 
       val akkaReq = AkkaRequest(method = HttpMethods.POST, uri = AkkaUri("http://localhost:8080"))
 
-      mapRequest[IO](hammockReq).unsafeRunSync shouldEqual akkaReq
+      mapRequest[IO](hammockReq).unsafeRunSync() shouldEqual akkaReq
 
     }
 
@@ -96,7 +96,7 @@ class AkkaInterpreterSpec extends AnyWordSpec with MockitoSugar with Matchers wi
           ))
         .withEntity(HttpEntity.Strict(ContentTypes.`application/octet-stream`, ByteString(Array[Byte]())))
 
-      mapRequest[IO](hammockReq).unsafeRunSync shouldEqual akkaReq
+      mapRequest[IO](hammockReq).unsafeRunSync() shouldEqual akkaReq
     }
 
     "create a correct HttpResponse from akka's Http response without body" in {
@@ -114,7 +114,7 @@ class AkkaInterpreterSpec extends AnyWordSpec with MockitoSugar with Matchers wi
           RawHeader("header2", "value2")
         ))
       when(client.singleRequest(akkaReq)).thenReturn(Future.successful(httpResponse))
-      val result = (Free.liftF(hammockReq) foldMap AkkaInterpreter[IO].trans).unsafeRunSync
+      val result = (Free.liftF(hammockReq) foldMap AkkaInterpreter[IO].trans).unsafeRunSync()
 
       result shouldEqual HttpResponse(Status.OK, Map(), Entity.StringEntity(""))
     }
@@ -136,7 +136,7 @@ class AkkaInterpreterSpec extends AnyWordSpec with MockitoSugar with Matchers wi
           ))
         .withEntity(HttpEntity.Strict(ContentTypes.`application/json`, ByteString.fromString("potato")))
       when(client.singleRequest(akkaReq)).thenReturn(Future.successful(httpResponse))
-      val result = (Free.liftF(hammockReq) foldMap AkkaInterpreter[IO].trans).unsafeRunSync
+      val result = (Free.liftF(hammockReq) foldMap AkkaInterpreter[IO].trans).unsafeRunSync()
 
       result shouldEqual HttpResponse(Status.OK, Map(), Entity.StringEntity(""))
     }
@@ -158,7 +158,7 @@ class AkkaInterpreterSpec extends AnyWordSpec with MockitoSugar with Matchers wi
           ))
         .withEntity(HttpEntity.Strict(ContentTypes.`application/octet-stream`, ByteString(Array[Byte](11, 12, 13, 14))))
       when(client.singleRequest(akkaReq)).thenReturn(Future.successful(httpResponse))
-      val result = (Free.liftF(hammockReq) foldMap AkkaInterpreter[IO].trans).unsafeRunSync
+      val result = (Free.liftF(hammockReq) foldMap AkkaInterpreter[IO].trans).unsafeRunSync()
 
       result shouldEqual HttpResponse(Status.OK, Map(), Entity.StringEntity(""))
     }
