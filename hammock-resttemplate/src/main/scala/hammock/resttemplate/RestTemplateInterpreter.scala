@@ -11,7 +11,7 @@ import org.springframework.http._
 import org.springframework.util.LinkedMultiValueMap
 import org.springframework.web.client.RestTemplate
 
-import scala.collection.JavaConverters._
+import scala.jdk.CollectionConverters._
 
 object RestTemplateInterpreter {
 
@@ -40,7 +40,7 @@ object RestTemplateInterpreter {
 
     def httpEntity: HttpEntity[String] = new HttpEntity(
       reqF.req.entity.map(_.cata[String](_.body, _.body.map(_.toChar).mkString, Function.const(""))).orNull,
-      new LinkedMultiValueMap[String, String](reqF.req.headers.mapValues(List(_).asJava).asJava)
+      new LinkedMultiValueMap[String, String](reqF.req.headers.view.mapValues(List(_).asJava).toMap.asJava)
     )
 
     def requestEntity(httpMethod: HttpMethod): RequestEntity[String] =

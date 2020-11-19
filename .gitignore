@@ -37,4 +37,6 @@ project/plugins/project/
 node_modules/
 .metals
 project/.bloop
+project/project
+project/metals.sbt
 .bloop

@@ -1,6 +1,5 @@
 import microsites._
 import ReleaseTransformations._
-import sbtcrossproject.{crossProject, CrossType}
 
 inThisBuild(
   List(
@@ -18,24 +17,25 @@ inThisBuild(
   ))
 
 val Versions = Map(
-  "contextual"              -> "1.2.1",
   "circe"                   -> "0.13.0",
-  "monocle"                 -> "2.0.5",
-  "atto"                    -> "0.7.2",
+  "monocle"                 -> "2.0.4",
+  "collection-compat"       -> "2.2.0",
+  "atto"                    -> "0.8.0",
   "cats"                    -> "2.1.1",
   "cats-effect"             -> "2.1.2",
   "simulacrum"              -> "1.0.0",
-  "scalatest"               -> "3.2.0-M4",
+  "scalatest"               -> "3.2.2",
   "scalacheck"              -> "1.14.3",
-  "scalatestplusScalaCheck" -> "3.1.0.0-RC2",
+  "scalatestplusScalaCheck" -> "3.2.2.0",
   "scalatestplusMockito"    -> "1.0.0-M2",
-  "discipline"              -> "1.0.2",
+  "discipline"              -> "1.1.2",
+  "discipline-scalatest"    -> "2.0.0",
   "macro-paradise"          -> "2.1.1",
   "kind-projector"          -> "0.10.3",
   "akka-http"               -> "10.1.10",
   "akka-stream"             -> "2.5.30",
   "ahc"                     -> "2.10.3",
-  "spring"                  -> "5.2.7.RELEASE",
+  "spring"                  -> "5.2.9.RELEASE",
   "findbugs"                -> "3.0.2",
   "apacheHttp"              -> "4.5.12",
   "mockito"                 -> "1.10.19"
@@ -50,7 +50,8 @@ val noPublishSettings = Seq(
 
 val buildSettings = Seq(
   organization := "com.pepegar",
-  scalaVersion := "2.12.10",
+  scalaVersion := "2.13.3",
+  crossScalaVersions := Seq(scalaVersion.value, "2.12.10"),
   licenses := Seq(("MIT", url("http://opensource.org/licenses/MIT"))),
   scalacOptions in (Compile, console) ~= filterConsoleScalacOptions,
   scalacOptions in (Compile, doc) ~= filterConsoleScalacOptions,
@@ -59,60 +60,60 @@ val buildSettings = Seq(
 
 val commonDependencies = Seq(
   libraryDependencies ++= Seq(
-    "org.typelevel"              %%% "cats-core"                % Versions("cats"),
-    "org.typelevel"              %%% "cats-free"                % Versions("cats"),
-    "org.typelevel"              %%% "alleycats-core"           % Versions("cats"),
-    "com.propensive"             %%% "contextual"               % Versions("contextual"),
-    "org.typelevel"              %%% "cats-effect"              % Versions("cats-effect"),
-    "org.typelevel"              %%% "simulacrum"               % Versions("simulacrum"),
-    "com.github.julien-truffaut" %%% "monocle-core"             % Versions("monocle"),
-    "com.github.julien-truffaut" %%% "monocle-macro"            % Versions("monocle"),
-    "org.tpolecat"               %%% "atto-core"                % Versions("atto"),
-    "com.github.julien-truffaut" %%% "monocle-law"              % Versions("monocle") % Test,
-    "org.typelevel"              %%% "cats-laws"                % Versions("cats") % Test,
-    "org.typelevel"              %%% "cats-testkit"             % Versions("cats") % Test,
-    "org.scalatest"              %%% "scalatest"                % Versions("scalatest") % Test,
-    "org.scalacheck"             %%% "scalacheck"               % Versions("scalacheck") % Test,
-    "org.scalatestplus"          %%% "scalatestplus-scalacheck" % Versions("scalatestplusScalaCheck") % Test,
-    "org.typelevel"              %%% "discipline-core"          % Versions("discipline") % Test
+    "org.scala-lang.modules"     %% "scala-collection-compat" % Versions("collection-compat"),
+    "org.typelevel"              %% "cats-core"               % Versions("cats"),
+    "org.typelevel"              %% "cats-free"               % Versions("cats"),
+    "org.typelevel"              %% "alleycats-core"          % Versions("cats"),
+    "org.typelevel"              %% "cats-effect"             % Versions("cats-effect"),
+    "org.typelevel"              %% "simulacrum"              % Versions("simulacrum"),
+    "com.github.julien-truffaut" %% "monocle-core"            % Versions("monocle"),
+    "com.github.julien-truffaut" %% "monocle-macro"           % Versions("monocle"),
+    "org.tpolecat"               %% "atto-core"               % Versions("atto"),
+    "com.github.julien-truffaut" %% "monocle-law"             % Versions("monocle") % Test,
+    "org.typelevel"              %% "cats-laws"               % Versions("cats") % Test,
+    "org.typelevel"              %% "cats-testkit"            % Versions("cats") % Test,
+    "org.scalatest"              %% "scalatest"               % Versions("scalatest") % Test,
+    "org.scalacheck"             %% "scalacheck"              % Versions("scalacheck") % Test,
+    "org.scalatestplus"          %% "scalacheck-1-14"         % Versions("scalatestplusScalaCheck") % Test,
+    "org.typelevel"              %% "discipline-core"         % Versions("discipline") % Test,
+    "org.typelevel"              %% "discipline-scalatest"    % Versions("discipline-scalatest") % Test
   )
 )
 
 val compilerPlugins = Seq(
   libraryDependencies ++= Seq(
-    compilerPlugin("org.scalamacros" %% "paradise"       % Versions("macro-paradise") cross CrossVersion.full),
-    compilerPlugin("org.typelevel"   %% "kind-projector" % Versions("kind-projector"))
-  )
+    compilerPlugin("org.typelevel" %% "kind-projector" % Versions("kind-projector"))
+  ),
+  Compile / scalacOptions ++= {
+    CrossVersion.partialVersion(scalaVersion.value) match {
+      case Some((2, n)) if n >= 13 => "-Ymacro-annotations" :: Nil
+      case _                       => Nil
+    }
+  },
+  libraryDependencies ++= {
+    CrossVersion.partialVersion(scalaVersion.value) match {
+      case Some((2, n)) if n >= 13 => Nil
+      case _ =>
+        compilerPlugin("org.scalamacros" % "paradise" % Versions("macro-paradise") cross CrossVersion.full) :: Nil
+    }
+  }
 )
 
 lazy val hammock = project
   .in(file("."))
   .settings(buildSettings)
   .settings(noPublishSettings)
-  .dependsOn(coreJVM, coreJS, circeJVM, circeJS, apache, akka, asynchttpclient, resttemplate)
-  .aggregate(coreJVM, coreJS, circeJVM, circeJS, apache, akka, asynchttpclient, resttemplate)
+  .dependsOn(core, circe, apache, akka, asynchttpclient, resttemplate)
+  .aggregate(core, circe, apache, akka, asynchttpclient, resttemplate)
 
-lazy val core = crossProject(JSPlatform, JVMPlatform)
-  .crossType(CrossType.Full)
+lazy val core = project
   .in(file("core"))
   .settings(moduleName := "hammock-core")
   .settings(buildSettings)
   .settings(commonDependencies)
   .settings(compilerPlugins)
-  .jsSettings(
-    libraryDependencies ++= Seq(
-      "org.scala-js"      %%% "scalajs-dom"     % "1.0.0",
-      "io.scalajs.npm"    %%% "node-fetch"      % "0.4.2",
-      "io.github.cquiroz" %%% "scala-java-time" % "2.0.0-RC3"
-    ),
-    npmDependencies in Test += "node-fetch" -> "2.1.2"
-  )
 
-lazy val coreJVM = core.jvm
-lazy val coreJS  = core.js.enablePlugins(ScalaJSBundlerPlugin)
-
-lazy val circe = crossProject(JSPlatform, JVMPlatform)
-  .crossType(CrossType.Pure)
+lazy val circe = project
   .in(file("hammock-circe"))
   .settings(moduleName := "hammock-circe")
   .settings(buildSettings)
@@ -120,13 +121,10 @@ lazy val circe = crossProject(JSPlatform, JVMPlatform)
   .settings(compilerPlugins)
   .settings(
     libraryDependencies ++= Seq(
-      "io.circe" %%% "circe-core"    % Versions("circe"),
-      "io.circe" %%% "circe-generic" % Versions("circe"),
-      "io.circe" %%% "circe-parser"  % Versions("circe")))
+      "io.circe" %% "circe-core"    % Versions("circe"),
+      "io.circe" %% "circe-generic" % Versions("circe"),
+      "io.circe" %% "circe-parser"  % Versions("circe")))
   .dependsOn(core)
-
-lazy val circeJVM = circe.jvm
-lazy val circeJS  = circe.js
 
 lazy val apache = project
   .in(file("hammock-apache-http"))
@@ -136,12 +134,12 @@ lazy val apache = project
   .settings(compilerPlugins)
   .settings(
     libraryDependencies ++= Seq(
-      "org.apache.httpcomponents" % "httpclient"              % Versions("apacheHttp"),
-      "org.scalatestplus"         %%% "scalatestplus-mockito" % Versions("scalatestplusMockito") % Test,
-      "org.mockito"               % "mockito-all"             % Versions("mockito") % Test
+      "org.apache.httpcomponents" % "httpclient"             % Versions("apacheHttp"),
+      "org.scalatestplus"         %% "scalatestplus-mockito" % Versions("scalatestplusMockito") % Test,
+      "org.mockito"               % "mockito-all"            % Versions("mockito") % Test
     )
   )
-  .dependsOn(coreJVM)
+  .dependsOn(core)
 
 lazy val akka = project
   .in(file("hammock-akka-http"))
@@ -151,13 +149,13 @@ lazy val akka = project
   .settings(compilerPlugins)
   .settings(
     libraryDependencies ++= Seq(
-      "com.typesafe.akka" %% "akka-http"              % Versions("akka-http"),
-      "com.typesafe.akka" %% "akka-stream"            % Versions("akka-stream"),
-      "org.mockito"       % "mockito-all"             % Versions("mockito") % Test,
-      "org.scalatestplus" %%% "scalatestplus-mockito" % Versions("scalatestplusMockito") % Test
+      "com.typesafe.akka" %% "akka-http"             % Versions("akka-http"),
+      "com.typesafe.akka" %% "akka-stream"           % Versions("akka-stream"),
+      "org.mockito"       % "mockito-all"            % Versions("mockito") % Test,
+      "org.scalatestplus" %% "scalatestplus-mockito" % Versions("scalatestplusMockito") % Test
     )
   )
-  .dependsOn(coreJVM)
+  .dependsOn(core)
 
 lazy val asynchttpclient = project
   .in(file("hammock-asynchttpclient"))
@@ -167,12 +165,12 @@ lazy val asynchttpclient = project
   .settings(compilerPlugins)
   .settings(
     libraryDependencies ++= Seq(
-      "org.asynchttpclient" % "async-http-client"       % Versions("ahc"),
-      "org.scalatestplus"   %%% "scalatestplus-mockito" % Versions("scalatestplusMockito") % Test,
-      "org.mockito"         % "mockito-all"             % Versions("mockito") % Test
+      "org.asynchttpclient" % "async-http-client"      % Versions("ahc"),
+      "org.scalatestplus"   %% "scalatestplus-mockito" % Versions("scalatestplusMockito") % Test,
+      "org.mockito"         % "mockito-all"            % Versions("mockito") % Test
     )
   )
-  .dependsOn(coreJVM)
+  .dependsOn(core)
 
 lazy val resttemplate = project
   .in(file("hammock-resttemplate"))
@@ -182,19 +180,19 @@ lazy val resttemplate = project
   .settings(compilerPlugins)
   .settings(
     libraryDependencies ++= Seq(
-      "com.google.code.findbugs" % "jsr305"                  % Versions("findbugs") % Optional,
-      "org.springframework"      % "spring-web"              % Versions("spring"),
-      "org.scalatestplus"        %%% "scalatestplus-mockito" % Versions("scalatestplusMockito") % Test,
-      "org.mockito"              % "mockito-all"             % Versions("mockito") % Test
+      "com.google.code.findbugs" % "jsr305"                 % Versions("findbugs") % Optional,
+      "org.springframework"      % "spring-web"             % Versions("spring"),
+      "org.scalatestplus"        %% "scalatestplus-mockito" % Versions("scalatestplusMockito") % Test,
+      "org.mockito"              % "mockito-all"            % Versions("mockito") % Test
     )
   )
-  .dependsOn(coreJVM)
+  .dependsOn(core)
 
 lazy val javadocIoUrl = settingKey[String]("the url of hammock documentation in http://javadoc.io")
 
 lazy val docs = project
   .in(file("docs"))
-  .dependsOn(coreJVM, circeJVM, apache, akka, asynchttpclient, resttemplate)
+  .dependsOn(core, circe, apache, akka, asynchttpclient, resttemplate)
   .settings(moduleName := "hammock-docs")
   .settings(buildSettings)
   .settings(compilerPlugins)
@@ -230,7 +228,7 @@ lazy val docs = project
 
 lazy val readme = (project in file("readme"))
   .settings(moduleName := "hammock-readme")
-  .dependsOn(coreJVM, circeJVM, apache)
+  .dependsOn(core, circe, apache)
   .settings(buildSettings)
   .settings(noPublishSettings)
   .settings(
@@ -245,36 +243,12 @@ lazy val example = project
   .settings(buildSettings)
   .settings(noPublishSettings)
   .settings(compilerPlugins)
-  .dependsOn(coreJVM, circeJVM, apache, akka, asynchttpclient, resttemplate)
-
-lazy val exampleJS = project
-  .in(file("example-js"))
-  .enablePlugins(ScalaJSPlugin)
-  .settings(buildSettings)
-  .settings(noPublishSettings)
-  .settings(compilerPlugins)
-  .settings(libraryDependencies += "be.doeraene" %%% "scalajs-jquery" % "0.9.2")
-  .settings(jsDependencies += "org.webjars" % "jquery" % "2.1.3" / "2.1.3/jquery.js")
-  .dependsOn(coreJS, circeJS)
-
-lazy val exampleNode = project
-  .in(file("example-node"))
-  .enablePlugins(ScalaJSPlugin)
-  .settings(buildSettings)
-  .settings(noPublishSettings)
-  .settings(compilerPlugins)
-  .settings(
-    scalacOptions ~= (_ filterNot Set("-Xfatal-warnings", "-Ywarn-unused-import", "-Xlint").contains),
-    scalaJSModuleKind := ModuleKind.CommonJSModule,
-    scalaJSUseMainModuleInitializer := true
-  )
-  .dependsOn(coreJS, circeJS)
+  .dependsOn(core, circe, apache, akka, asynchttpclient, resttemplate)
 
 addCommandAlias("formatAll", ";sbt:scalafmt;test:scalafmt;compile:scalafmt")
 addCommandAlias("validateScalafmt", ";sbt:scalafmt::test;test:scalafmt::test;compile:scalafmt::test")
 addCommandAlias("validateDoc", ";docs/mdoc;readme/mdoc")
 addCommandAlias(
-  "validateJVM",
-  ";validateScalafmt;coreJVM/test;circeJVM/test;akka/test;asynchttpclient/test;validateDoc")
-addCommandAlias("validateJS", ";validateScalafmt;coreJS/test;circeJS/test")
-addCommandAlias("validate", ";clean;validateScalafmt;validateJS;validateJVM;validateDoc")
+  "validateTests",
+  ";validateScalafmt;+core/test;+circe/test;+akka/test;+asynchttpclient/test;validateDoc")
+addCommandAlias("validate", ";clean;validateScalafmt;validateTests;validateDoc")
