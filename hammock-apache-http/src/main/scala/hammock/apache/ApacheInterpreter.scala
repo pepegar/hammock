@@ -19,9 +19,7 @@ object ApacheInterpreter {
 
   def apply[F[_]](implicit F: InterpTrans[F]): InterpTrans[F] = F
 
-  implicit def instance[F[_]: Sync](
-      implicit
-      client: HttpClient = HttpClientBuilder.create().build()): InterpTrans[F] =
+  implicit def instance[F[_]: Sync](implicit client: HttpClient = HttpClientBuilder.create().build()): InterpTrans[F] =
     new InterpTrans[F] {
       def trans: HttpF ~> F = transK andThen λ[Kleisli[F, HttpClient, *] ~> F](_.run(client))
     }
@@ -100,17 +98,19 @@ object ApacheInterpreter {
         for {
           req <- Sync[F].delay(new HttpPost(uri.show))
           _   <- Sync[F].delay(req.setHeaders(prepareHeaders(headers)))
-          _ <- if (entity.isDefined) {
-            mapEntity(entity.get) >>= (apacheEntity => Sync[F].delay(req.setEntity(apacheEntity)))
-          } else ().pure[F]
+          _ <-
+            if (entity.isDefined) {
+              mapEntity(entity.get) >>= (apacheEntity => Sync[F].delay(req.setEntity(apacheEntity)))
+            } else ().pure[F]
         } yield req
       case Put(HttpRequest(uri, headers, maybeEntity)) =>
         for {
           req <- Sync[F].delay(new HttpPut(uri.show))
           _   <- Sync[F].delay(req.setHeaders(prepareHeaders(headers)))
-          _ <- if (maybeEntity.isDefined) {
-            mapEntity(maybeEntity.get) >>= (apacheEntity => Sync[F].delay(req.setEntity(apacheEntity)))
-          } else ().pure[F]
+          _ <-
+            if (maybeEntity.isDefined) {
+              mapEntity(maybeEntity.get) >>= (apacheEntity => Sync[F].delay(req.setEntity(apacheEntity)))
+            } else ().pure[F]
         } yield req
       case Delete(HttpRequest(uri, headers, _)) =>
         Sync[F].delay {
@@ -128,9 +128,10 @@ object ApacheInterpreter {
         for {
           req <- Sync[F].delay(new HttpPatch(uri.show))
           _   <- Sync[F].delay(req.setHeaders(prepareHeaders(headers)))
-          _ <- if (entity.isDefined) {
-            mapEntity(entity.get) >>= (apacheEntity => Sync[F].delay(req.setEntity(apacheEntity)))
-          } else ().pure[F]
+          _ <-
+            if (entity.isDefined) {
+              mapEntity(entity.get) >>= (apacheEntity => Sync[F].delay(req.setEntity(apacheEntity)))
+            } else ().pure[F]
         } yield req
     }
   }

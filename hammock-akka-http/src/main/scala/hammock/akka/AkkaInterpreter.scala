@@ -24,18 +24,19 @@ object AkkaInterpreter {
 
   def apply[F[_]](implicit F: InterpTrans[F]): InterpTrans[F] = F
 
-  implicit def instance[F[_]: Async: ContextShift](
-      implicit
+  implicit def instance[F[_]: Async: ContextShift](implicit
       client: HttpExt,
       materializer: ActorMaterializer,
-      executionContext: ExecutionContext) =
+      executionContext: ExecutionContext
+  ) =
     new InterpTrans[F] {
       override def trans: HttpF ~> F = transK andThen λ[Kleisli[F, HttpExt, *] ~> F](_.run(client))
     }
 
-  def transK[F[_]: Async: ContextShift](
-      implicit materializer: ActorMaterializer,
-      executionContext: ExecutionContext): HttpF ~> Kleisli[F, HttpExt, *] = {
+  def transK[F[_]: Async: ContextShift](implicit
+      materializer: ActorMaterializer,
+      executionContext: ExecutionContext
+  ): HttpF ~> Kleisli[F, HttpExt, *] = {
 
     def doReq(req: HttpF[HttpResponse]): Kleisli[F, HttpExt, HttpResponse] = Kleisli { http =>
       for {

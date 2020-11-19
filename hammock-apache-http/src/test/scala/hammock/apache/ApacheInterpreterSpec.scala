@@ -42,18 +42,17 @@ class ApacheInterpreterSpec extends AnyWordSpec with MockitoSugar with BeforeAnd
       ("Delete", (uri: Uri, headers: Map[String, String]) => Ops.delete(uri, headers)),
       ("Trace", (uri: Uri, headers: Map[String, String]) => Ops.trace(uri, headers)),
       ("Patch", (uri: Uri, headers: Map[String, String]) => Ops.patch(uri, headers, None))
-    ) foreach {
-      case (method, operation) =>
-        s"have the same result as transK.run(client) with $method requests" in {
-          when(client.execute(any[HttpUriRequest])).thenReturn(httpResponse)
+    ) foreach { case (method, operation) =>
+      s"have the same result as transK.run(client) with $method requests" in {
+        when(client.execute(any[HttpUriRequest])).thenReturn(httpResponse)
 
-          val op           = operation(Uri(), Map())
-          val k            = op.foldMap[Kleisli[IO, HttpClient, *]](transK)
-          val transKResult = k.run(client).unsafeRunSync()
-          val transResult  = (op foldMap ApacheInterpreter[IO].trans).unsafeRunSync()
+        val op           = operation(Uri(), Map())
+        val k            = op.foldMap[Kleisli[IO, HttpClient, *]](transK)
+        val transKResult = k.run(client).unsafeRunSync()
+        val transResult  = (op foldMap ApacheInterpreter[IO].trans).unsafeRunSync()
 
-          assert(Eq[HttpResponse].eqv(transKResult, transResult))
-        }
+        assert(Eq[HttpResponse].eqv(transKResult, transResult))
+      }
     }
 
     "create a correct Apache's HTTP request from HttpF" in {
@@ -64,7 +63,9 @@ class ApacheInterpreterSpec extends AnyWordSpec with MockitoSugar with BeforeAnd
             "header1" -> "value1",
             "header2" -> "value2"
           ),
-          None))
+          None
+        )
+      )
 
       val apacheReq = mapRequest[IO](req).unsafeRunSync()
       assert(apacheReq.getURI == new URI("http://localhost:8080"))
@@ -72,11 +73,13 @@ class ApacheInterpreterSpec extends AnyWordSpec with MockitoSugar with BeforeAnd
       assert(
         apacheReq
           .getHeaders("header1")(0)
-          .getValue == "value1")
+          .getValue == "value1"
+      )
       assert(
         apacheReq
           .getHeaders("header2")(0)
-          .getValue == "value2")
+          .getValue == "value2"
+      )
     }
 
     "create a correct HttpResponse from Apache's HTTP response" in {

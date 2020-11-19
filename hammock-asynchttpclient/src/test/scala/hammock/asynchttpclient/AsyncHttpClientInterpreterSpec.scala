@@ -29,7 +29,9 @@ class AsyncHttpClientInterpreterSpec extends AnyWordSpec with Matchers with Mock
         HttpRequest(
           uri"http://google.com",
           Map("header1" -> "value1", "header2" -> "value2"),
-          Some(Entity.StringEntity("the body"))))
+          Some(Entity.StringEntity("the body"))
+        )
+      )
       val req3 = mapRequest[IO](hreq3).unsafeRunSync().build()
 
       req1.getUrl shouldEqual hreq1.req.uri.show
@@ -81,7 +83,8 @@ class AsyncHttpClientInterpreterSpec extends AnyWordSpec with Matchers with Mock
           "application/json",
           new DefaultHttpHeaders().add("Content-type", "application/json"),
           "[1,2,3,4]",
-          200)
+          200
+        )
       val hammockResponse2 =
         HttpResponse(Status.OK, Map("Content-type" -> "application/json"), Entity.StringEntity("[1,2,3,4]"))
       val ahcResponse3 =
@@ -89,12 +92,14 @@ class AsyncHttpClientInterpreterSpec extends AnyWordSpec with Matchers with Mock
           "application/octet-stream",
           new DefaultHttpHeaders().add("Content-type", "application/octet-stream"),
           "[1,2,3,4]",
-          200)
+          200
+        )
       val hammockResponse3 =
         HttpResponse(
           Status.OK,
           Map("Content-type" -> "application/octet-stream"),
-          Entity.ByteArrayEntity("[1,2,3,4]".toCharArray.map(_.toByte)))
+          Entity.ByteArrayEntity("[1,2,3,4]".toCharArray.map(_.toByte))
+        )
 
       val tests = List(
         ahcResponse1 -> hammockResponse1,
@@ -102,14 +107,13 @@ class AsyncHttpClientInterpreterSpec extends AnyWordSpec with Matchers with Mock
         ahcResponse3 -> hammockResponse3
       )
 
-      tests foreach {
-        case (a, h) =>
-          (mapResponse[IO](a).unsafeRunSync(), h) match {
-            case (HttpResponse(s1, h1, e1), HttpResponse(s2, h2, e2)) =>
-              s1 shouldEqual s2
-              h1 shouldEqual h2
-              e1.cata(showStr, showByt, showEmpty) shouldEqual e2.cata(showStr, showByt, showEmpty)
-          }
+      tests foreach { case (a, h) =>
+        (mapResponse[IO](a).unsafeRunSync(), h) match {
+          case (HttpResponse(s1, h1, e1), HttpResponse(s2, h2, e2)) =>
+            s1 shouldEqual s2
+            h1 shouldEqual h2
+            e1.cata(showStr, showByt, showEmpty) shouldEqual e2.cata(showStr, showByt, showEmpty)
+        }
       }
     }
   }

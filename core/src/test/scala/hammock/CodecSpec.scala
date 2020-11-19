@@ -31,9 +31,13 @@ trait CodecTests[A] extends Laws {
   def laws: CodecLaws[A]
 
   def codec(implicit A: Arbitrary[A], eq: Eq[A]): RuleSet =
-    new DefaultRuleSet("Codec", None, "decodeAfterEncodeEquality" -> Prop.forAll { (a: A) =>
-      laws.decodeAfterEncodeEquality(a)
-    })
+    new DefaultRuleSet(
+      "Codec",
+      None,
+      "decodeAfterEncodeEquality" -> Prop.forAll { (a: A) =>
+        laws.decodeAfterEncodeEquality(a)
+      }
+    )
 }
 
 object CodecTests {

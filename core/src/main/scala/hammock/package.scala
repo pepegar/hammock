@@ -20,17 +20,15 @@ package object hammock {
       fa foldMap NT
   }
 
-  implicit class AsSyntaxOnHttpF[F[_], A](fa: Free[F, HttpResponse])(
-      implicit
-      H: InjectK[HttpF, F]) {
+  implicit class AsSyntaxOnHttpF[F[_], A](fa: Free[F, HttpResponse])(implicit H: InjectK[HttpF, F]) {
     def as[B](implicit D: Decoder[B], M: MarshallC[EitherK[F, MarshallF, *]]): Free[EitherK[F, MarshallF, *], B] =
       fa.inject[EitherK[F, MarshallF, *]] flatMap { response =>
         M.unmarshall(response.entity)
       }
   }
 
-  implicit def hammockNT[F[_]: Sync](
-      implicit H: InterpTrans[F],
+  implicit def hammockNT[F[_]: Sync](implicit
+      H: InterpTrans[F],
       M: MarshallF ~> F
   ): HammockF ~> F = H.trans or M
 
@@ -60,7 +58,7 @@ package object hammock {
   /**
    * Methods providing URI query parameters building syntax
    * Used in [[Uri.?]] method
-    **/
+   */
   implicit class UriQueryParamsBuilder(val self: NonEmptyList[(String, String)]) extends AnyVal {
     def &(param: (String, String)): NonEmptyList[(String, String)] = param :: self
   }

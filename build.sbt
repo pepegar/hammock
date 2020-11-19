@@ -14,7 +14,8 @@ inThisBuild(
         url("https://pepegar.com")
       )
     )
-  ))
+  )
+)
 
 val Versions = Map(
   "circe"                   -> "0.13.0",
@@ -69,14 +70,14 @@ val commonDependencies = Seq(
     "com.github.julien-truffaut" %% "monocle-core"            % Versions("monocle"),
     "com.github.julien-truffaut" %% "monocle-macro"           % Versions("monocle"),
     "org.tpolecat"               %% "atto-core"               % Versions("atto"),
-    "com.github.julien-truffaut" %% "monocle-law"             % Versions("monocle") % Test,
-    "org.typelevel"              %% "cats-laws"               % Versions("cats") % Test,
-    "org.typelevel"              %% "cats-testkit"            % Versions("cats") % Test,
-    "org.scalatest"              %% "scalatest"               % Versions("scalatest") % Test,
-    "org.scalacheck"             %% "scalacheck"              % Versions("scalacheck") % Test,
+    "com.github.julien-truffaut" %% "monocle-law"             % Versions("monocle")                 % Test,
+    "org.typelevel"              %% "cats-laws"               % Versions("cats")                    % Test,
+    "org.typelevel"              %% "cats-testkit"            % Versions("cats")                    % Test,
+    "org.scalatest"              %% "scalatest"               % Versions("scalatest")               % Test,
+    "org.scalacheck"             %% "scalacheck"              % Versions("scalacheck")              % Test,
     "org.scalatestplus"          %% "scalacheck-1-14"         % Versions("scalatestplusScalaCheck") % Test,
-    "org.typelevel"              %% "discipline-core"         % Versions("discipline") % Test,
-    "org.typelevel"              %% "discipline-scalatest"    % Versions("discipline-scalatest") % Test
+    "org.typelevel"              %% "discipline-core"         % Versions("discipline")              % Test,
+    "org.typelevel"              %% "discipline-scalatest"    % Versions("discipline-scalatest")    % Test
   )
 )
 
@@ -123,7 +124,9 @@ lazy val circe = project
     libraryDependencies ++= Seq(
       "io.circe" %% "circe-core"    % Versions("circe"),
       "io.circe" %% "circe-generic" % Versions("circe"),
-      "io.circe" %% "circe-parser"  % Versions("circe")))
+      "io.circe" %% "circe-parser"  % Versions("circe")
+    )
+  )
   .dependsOn(core)
 
 lazy val apache = project
@@ -134,9 +137,9 @@ lazy val apache = project
   .settings(compilerPlugins)
   .settings(
     libraryDependencies ++= Seq(
-      "org.apache.httpcomponents" % "httpclient"             % Versions("apacheHttp"),
-      "org.scalatestplus"         %% "scalatestplus-mockito" % Versions("scalatestplusMockito") % Test,
-      "org.mockito"               % "mockito-all"            % Versions("mockito") % Test
+      "org.apache.httpcomponents" % "httpclient"            % Versions("apacheHttp"),
+      "org.scalatestplus"        %% "scalatestplus-mockito" % Versions("scalatestplusMockito") % Test,
+      "org.mockito"               % "mockito-all"           % Versions("mockito")              % Test
     )
   )
   .dependsOn(core)
@@ -151,7 +154,7 @@ lazy val akka = project
     libraryDependencies ++= Seq(
       "com.typesafe.akka" %% "akka-http"             % Versions("akka-http"),
       "com.typesafe.akka" %% "akka-stream"           % Versions("akka-stream"),
-      "org.mockito"       % "mockito-all"            % Versions("mockito") % Test,
+      "org.mockito"        % "mockito-all"           % Versions("mockito")              % Test,
       "org.scalatestplus" %% "scalatestplus-mockito" % Versions("scalatestplusMockito") % Test
     )
   )
@@ -165,9 +168,9 @@ lazy val asynchttpclient = project
   .settings(compilerPlugins)
   .settings(
     libraryDependencies ++= Seq(
-      "org.asynchttpclient" % "async-http-client"      % Versions("ahc"),
-      "org.scalatestplus"   %% "scalatestplus-mockito" % Versions("scalatestplusMockito") % Test,
-      "org.mockito"         % "mockito-all"            % Versions("mockito") % Test
+      "org.asynchttpclient" % "async-http-client"     % Versions("ahc"),
+      "org.scalatestplus"  %% "scalatestplus-mockito" % Versions("scalatestplusMockito") % Test,
+      "org.mockito"         % "mockito-all"           % Versions("mockito")              % Test
     )
   )
   .dependsOn(core)
@@ -180,10 +183,10 @@ lazy val resttemplate = project
   .settings(compilerPlugins)
   .settings(
     libraryDependencies ++= Seq(
-      "com.google.code.findbugs" % "jsr305"                 % Versions("findbugs") % Optional,
-      "org.springframework"      % "spring-web"             % Versions("spring"),
-      "org.scalatestplus"        %% "scalatestplus-mockito" % Versions("scalatestplusMockito") % Test,
-      "org.mockito"              % "mockito-all"            % Versions("mockito") % Test
+      "com.google.code.findbugs" % "jsr305"                % Versions("findbugs")             % Optional,
+      "org.springframework"      % "spring-web"            % Versions("spring"),
+      "org.scalatestplus"       %% "scalatestplus-mockito" % Versions("scalatestplusMockito") % Test,
+      "org.mockito"              % "mockito-all"           % Versions("mockito")              % Test
     )
   )
   .dependsOn(core)
@@ -250,5 +253,6 @@ addCommandAlias("validateScalafmt", ";sbt:scalafmt::test;test:scalafmt::test;com
 addCommandAlias("validateDoc", ";docs/mdoc;readme/mdoc")
 addCommandAlias(
   "validateTests",
-  ";validateScalafmt;+core/test;+circe/test;+akka/test;+asynchttpclient/test;validateDoc")
+  ";validateScalafmt;+core/test;+circe/test;+akka/test;+asynchttpclient/test;validateDoc"
+)
 addCommandAlias("validate", ";clean;validateScalafmt;validateTests;validateDoc")

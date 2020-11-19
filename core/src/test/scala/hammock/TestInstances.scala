@@ -56,7 +56,8 @@ object TestInstances {
   val localHostGen = Gen.const(Host.Localhost).label("Localhost")
 
   implicit val hostArbitrary: Arbitrary[Host] = Arbitrary(
-    Gen.oneOf(ipv4Gen, ipv6Gen, otherGen, localHostGen).label("Host"))
+    Gen.oneOf(ipv4Gen, ipv6Gen, otherGen, localHostGen).label("Host")
+  )
 
   implicit val authorityArbitrary: Arbitrary[Authority] = Arbitrary((for {
     user <- Gen.option(nonEmptyAlphanumString)
@@ -95,7 +96,8 @@ object TestInstances {
   implicit val authCogen: Cogen[Auth] = Cogen[String].contramap[Auth](_.show)
 
   implicit val sameSiteArbitrary: Arbitrary[SameSite] = Arbitrary(
-    Gen.oneOf(SameSite.Lax, SameSite.Strict).label("SameSite"))
+    Gen.oneOf(SameSite.Lax, SameSite.Strict).label("SameSite")
+  )
 
   implicit val sameSiteCogen: Cogen[SameSite] = Cogen[Boolean].contramap[SameSite] {
     case SameSite.Lax    => true
@@ -113,16 +115,9 @@ object TestInstances {
 
   implicit val cookieCogen: Cogen[Cookie] =
     Cogen
-      .tuple9[
-        String,
-        String,
-        Option[Int],
-        Option[String],
-        Option[String],
-        Option[Boolean],
-        Option[Boolean],
-        Option[SameSite],
-        Option[Map[String, String]]]
+      .tuple9[String, String, Option[Int], Option[String], Option[String], Option[Boolean], Option[Boolean], Option[
+        SameSite
+      ], Option[Map[String, String]]]
       .contramap[Cookie] { c =>
         (c.name, c.value, c.maxAge, c.domain, c.path, c.secure, c.httpOnly, c.sameSite, c.custom)
       }
