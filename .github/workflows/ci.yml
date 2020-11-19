@@ -34,7 +34,7 @@ jobs:
           key: ${{ runner.os }}-sbt-${{ hashFiles('build.sbt') }}-${{ hashFiles('project/*.scala') }}
           restore-keys: ${{ runner.os }}-sbt-
       - name: Run checks
-        run: sbt ci-test
+        run: sbt validate
       - name: Automerge Scala Steward PRs
         if: success() && github.event_name == 'pull_request' && contains(github.event.pull_request.body, 'Scala Steward')
         uses: ridedott/merge-me-action@v1.8.47
