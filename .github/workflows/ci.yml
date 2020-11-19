@@ -1,0 +1,49 @@
+name: Formatters & Tests
+
+on:
+  push:
+    branches: master
+  pull_request:
+
+jobs:
+  test:
+    if: "!contains(github.event.head_commit.message, 'skip ci')"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout project
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.head_ref }}
+      - name: Label PR
+        if: github.event_name == 'pull_request'
+        uses: TimonVS/pr-labeler-action@v3
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Setup Scala
+        uses: olafurpg/setup-scala@v10
+      - name: Cache dependencies
+        uses: actions/cache@v2.1.3
+        with:
+          path: ~/.cache/coursier/v1
+          key: ${{ runner.os }}-coursier-${{ hashFiles('build.sbt') }}-${{ hashFiles('project/*.scala') }}
+          restore-keys: ${{ runner.os }}-coursier-
+      - name: Cache .sbt
+        uses: actions/cache@v2.1.3
+        with:
+          path: ~/.sbt
+          key: ${{ runner.os }}-sbt-${{ hashFiles('build.sbt') }}-${{ hashFiles('project/*.scala') }}
+          restore-keys: ${{ runner.os }}-sbt-
+      - name: Run checks
+        run: sbt ci-test
+      - name: Automerge Scala Steward PRs
+        if: success() && github.event_name == 'pull_request' && contains(github.event.pull_request.body, 'Scala Steward')
+        uses: ridedott/merge-me-action@v1.8.47
+        with:
+          GITHUB_LOGIN: pepegar
+          GITHUB_TOKEN: ${{ secrets.ADMIN_GITHUB_TOKEN }}
+      - name: Dependabot Merge
+        if: success()
+        uses: ridedott/merge-me-action@v1.8.47
+        with:
+          GITHUB_LOGIN: dependabot[bot]
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
