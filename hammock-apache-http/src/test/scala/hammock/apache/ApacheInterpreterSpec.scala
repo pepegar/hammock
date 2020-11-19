@@ -49,8 +49,8 @@ class ApacheInterpreterSpec extends AnyWordSpec with MockitoSugar with BeforeAnd
 
           val op           = operation(Uri(), Map())
           val k            = op.foldMap[Kleisli[IO, HttpClient, *]](transK)
-          val transKResult = k.run(client).unsafeRunSync
-          val transResult  = (op foldMap ApacheInterpreter[IO].trans).unsafeRunSync
+          val transKResult = k.run(client).unsafeRunSync()
+          val transResult  = (op foldMap ApacheInterpreter[IO].trans).unsafeRunSync()
 
           assert(Eq[HttpResponse].eqv(transKResult, transResult))
         }
@@ -66,7 +66,7 @@ class ApacheInterpreterSpec extends AnyWordSpec with MockitoSugar with BeforeAnd
           ),
           None))
 
-      val apacheReq = mapRequest[IO](req).unsafeRunSync
+      val apacheReq = mapRequest[IO](req).unsafeRunSync()
       assert(apacheReq.getURI == new URI("http://localhost:8080"))
       assert(apacheReq.getAllHeaders.length == 2)
       assert(
@@ -83,7 +83,7 @@ class ApacheInterpreterSpec extends AnyWordSpec with MockitoSugar with BeforeAnd
       when(client.execute(any[HttpUriRequest])).thenReturn(httpResponse)
 
       val op     = Ops.get(Uri(), Map())
-      val result = (op foldMap ApacheInterpreter[IO].trans).unsafeRunSync
+      val result = (op foldMap ApacheInterpreter[IO].trans).unsafeRunSync()
 
       assert(result.status == Status.OK)
       assert(result.headers == Map())
@@ -95,7 +95,7 @@ class ApacheInterpreterSpec extends AnyWordSpec with MockitoSugar with BeforeAnd
       when(client.execute(any[HttpUriRequest])).thenReturn(resp)
 
       val op     = Ops.get(Uri(), Map())
-      val result = (op foldMap ApacheInterpreter[IO].trans).unsafeRunSync
+      val result = (op foldMap ApacheInterpreter[IO].trans).unsafeRunSync()
 
       assert(result.status == Status.NoContent)
       assert(result.entity == Entity.EmptyEntity)
