@@ -19,7 +19,7 @@ object Main extends App {
     .request(Method.POST, uri, Map(), Some(Req("name", 4)))
     .as[Resp]
     .exec[IO]
-    .unsafeRunSync
+    .unsafeRunSync()
 
   println(postResponse)
 
@@ -27,7 +27,7 @@ object Main extends App {
     .request(Method.GET, uri"https://api.fidesmo.com/apps", Map())
     .as[List[String]]
     .exec[IO]
-    .unsafeRunSync
+    .unsafeRunSync()
 
   println(getResponse)
 }

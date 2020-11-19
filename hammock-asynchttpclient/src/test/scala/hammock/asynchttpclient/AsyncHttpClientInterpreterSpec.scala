@@ -10,7 +10,7 @@ import io.netty.handler.codec.http.{DefaultHttpHeaders, HttpHeaders}
 import io.netty.handler.codec.http.cookie.Cookie
 import org.scalatestplus.mockito._
 import AsyncHttpClientInterpreter._
-import scala.collection.JavaConverters._
+import scala.jdk.CollectionConverters._
 
 class AsyncHttpClientInterpreterSpec extends AnyWordSpec with Matchers with MockitoSugar {
 
@@ -20,17 +20,17 @@ class AsyncHttpClientInterpreterSpec extends AnyWordSpec with Matchers with Mock
 
     "map requests correctly" in {
       val hreq1 = Get(HttpRequest(uri"http://google.com", Map.empty[String, String], None))
-      val req1  = mapRequest[IO](hreq1).unsafeRunSync.build()
+      val req1  = mapRequest[IO](hreq1).unsafeRunSync().build()
 
       val hreq2 = Post(HttpRequest(uri"http://google.com", Map("header1" -> "value1"), None))
-      val req2  = mapRequest[IO](hreq2).unsafeRunSync.build()
+      val req2  = mapRequest[IO](hreq2).unsafeRunSync().build()
 
       val hreq3 = Put(
         HttpRequest(
           uri"http://google.com",
           Map("header1" -> "value1", "header2" -> "value2"),
           Some(Entity.StringEntity("the body"))))
-      val req3 = mapRequest[IO](hreq3).unsafeRunSync.build()
+      val req3 = mapRequest[IO](hreq3).unsafeRunSync().build()
 
       req1.getUrl shouldEqual hreq1.req.uri.show
       req1.getMethod shouldEqual "GET"
@@ -104,7 +104,7 @@ class AsyncHttpClientInterpreterSpec extends AnyWordSpec with Matchers with Mock
 
       tests foreach {
         case (a, h) =>
-          (mapResponse[IO](a).unsafeRunSync, h) match {
+          (mapResponse[IO](a).unsafeRunSync(), h) match {
             case (HttpResponse(s1, h1, e1), HttpResponse(s2, h2, e2)) =>
               s1 shouldEqual s2
               h1 shouldEqual h2

@@ -17,7 +17,7 @@ object AsyncHttpClientInterpExampleMain extends App {
     .request(Method.GET, getUri, Map())
     .as[GetResp]
     .exec[IO]
-    .unsafeRunSync
+    .unsafeRunSync()
 
   println(s"GET::Response = $getResp")
 
@@ -26,7 +26,7 @@ object AsyncHttpClientInterpExampleMain extends App {
     .request(Method.GET, getUriWithQueryString, Map())
     .as[GetRespWithQueryString]
     .exec[IO]
-    .unsafeRunSync
+    .unsafeRunSync()
 
   println(s"GET with query string::Response = $getRespWithQueryString")
 
@@ -35,7 +35,7 @@ object AsyncHttpClientInterpExampleMain extends App {
     .request(Method.POST, postUri, Map(), Some(Req("name", 4)))
     .as[Resp]
     .exec[IO]
-    .unsafeRunSync
+    .unsafeRunSync()
 
   println(s"POST::Response = $postResp")
 
@@ -44,7 +44,7 @@ object AsyncHttpClientInterpExampleMain extends App {
     .request(Method.PUT, putUri, Map(), Some(Req("name", 4)))
     .as[Resp]
     .exec[IO]
-    .unsafeRunSync
+    .unsafeRunSync()
 
   println(s"PUT::Response = $putResp")
 
@@ -52,7 +52,7 @@ object AsyncHttpClientInterpExampleMain extends App {
   val deleteResp = Hammock
     .request(Method.DELETE, deleteUri, Map(), Some(Req("name", 4)))
     .exec[IO]
-    .unsafeRunSync
+    .unsafeRunSync()
 
   println(s"DELETE::Response = $deleteResp")
 

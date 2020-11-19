@@ -8,7 +8,7 @@ import cats.effect._
 import org.asynchttpclient._
 import java.util.{concurrent => jc}
 import scala.util._
-import scala.collection.JavaConverters._
+import scala.jdk.CollectionConverters._
 
 object AsyncHttpClientInterpreter {
 
