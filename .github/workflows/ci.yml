@@ -37,13 +37,13 @@ jobs:
         run: sbt validate
       - name: Automerge Scala Steward PRs
         if: success() && github.event_name == 'pull_request' && contains(github.event.pull_request.body, 'Scala Steward')
-        uses: ridedott/merge-me-action@v1.8.47
+        uses: ridedott/merge-me-action@v1.8.54
         with:
           GITHUB_LOGIN: pepegar
           GITHUB_TOKEN: ${{ secrets.ADMIN_GITHUB_TOKEN }}
       - name: Dependabot Merge
         if: success()
-        uses: ridedott/merge-me-action@v1.8.47
+        uses: ridedott/merge-me-action@v1.8.54
         with:
           GITHUB_LOGIN: dependabot[bot]
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
