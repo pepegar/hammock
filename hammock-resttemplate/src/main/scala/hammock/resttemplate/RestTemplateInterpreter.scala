@@ -11,6 +11,7 @@ import org.springframework.http._
 import org.springframework.util.LinkedMultiValueMap
 import org.springframework.web.client.RestTemplate
 
+import scala.collection.compat._
 import scala.jdk.CollectionConverters._
 
 object RestTemplateInterpreter {

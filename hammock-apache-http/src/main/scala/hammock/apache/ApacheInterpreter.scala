@@ -14,6 +14,7 @@ import org.apache.http.impl.client.HttpClientBuilder
 import org.apache.http.message.BasicHeader
 import org.apache.http.util.EntityUtils
 import Uri._
+import scala.annotation.tailrec
 
 object ApacheInterpreter {
 
@@ -29,11 +30,11 @@ object ApacheInterpreter {
   def transK[F[_]: Sync]: HttpF ~> Kleisli[F, HttpClient, *] = {
 
     def responseToEntity(response: ApacheResponse): F[Entity] = Sync[F].delay {
-      Option(response.getEntity) // getEntity can return null
+      Option(response.getEntity)
         .map(_.getContent)
         .map { content =>
           val rd = new BufferedReader(new InputStreamReader(content))
-          Entity.StringEntity(LazyList.continually(rd.readLine()).takeWhile(_ != null).mkString(""))
+          Entity.StringEntity(readBuffer(rd))
         } getOrElse Entity.EmptyEntity
     }
 
@@ -133,5 +134,18 @@ object ApacheInterpreter {
           } else ().pure[F]
         } yield req
     }
+  }
+
+  private def readBuffer(reader: BufferedReader): String = {
+    @tailrec
+    def go(reader: BufferedReader, acc: Array[String]): Array[String] = {
+      val line = reader.readLine()
+      if (line != null)
+        go(reader, acc :+ line)
+      else
+        acc
+    }
+
+    go(reader, Array.empty).mkString("")
   }
 }
