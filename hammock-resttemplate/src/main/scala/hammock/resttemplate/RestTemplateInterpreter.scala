@@ -18,8 +18,8 @@ object RestTemplateInterpreter {
 
   def apply[F[_]](implicit F: InterpTrans[F]): InterpTrans[F] = F
 
-  implicit def instance[F[_]: Sync](
-      implicit client: RestTemplate = new RestTemplate()
+  implicit def instance[F[_]: Sync](implicit
+      client: RestTemplate = new RestTemplate()
   ): InterpTrans[F] = new InterpTrans[F] {
     override def trans: HttpF ~> F = transK andThen λ[Kleisli[F, RestTemplate, *] ~> F](_.run(client))
   }
@@ -60,7 +60,7 @@ object RestTemplateInterpreter {
   }
 
   def execute[F[_]: Sync](rtRequest: RequestEntity[String])(implicit client: RestTemplate): F[ResponseEntity[String]] =
-    Sync[F].delay { client.exchange(rtRequest, classOf[String]) }
+    Sync[F].delay(client.exchange(rtRequest, classOf[String]))
 
   def mapResponse[F[_]: Applicative](response: ResponseEntity[String]): F[HttpResponse] = {
 

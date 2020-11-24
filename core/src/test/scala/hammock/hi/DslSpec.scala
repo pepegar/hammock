@@ -30,7 +30,8 @@ class DslSpec extends AnyWordSpec with Matchers {
       req shouldEqual Opts(
         Some(Auth.BasicAuth("pepegar", "h4rdp4ssw0rd")),
         Map("X-Forwarded-Proto" -> "https"),
-        Some(List(Cookie("track", "A lot"))))
+        Some(List(Cookie("track", "A lot")))
+      )
     }
   }
 

@@ -17,7 +17,8 @@ object Status {
   val Continue = Status(
     100,
     "Continue",
-    "The server has received the request headers, and the client should proceed to send the request body.")
+    "The server has received the request headers, and the client should proceed to send the request body."
+  )
   val SwitchingProtocols =
     Status(101, "Switching Protocols", "The server is switching protocols, because the client requested the switch.")
   val Processing = Status(102, "Processing", "The server is processing the request, but no response is available yet.")
@@ -28,7 +29,8 @@ object Status {
   val NonAuthoritativeInformation = Status(
     203,
     "Non-Authoritative Information",
-    "The server successfully processed the request, but is returning information that may be from another source.")
+    "The server successfully processed the request, but is returning information that may be from another source."
+  )
   val NoContent =
     Status(204, "No Content", "The server successfully processed the request and is not returning any content.")
   val ResetContent =
@@ -36,7 +38,8 @@ object Status {
   val PartialContent = Status(
     206,
     "Partial Content",
-    "The server is delivering only part of the resource due to a range header sent by the client.")
+    "The server is delivering only part of the resource due to a range header sent by the client."
+  )
   val MultiStatus = Status(
     207,
     "Multi-Status",
@@ -64,7 +67,8 @@ object Status {
   val TemporaryRedirect = Status(
     307,
     "Temporary Redirect",
-    "The request should be repeated with another URI, but future requests can still use the original URI.")
+    "The request should be repeated with another URI, but future requests can still use the original URI."
+  )
   val PermanentRedirect =
     Status(308, "Permanent Redirect", "The request, and all future requests should be repeated using another URI.")
   val BadRequest      = Status(400, "Bad Request", "The request contains bad syntax or cannot be fulfilled.")
@@ -77,7 +81,8 @@ object Status {
   val MethodNotAllowed = Status(
     405,
     "Method Not Allowed",
-    "A request was made of a resource using a request method not supported by that resource;")
+    "A request was made of a resource using a request method not supported by that resource;"
+  )
   val NotAcceptable = Status(
     406,
     "Not Acceptable",
@@ -89,16 +94,19 @@ object Status {
   val Conflict = Status(
     409,
     "Conflict",
-    "The request could not be processed because of conflict in the request, such as an edit conflict.")
+    "The request could not be processed because of conflict in the request, such as an edit conflict."
+  )
   val Gone = Status(410, "Gone", "The resource requested is no longer available and will not be available again.")
   val LengthRequired = Status(
     411,
     "Length Required",
-    "The request did not specify the length of its content, which is required by the requested resource.")
+    "The request did not specify the length of its content, which is required by the requested resource."
+  )
   val PreconditionFailed = Status(
     412,
     "Precondition Failed",
-    "The server does not meet one of the preconditions that the requester put on the request.")
+    "The server does not meet one of the preconditions that the requester put on the request."
+  )
   val RequestEntityTooLarge =
     Status(413, "Request Entity Too Large", "The request is larger than the server is willing or able to process.")
   val RequestUriTooLong =
@@ -106,18 +114,21 @@ object Status {
   val UnsupportedMediaType = Status(
     415,
     "Unsupported Media Type",
-    "The request entity has a media type which the server or resource does not support.")
+    "The request entity has a media type which the server or resource does not support."
+  )
   val RequestedRangeNotSatisfiable = Status(
     416,
     "Requested Range Not Satisfiable",
-    "The client has asked for a portion of the file, but the server cannot supply that portion.")
+    "The client has asked for a portion of the file, but the server cannot supply that portion."
+  )
   val ExpectationFailed =
     Status(417, "Expectation Failed", "The server cannot meet the requirements of the Expect request-header field.")
   val EnhanceYourCalm = Status(420, "Enhance Your Calm", "You are being rate-limited.")
   val UnprocessableEntity = Status(
     422,
     "Unprocessable Entity",
-    "The request was well-formed but was unable to be followed due to semantic errors.")
+    "The request was well-formed but was unable to be followed due to semantic errors."
+  )
   val Locked           = Status(423, "Locked", "The resource that is being accessed is locked.")
   val FailedDependency = Status(424, "Failed Dependency", "The request failed due to failure of a previous request.")
   val TooEarly =
@@ -135,34 +146,41 @@ object Status {
   val BlockedByParentalControls = Status(
     450,
     "Blocked by Windows Parental Controls",
-    "Windows Parental Controls are turned on and are blocking access to the given webpage.")
+    "Windows Parental Controls are turned on and are blocking access to the given webpage."
+  )
   val UnavailableForLegalReasons =
     Status(451, "Unavailable For Legal Reasons", "Resource access is denied for legal reasons.")
   val InternalServerError = Status(500, "Internal Server Error", "There was an internal server error.")
   val NotImplemented = Status(
     501,
     "Not Implemented",
-    "The server either does not recognize the request method, or it lacks the ability to fulfill the request.")
+    "The server either does not recognize the request method, or it lacks the ability to fulfill the request."
+  )
   val BadGateway = Status(
     502,
     "Bad Gateway",
-    "The server was acting as a gateway or proxy and received an invalid response from the upstream server.")
+    "The server was acting as a gateway or proxy and received an invalid response from the upstream server."
+  )
   val ServiceUnavailable = Status(
     503,
     "Service Unavailable",
-    "The server is currently unavailable (because it is overloaded or down for maintenance).")
+    "The server is currently unavailable (because it is overloaded or down for maintenance)."
+  )
   val GatewayTimeout = Status(
     504,
     "Gateway Timeout",
-    "The server was acting as a gateway or proxy and did not receive a timely response from the upstream server.")
+    "The server was acting as a gateway or proxy and did not receive a timely response from the upstream server."
+  )
   val HTTPVersionNotSupported = Status(
     505,
     "HTTP Version Not Supported",
-    "The server does not support the HTTP protocol version used in the request.")
+    "The server does not support the HTTP protocol version used in the request."
+  )
   val VariantAlsoNegotiates = Status(
     506,
     "Variant Also Negotiates",
-    "Transparent content negotiation for the request, results in a circular reference.")
+    "Transparent content negotiation for the request, results in a circular reference."
+  )
   val InsufficientStorage    = Status(507, "Insufficient Storage", "Insufficient storage to complete the request.")
   val LoopDetected           = Status(508, "Loop Detected", "The server detected an infinite loop while processing the request.")
   val BandwidthLimitExceeded = Status(509, "Bandwidth Limit Exceeded", "Bandwidth limit has been exceeded.")

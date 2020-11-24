@@ -35,9 +35,11 @@ case class Uri(
     authority: Option[Authority] = None,
     path: String = "",
     query: Map[String, String] = Map(),
-    fragment: Option[Fragment] = None) {
+    fragment: Option[Fragment] = None
+) {
 
-  /** Append a string to the path of the [[Uri]]
+  /**
+   * Append a string to the path of the [[Uri]]
    */
   def /(str: String): Uri =
     copy(path = s"$path/$str")
@@ -48,7 +50,7 @@ case class Uri(
    * @param key   - parameter name
    * @param value - the value
    * @return updated [[Uri]]
-    **/
+   */
   def param(key: String, value: String): Uri = copy(query = this.query + (key -> value))
 
   /**
@@ -56,7 +58,7 @@ case class Uri(
    *
    * @param ps - parameters
    * @return updated [[Uri]]
-    **/
+   */
   def params(ps: (String, String)*): Uri = ps match {
     case Seq() => this
     case _     => ps.foldLeft(this) { case (uri, (k, v)) => uri.copy(query = uri.query + (k -> v)) }
@@ -72,7 +74,7 @@ case class Uri(
    *
    * @param ps - parameters
    * @return updated [[Uri]]
-    **/
+   */
   def ?(ps: NonEmptyList[(String, String)]): Uri = params(ps.toList: _*)
 }
 
@@ -100,8 +102,8 @@ object Uri {
         e: IPv6Group,
         f: IPv6Group,
         g: IPv6Group,
-        h: IPv6Group)
-        extends Host
+        h: IPv6Group
+    ) extends Host
 
     object IPv6 {
       def parse: Parser[Host] =
@@ -158,7 +160,7 @@ object Uri {
     private val ubyte: Parser[Int] = {
       int
         .filter(n => n >= 0 && n < 256) // ensure value is in [0 .. 256)
-        .namedOpaque("UByte") // give our parser a name
+        .namedOpaque("UByte")           // give our parser a name
     }
 
     implicit val showHost: Show[Host] = new Show[Host] {
@@ -166,10 +168,12 @@ object Uri {
         case Host.IPv4(a, b, c, d) => s"$a.$b.$c.$d"
         case Host.IPv6(a, b, c, d, e, f, g, h) =>
           val reprLastGroups: String =
-            if (e.value.isEmpty &&
+            if (
+              e.value.isEmpty &&
               f.value.isEmpty &&
               g.value.isEmpty &&
-              h.value.isEmpty) ":" // just append another colon
+              h.value.isEmpty
+            ) ":" // just append another colon
             else
               e.show ++ ":" ++
                 f.show ++ ":" ++
@@ -227,7 +231,8 @@ object Uri {
       }
 
       u.scheme.fold("")(_ ++ "://") ++ u.authority.fold("")(_.show) ++ u.path ++ queryString ++ u.fragment.fold("")(
-        "#" ++ _)
+        "#" ++ _
+      )
     }
   }
 

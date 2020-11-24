@@ -29,7 +29,9 @@ class CookieSpec extends AnyWordSpec with Matchers {
         Some(Cookie.SameSite.Strict)
       )
 
-      Show[Cookie].show(cookie) shouldEqual "name=value; Expires=Sat, 04 Jan 2020 17:03:54 GMT; MaxAge=123; Domain=pepegar.com; Path=/blog; Secure=false; HttpOnly=true; SameSite=Strict"
+      Show[Cookie].show(
+        cookie
+      ) shouldEqual "name=value; Expires=Sat, 04 Jan 2020 17:03:54 GMT; MaxAge=123; Domain=pepegar.com; Path=/blog; Secure=false; HttpOnly=true; SameSite=Strict"
     }
 
     "render a cookie with custom values in the correct format" in {

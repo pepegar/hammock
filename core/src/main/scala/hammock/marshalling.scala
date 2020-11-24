@@ -30,10 +30,9 @@ object marshalling {
 
   implicit def marshallC[F[_]](implicit I: InjectK[MarshallF, F]): MarshallC[F] = new MarshallC[F]
 
-  implicit def marshallNT[F[_]: Sync]: MarshallF ~> F = λ[MarshallF ~> F] {
-    case um @ MarshallF.Unmarshall(entity) =>
-      um.dec
-        .decode(entity)
-        .fold(Sync[F].raiseError, Sync[F].pure)
+  implicit def marshallNT[F[_]: Sync]: MarshallF ~> F = λ[MarshallF ~> F] { case um @ MarshallF.Unmarshall(entity) =>
+    um.dec
+      .decode(entity)
+      .fold(Sync[F].raiseError, Sync[F].pure)
   }
 }

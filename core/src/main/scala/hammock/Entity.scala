@@ -61,5 +61,6 @@ object Entity {
 
   val byteArray: Prism[Entity, Array[Byte]] =
     Prism.partial[Entity, Array[Byte]] { case ByteArrayEntity(body, _) => body }(
-      ByteArrayEntity(_, ContentType.`application/octet-stream`))
+      ByteArrayEntity(_, ContentType.`application/octet-stream`)
+    )
 }

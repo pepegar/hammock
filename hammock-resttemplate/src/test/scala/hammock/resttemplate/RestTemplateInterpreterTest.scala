@@ -91,14 +91,13 @@ class RestTemplateInterpreterTest extends AnyWordSpec with Matchers with Mockito
         rtResponse3 -> hammockResponse3
       )
 
-      tests foreach {
-        case (a, h) =>
-          (mapResponse[IO](a).unsafeRunSync(), h) match {
-            case (HttpResponse(s1, h1, e1), HttpResponse(s2, h2, e2)) =>
-              s1 shouldEqual s2
-              h1 shouldEqual h2
-              e1.cata(showStr, showByt, showEmpty) shouldEqual e2.cata(showStr, showByt, showEmpty)
-          }
+      tests foreach { case (a, h) =>
+        (mapResponse[IO](a).unsafeRunSync(), h) match {
+          case (HttpResponse(s1, h1, e1), HttpResponse(s2, h2, e2)) =>
+            s1 shouldEqual s2
+            h1 shouldEqual h2
+            e1.cata(showStr, showByt, showEmpty) shouldEqual e2.cata(showStr, showByt, showEmpty)
+        }
       }
     }
   }

@@ -14,7 +14,8 @@ inThisBuild(
         url("https://pepegar.com")
       )
     )
-  ))
+  )
+)
 
 val Versions = Map(
   "circe"                   -> "0.13.0",
@@ -59,7 +60,8 @@ val filterConsoleScalacOptions = { options: Seq[String] =>
       "-Ywarn-unused-import",
       "-Ywarn-dead-code",
       "-Xfatal-warnings"
-    ))
+    )
+  )
 }
 
 val buildSettings = Seq(
@@ -70,39 +72,39 @@ val buildSettings = Seq(
   scalacOptions ++= Seq(
     "-deprecation", // Emit warning and location for usages of deprecated APIs.
     "-encoding",
-    "utf-8", // Specify character encoding used by source files.
-    "-explaintypes", // Explain type errors in more detail.
-    "-feature", // Emit warning and location for usages of features that should be imported explicitly.
-    "-language:existentials", // Existential types (besides wildcard types) can be written and inferred
+    "utf-8",                         // Specify character encoding used by source files.
+    "-explaintypes",                 // Explain type errors in more detail.
+    "-feature",                      // Emit warning and location for usages of features that should be imported explicitly.
+    "-language:existentials",        // Existential types (besides wildcard types) can be written and inferred
     "-language:experimental.macros", // Allow macro definition (besides implementation and application)
-    "-language:higherKinds", // Allow higher-kinded types
+    "-language:higherKinds",         // Allow higher-kinded types
     "-language:implicitConversions", // Allow definition of implicit functions called views
-    "-unchecked", // Enable additional warnings where generated code depends on assumptions.
-    "-Xcheckinit", // Wrap field accessors to throw an exception on uninitialized access.
-    "-Xfatal-warnings", // Fail the compilation if there are any warnings.
-    "-Xlint:adapted-args", // Warn if an argument list is modified to match the receiver.
-    "-Xlint:constant", // Evaluation of a constant arithmetic expression results in an error.
-    "-Xlint:delayedinit-select", // Selecting member of DelayedInit.
-    "-Xlint:doc-detached", // A Scaladoc comment appears to be detached from its element.
-    "-Xlint:inaccessible", // Warn about inaccessible types in method signatures.
-    "-Xlint:infer-any", // Warn when a type argument is inferred to be `Any`.
-    "-Xlint:missing-interpolator", // A string literal appears to be missing an interpolator id.
-    "-Xlint:nullary-unit", // Warn when nullary methods return Unit.
-    "-Xlint:option-implicit", // Option.apply used implicit view.
+    "-unchecked",                    // Enable additional warnings where generated code depends on assumptions.
+    "-Xcheckinit",                   // Wrap field accessors to throw an exception on uninitialized access.
+    "-Xfatal-warnings",              // Fail the compilation if there are any warnings.
+    "-Xlint:adapted-args",           // Warn if an argument list is modified to match the receiver.
+    "-Xlint:constant",               // Evaluation of a constant arithmetic expression results in an error.
+    "-Xlint:delayedinit-select",     // Selecting member of DelayedInit.
+    "-Xlint:doc-detached",           // A Scaladoc comment appears to be detached from its element.
+    "-Xlint:inaccessible",           // Warn about inaccessible types in method signatures.
+    "-Xlint:infer-any",              // Warn when a type argument is inferred to be `Any`.
+    "-Xlint:missing-interpolator",   // A string literal appears to be missing an interpolator id.
+    "-Xlint:nullary-unit",           // Warn when nullary methods return Unit.
+    "-Xlint:option-implicit",        // Option.apply used implicit view.
     "-Xlint:package-object-classes", // Class or object defined in package object.
     "-Xlint:poly-implicit-overload", // Parameterized overloaded implicit methods are not visible as view bounds.
-    "-Xlint:private-shadow", // A private field (or class parameter) shadows a superclass field.
-    "-Xlint:stars-align", // Pattern sequence wildcard must align with sequence component.
-    "-Xlint:type-parameter-shadow", // A local type parameter shadows a type already in scope.
-    "-Ywarn-dead-code", // Warn when dead code is identified.
-    "-Ywarn-extra-implicit", // Warn when more than one implicit parameter section is defined.
-    "-Ywarn-numeric-widen",    // Warn when numerics are widened.
-    "-Ywarn-unused:implicits", // Warn if an implicit parameter is unused.
-    "-Ywarn-unused:locals", // Warn if a local definition is unused.
-    "-Ywarn-unused:params", // Warn if a value parameter is unused.
-    "-Ywarn-unused:patvars", // Warn if a variable bound in a pattern is unused.
-    "-Ywarn-unused:privates", // Warn if a private member is unused.
-    "-Ywarn-value-discard" // Warn when non-Unit expression results are unused.
+    "-Xlint:private-shadow",         // A private field (or class parameter) shadows a superclass field.
+    "-Xlint:stars-align",            // Pattern sequence wildcard must align with sequence component.
+    "-Xlint:type-parameter-shadow",  // A local type parameter shadows a type already in scope.
+    "-Ywarn-dead-code",              // Warn when dead code is identified.
+    "-Ywarn-extra-implicit",         // Warn when more than one implicit parameter section is defined.
+    "-Ywarn-numeric-widen",          // Warn when numerics are widened.
+    "-Ywarn-unused:implicits",       // Warn if an implicit parameter is unused.
+    "-Ywarn-unused:locals",          // Warn if a local definition is unused.
+    "-Ywarn-unused:params",          // Warn if a value parameter is unused.
+    "-Ywarn-unused:patvars",         // Warn if a variable bound in a pattern is unused.
+    "-Ywarn-unused:privates",        // Warn if a private member is unused.
+    "-Ywarn-value-discard"           // Warn when non-Unit expression results are unused.
   ),
   scalacOptions in (Compile, console) ~= filterConsoleScalacOptions,
   scalacOptions in (Compile, doc) ~= filterConsoleScalacOptions,
@@ -120,14 +122,14 @@ val commonDependencies = Seq(
     "com.github.julien-truffaut" %% "monocle-core"            % Versions("monocle"),
     "com.github.julien-truffaut" %% "monocle-macro"           % Versions("monocle"),
     "org.tpolecat"               %% "atto-core"               % Versions("atto"),
-    "com.github.julien-truffaut" %% "monocle-law"             % Versions("monocle") % Test,
-    "org.typelevel"              %% "cats-laws"               % Versions("cats") % Test,
-    "org.typelevel"              %% "cats-testkit"            % Versions("cats") % Test,
-    "org.scalatest"              %% "scalatest"               % Versions("scalatest") % Test,
-    "org.scalacheck"             %% "scalacheck"              % Versions("scalacheck") % Test,
+    "com.github.julien-truffaut" %% "monocle-law"             % Versions("monocle")                 % Test,
+    "org.typelevel"              %% "cats-laws"               % Versions("cats")                    % Test,
+    "org.typelevel"              %% "cats-testkit"            % Versions("cats")                    % Test,
+    "org.scalatest"              %% "scalatest"               % Versions("scalatest")               % Test,
+    "org.scalacheck"             %% "scalacheck"              % Versions("scalacheck")              % Test,
     "org.scalatestplus"          %% "scalacheck-1-14"         % Versions("scalatestplusScalaCheck") % Test,
-    "org.typelevel"              %% "discipline-core"         % Versions("discipline") % Test,
-    "org.typelevel"              %% "discipline-scalatest"    % Versions("discipline-scalatest") % Test
+    "org.typelevel"              %% "discipline-core"         % Versions("discipline")              % Test,
+    "org.typelevel"              %% "discipline-scalatest"    % Versions("discipline-scalatest")    % Test
   )
 )
 
@@ -174,7 +176,9 @@ lazy val circe = project
     libraryDependencies ++= Seq(
       "io.circe" %% "circe-core"    % Versions("circe"),
       "io.circe" %% "circe-generic" % Versions("circe"),
-      "io.circe" %% "circe-parser"  % Versions("circe")))
+      "io.circe" %% "circe-parser"  % Versions("circe")
+    )
+  )
   .dependsOn(core)
 
 lazy val apache = project
@@ -185,9 +189,9 @@ lazy val apache = project
   .settings(compilerPlugins)
   .settings(
     libraryDependencies ++= Seq(
-      "org.apache.httpcomponents" % "httpclient"             % Versions("apacheHttp"),
-      "org.scalatestplus"         %% "scalatestplus-mockito" % Versions("scalatestplusMockito") % Test,
-      "org.mockito"               % "mockito-all"            % Versions("mockito") % Test
+      "org.apache.httpcomponents" % "httpclient"            % Versions("apacheHttp"),
+      "org.scalatestplus"        %% "scalatestplus-mockito" % Versions("scalatestplusMockito") % Test,
+      "org.mockito"               % "mockito-all"           % Versions("mockito")              % Test
     )
   )
   .dependsOn(core)
@@ -202,7 +206,7 @@ lazy val akka = project
     libraryDependencies ++= Seq(
       "com.typesafe.akka" %% "akka-http"             % Versions("akka-http"),
       "com.typesafe.akka" %% "akka-stream"           % Versions("akka-stream"),
-      "org.mockito"       % "mockito-all"            % Versions("mockito") % Test,
+      "org.mockito"        % "mockito-all"           % Versions("mockito")              % Test,
       "org.scalatestplus" %% "scalatestplus-mockito" % Versions("scalatestplusMockito") % Test
     )
   )
@@ -216,9 +220,9 @@ lazy val asynchttpclient = project
   .settings(compilerPlugins)
   .settings(
     libraryDependencies ++= Seq(
-      "org.asynchttpclient" % "async-http-client"      % Versions("ahc"),
-      "org.scalatestplus"   %% "scalatestplus-mockito" % Versions("scalatestplusMockito") % Test,
-      "org.mockito"         % "mockito-all"            % Versions("mockito") % Test
+      "org.asynchttpclient" % "async-http-client"     % Versions("ahc"),
+      "org.scalatestplus"  %% "scalatestplus-mockito" % Versions("scalatestplusMockito") % Test,
+      "org.mockito"         % "mockito-all"           % Versions("mockito")              % Test
     )
   )
   .dependsOn(core)
@@ -231,10 +235,10 @@ lazy val resttemplate = project
   .settings(compilerPlugins)
   .settings(
     libraryDependencies ++= Seq(
-      "com.google.code.findbugs" % "jsr305"                 % Versions("findbugs") % Optional,
-      "org.springframework"      % "spring-web"             % Versions("spring"),
-      "org.scalatestplus"        %% "scalatestplus-mockito" % Versions("scalatestplusMockito") % Test,
-      "org.mockito"              % "mockito-all"            % Versions("mockito") % Test
+      "com.google.code.findbugs" % "jsr305"                % Versions("findbugs")             % Optional,
+      "org.springframework"      % "spring-web"            % Versions("spring"),
+      "org.scalatestplus"       %% "scalatestplus-mockito" % Versions("scalatestplusMockito") % Test,
+      "org.mockito"              % "mockito-all"           % Versions("mockito")              % Test
     )
   )
   .dependsOn(core)
@@ -301,5 +305,6 @@ addCommandAlias("validateScalafmt", ";sbt:scalafmt::test;test:scalafmt::test;com
 addCommandAlias("validateDoc", ";docs/mdoc;readme/mdoc")
 addCommandAlias(
   "validateTests",
-  ";validateScalafmt;+core/test;+circe/test;+akka/test;+asynchttpclient/test;+resttemplate/test;+apache/test")
+  ";validateScalafmt;+core/test;+circe/test;+akka/test;+asynchttpclient/test;+resttemplate/test;+apache/test"
+)
 addCommandAlias("validate", ";clean;validateScalafmt;validateTests;validateDoc")

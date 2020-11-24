@@ -45,7 +45,9 @@ class AkkaInterpreterSpec extends AnyWordSpec with MockitoSugar with Matchers wi
           HttpRequest(
             Uri(path = "http://localhost:8080"),
             Map.empty[String, String],
-            Some(Entity.ByteArrayEntity(Array[Byte]()))))
+            Some(Entity.ByteArrayEntity(Array[Byte]()))
+          )
+        )
 
       val akkaReq = AkkaRequest(method = HttpMethods.POST, uri = AkkaUri("http://localhost:8080"))
         .withEntity(HttpEntity.Strict(ContentTypes.`application/octet-stream`, ByteString(Array[Byte]())))
@@ -60,7 +62,9 @@ class AkkaInterpreterSpec extends AnyWordSpec with MockitoSugar with Matchers wi
           HttpRequest(
             Uri(path = "http://localhost:8080"),
             Map.empty[String, String],
-            Some(Entity.StringEntity("potato"))))
+            Some(Entity.StringEntity("potato"))
+          )
+        )
 
       val akkaReq = AkkaRequest(method = HttpMethods.POST, uri = AkkaUri("http://localhost:8080"))
         .withEntity(HttpEntity.Strict(ContentTypes.`application/json`, ByteString.fromString("potato")))
@@ -86,14 +90,17 @@ class AkkaInterpreterSpec extends AnyWordSpec with MockitoSugar with Matchers wi
             "header1" -> "value1",
             "header2" -> "value2"
           ),
-          Some(Entity.ByteArrayEntity(Array[Byte]()))))
+          Some(Entity.ByteArrayEntity(Array[Byte]()))
+        )
+      )
 
       val akkaReq = AkkaRequest(method = HttpMethods.POST, uri = AkkaUri("http://localhost:8080"))
         .withHeaders(
           List(
             RawHeader("header1", "value1"),
             RawHeader("header2", "value2")
-          ))
+          )
+        )
         .withEntity(HttpEntity.Strict(ContentTypes.`application/octet-stream`, ByteString(Array[Byte]())))
 
       mapRequest[IO](hammockReq).unsafeRunSync() shouldEqual akkaReq
@@ -107,12 +114,15 @@ class AkkaInterpreterSpec extends AnyWordSpec with MockitoSugar with Matchers wi
             "header1" -> "value1",
             "header2" -> "value2"
           ),
-          None))
+          None
+        )
+      )
       val akkaReq = AkkaRequest(uri = AkkaUri("http://localhost:8080")).withHeaders(
         List(
           RawHeader("header1", "value1"),
           RawHeader("header2", "value2")
-        ))
+        )
+      )
       when(client.singleRequest(akkaReq)).thenReturn(Future.successful(httpResponse))
       val result = (Free.liftF(hammockReq) foldMap AkkaInterpreter[IO].trans).unsafeRunSync()
 
@@ -127,13 +137,16 @@ class AkkaInterpreterSpec extends AnyWordSpec with MockitoSugar with Matchers wi
             "header1" -> "value1",
             "header2" -> "value2"
           ),
-          Some(Entity.StringEntity("potato"))))
+          Some(Entity.StringEntity("potato"))
+        )
+      )
       val akkaReq = AkkaRequest(uri = AkkaUri("http://localhost:8080"))
         .withHeaders(
           List(
             RawHeader("header1", "value1"),
             RawHeader("header2", "value2")
-          ))
+          )
+        )
         .withEntity(HttpEntity.Strict(ContentTypes.`application/json`, ByteString.fromString("potato")))
       when(client.singleRequest(akkaReq)).thenReturn(Future.successful(httpResponse))
       val result = (Free.liftF(hammockReq) foldMap AkkaInterpreter[IO].trans).unsafeRunSync()
@@ -149,13 +162,16 @@ class AkkaInterpreterSpec extends AnyWordSpec with MockitoSugar with Matchers wi
             "header1" -> "value1",
             "header2" -> "value2"
           ),
-          Some(Entity.ByteArrayEntity(Array[Byte](11, 12, 13, 14)))))
+          Some(Entity.ByteArrayEntity(Array[Byte](11, 12, 13, 14)))
+        )
+      )
       val akkaReq = AkkaRequest(uri = AkkaUri("http://localhost:8080"))
         .withHeaders(
           List(
             RawHeader("header1", "value1"),
             RawHeader("header2", "value2")
-          ))
+          )
+        )
         .withEntity(HttpEntity.Strict(ContentTypes.`application/octet-stream`, ByteString(Array[Byte](11, 12, 13, 14))))
       when(client.singleRequest(akkaReq)).thenReturn(Future.successful(httpResponse))
       val result = (Free.liftF(hammockReq) foldMap AkkaInterpreter[IO].trans).unsafeRunSync()
