@@ -2,8 +2,7 @@
 on:
   schedule:
     - cron: "0 0 * * 0"
-  repository_dispatch:
-    types: [scala-steward]
+  workflow_dispatch:
 
 jobs:
   scala-steward:
