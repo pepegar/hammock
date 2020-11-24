@@ -96,7 +96,7 @@ val buildSettings = Seq(
     "-Xlint:type-parameter-shadow", // A local type parameter shadows a type already in scope.
     "-Ywarn-dead-code", // Warn when dead code is identified.
     "-Ywarn-extra-implicit", // Warn when more than one implicit parameter section is defined.
-    "-Ywarn-numeric-widen",    // Warn when numerics are widened.
+    "-Ywarn-numeric-widen", // Warn when numerics are widened.
     "-Ywarn-unused:implicits", // Warn if an implicit parameter is unused.
     "-Ywarn-unused:locals", // Warn if a local definition is unused.
     "-Ywarn-unused:params", // Warn if a value parameter is unused.
