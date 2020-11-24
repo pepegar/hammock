@@ -1,7 +1,6 @@
 package hammock
 
 import cats.{Eq, Show}
-import cats.instances.string._
 import cats.syntax.contravariant._
 
 trait Method {

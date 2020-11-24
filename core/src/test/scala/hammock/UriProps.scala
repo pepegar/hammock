@@ -4,7 +4,7 @@ import atto._
 import Atto._
 import cats.Foldable
 import cats.data.NonEmptyList
-import cats.implicits._
+import cats.syntax.all._
 import org.scalacheck._
 import org.scalacheck.Prop._
 import org.scalacheck.Gen

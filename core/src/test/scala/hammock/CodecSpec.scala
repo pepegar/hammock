@@ -1,8 +1,6 @@
 package hammock
 
 import cats.Eq
-import cats.instances.option._
-import cats.instances.int._
 import cats.laws._
 import cats.laws.discipline._
 import cats.syntax.either._

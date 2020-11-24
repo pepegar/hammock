@@ -1,7 +1,7 @@
 package hammock
 package circe
 
-import cats.implicits._
+import cats.syntax.all._
 import io.circe.{Encoder => CirceEncoder, Decoder => CirceDecoder}
 import io.circe.parser.{decode => circeDecode}
 import io.circe.syntax._

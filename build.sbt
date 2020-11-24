@@ -21,7 +21,7 @@ val Versions = Map(
   "monocle"                 -> "2.0.4",
   "collection-compat"       -> "2.2.0",
   "atto"                    -> "0.8.0",
-  "cats"                    -> "2.1.1",
+  "cats"                    -> "2.2.0",
   "cats-effect"             -> "2.1.2",
   "simulacrum"              -> "1.0.0",
   "scalatest"               -> "3.2.2",
@@ -96,7 +96,7 @@ val buildSettings = Seq(
     "-Xlint:type-parameter-shadow", // A local type parameter shadows a type already in scope.
     "-Ywarn-dead-code", // Warn when dead code is identified.
     "-Ywarn-extra-implicit", // Warn when more than one implicit parameter section is defined.
-    "-Ywarn-numeric-widen",    // Warn when numerics are widened.
+    "-Ywarn-numeric-widen", // Warn when numerics are widened.
     "-Ywarn-unused:implicits", // Warn if an implicit parameter is unused.
     "-Ywarn-unused:locals", // Warn if a local definition is unused.
     "-Ywarn-unused:params", // Warn if a value parameter is unused.

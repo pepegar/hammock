@@ -17,7 +17,7 @@ import _root_.akka.util.ByteString
 import cats._
 import cats.data.Kleisli
 import cats.effect.{Async, ContextShift, Sync}
-import cats.implicits._
+import cats.syntax.all._
 import scala.concurrent.{ExecutionContext, Future}
 
 object AkkaInterpreter {

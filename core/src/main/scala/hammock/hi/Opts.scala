@@ -2,7 +2,7 @@ package hammock
 package hi
 
 import cats.{Eq, Show}
-import cats.implicits._
+import cats.syntax.all._
 import alleycats.Empty
 
 import monocle.{Lens, Optional}

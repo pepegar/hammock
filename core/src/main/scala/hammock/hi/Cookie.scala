@@ -4,7 +4,6 @@ package hi
 import java.time.ZonedDateTime
 
 import cats._
-import cats.implicits._
 import hammock.hi.Cookie.SameSite
 import hammock.hi.platformspecific._
 import monocle.Optional

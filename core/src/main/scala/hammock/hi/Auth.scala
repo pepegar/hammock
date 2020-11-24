@@ -3,7 +3,7 @@ package hi
 
 import java.util.Base64
 import cats._
-import cats.implicits._
+import cats.syntax.all._
 
 sealed trait Auth
 object Auth {

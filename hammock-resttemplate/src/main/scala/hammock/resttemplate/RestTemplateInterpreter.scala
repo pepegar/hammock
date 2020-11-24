@@ -4,7 +4,7 @@ package resttemplate
 import java.net.URI
 
 import cats._
-import cats.implicits._
+import cats.syntax.all._
 import cats.data.Kleisli
 import cats.effect._
 import org.springframework.http._
