@@ -30,9 +30,8 @@ jobs:
     - stage: test
       script:
         - sbt ++$TRAVIS_SCALA_VERSION clean coverage +coreJVM/test +akka/test +circeJVM/test +asynchttpclient/test +resttemplate/test coverageReport
-        - sbt ++$TRAVIS_SCALA_VERSION validateJS
-        - sbt validateDoc validateScalafmt
-        - sbt example/compile exampleJS/compile
+        - sbt ++$TRAVIS_SCALA_VERSION validateDoc validateScalafmt
+        - sbt ++$TRAVIS_SCALA_VERSION example/compile exampleJS/compile
     - stage: release
       script: sbt ci-release
 
