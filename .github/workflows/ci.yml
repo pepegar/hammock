@@ -39,11 +39,10 @@ jobs:
         if: success() && github.event_name == 'pull_request' && contains(github.event.pull_request.body, 'Scala Steward')
         uses: ridedott/merge-me-action@v1.8.57
         with:
-          GITHUB_LOGIN: pepegar
+          GITHUB_LOGIN: scala-steward
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Dependabot Merge
         if: success()
         uses: ridedott/merge-me-action@v1.8.57
         with:
-          GITHUB_LOGIN: dependabot[bot]
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
