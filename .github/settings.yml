@@ -18,7 +18,7 @@ branches:
       required_status_checks:
         strict: true
         contexts:
-          - CI
+          - CI/test
 
 labels:
   - name:        auto-changelog
