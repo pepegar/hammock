@@ -18,7 +18,7 @@ jobs:
         if: github.event_name == 'pull_request'
         uses: TimonVS/pr-labeler-action@v3
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.ADMIN_GITHUB_TOKEN }}
       - name: Setup Scala
         uses: olafurpg/setup-scala@v10
       - name: Cache dependencies
@@ -39,8 +39,8 @@ jobs:
         if: success() && github.event_name == 'pull_request' && contains(github.event.pull_request.body, 'Scala Steward')
         uses: ridedott/merge-me-action@v1.8.58
         with:
-          GITHUB_LOGIN: github-actions[bot]
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_LOGIN: pepegar
+          GITHUB_TOKEN: ${{ secrets.ADMIN_GITHUB_TOKEN }}
       - name: Dependabot Merge
         if: success()
         uses: ridedott/merge-me-action@v1.8.58
