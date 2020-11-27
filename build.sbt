@@ -22,7 +22,7 @@ val Versions = Map(
   "collection-compat"       -> "2.3.1",
   "atto"                    -> "0.8.0",
   "cats"                    -> "2.3.0",
-  "cats-effect"             -> "2.3.0",
+  "cats-effect"             -> "2.2.0",
   "simulacrum"              -> "1.0.1",
   "scalatest"               -> "3.2.3",
   "scalacheck"              -> "1.15.1",
@@ -125,7 +125,7 @@ val commonDependencies = Seq(
     "org.typelevel"              %% "cats-testkit"            % Versions("cats") % Test,
     "org.scalatest"              %% "scalatest"               % Versions("scalatest") % Test,
     "org.scalacheck"             %% "scalacheck"              % Versions("scalacheck") % Test,
-    "org.scalatestplus"          %% "scalacheck-1-14"         % Versions("scalatestplusScalaCheck") % Test,
+    "org.scalatestplus"          %% "scalacheck-1-15"         % Versions("scalatestplusScalaCheck") % Test,
     "org.typelevel"              %% "discipline-core"         % Versions("discipline") % Test,
     "org.typelevel"              %% "discipline-scalatest"    % Versions("discipline-scalatest") % Test
   )
