@@ -20,7 +20,7 @@ val Versions = Map(
   "circe"                   -> "0.13.0",
   "monocle"                 -> "2.1.0",
   "collection-compat"       -> "2.3.2",
-  "atto"                    -> "0.8.0",
+  "atto"                    -> "0.9.0",
   "cats"                    -> "2.2.0",
   "cats-effect"             -> "2.2.0",
   "simulacrum"              -> "1.0.1",
