@@ -1,30 +1,18 @@
 name: Release
-
 on:
-  release:
-    types: [published]
   push:
-    branches: master
-
+    branches: [master, main]
+    tags: ["*"]
 jobs:
-  release:
-    if: "!contains(github.event.head_commit.message, 'skip ci')"
-    runs-on: ubuntu-latest
+  publish:
+    runs-on: ubuntu-20.04
     steps:
-      - name: Checkout project
-        uses: actions/checkout@v2
+      - uses: actions/checkout@v2.3.4
         with:
           fetch-depth: 0
-      - name: Fetch tags
-        run: git fetch --tags
-      - name: Setup Scala
-        uses: olafurpg/setup-scala@v10
-      - name: Setup Ruby
-        uses: actions/setup-ruby@v1
-      - name: Setup GPG
-        uses: olafurpg/setup-gpg@v3
-      - name: Release new version
-        run: sbt ci-release
+      - uses: olafurpg/setup-scala@v10
+      - uses: olafurpg/setup-gpg@v3
+      - run: sbt ci-release
         env:
           GITHUB_TOKEN: ${{ secrets.ADMIN_GITHUB_TOKEN }}
           PGP_PASSPHRASE: ${{ secrets.PGP_PASSPHRASE }}
