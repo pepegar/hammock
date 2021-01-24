@@ -4,5 +4,5 @@ addSbtPlugin("com.github.gseitz"         % "sbt-release"              % "1.0.13"
 addSbtPlugin("ch.epfl.scala"             % "sbt-scalajs-bundler"      % "0.18.0")
 addSbtPlugin("com.lucidchart"            % "sbt-scalafmt"             % "1.16")
 addSbtPlugin("org.tpolecat"              % "tut-plugin"               % "0.6.13")
-addSbtPlugin("io.get-coursier"           % "sbt-coursier"             % "1.0.3")
+addSbtPlugin("io.get-coursier"           % "sbt-coursier"             % "2.0.6")
 addSbtPlugin("com.geirsson"              % "sbt-ci-release"           % "1.5.5")
