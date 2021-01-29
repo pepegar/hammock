@@ -1,5 +1,5 @@
 addSbtPlugin("org.scoverage"             % "sbt-scoverage"            % "1.6.1")
-addSbtPlugin("com.47deg"                 % "sbt-microsites"           % "1.2.1")
+addSbtPlugin("com.47deg"                 % "sbt-microsites"           % "1.3.0")
 addSbtPlugin("com.github.gseitz"         % "sbt-release"              % "1.0.13")
 addSbtPlugin("ch.epfl.scala"             % "sbt-scalajs-bundler"      % "0.18.0")
 addSbtPlugin("com.lucidchart"            % "sbt-scalafmt"             % "1.16")
