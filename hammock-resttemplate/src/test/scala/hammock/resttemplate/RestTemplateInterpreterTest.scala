@@ -3,6 +3,7 @@ package resttemplate
 
 import cats.implicits._
 import cats.effect._
+import cats.effect.unsafe.implicits.global
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatestplus.mockito._

@@ -23,7 +23,7 @@ object AsyncHttpClientInterpreter {
   def transK[F[_]: Async]: HttpF ~> Kleisli[F, AsyncHttpClient, *] = {
 
     def toF[A](future: jc.Future[A]): F[A] =
-      Async[F].async(_(Try(future.get) match {
+      Async[F].async_(_(Try(future.get) match {
         case Failure(err) => Left(err)
         case Success(a)   => Right(a)
       }))

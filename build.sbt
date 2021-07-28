@@ -17,12 +17,12 @@ inThisBuild(
   ))
 
 val Versions = Map(
-  "circe"                   -> "0.13.0",
+  "circe"                   -> "0.14.1",
   "monocle"                 -> "2.1.0",
-  "collection-compat"       -> "2.3.2",
+  "collection-compat"       -> "2.5.0",
   "atto"                    -> "0.9.0",
   "cats"                    -> "2.2.0",
-  "cats-effect"             -> "2.2.0",
+  "cats-effect"             -> "3.2.0",
   "simulacrum"              -> "1.0.1",
   "scalatest"               -> "3.2.3",
   "scalacheck"              -> "1.15.2",
