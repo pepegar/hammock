@@ -14,19 +14,16 @@ object AsyncHttpClientInterpreter {
 
   def apply[F[_]](implicit F: InterpTrans[F]): InterpTrans[F] = F
 
-  implicit def instance[F[_]: Async](
+  implicit def instance[F[_]: Sync](
       implicit client: AsyncHttpClient = new DefaultAsyncHttpClient()
   ): InterpTrans[F] = new InterpTrans[F] {
     override def trans: HttpF ~> F = transK andThen λ[Kleisli[F, AsyncHttpClient, *] ~> F](_.run(client))
   }
 
-  def transK[F[_]: Async]: HttpF ~> Kleisli[F, AsyncHttpClient, *] = {
+  def transK[F[_]: Sync]: HttpF ~> Kleisli[F, AsyncHttpClient, *] = {
 
     def toF[A](future: jc.Future[A]): F[A] =
-      Async[F].async_(_(Try(future.get) match {
-        case Failure(err) => Left(err)
-        case Success(a)   => Right(a)
-      }))
+      Sync[F].blocking(future.get)
 
     λ[HttpF ~> Kleisli[F, AsyncHttpClient, *]] {
       case reqF @ (Get(_) | Options(_) | Delete(_) | Head(_) | Options(_) | Trace(_) | Post(_) | Put(_) | Patch(_)) =>
@@ -40,12 +37,12 @@ object AsyncHttpClientInterpreter {
     }
   }
 
-  def mapRequest[F[_]: Async](reqF: HttpF[HttpResponse])(implicit client: AsyncHttpClient): F[BoundRequestBuilder] = {
+  def mapRequest[F[_]: Sync](reqF: HttpF[HttpResponse])(implicit client: AsyncHttpClient): F[BoundRequestBuilder] = {
 
     def putHeaders(req: BoundRequestBuilder, headers: Map[String, String]): F[Unit] =
-      Async[F].delay {
+      Sync[F].delay {
         req.setSingleHeaders(headers.map(kv => kv._1.asInstanceOf[CharSequence] -> kv._2).asJava)
-      } *> ().pure[F]
+      }.void
 
     def getBuilder(reqF: HttpF[HttpResponse]): BoundRequestBuilder = reqF match {
       case Get(_)     => client.prepareGet(reqF.req.uri.show)
