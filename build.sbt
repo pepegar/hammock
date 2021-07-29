@@ -14,7 +14,8 @@ inThisBuild(
         url("https://pepegar.com")
       )
     )
-  ))
+  )
+)
 
 val Versions = Map(
   "circe"                   -> "0.13.0",
@@ -59,7 +60,8 @@ val filterConsoleScalacOptions = { options: Seq[String] =>
       "-Ywarn-unused-import",
       "-Ywarn-dead-code",
       "-Xfatal-warnings"
-    ))
+    )
+  )
 }
 
 val buildSettings = Seq(
@@ -115,7 +117,6 @@ val commonDependencies = Seq(
     "org.typelevel"              %% "cats-core"               % Versions("cats"),
     "org.typelevel"              %% "cats-free"               % Versions("cats"),
     "org.typelevel"              %% "alleycats-core"          % Versions("cats"),
-    "org.typelevel"              %% "cats-effect"             % Versions("cats-effect"),
     "org.typelevel"              %% "simulacrum"              % Versions("simulacrum"),
     "com.github.julien-truffaut" %% "monocle-core"            % Versions("monocle"),
     "com.github.julien-truffaut" %% "monocle-macro"           % Versions("monocle"),
@@ -174,7 +175,9 @@ lazy val circe = project
     libraryDependencies ++= Seq(
       "io.circe" %% "circe-core"    % Versions("circe"),
       "io.circe" %% "circe-generic" % Versions("circe"),
-      "io.circe" %% "circe-parser"  % Versions("circe")))
+      "io.circe" %% "circe-parser"  % Versions("circe")
+    )
+  )
   .dependsOn(core)
 
 lazy val apache = project
@@ -185,6 +188,7 @@ lazy val apache = project
   .settings(compilerPlugins)
   .settings(
     libraryDependencies ++= Seq(
+      "org.typelevel"             %% "cats-effect"           % Versions("cats-effect"),
       "org.apache.httpcomponents" % "httpclient"             % Versions("apacheHttp"),
       "org.scalatestplus"         %% "scalatestplus-mockito" % Versions("scalatestplusMockito") % Test,
       "org.mockito"               % "mockito-all"            % Versions("mockito") % Test
@@ -200,6 +204,7 @@ lazy val akka = project
   .settings(compilerPlugins)
   .settings(
     libraryDependencies ++= Seq(
+      "org.typelevel"     %% "cats-effect"           % Versions("cats-effect"),
       "com.typesafe.akka" %% "akka-http"             % Versions("akka-http"),
       "com.typesafe.akka" %% "akka-stream"           % Versions("akka-stream"),
       "org.mockito"       % "mockito-all"            % Versions("mockito") % Test,
@@ -216,6 +221,7 @@ lazy val asynchttpclient = project
   .settings(compilerPlugins)
   .settings(
     libraryDependencies ++= Seq(
+      "org.typelevel"       %% "cats-effect"           % Versions("cats-effect"),
       "org.asynchttpclient" % "async-http-client"      % Versions("ahc"),
       "org.scalatestplus"   %% "scalatestplus-mockito" % Versions("scalatestplusMockito") % Test,
       "org.mockito"         % "mockito-all"            % Versions("mockito") % Test
@@ -231,6 +237,7 @@ lazy val resttemplate = project
   .settings(compilerPlugins)
   .settings(
     libraryDependencies ++= Seq(
+      "org.typelevel"            %% "cats-effect"           % Versions("cats-effect"),
       "com.google.code.findbugs" % "jsr305"                 % Versions("findbugs") % Optional,
       "org.springframework"      % "spring-web"             % Versions("spring"),
       "org.scalatestplus"        %% "scalatestplus-mockito" % Versions("scalatestplusMockito") % Test,

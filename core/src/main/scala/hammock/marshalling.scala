@@ -2,7 +2,6 @@ package hammock
 
 import cats._
 import cats.free._
-import cats.effect.Sync
 
 object marshalling {
 
@@ -30,10 +29,10 @@ object marshalling {
 
   implicit def marshallC[F[_]](implicit I: InjectK[MarshallF, F]): MarshallC[F] = new MarshallC[F]
 
-  implicit def marshallNT[F[_]: Sync]: MarshallF ~> F = λ[MarshallF ~> F] {
+  implicit def marshallNT[F[_]: MonadThrow]: MarshallF ~> F = λ[MarshallF ~> F] {
     case um @ MarshallF.Unmarshall(entity) =>
       um.dec
         .decode(entity)
-        .fold(Sync[F].raiseError, Sync[F].pure)
+        .fold(MonadThrow[F].raiseError, MonadThrow[F].pure)
   }
 }
