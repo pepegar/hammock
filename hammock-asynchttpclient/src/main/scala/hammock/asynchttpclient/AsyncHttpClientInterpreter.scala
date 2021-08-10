@@ -6,7 +6,7 @@ import cats.implicits._
 import cats.data.Kleisli
 import cats.effect._
 import org.asynchttpclient._
-import java.util.{concurrent => jc}
+import java.util.concurrent.CompletableFuture
 import scala.util._
 import scala.jdk.CollectionConverters._
 
@@ -14,23 +14,23 @@ object AsyncHttpClientInterpreter {
 
   def apply[F[_]](implicit F: InterpTrans[F]): InterpTrans[F] = F
 
-  implicit def instance[F[_]: Sync](
+  implicit def instance[F[_]: Async](
       implicit client: AsyncHttpClient = new DefaultAsyncHttpClient()
   ): InterpTrans[F] = new InterpTrans[F] {
     override def trans: HttpF ~> F = transK andThen λ[Kleisli[F, AsyncHttpClient, *] ~> F](_.run(client))
   }
 
-  def transK[F[_]: Sync]: HttpF ~> Kleisli[F, AsyncHttpClient, *] = {
+  def transK[F[_]: Async]: HttpF ~> Kleisli[F, AsyncHttpClient, *] = {
 
-    def toF[A](future: jc.Future[A]): F[A] =
-      Sync[F].blocking(future.get)
+    def toF[A](futureF: F[CompletableFuture[A]]): F[A] =
+      Async[F].fromCompletableFuture(futureF)
 
     λ[HttpF ~> Kleisli[F, AsyncHttpClient, *]] {
       case reqF @ (Get(_) | Options(_) | Delete(_) | Head(_) | Options(_) | Trace(_) | Post(_) | Put(_) | Patch(_)) =>
         Kleisli { implicit client =>
           for {
             req             <- mapRequest[F](reqF)
-            ahcResponse     <- toF(req.execute())
+            ahcResponse     <- toF(Sync[F].delay(req.execute().toCompletableFuture()))
             hammockResponse <- mapResponse[F](ahcResponse)
           } yield hammockResponse
         }
