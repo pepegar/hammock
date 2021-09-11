@@ -53,8 +53,8 @@ object Log {
   case class Error(msg: String) extends LogF[Unit]
 
   class LogC[F[_]](implicit I: InjectK[LogF, F]) {
-    def info(msg: String): Free[F, Unit] = Free.inject(Info(msg))
-    def error(msg: String): Free[F, Unit] = Free.inject(Error(msg))
+    def info(msg: String): Free[F, Unit] = Free.liftInject(Info(msg))
+    def error(msg: String): Free[F, Unit] = Free.liftInject(Error(msg))
   }
 
   object LogC {
@@ -82,8 +82,8 @@ object IOEff {
   case class Write(msg: String) extends IOF[Unit]
 
   class IOC[F[_]](implicit I: InjectK[IOF, F]) {
-    def read: Free[F, String] = Free.inject(Read)
-    def write(str: String): Free[F, Unit] = Free.inject(Write(str))
+    def read: Free[F, String] = Free.liftInject(Read)
+    def write(str: String): Free[F, Unit] = Free.liftInject(Write(str))
   }
 
   object IOC {

@@ -14,7 +14,7 @@ import _root_.akka.http.scaladsl.model.{
 }
 import _root_.akka.stream.ActorMaterializer
 import _root_.akka.util.ByteString
-import cats.effect.{ContextShift, IO}
+import cats.effect.IO
 import cats.free.Free
 import hammock.akka.AkkaInterpreter._
 import org.mockito.Mockito._
@@ -22,7 +22,7 @@ import org.scalatest.BeforeAndAfter
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatestplus.mockito.MockitoSugar
-
+import cats.effect.unsafe.implicits.global
 import scala.concurrent.{ExecutionContext, Future}
 
 class AkkaInterpreterSpec extends AnyWordSpec with MockitoSugar with Matchers with BeforeAndAfter {
@@ -30,7 +30,6 @@ class AkkaInterpreterSpec extends AnyWordSpec with MockitoSugar with Matchers wi
   implicit val system: ActorSystem    = ActorSystem("test")
   implicit val mat: ActorMaterializer = ActorMaterializer()
   implicit val ec: ExecutionContext   = ExecutionContext.Implicits.global
-  implicit val cs: ContextShift[IO]   = IO.contextShift(ec)
   implicit val client: HttpExt        = mock[HttpExt]
 
   after {

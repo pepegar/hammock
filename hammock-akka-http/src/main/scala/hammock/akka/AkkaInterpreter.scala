@@ -16,7 +16,7 @@ import _root_.akka.stream.ActorMaterializer
 import _root_.akka.util.ByteString
 import cats._
 import cats.data.Kleisli
-import cats.effect.{Async, ContextShift, Sync}
+import cats.effect.{Async, Sync}
 import cats.implicits._
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -24,7 +24,7 @@ object AkkaInterpreter {
 
   def apply[F[_]](implicit F: InterpTrans[F]): InterpTrans[F] = F
 
-  implicit def instance[F[_]: Async: ContextShift](
+  implicit def instance[F[_]: Async](
       implicit
       client: HttpExt,
       materializer: ActorMaterializer,
@@ -33,7 +33,7 @@ object AkkaInterpreter {
       override def trans: HttpF ~> F = transK andThen λ[Kleisli[F, HttpExt, *] ~> F](_.run(client))
     }
 
-  def transK[F[_]: Async: ContextShift](
+  def transK[F[_]: Async](
       implicit materializer: ActorMaterializer,
       executionContext: ExecutionContext): HttpF ~> Kleisli[F, HttpExt, *] = {
 
@@ -41,7 +41,7 @@ object AkkaInterpreter {
       for {
         akkaRequest    <- mapRequest(req)
         responseFuture <- Sync[F].delay(http.singleRequest(akkaRequest).flatMap(mapResponse))
-        responseF      <- Async.fromFuture(Async[F].delay(responseFuture))
+        responseF      <- Async[F].fromFuture(Sync[F].delay(responseFuture))
       } yield responseF
     }
 

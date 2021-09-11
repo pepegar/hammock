@@ -37,21 +37,21 @@ object Ops {
 
 class HttpRequestC[F[_]](implicit I: InjectK[HttpF, F]) {
   def options(uri: Uri, headers: Map[String, String]): Free[F, HttpResponse] =
-    Free.inject(Options(HttpRequest(uri, headers, None)))
+    Free.liftInject(Options(HttpRequest(uri, headers, None)))
   def get(uri: Uri, headers: Map[String, String]): Free[F, HttpResponse] =
-    Free.inject(Get(HttpRequest(uri, headers, None)))
+    Free.liftInject(Get(HttpRequest(uri, headers, None)))
   def head(uri: Uri, headers: Map[String, String]): Free[F, HttpResponse] =
-    Free.inject(Head(HttpRequest(uri, headers, None)))
+    Free.liftInject(Head(HttpRequest(uri, headers, None)))
   def post(uri: Uri, headers: Map[String, String], entity: Option[Entity]): Free[F, HttpResponse] =
-    Free.inject(Post(HttpRequest(uri, headers, entity)))
+    Free.liftInject(Post(HttpRequest(uri, headers, entity)))
   def put(uri: Uri, headers: Map[String, String], entity: Option[Entity]): Free[F, HttpResponse] =
-    Free.inject(Put(HttpRequest(uri, headers, entity)))
+    Free.liftInject(Put(HttpRequest(uri, headers, entity)))
   def delete(uri: Uri, headers: Map[String, String]): Free[F, HttpResponse] =
-    Free.inject(Delete(HttpRequest(uri, headers, None)))
+    Free.liftInject(Delete(HttpRequest(uri, headers, None)))
   def trace(uri: Uri, headers: Map[String, String]): Free[F, HttpResponse] =
-    Free.inject(Trace(HttpRequest(uri, headers, None)))
+    Free.liftInject(Trace(HttpRequest(uri, headers, None)))
   def patch(uri: Uri, headers: Map[String, String], entity: Option[Entity]): Free[F, HttpResponse] =
-    Free.inject(Patch(HttpRequest(uri, headers, entity)))
+    Free.liftInject(Patch(HttpRequest(uri, headers, entity)))
 }
 
 object HttpRequestC {

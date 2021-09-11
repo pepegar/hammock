@@ -6,7 +6,7 @@ import cats.implicits._
 import cats.data.Kleisli
 import cats.effect._
 import org.asynchttpclient._
-import java.util.{concurrent => jc}
+import java.util.concurrent.CompletableFuture
 import scala.util._
 import scala.jdk.CollectionConverters._
 
@@ -22,30 +22,27 @@ object AsyncHttpClientInterpreter {
 
   def transK[F[_]: Async]: HttpF ~> Kleisli[F, AsyncHttpClient, *] = {
 
-    def toF[A](future: jc.Future[A]): F[A] =
-      Async[F].async(_(Try(future.get) match {
-        case Failure(err) => Left(err)
-        case Success(a)   => Right(a)
-      }))
+    def toF[A](futureF: F[CompletableFuture[A]]): F[A] =
+      Async[F].fromCompletableFuture(futureF)
 
     λ[HttpF ~> Kleisli[F, AsyncHttpClient, *]] {
       case reqF @ (Get(_) | Options(_) | Delete(_) | Head(_) | Options(_) | Trace(_) | Post(_) | Put(_) | Patch(_)) =>
         Kleisli { implicit client =>
           for {
             req             <- mapRequest[F](reqF)
-            ahcResponse     <- toF(req.execute())
+            ahcResponse     <- toF(Sync[F].delay(req.execute().toCompletableFuture()))
             hammockResponse <- mapResponse[F](ahcResponse)
           } yield hammockResponse
         }
     }
   }
 
-  def mapRequest[F[_]: Async](reqF: HttpF[HttpResponse])(implicit client: AsyncHttpClient): F[BoundRequestBuilder] = {
+  def mapRequest[F[_]: Sync](reqF: HttpF[HttpResponse])(implicit client: AsyncHttpClient): F[BoundRequestBuilder] = {
 
     def putHeaders(req: BoundRequestBuilder, headers: Map[String, String]): F[Unit] =
-      Async[F].delay {
+      Sync[F].delay {
         req.setSingleHeaders(headers.map(kv => kv._1.asInstanceOf[CharSequence] -> kv._2).asJava)
-      } *> ().pure[F]
+      }.void
 
     def getBuilder(reqF: HttpF[HttpResponse]): BoundRequestBuilder = reqF match {
       case Get(_)     => client.prepareGet(reqF.req.uri.show)

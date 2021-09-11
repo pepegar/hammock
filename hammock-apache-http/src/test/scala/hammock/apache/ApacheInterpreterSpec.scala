@@ -5,6 +5,7 @@ import java.net.URI
 import cats._
 import cats.data.Kleisli
 import cats.effect._
+import cats.effect.unsafe.implicits.global
 import org.apache.http.client.HttpClient
 import org.apache.http.client.methods.HttpUriRequest
 import org.apache.http.entity.StringEntity
