@@ -1,7 +1,6 @@
 import cats._
 import cats.data.{EitherK, NonEmptyList}
 import cats.free.Free
-import cats.effect.Sync
 
 package object hammock {
 
@@ -11,12 +10,12 @@ package object hammock {
   type HammockF[A] = EitherK[HttpF, MarshallF, A]
 
   implicit class HttpRequestIOSyntax[A](fa: Free[HttpF, A]) {
-    def exec[F[_]: Sync](implicit interp: InterpTrans[F]): F[A] =
+    def exec[F[_]: MonadThrow](implicit interp: InterpTrans[F]): F[A] =
       fa foldMap interp.trans
   }
 
   implicit class HammockFSyntax[A](fa: Free[HammockF, A]) {
-    def exec[F[_]: Sync](implicit NT: HammockF ~> F): F[A] =
+    def exec[F[_]: MonadThrow](implicit NT: HammockF ~> F): F[A] =
       fa foldMap NT
   }
 
@@ -29,7 +28,7 @@ package object hammock {
       }
   }
 
-  implicit def hammockNT[F[_]: Sync](
+  implicit def hammockNT[F[_]: MonadThrow](
       implicit H: InterpTrans[F],
       M: MarshallF ~> F
   ): HammockF ~> F = H.trans or M
