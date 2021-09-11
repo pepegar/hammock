@@ -270,8 +270,6 @@ lazy val docs = project
         Map("title" -> "changelog", "section" -> "changelog", "position" -> "99")
       )
     ),
-    micrositeCompilingDocsTool := WithMdoc,
-    mdocIn := tutSourceDirectory.value,
     scalacOptions ~= filterConsoleScalacOptions,
     scalacOptions += "-language:postfixOps"
   )
